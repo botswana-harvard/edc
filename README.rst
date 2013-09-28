@@ -1,1 +1,1 @@
-Libray apps for edc
+Library apps for edc
