@@ -1,2 +1,11 @@
+*.py[cod]
 *.sh
-start.py
+*.sql
+.project
+.pydevproject
+.settings
+keys
+south.log
+*.bz2
+.DS_Store
+edc_lib
