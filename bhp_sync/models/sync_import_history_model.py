@@ -1,4 +1,4 @@
-from bhp_lock.models import BaseImportHistoryModel
+from ...bhp_lock.models import BaseImportHistoryModel
 
 
 class SyncImportHistoryModel(BaseImportHistoryModel):

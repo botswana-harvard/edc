@@ -1,4 +1,4 @@
-from bhp_sync.models import OutgoingTransaction, IncomingTransaction
+from ..models import OutgoingTransaction, IncomingTransaction
 
 
 class TransactionHelper(object):

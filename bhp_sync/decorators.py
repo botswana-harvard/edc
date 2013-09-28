@@ -2,9 +2,9 @@
 
 
 def get_subclasses(classes, level=0):
-    """
-        Return the list of all subclasses given class (or list of classes) has.
-        Inspired by this question:
+    """Returns the list of all subclasses given class (or list of classes) has.
+
+    Inspired by this question:
         http://stackoverflow.com/questions/3862310/how-can-i-find-all-subclasses-of-a-given-class-in-python
     """
     # for convenience, only one class can can be accepted as argument
@@ -20,8 +20,7 @@ def get_subclasses(classes, level=0):
 
 
 def receiver_subclasses(signal, sender, dispatch_uid_prefix, **kwargs):
-    """
-    A decorator for connecting receivers and all receiver's subclasses to signals. Used by passing in the
+    """A decorator for connecting receivers and all receiver's subclasses to signals. Used by passing in the
     signal and keyword arguments to connect::
 
         @receiver_subclasses(post_save, sender=MyModel)

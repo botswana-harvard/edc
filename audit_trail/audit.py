@@ -1,15 +1,15 @@
 """ https://github.com/LaundroMat/django-AuditTrail/blob/master/audit.py """
 
+import copy
+import re
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
-import copy
-import re
-from bhp_sync.models import BaseSyncUuidModel
-from bhp_base_model.fields import MyUUIDField
-from bhp_crypto.fields import BaseEncryptedField
-from bhp_sync.classes import SerializeToTransaction
-import settings_audit
+from edc_lib.bhp_sync.models import BaseSyncUuidModel
+from edc_lib.bhp_base_model.fields import MyUUIDField
+from edc_lib.bhp_crypto.fields import BaseEncryptedField
+from edc_lib.bhp_sync.classes import SerializeToTransaction
+from __init__ import GLOBAL_TRACK_FIELDS
 
 value_error_re = re.compile("^.+'(.+)'$")
 
@@ -257,13 +257,12 @@ def _build_track_field(track_item):
 def _track_fields(track_fields=None, unprocessed=False):
     # Add in the fields from the Audit class "track" attribute.
     tracks_found = []
-    if settings_audit:
-        global_track_fields = getattr(settings_audit, 'GLOBAL_TRACK_FIELDS', [])
-        for track_item in global_track_fields:
-            if unprocessed:
-                tracks_found.append(track_item)
-            else:
-                tracks_found.append(_build_track_field(track_item))
+    global_track_fields = getattr(GLOBAL_TRACK_FIELDS, 'GLOBAL_TRACK_FIELDS', [])
+    for track_item in global_track_fields:
+        if unprocessed:
+            tracks_found.append(track_item)
+        else:
+            tracks_found.append(_build_track_field(track_item))
     if track_fields:
         for track_item in track_fields:
             if unprocessed:

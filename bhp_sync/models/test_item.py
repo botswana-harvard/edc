@@ -1,6 +1,6 @@
 from django.db import models
-from audit_trail.audit import AuditTrail
-from base_sync_uuid_model import BaseSyncUuidModel
+from ...audit_trail.audit import AuditTrail
+from .base_sync_uuid_model import BaseSyncUuidModel
 
 
 class TestItem(BaseSyncUuidModel):

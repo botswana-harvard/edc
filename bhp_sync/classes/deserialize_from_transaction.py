@@ -4,16 +4,16 @@ import socket
 from django.core import serializers
 from django.db.models import ForeignKey
 from django.db.utils import IntegrityError
-from bhp_crypto.classes import FieldCryptor
-from transaction_producer import TransactionProducer
+from ...bhp_crypto.classes import FieldCryptor
+from .transaction_producer import TransactionProducer
 
 
 class DeserializeFromTransaction(object):
-    
+
     def decrypt_transanction(self, incoming_transaction):
             model_dict = FieldCryptor('aes', 'local').decrypt(incoming_transaction.tx)
             return json.loads(model_dict)
-    
+
     def deserialize(self, incoming_transaction, using, **kwargs):
         # may bypass this check for for testing ...
         check_hostname = kwargs.get('check_hostname', True)
@@ -22,7 +22,7 @@ class DeserializeFromTransaction(object):
             # if you get an error deserializing a datetime, confirm dev version of json.py
             if incoming_transaction.action == 'I' or incoming_transaction.action == 'U':
                 # check if tx originanted from me
-                #print "created %s : modified %s" % (obj.object.hostname_created, obj.object.hostname_modified)
+                # print "created %s : modified %s" % (obj.object.hostname_created, obj.object.hostname_modified)
                 incoming_transaction.is_ignored = False
                 print '    {0}'.format(obj.object._meta.object_name)
                 if obj.object.hostname_modified == socket.gethostname() and check_hostname:
@@ -50,7 +50,7 @@ class DeserializeFromTransaction(object):
                             # check if there is a helper method
                             print '    force insert failed'
                             if 'deserialize_on_duplicate' in dir(obj.object) and obj.object.deserialize_on_duplicate():
-                                #obj.object.deserialize_on_duplicate()
+                                # obj.object.deserialize_on_duplicate()
                                 obj.save(using=using)
                                 print '    OK update succeeded after deserialize_on_duplicate on using={0}'.format(using)
                                 is_success = True
@@ -65,7 +65,7 @@ class DeserializeFromTransaction(object):
                             # which foreign key is failing?
                             if 'audit' in obj.object._meta.db_table:
                                 # audit tables do not have access to the helper methods
-                                #for field in foreign_key_error:
+                                # for field in foreign_key_error:
                                 #    # it is OK to just set the fk to None
                                 #    setattr(obj.object, field.name, None)
                                 print '    audit instance, ignoring... on using={0}'.format(using)
@@ -117,7 +117,7 @@ class DeserializeFromTransaction(object):
                                         print '    deserialize_on_duplicate'
                                         if 'deserialize_on_duplicate' in dir(obj.object) and obj.object.deserialize_on_duplicate():
                                             print '    deserialize_on_duplicate'
-                                            #obj.object.deserialize_on_duplicate()
+                                            # obj.object.deserialize_on_duplicate()
                                             # not every duplicate needs to be saved
                                             # if you can develop criteria to decide,
                                             # then use deserialize_on_duplicate to evaluate

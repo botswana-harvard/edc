@@ -3,8 +3,8 @@ from django.db.models import get_model
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.db.models import TextField
-from bhp_crypto.fields import EncryptedTextField
-from bhp_crypto.classes import FieldCryptor
+from ...bhp_crypto.fields import EncryptedTextField
+from ...bhp_crypto.classes import FieldCryptor
 
 
 @login_required

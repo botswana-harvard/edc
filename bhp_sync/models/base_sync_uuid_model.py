@@ -4,9 +4,9 @@ from django.conf import settings
 from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
-from bhp_sync.classes import TransactionProducer
-from bhp_base_model.models import BaseUuidModel
-
+from ...bhp_base_model.models import BaseUuidModel
+from ..classes import TransactionProducer
+from ..__init__ import MODULE_APP_LABEL
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +56,7 @@ class BaseSyncUuidModel(BaseUuidModel):
             del kwargs['transaction_producer']
 
         if self.is_serialized() and not self._meta.proxy:
-            outgoing_transaction = get_model('bhp_sync', 'outgoingtransaction')
+            outgoing_transaction = get_model(MODULE_APP_LABEL, 'outgoingtransaction')
             json_obj = serializers.serialize("json", self.__class__.objects.filter(pk=self.pk), use_natural_keys=True)
             using = kwargs.get('using', 'default')
             outgoing_transaction.objects.using(using).create(

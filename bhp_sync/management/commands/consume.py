@@ -1,8 +1,8 @@
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
-from bhp_sync.classes import SyncLock, ImportHistory, Consumer
-from bhp_lab_tracker.classes import site_lab_tracker
+from ....bhp_lab_tracker.classes import site_lab_tracker
+from ...classes import SyncLock, ImportHistory, Consumer
 
 site_lab_tracker.autodiscover()
 

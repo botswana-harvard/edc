@@ -1,8 +1,8 @@
 from datetime import datetime
 from django.db.models import get_model
 from django.core import serializers
-from bhp_crypto.classes import FieldCryptor
-from transaction_producer import TransactionProducer
+from ...bhp_crypto.classes import FieldCryptor
+from .transaction_producer import TransactionProducer
 
 
 class SerializeToTransaction(object):

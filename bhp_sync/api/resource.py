@@ -1,10 +1,8 @@
-#from tastypie import fields
 from tastypie.serializers import Serializer
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import DjangoAuthorization
-#from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource
-from bhp_sync.models import OutgoingTransaction, MiddleManTransaction
+from ...bhp_sync.models import OutgoingTransaction, MiddleManTransaction
 
 """
 from django.contrib.auth.models import User
@@ -40,13 +38,13 @@ names = ['onep','ckgathi','chazha','django','erikvw','jtshikedi','rmabutho','ank
 """
 
 class OutgoingTransactionMiddleManResource(ModelResource):
- 
+
     """ APi resource based on model OutgoingTransaction filtered on is_consumed_middleman=False and is_consumed_server=False. 
         i.e Serve me all OutgoingTransaction in netbook not yet synced by the Server and any MiddleMan"""
- 
+
     class Meta:
-        #Table OutgoingTransanctions{in netbook} in the case that it is accessed by Middleman
-        #We give transanctions that are not consumed by the Server and MiddleMan
+        # Table OutgoingTransanctions{in netbook} in the case that it is accessed by Middleman
+        # We give transanctions that are not consumed by the Server and MiddleMan
         queryset = OutgoingTransaction.objects.filter(is_consumed_server=False, is_consumed_middleman=False).order_by('timestamp')
         resource_name = 'outgoingtransaction'
         authentication = ApiKeyAuthentication()
@@ -56,7 +54,7 @@ class OutgoingTransactionMiddleManResource(ModelResource):
             'producer': ['exact', ],
         }
         serializer = Serializer()
-#http://localhost:8000/bhp_sync/api/outgoingtransaction/?format=json&username=django&api_key=1af87bd7d0c7763e7b11590c9398740f0de7678b
+# http://localhost:8000/bhp_sync/api/outgoingtransaction/?format=json&username=django&api_key=1af87bd7d0c7763e7b11590c9398740f0de7678b
 class OutgoingTransactionServerResource(ModelResource):
 
     """ APi resource based on model OutgoingTransaction filtered on is_consumed_server=False. 
@@ -64,8 +62,8 @@ class OutgoingTransactionServerResource(ModelResource):
             we do not care if MiddleMan has synced them yet or not."""
 
     class Meta:
-        #Table OutgoingTransanctions{in netbook} in the case that it is accessed by Server
-        #We give transanctions that are not consumed by Server, we do not care whether consumed by MiddleMan or not
+        # Table OutgoingTransanctions{in netbook} in the case that it is accessed by Server
+        # We give transanctions that are not consumed by Server, we do not care whether consumed by MiddleMan or not
         queryset = OutgoingTransaction.objects.filter(is_consumed_server=False).order_by('timestamp')
         resource_name = 'outgoingtransaction'
         authentication = ApiKeyAuthentication()
@@ -75,14 +73,17 @@ class OutgoingTransactionServerResource(ModelResource):
             'producer': ['exact', ],
         }
         serializer = Serializer()
+
+
 class MiddleManTransactionResource(ModelResource):
- 
-    """ APi resource based on model MiddleManTransaction filtered on is_consumed_server=False. 
-        i.e Serve me all MiddleManTransaction in the MiddleMan not yet synced by the Server"""
- 
+
+    """ API resource based on model MiddleManTransaction filtered on is_consumed_server=False.
+
+    For example, serves me all MiddleManTransaction in the MiddleMan not yet synced by the Server."""
+
     class Meta:
-        #Table MiddleMan will only be queried by Server, hence we give only those transanctions not yet consumed by the Server
-        #i.e is_consumed_server=False
+        # Table MiddleMan will only be queried by Server, hence we give only those transanctions not yet consumed by the Server
+        # i.e is_consumed_server=False
         queryset = MiddleManTransaction.objects.filter(is_consumed_server=False).order_by('timestamp')
         resource_name = 'middlemantransaction'
         authentication = ApiKeyAuthentication()
@@ -92,4 +93,4 @@ class MiddleManTransactionResource(ModelResource):
 #             'producer': ['exact', ],
         }
         serializer = Serializer()
-#models.signals.post_save.connect(create_api_key, sender=User)
+# models.signals.post_save.connect(create_api_key, sender=User)

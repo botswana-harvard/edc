@@ -1,5 +1,5 @@
 from django import forms
-from models import Producer
+from .models import Producer
 
 
 class ProducerForm(forms.ModelForm):

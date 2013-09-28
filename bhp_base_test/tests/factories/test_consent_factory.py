@@ -1,9 +1,9 @@
 import factory
 from datetime import datetime
-from bhp_base_test.models import TestConsent, TestConsentWithMixin
-from bhp_common.choices import IDENTITY_TYPE
-from bhp_subject.tests.factories import BaseSubjectFactory
-from bhp_variables.tests.factories import StudySiteFactory
+from edc_lib.bhp_base_test.models import TestConsent, TestConsentWithMixin
+from edc_lib.bhp_common.choices import IDENTITY_TYPE
+from edc_lib.bhp_subject.tests.factories import BaseSubjectFactory
+from edc_lib.bhp_variables.tests.factories import StudySiteFactory
 
 
 class BaseConsentBasicsFactory(BaseSubjectFactory):
@@ -33,6 +33,7 @@ class BaseTestConsentFactory(BaseConsentFactory):
     confirm_identity = factory.Sequence(lambda n: '{0}2{1}'.format(str(n).rjust(4, '0'), str(n).rjust(4, '0')))
     first_name = factory.Sequence(lambda n: 'ERIK{0}'.format(n))
     initials = factory.Sequence(lambda n: 'E{0}W'.format(n))
+
 
 class TestConsentFactory(BaseConsentFactory):
     FACTORY_FOR = TestConsent

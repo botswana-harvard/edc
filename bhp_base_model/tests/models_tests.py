@@ -1,7 +1,7 @@
 from django.test import TestCase
-from bhp_base_model.models import TestManyToMany
-from bhp_base_model.models import TestForeignKey
-from bhp_base_model.models import TestModel
+#from edc_lib.bhp_base_test.models import TestManyToMany
+#from edc_lib.bhp_base_test.models import TestForeignKey
+from edc_lib.bhp_base_test.models import TestModel
 
 
 class ModelsTests(TestCase):

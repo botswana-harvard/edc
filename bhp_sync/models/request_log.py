@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import models
-from bhp_base_model.models import BaseUuidModel
-from producer import Producer
+from ...bhp_base_model.models import BaseUuidModel
+from .producer import Producer
 
 
 class RequestLog(BaseUuidModel):

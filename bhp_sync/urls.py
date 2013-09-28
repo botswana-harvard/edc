@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import patterns, url, include
 from django.contrib import admin
-from api import OutgoingTransactionMiddleManResource, OutgoingTransactionServerResource, MiddleManTransactionResource
+from .api import OutgoingTransactionMiddleManResource, OutgoingTransactionServerResource, MiddleManTransactionResource
 
 admin.autodiscover()
 outgoing_transaction_middle_man_resource = OutgoingTransactionMiddleManResource()

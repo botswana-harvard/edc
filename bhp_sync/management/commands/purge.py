@@ -2,8 +2,7 @@ from datetime import datetime, timedelta
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
-from bhp_sync.models import OutgoingTransaction, IncomingTransaction
-from bhp_sync.classes import TransactionProducer
+from ...models import OutgoingTransaction, IncomingTransaction
 
 
 class Command(BaseCommand):
@@ -37,12 +36,8 @@ class Command(BaseCommand):
 
     def purge_incoming(self, *args):
         n = 0
-        tot = 0
-        transactions = None
-
-        #in days
+        # in days
         age = 0
-
         if args[0]:
             if args[0].isdigit():
                 value = float(args[0])
@@ -50,10 +45,6 @@ class Command(BaseCommand):
                     age = int(value)
         print "Deleting incoming transaction older than {0} day(s)".format(age)
         cut_off_date = datetime.now() - timedelta(days=age)
-#        transactions = IncomingTransaction.objects.filter(
-#                            is_consumed=True,consumed_datetime__isnull=False,
-#                            consumed_datetime__lte=cut_off_date
-#                        )
         transactions = IncomingTransaction.objects.filter(
                             tx_name="ScheduledEntryBucket",
                         )
@@ -81,11 +72,9 @@ class Command(BaseCommand):
     '''
     def purge_outgoing(self, *args):
         n = 0
-        tot = 0
         transactions = None
-        producer = TransactionProducer()
         is_server = True
-        #in days
+        # in days
         age = 0
 
         if args:
@@ -95,43 +84,22 @@ class Command(BaseCommand):
                     age = int(value)
         print "Deleting outgoing transaction older than {0} day(s)".format(age)
         cutoff_date = datetime.now() - timedelta(days=age)
-        #cutoff_timestamp = (datetime.now() - timedelta(days=age)).strftime('%Y%m%d%H%M%S%f')
-
-
         if 'DEVICE_ID' in dir(settings):
             if settings.DEVICE_ID.isdigit():
                 if float(settings.DEVICE_ID) >= 98:
-                    #We are on a server
-                    transactions = OutgoingTransaction.objects.filter(
-                                        created__lte=cutoff_date
-                                    )
-                    #tot = transactions.count()
-                    #print '    {0} found on a server {1}'.format(tot,producer)
+                    # We are on a server
+                    transactions = OutgoingTransaction.objects.filter(created__lte=cutoff_date)
                 else:
                     raise ValueError('The command should on be ran on server! .')
-                    #We are on a netbook so delete consumed tx
-#                    transactions = OutgoingTransaction.objects.exclude(
-#                                        producer=producer,
-#                                        created__gte=cutoff_date
-                    #                )
-                    #tot = transactions.count()
-                    #is_server = False
-                    
-                    #print '    {0} found on a netbook {1}'.format(tot,producer)
-                #if tot == 0:
-                #    print "    No transactions older than {0} were found".format(cutoff_date)
-                #else:
                 for outgoing_transaction in transactions:
                     n += 1
-                    print '{0} / {1} {2}'.format(n,outgoing_transaction.producer,outgoing_transaction.tx_name)
+                    print '{0} / {1} {2}'.format(n, outgoing_transaction.producer, outgoing_transaction.tx_name)
                     if is_server == True:
                         outgoing_transaction.save(using='archive')
                         print '    Saved on the archive db'
-
                     outgoing_transaction.delete(using='default')
                     print '    Deleted'
             else:
                 raise ValueError('DEVICE_ID global value should be a number .')
         else:
             raise ValueError('DEVICE_ID global value should be set on the settings.py file.')
-

@@ -1,8 +1,8 @@
 import socket
 from django.db import models
 from datetime import datetime
-from base_transaction import BaseTransaction
-from bhp_sync.managers import IncomingTransactionManager
+from ..managers import IncomingTransactionManager
+from .base_transaction import BaseTransaction
 
 
 class IncomingTransaction(BaseTransaction):

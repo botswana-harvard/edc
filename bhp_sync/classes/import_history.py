@@ -1,7 +1,7 @@
 import logging
 from django.db.models import get_model
-from bhp_lock.classes import BaseImportHistory
-from sync_lock import SyncLock
+from ...bhp_lock.classes import BaseImportHistory
+from .sync_lock import SyncLock
 
 
 logger = logging.getLogger(__name__)

@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.db import models
-from base_transaction import BaseTransaction
+from .base_transaction import BaseTransaction
 
 
 class OutgoingTransaction(BaseTransaction):

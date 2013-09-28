@@ -1,8 +1,8 @@
 import logging
 from django.db.models import get_model
 from django.core.serializers.base import DeserializationError
-from bhp_sync.classes import DeserializeFromTransaction
-from bhp_sync.exceptions import TransactionConsumerError
+from ..classes import DeserializeFromTransaction
+from ..exceptions import TransactionConsumerError
 
 
 logger = logging.getLogger(__name__)

@@ -1,20 +1,12 @@
 import urllib2
 import json
-#from sys import platform as _platform
-#if _platform == "linux" or _platform == "linux2":
-    # linux
-#elif _platform == "darwin":
-#    import json
 from datetime import datetime
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.db.models import get_model
 from django.contrib import messages
-from django.shortcuts import render_to_response
 from django.shortcuts import redirect
-from django.template import RequestContext
-from bhp_sync.models import Producer, RequestLog, IncomingTransaction, OutgoingTransaction, MiddleManTransaction
+from bhp_sync.models import Producer, RequestLog, IncomingTransaction, MiddleManTransaction
 from bhp_sync.classes import TransactionProducer
 
 
@@ -62,7 +54,7 @@ def consume_transactions(request, **kwargs):
                     else:
                         if remote_is_middleman:
                             #I am a Server pulling from a MiddleMan, we dont care who the original producer was, just grab all eligible(i.e not synced by Server yet) tansanctions in MiddleManTransaction table
-                            url = '{host}bhp_sync/api_mmtr/middlemantransaction/?format=json&limit={limit}&username={username}&api_key={api_key}'.format(**data)                    
+                            url = '{host}bhp_sync/api_mmtr/middlemantransaction/?format=json&limit={limit}&username={username}&api_key={api_key}'.format(**data)
                         else:
                             #I am still a Server, but now pulling from a netbook, just grab all eligible(i.e not synced by Server yet) transactions from OutgoingTransactions table
                             #however pass the producer for filtering on the other side.
@@ -141,7 +133,7 @@ def consume_transactions(request, **kwargs):
                                                     action=outgoing_transaction['action'])
                                             else:
                                                 #transanction already exixts in the MiddleMan. This a highly unlikely outcome
-                                                #(NOTE:MiddleMan only consumes from netbook.)but if it occurs then mark it as 
+                                                #(NOTE:MiddleMan only consumes from netbook.)but if it occurs then mark it as
                                                 #not consumed by the Server
                                                 middle_man_transaction = MiddleManTransaction.objects.get(pk=outgoing_transaction['id'])
                                                 middle_man_transaction.is_consumed_server = False
@@ -163,7 +155,6 @@ def consume_transactions(request, **kwargs):
                                                 #a little tricky cause it could be from Middleman or Netbook, depending on which was synced first
                                                 #but either way, what we want to do is ignore the tranction that already exists in the server,
                                                 #irregardles of where it comes from, it should exactly be the same transanction.
-                                                
                                                 #incoming_transaction = IncomingTransaction.objects.get(pk=outgoing_transaction['id'])
                                                 #incoming_transaction.is_consumed = False
                                                 #incoming_transaction.is_error = False
@@ -185,17 +176,5 @@ def consume_transactions(request, **kwargs):
                                         f.close()
                                         producer.sync_status = 'OK'
                                         producer.sync_datetime = datetime.today()
-
-                    # removed: syncing should no longer change the dispatch status
-#                    if 'ALLOW_DISPATCH' in dir(settings) and settings.ALLOW_DISPATCH:
-#                        DispatchItem = get_model('bhp_dispatch', 'DispatchItem')
-#                        if OutgoingTransaction.objects.using(producer.name).filter(is_consumed=False).exists():
-#                            messages.add_message(request, messages.ERROR, 'Not all Transactions consumed from producer %s.' % (kwargs.get('producer')))
-#                        else:
-#                            for item in DispatchItem.objects.filter(producer__name=producer.name, is_dispatched=True):
-#                                item.is_dispatched = False
-#                                item.return_datetime = datetime.today()
-#                                item.save()
-
                     producer.save()
         return redirect('/bhp_sync/consumed/{0}/'.format(producer.name))

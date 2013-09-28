@@ -1,1 +1,1 @@
-from incoming_transaction_manager import IncomingTransactionManager
+from .incoming_transaction_manager import IncomingTransactionManager
