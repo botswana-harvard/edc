@@ -1,4 +1,4 @@
-from bhp_section.classes import BaseSectionView, site_sections
+from ..bhp_section.classes import BaseSectionView, site_sections
 
 
 class SectionAuditView(BaseSectionView):

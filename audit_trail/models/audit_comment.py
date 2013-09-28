@@ -1,7 +1,7 @@
 from django.db import models
-from bhp_base_model.models import BaseUuidModel
-from bhp_base_model.fields import MyUUIDField
-from audit_trail.choices import AUDITCODES
+from ...bhp_base_model.models import BaseUuidModel
+from ...bhp_base_model.fields import MyUUIDField
+from ..choices import AUDITCODES
 
 
 class AuditComment (BaseUuidModel):

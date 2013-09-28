@@ -1,8 +1,8 @@
 import factory
 from datetime import date
-from bhp_base_model.tests.factories import BaseUuidModelFactory, BaseListModelFactory
-from bhp_registration.tests.factories import RegisteredSubjectFactory
-from bhp_adverse.models import DeathMedicalResponsibility, DeathCauseCategory, DeathCauseInfo
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory, BaseListModelFactory
+from ....bhp_registration.tests.factories import RegisteredSubjectFactory
+from ...models import DeathMedicalResponsibility, DeathCauseCategory, DeathCauseInfo
 
 
 class DeathMedicalResponsibilityFactory(BaseListModelFactory):

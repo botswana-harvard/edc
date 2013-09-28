@@ -2,7 +2,7 @@ from django.conf.urls.defaults import patterns as url_patterns, url
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from base_section_index_view import BaseSectionIndexView
+from .base_section_index_view import BaseSectionIndexView
 
 
 class SectionIndexView(BaseSectionIndexView):

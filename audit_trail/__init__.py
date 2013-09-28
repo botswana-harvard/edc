@@ -1,5 +1,5 @@
 from django.db import models
-from helper import get_subject_identifier
+from .helper import get_subject_identifier
 
 
 # Populate the fields that every Audit model in this project will use.

@@ -1,7 +1,6 @@
-#from datetime import datetime
-from django.core.urlresolvers import reverse
 from django.db.models import get_model
-from bhp_base_admin.admin import BaseModelAdmin
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ..models import Appointment
 
 
 class BaseAppointmentModelAdmin(BaseModelAdmin):
@@ -74,25 +73,7 @@ class BaseAppointmentModelAdmin(BaseModelAdmin):
                 )
         return super(BaseAppointmentModelAdmin, self).save_model(request, obj, form, change)
 
-#     def delete_model(self, request, obj):
-#         return super(BaseAppointmentModelAdmin, self).delete_model(request, obj)
-
-#     def delete_view(self, request, object_id, extra_context=None):
-# 
-#         appointment = self.model.objects.get(pk=object_id).appointment.pk
-#         subject_identifier = self.model.objects.get(pk=object_id).appointment.registered_subject.subject_identifier
-#         result = super(BaseAppointmentModelAdmin, self).delete_view(request, object_id, extra_context)
-#         context = {'dashboard_type': self.dashboard_type, 'appointment': appointment}
-#         if subject_identifier:
-#             context['subject_identifier'] = subject_identifier
-#         if extra_context:
-#             for k, v in extra_context.items():
-#                 context[k] = v
-#         result['Location'] = reverse('dashboard_url', kwargs=context)
-#         return result
-
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        from bhp_appointment.models import Appointment
         if db_field.name == 'appointment' and request.GET.get('appointment'):
             kwargs["queryset"] = Appointment.objects.filter(pk=request.GET.get('appointment', 0))
         return super(BaseAppointmentModelAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)

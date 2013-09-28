@@ -1,5 +1,5 @@
 from controller import site_sections
-from bhp_search.classes import site_search
+from ...bhp_search.classes import site_search
 
 
 class BaseSectionIndexView(object):

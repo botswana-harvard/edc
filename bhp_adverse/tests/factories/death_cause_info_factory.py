@@ -1,5 +1,5 @@
-from bhp_base_model.tests.factories import BaseListModelFactory
-from bhp_adverse.models import DeathCauseInfo
+from ....bhp_base_model.tests.factories import BaseListModelFactory
+from ...models import DeathCauseInfo
 
 
 class DeathCauseInfoFactory(BaseListModelFactory):

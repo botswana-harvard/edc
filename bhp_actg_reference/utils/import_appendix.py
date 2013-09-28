@@ -1,11 +1,10 @@
 import pyodbc
-from django.conf import settings
-from bhp_actg_reference.models import Appendix40
+from ..models import Appendix40
 
 
 def ImportAppendix(**kwargs):
-    
-    """Import records in old dmis for appendix 40
+    """Imports records in old dmis (assuming it still exists) for appendix 40.
+
     After this, go to bhp_code_lists.utils """
 
     cnxn = pyodbc.connect("DRIVER={FreeTDS};SERVER=192.168.1.141;UID=sa;PWD=cc3721b;DATABASE=BHP")
@@ -18,8 +17,8 @@ def ImportAppendix(**kwargs):
         full_description = row.full_description
         if not Appendix40.objects.filter(code=code):
             Appendix40.objects.create(
-                code = code,
-                short_description = short_description,
-                full_description = full_description,
+                code=code,
+                short_description=short_description,
+                full_description=full_description,
                 )
-            print code    
+            print code

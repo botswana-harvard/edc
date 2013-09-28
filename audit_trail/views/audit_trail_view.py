@@ -2,11 +2,11 @@ from django.db.models import get_model
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from bhp_base_model.models import BaseModel
-from bhp_model_selector.classes import ModelSelector
-from audit_trail.models import AuditComment
-from audit_trail.forms import AuditTrailForm
-from bhp_section.classes import section_index_view
+from ...bhp_base_model.models import BaseModel
+from ...bhp_model_selector.classes import ModelSelector
+from ...bhp_section.classes import section_index_view
+from ..models import AuditComment
+from ..forms import AuditTrailForm
 
 
 @login_required
@@ -148,7 +148,7 @@ def audit_trail_view(request, **kwargs):
             back_url_name = 'dashboard_visit_url'
 
     options.update({
-        'sections': section_index_view.get_section_list(),
+        'sections': section_index_view().get_section_name_list(),
         'selected_section': section_name,
         'section_name': section_name,
         'report_title': report_title,

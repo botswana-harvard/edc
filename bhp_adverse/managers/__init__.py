@@ -1,1 +1,1 @@
-from death_manager import DeathManager
+from .death_manager import DeathManager

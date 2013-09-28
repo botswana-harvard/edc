@@ -1,1 +1,1 @@
-from audit_comment import AuditComment
+from .audit_comment import AuditComment

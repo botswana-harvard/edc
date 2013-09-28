@@ -1,37 +1,35 @@
 from django import forms
-from django.core.exceptions import ValidationError
-from bhp_model_selector.forms import ModelSelectorForm
+from ..bhp_model_selector.forms import ModelSelectorForm
 
 
 class AuditTrailForm(ModelSelectorForm):
-    
+
     audit_subject_identifier = forms.CharField(
-        max_length=50, 
+        max_length=50,
         label="Subject Identifier",
-        required = False,
+        required=False,
         )
-        
-    dashboard_type = forms.CharField(        
-        max_length=50, 
+
+    dashboard_type = forms.CharField(
+        max_length=50,
         label="Dashboard type",
-        required = False,
+        required=False,
         )
-        
-    visit_code = forms.CharField(        
-        max_length=50, 
+
+    visit_code = forms.CharField(
+        max_length=50,
         label="Visit Code",
-        required = False,
+        required=False,
         )
 
-    visit_instance = forms.CharField(        
-        max_length=50, 
+    visit_instance = forms.CharField(
+        max_length=50,
         label="Visit Instance",
-        required = False,
+        required=False,
         )
 
-    back_url_name = forms.CharField(        
-        max_length=50, 
+    back_url_name = forms.CharField(
+        max_length=50,
         label="Back url name",
-        required = False,
+        required=False,
         )
-

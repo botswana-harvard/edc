@@ -1,6 +1,6 @@
 from django.db import models
-from death_list import DeathMedicalResponsibility
-from base_base_death import BaseBaseDeath
+from .death_list import DeathMedicalResponsibility
+from .base_base_death import BaseBaseDeath
 
 
 class BaseDeath(BaseBaseDeath):

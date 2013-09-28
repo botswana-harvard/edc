@@ -1,2 +1,2 @@
-from base_appendix import BaseAppendix
-from appendix_40 import Appendix40
+from .base_appendix import BaseAppendix
+from .appendix_40 import Appendix40

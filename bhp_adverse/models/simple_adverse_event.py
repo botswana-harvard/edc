@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.validators import MaxValueValidator, MinValueValidator
-from bhp_base_model.models import BaseListModel
-from bhp_consent.models import BaseConsentedUuidModel
-from bhp_registration.models import RegisteredSubject
-from bhp_adverse.choices import GRADING_SCALE
+from ...bhp_base_model.models import BaseListModel
+from ...bhp_consent.models import BaseConsentedUuidModel
+from ...bhp_registration.models import RegisteredSubject
+from ..choices import GRADING_SCALE
 
 """ list tables to be populated by study specific fixtures """
 

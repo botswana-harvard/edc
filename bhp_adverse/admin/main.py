@@ -1,5 +1,5 @@
 from django.contrib import admin
-from bhp_adverse.models import SimpleAdverseEvent, DeathCauseInfo, DeathCauseCategory, DeathMedicalResponsibility, DeathReasonHospitalized
+from ..models import SimpleAdverseEvent, DeathCauseInfo, DeathCauseCategory, DeathMedicalResponsibility, DeathReasonHospitalized
 
 admin.site.register(DeathCauseInfo)
 admin.site.register(DeathCauseCategory)
