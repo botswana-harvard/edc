@@ -1,1 +1,1 @@
-from methods_tests import MethodsTests
+from .methods_tests import MethodsTests

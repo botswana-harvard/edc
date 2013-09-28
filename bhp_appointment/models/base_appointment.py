@@ -1,10 +1,9 @@
 from django.db import models
-#from django.utils.translation import ugettext_lazy as _
-from bhp_appointment.choices import APPT_STATUS
 try:
-    from bhp_dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
+    from ...bhp_dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
 except ImportError:
-    from bhp_sync.models import BaseSyncUuidModel
+    from ...bhp_sync.models import BaseSyncUuidModel
+from ..choices import APPT_STATUS
 
 
 class BaseAppointment (BaseSyncUuidModel):

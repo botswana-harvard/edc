@@ -1,11 +1,11 @@
 from datetime import datetime
-from bhp_appointment.models import Appointment, PreAppointmentContact
-from base_appointment_tests import BaseAppointmentTests
-from factories import PreAppointmentContactFactory
- 
- 
+from ..models import Appointment, PreAppointmentContact
+from .factories import PreAppointmentContactFactory
+from .base_appointment_tests import BaseAppointmentTests
+
+
 class PreAppointmentContactMethodTests(BaseAppointmentTests):
- 
+
     def test_post_save(self):
         self.setup()
         appt_pk = self.appointment.pk

@@ -1,5 +1,5 @@
-from bhp_consent.models import BaseConsentedUuidModel
-from base_appointment_mixin import BaseAppointmentMixin
+from ...bhp_consent.models import BaseConsentedUuidModel
+from .base_appointment_mixin import BaseAppointmentMixin
 
 
 class BaseAppointmentHelperModel (BaseConsentedUuidModel, BaseAppointmentMixin):

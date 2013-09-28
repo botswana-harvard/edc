@@ -1,6 +1,6 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_appointment.models import Configuration
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ..models import Configuration
 from holiday_admin import HolidayInlineAdmin
 
 

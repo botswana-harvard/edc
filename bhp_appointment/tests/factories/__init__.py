@@ -1,3 +1,3 @@
-from appointment_factory import AppointmentFactory
-from configuration_factory import ConfigurationFactory
-from pre_appointment_contact_factory import PreAppointmentContactFactory
+from .appointment_factory import AppointmentFactory
+from .configuration_factory import ConfigurationFactory
+from .pre_appointment_contact_factory import PreAppointmentContactFactory

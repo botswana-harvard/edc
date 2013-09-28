@@ -2,15 +2,15 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-from audit_trail.audit import AuditTrail
-from bhp_variables.models import StudySite
-from bhp_registration.models import RegisteredSubject
-from bhp_visit.models import VisitDefinition
-from bhp_appointment.managers import AppointmentManager
-from bhp_appointment.choices import APPT_TYPE
-from base_appointment import BaseAppointment
-from bhp_visit.classes import WindowPeriod
-from bhp_appointment_helper.classes import AppointmentHelper
+from ...audit_trail.audit import AuditTrail
+from ...bhp_variables.models import StudySite
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_visit.models import VisitDefinition
+from ...bhp_visit.classes import WindowPeriod
+from ...bhp_appointment_helper.classes import AppointmentHelper
+from ..managers import AppointmentManager
+from ..choices import APPT_TYPE
+from .base_appointment import BaseAppointment
 
 
 class Appointment(BaseAppointment):

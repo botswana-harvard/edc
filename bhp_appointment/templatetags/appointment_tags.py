@@ -1,9 +1,6 @@
-#from datetime import *
-#from dateutil.relativedelta import *
 from django import template
 from django.core.urlresolvers import reverse
-#from django.db.models import get_model
-from bhp_appointment.models import Appointment
+from ..models import Appointment
 
 
 register = template.Library()

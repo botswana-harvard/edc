@@ -1,9 +1,7 @@
 from django.db import models
-#from django.core.exceptions import ValidationError
-#from django.core.urlresolvers import reverse
-from audit_trail.audit import AuditTrail
-from bhp_contact.models import BaseContactLogItem
-from bhp_appointment.models import Appointment
+from ...audit_trail.audit import AuditTrail
+from ...bhp_contact.models import BaseContactLogItem
+from ..models import Appointment
 
 
 class PreAppointmentContact(BaseContactLogItem):

@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from bhp_sync.models import BaseSyncUuidModel
-from configuration import Configuration
+from ...bhp_sync.models import BaseSyncUuidModel
+from .configuration import Configuration
 
 
 class Holiday(BaseSyncUuidModel):

@@ -1,10 +1,10 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model, Max
-from bhp_visit.models import VisitDefinition, ScheduleGroup
-from appointment_date_helper import AppointmentDateHelper
-from bhp_subject_config.models import SubjectConfiguration
-from bhp_appointment.models import Configuration
-from bhp_appointment.exceptions import AppointmentStatusError
+from ...bhp_visit.models import VisitDefinition, ScheduleGroup
+from ...bhp_subject_config.models import SubjectConfiguration
+from ...bhp_appointment.models import Configuration
+from ...bhp_appointment.exceptions import AppointmentStatusError
+from .appointment_date_helper import AppointmentDateHelper
 
 
 class AppointmentHelper(object):

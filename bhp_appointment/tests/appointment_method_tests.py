@@ -1,25 +1,24 @@
 from datetime import datetime
 from django.core.exceptions import ValidationError
-from bhp_appointment.choices import APPT_STATUS
-from bhp_appointment.models import Appointment
-from bhp_visit.models import VisitDefinition
-from base_appointment_tests import BaseAppointmentTests
-from bhp_lab_tracker.classes import site_lab_tracker
-from bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-from bhp_registration.models import RegisteredSubject
-from bhp_consent.tests.factories import ConsentCatalogueFactory
-from bhp_appointment.tests.factories import ConfigurationFactory
-from bhp_visit.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
-from bhp_content_type_map.classes import ContentTypeMapHelper
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_base_test.models import TestConsent, TestVisit, TestScheduledModel
-# from bhp_base_test.tests.factories import TestConsentFactory, TestScheduledModelFactory
-from bhp_entry.models import ScheduledEntryBucket
-from bhp_entry.tests.factories import EntryFactory
- 
- 
+from ...bhp_visit.models import VisitDefinition
+from ...bhp_lab_tracker.classes import site_lab_tracker
+from ...bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_consent.tests.factories import ConsentCatalogueFactory
+from ...bhp_appointment.tests.factories import ConfigurationFactory
+from ...bhp_visit.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+from ...bhp_content_type_map.classes import ContentTypeMapHelper
+from ...bhp_content_type_map.models import ContentTypeMap
+from ...bhp_base_test.models import TestConsent, TestVisit, TestScheduledModel
+from ...bhp_entry.models import ScheduledEntryBucket
+from ...bhp_entry.tests.factories import EntryFactory
+from ..choices import APPT_STATUS
+from ..models import Appointment
+from .base_appointment_tests import BaseAppointmentTests
+
+
 class AppointmentMethodTests(BaseAppointmentTests):
- 
+
     def test_save(self):
         # create an appointment
         self.setup()

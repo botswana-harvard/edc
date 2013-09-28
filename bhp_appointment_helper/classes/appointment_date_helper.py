@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
-from bhp_visit.classes import WindowPeriod
-from bhp_visit.models import VisitDefinition
+from ...bhp_visit.classes import WindowPeriod
+from ...bhp_visit.models import VisitDefinition
 
 
 class AppointmentDateHelper(object):

@@ -1,11 +1,9 @@
 from datetime import date
 from django import forms
-from django.contrib.admin.widgets import AdminRadioSelect, AdminRadioFieldRenderer
 from django.core.exceptions import ValidationError
-from bhp_entry.models import ScheduledEntryBucket
-from bhp_base_form.forms import BaseModelForm
-from bhp_appointment.models import Appointment
-from bhp_appointment.choices import APPT_TYPE
+from ...bhp_entry.models import ScheduledEntryBucket
+from ...bhp_base_form.forms import BaseModelForm
+from ..models import Appointment
 
 
 class AppointmentForm(BaseModelForm):
@@ -16,13 +14,6 @@ class AppointmentForm(BaseModelForm):
     def clean(self):
 
         cleaned_data = self.cleaned_data
-#        if cleaned_data.get('registered_subject', None):
-#            registered_subject = cleaned_data.get('registered_subject')
-#            dispatched, producer_name = is_dispatched_registered_subject(registered_subject)
-#            if dispatched:
-#                raise forms.ValidationError("Data for {0} is currently dispatched to netbook {1}. "
-#                                 "This form may not be modified.".format(registered_subject.subject_identifier,
-#                                                                          producer_name))
         appt_datetime = cleaned_data.get("appt_datetime")
         if not appt_datetime:
             raise forms.ValidationError('Appointment date and time are required')
@@ -30,8 +21,6 @@ class AppointmentForm(BaseModelForm):
         registered_subject = cleaned_data.get("registered_subject")
         visit_definition = cleaned_data.get("visit_definition")
         visit_instance = cleaned_data.get("visit_instance")
-        #default_entry_status = cleaned_data.get('default_entry_status')
-
         self._meta.model().validate_visit_instance(exception_cls=forms.ValidationError)
 
         # do not create an appointment unless visit_code+visit_instance=0 already exists

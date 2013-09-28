@@ -1,8 +1,8 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_base_admin.admin import BaseTabularInline
-from bhp_appointment.forms import PreAppointmentContactForm
-from bhp_appointment.models import PreAppointmentContact
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ...bhp_base_admin.admin import BaseTabularInline
+from ..forms import PreAppointmentContactForm
+from ..models import PreAppointmentContact
 
 
 class PreAppointmentContactInlineAdmin(BaseTabularInline):

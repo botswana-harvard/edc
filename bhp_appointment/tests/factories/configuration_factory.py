@@ -1,6 +1,5 @@
-import factory
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_appointment.models import Configuration
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...models import Configuration
 
 
 class ConfigurationFactory(BaseUuidModelFactory):

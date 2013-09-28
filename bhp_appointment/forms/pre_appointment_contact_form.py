@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib.admin.widgets import AdminRadioSelect, AdminRadioFieldRenderer
-from bhp_base_form.forms import BaseModelForm
-from bhp_contact.forms import BaseContactLogItemFormCleaner
-from bhp_appointment.models import PreAppointmentContact
-from bhp_appointment.choices import INFO_PROVIDER
+from ...bhp_base_form.forms import BaseModelForm
+from ...bhp_contact.forms import BaseContactLogItemFormCleaner
+from ..models import PreAppointmentContact
+from ..choices import INFO_PROVIDER
 
 
 class PreAppointmentContactForm (BaseModelForm):

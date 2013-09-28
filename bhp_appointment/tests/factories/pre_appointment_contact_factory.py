@@ -1,8 +1,8 @@
 import factory
 from datetime import datetime
-from bhp_appointment.models import PreAppointmentContact
-from appointment_factory import AppointmentFactory
-from bhp_base_model.tests.factories import BaseUuidModelFactory
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...models import PreAppointmentContact
+from .appointment_factory import AppointmentFactory
 
 
 class PreAppointmentContactFactory(BaseUuidModelFactory):

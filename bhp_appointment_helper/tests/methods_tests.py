@@ -1,8 +1,8 @@
 from datetime import timedelta, datetime
 from dateutil.relativedelta import relativedelta
 from django.test import TestCase
-from bhp_appointment.tests.factories import ConfigurationFactory
-from bhp_appointment_helper.classes import AppointmentDateHelper
+from ...bhp_appointment.tests.factories import ConfigurationFactory
+from ..classes import AppointmentDateHelper
 
 
 class MethodsTests(TestCase):
