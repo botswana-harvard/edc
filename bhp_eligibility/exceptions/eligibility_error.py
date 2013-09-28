@@ -1,0 +1,4 @@
+
+
+class EligibilityError(Exception):
+    pass
