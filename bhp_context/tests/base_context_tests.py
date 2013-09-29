@@ -1,6 +1,6 @@
 from copy import deepcopy
 from django.test import TestCase
-from bhp_context.classes import BaseContext
+from edc_core.bhp_context.classes import BaseContext
 
 
 class BaseContextTests(TestCase):

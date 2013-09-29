@@ -15,14 +15,14 @@
 <li><A href="/edc/bhp_variables/studyspecific/">Study Specific Variables</A>
 </ul>
 
-{% if 'bhp_sync' in installed_apps and bhp_dispatch not in installed_apps %}
+{% if 'edc_core.bhp_sync' in installed_apps and edc_core.bhp_dispatch not in installed_apps %}
 <H5>Device Synchronization</H5>
 <ul>
 <li><A href="/bhp_sync/">Synchronize devices with Community Server (Return)</A></li>
 </ul>
 {% endif %}
 
-{%  if 'bhp_sync' in installed_apps and 'bhp_dispatch' in installed_apps %}
+{%  if 'edc_core.bhp_sync' in installed_apps and 'edc_core.bhp_dispatch' in installed_apps %}
 <H5>Device Dispatch and Return</H5>
 <ul>
 <li><A name="dispatch-to-producer" href="/admin/mochudi_household/">Dispatch data to netbook</A>
@@ -33,21 +33,21 @@
 </ul>
 {% endif %}
 
-{% if 'bhp_birt_reports' in installed_apps %}
+{% if 'edc_core.bhp_birt_reports' in installed_apps %}
 <H5>Reports</H5>
 <ul>
 <li><A href="/admin/bhp_birt_reports/basereport/">Generate a Report</A></li>
 </ul>
 {% endif %}
 
-{% if 'bhp_inspector' in installed_apps %}
+{% if 'edc_core.bhp_inspector' in installed_apps %}
 <H5>Node Inspection Of Synced Trasanctions</H5>
 <ul>
 <li><A href="/admin/{{app_name}}_inspector/">Inspect Models</A></li>
 </ul>
 {% endif %}
 
-{% if 'lab_clinic_api' in installed_apps %}
+{% if 'edc_core.lab_clinic_api' in installed_apps %}
 <H5>Lab</H5>
 <ul>
 <li><A href="/admin/{{app_name}}_lab/">Requisitions and Packing Lists</A></li>
@@ -55,7 +55,7 @@
 </ul>
 {% endif %}
 
-{% if 'ph_dispenser' in installed_apps %}
+{% if 'edc_core.ph_dispenser' in installed_apps %}
 <h5>Pharmacy</h5>
 <ul>
 <li><A href="/admin/ph_dispenser/">Dispensings</A>

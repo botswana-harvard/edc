@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.template.loader import render_to_string
 from django.utils import translation
-from edc_lab.lab_clinic_api.classes import EdcLab
+from edc_lab.lab_clinic_api.classes import EdcLabResults
 from edc_lab.lab_requisition.models import BaseBaseRequisition
 from edc_lab.lab_packing.models import BasePackingList
 from edc_core.bhp_common.utils import convert_from_camel
@@ -26,6 +26,8 @@ from edc_core.bhp_data_manager.models import ActionItem
 from edc_core.bhp_subject_config.models import SubjectConfiguration
 from edc_core.bhp_consent.models import BaseConsent
 from edc_core.bhp_dashboard.classes import Dashboard
+from edc_core.bhp_lab_tracker.classes import site_lab_tracker
+from edc_core.bhp_crypto.fields import EncryptedTextField
 from .scheduled_entry_context import ScheduledEntryContext
 
 
@@ -253,7 +255,6 @@ class RegisteredSubjectDashboard(Dashboard):
         """Sets to the site_lab_tracker.
 
         (Direct import at the top of the module causes a circular import for sphinx.)"""
-        from bhp_lab_tracker.classes import site_lab_tracker
         self._site_lab_tracker = site_lab_tracker
 
     def get_site_lab_tracker(self):
@@ -814,10 +815,10 @@ class RegisteredSubjectDashboard(Dashboard):
     def render_labs(self):
         """Renders labs for the template side bar if the requisition model is set, by default will not update.
 
-        .. seealso:: :class:`lab_clinic_api.classes.EdcLab`"""
+        .. seealso:: :class:`lab_clinic_api.classes.EdcLabResults`"""
 
         if self._get_requisition_model():
-            edc_lab = EdcLab()
+            edc_lab = EdcLabResults()
             return edc_lab.render(self.get_subject_identifier(), False)
         return ''
 
@@ -945,7 +946,7 @@ class RegisteredSubjectDashboard(Dashboard):
 
     def render_action_item(self, action_item_cls=None, template=None, **kwargs):
         """Renders to string the action_items for the current registered subject."""
-        from bhp_crypto.fields import EncryptedTextField
+        
         source_registered_subject = kwargs.get('registered_subject', self.get_registered_subject())
         action_item_cls = action_item_cls or ActionItem
         if isinstance(action_item_cls, models.Model):

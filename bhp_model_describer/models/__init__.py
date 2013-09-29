@@ -1,2 +1,2 @@
-from related import Related
-from grouping_hint import GroupingHint
+from .related import Related
+from .grouping_hint import GroupingHint

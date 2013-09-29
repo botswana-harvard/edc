@@ -1,5 +1,5 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin, BaseStackedInline
+from edc_core.bhp_base_admin.admin import BaseModelAdmin, BaseStackedInline
 from ..models import DispatchContainerRegister, DispatchItemRegister
 
 

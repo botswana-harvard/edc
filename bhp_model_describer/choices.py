@@ -1,4 +1,4 @@
 AGGREGATE = (
     #('week', 'Week'),
-    ('month', 'Month'),    
+    ('month', 'Month'),
 )

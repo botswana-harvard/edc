@@ -1,6 +1,6 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_model_describer.models import Related, GroupingHint
+from edc_core.bhp_base_admin.admin import BaseModelAdmin
+from .models import Related, GroupingHint
 
 
 class RelatedAdmin(BaseModelAdmin):

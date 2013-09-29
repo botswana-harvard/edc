@@ -1,8 +1,8 @@
 from django.db import models
 from django.db.models import DateTimeField, DateField, IntegerField, DecimalField, CharField
 from django.db.models import Count, Sum, Avg, Max, Min, StdDev, Variance
-from bhp_model_selector.classes import ModelSelector
-from bhp_model_describer.models import Related, GroupingHint
+from edc_core.bhp_model_selector.classes import ModelSelector
+from ..models import Related, GroupingHint
 
 """
 from bhp_describer.classes import DataDescriber

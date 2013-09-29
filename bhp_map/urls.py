@@ -3,7 +3,7 @@ from .classes import site_mappers
 
 site_mappers.autodiscover()
 
-urlpatterns = patterns('bhp_map.views',
+urlpatterns = patterns('',
     # item_map_url
     url(r'^item_map/(?P<mapper_name>\w+)/(?P<identifier>[a-zA-Z0-9_-]+)/(?P<lon>[0-9\.\-]+)/(?P<lat>[0-9\.\-]+)/(?P<saved>saved)/',
         'item_map',
@@ -41,6 +41,6 @@ urlpatterns = patterns('bhp_map.views',
 )
 
 for mapper_name in site_mappers.get_registry().iterkeys():
-    urlpatterns += patterns('bhp_map.views', url(r'^(?P<mapper_name>{0})/$'.format(mapper_name), 'map_index', name='selected_map_index_url'))
+    urlpatterns += patterns('', url(r'^(?P<mapper_name>{0})/$'.format(mapper_name), 'map_index', name='selected_map_index_url'))
 
-urlpatterns += patterns('bhp_map.views', url(r'^', 'map_index', name='map_index_url'))
+urlpatterns += patterns('', url(r'^', 'map_index', name='map_index_url'))

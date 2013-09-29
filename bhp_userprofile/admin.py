@@ -1,6 +1,6 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_userprofile.models import UserProfile
+from edc_core.bhp_base_admin.admin import BaseModelAdmin
+from .models import UserProfile
 
 
 class UserProfileAdmin(BaseModelAdmin):

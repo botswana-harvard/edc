@@ -1,7 +1,7 @@
 import csv
 import datetime
 from django.http import HttpResponse
-from django.db.models.sql.constants import LOOKUP_SEP
+from django.db.models.constants import LOOKUP_SEP
 
 
 def export_as_csv_action(description="Export selected objects as CSV file",
@@ -10,28 +10,28 @@ def export_as_csv_action(description="Export selected objects as CSV file",
     Return an export csv action
     'fields' and 'exclude' work like in django ModelForm
     'header' is whether or not to output the column names as the first row
-    
+
     ...in my_app/admin.py add this import:
     from bhp_common.actions import export_as_csv_action
-    
-    ...and this to your modeladmin class:        
-    actions = [export_as_csv_action("CSV Export", 
-        fields=[], 
+
+    ...and this to your modeladmin class:
+    actions = [export_as_csv_action("CSV Export",
+        fields=[],
         exclude=[],
         extra_fields=[],
         )]
-    
-    use extra_fields to access field attributes from related models. Pass a 
+
+    use extra_fields to access field attributes from related models. Pass a
     list of dictionaries [{'label': 'query_string'}, {}, ...]
-    
+
     """
     def my_getattr(obj, query_list):
 
         """ Recurse on result of getattr() with a given query string as a list.
 
-                The query_list is based on a django-style query string 
+                The query_list is based on a django-style query string
                 split on '__' into a list.
-                For example 'field_attr__model_name__field_attr' split to 
+                For example 'field_attr__model_name__field_attr' split to
                 ['field_attr', 'model_name', 'field_attr']
         """
 
