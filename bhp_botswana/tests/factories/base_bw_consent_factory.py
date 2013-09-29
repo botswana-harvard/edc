@@ -1,5 +1,5 @@
 import factory
-from ....bhp_consent.tests.factories import BaseConsentFactory
+from edc_core.bhp_consent.tests.factories import BaseConsentFactory
 
 
 class BaseBwConsentFactory(BaseConsentFactory):

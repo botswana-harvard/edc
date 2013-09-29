@@ -1,5 +1,5 @@
 from django.core.exceptions import FieldError
-from ...bhp_registration.models import BaseRegisteredSubjectModel
+from edc_core.bhp_registration.models import BaseRegisteredSubjectModel
 from .base_entry import BaseEntry
 
 

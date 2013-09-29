@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ...bhp_base_admin.admin import BaseModelAdmin
+from edc_core.bhp_base_admin.admin import BaseModelAdmin
 from ..models import Netbook, NetbookUser
 from ..actions import netbook_uphosts
 

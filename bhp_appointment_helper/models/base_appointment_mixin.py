@@ -1,5 +1,5 @@
 from django.db.models.signals import Signal, post_save
-from ...bhp_registration.models import RegisteredSubject
+from edc_core.bhp_registration.models import RegisteredSubject
 
 
 class BaseAppointmentMixin(object):

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ...bhp_crypto.admin import BaseCryptorModelAdmin
+from edc_core.bhp_crypto.admin import BaseCryptorModelAdmin
 from ..models import RegisteredSubject
 from ..forms import RegisteredSubjectForm
 

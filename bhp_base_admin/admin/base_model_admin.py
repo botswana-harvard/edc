@@ -7,11 +7,11 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.core.urlresolvers import NoReverseMatch
 from django.http import HttpResponseRedirect
-from ...bhp_entry_rules.classes import rule_groups
-from ...bhp_supplemental_fields.models import Excluded
-from ...bhp_data_manager.models import ModelHelpText
-from ...bhp_entry.classes import ScheduledEntry
-from ...bhp_base_admin.exceptions import NextUrlError
+from edc_core.bhp_entry_rules.classes import rule_groups
+from edc_core.bhp_supplemental_fields.models import Excluded
+from edc_core.bhp_data_manager.models import ModelHelpText
+from edc_core.bhp_entry.classes import ScheduledEntry
+from edc_core.bhp_base_admin.exceptions import NextUrlError
 
 logger = logging.getLogger(__name__)
 

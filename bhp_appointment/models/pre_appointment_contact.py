@@ -1,6 +1,6 @@
 from django.db import models
-from ...audit_trail.audit import AuditTrail
-from ...bhp_contact.models import BaseContactLogItem
+from edc_core.audit_trail.audit import AuditTrail
+from edc_core.bhp_contact.models import BaseContactLogItem
 from ..models import Appointment
 
 

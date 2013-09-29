@@ -1,5 +1,5 @@
 import factory
-from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from edc_core.bhp_base_model.tests.factories import BaseUuidModelFactory
 from ...models import TestModel
 from .test_foreign_key_factory import TestForeignKeyFactory
 

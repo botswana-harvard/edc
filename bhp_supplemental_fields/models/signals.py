@@ -1,6 +1,6 @@
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-from ...bhp_base_model.models import BaseModel
+from edc_core.bhp_base_model.models import BaseModel
 from .excluded import Excluded
 
 

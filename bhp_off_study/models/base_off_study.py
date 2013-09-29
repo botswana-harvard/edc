@@ -2,11 +2,11 @@ from datetime import datetime, date
 from django.db import models
 from django.db.models import Max, get_app, get_models
 from django.core.exceptions import ImproperlyConfigured
-from ...bhp_base_model.fields import OtherCharField
-from ...bhp_registration.models import BaseRegisteredSubjectModel
-from ...bhp_crypto.utils import mask_encrypted
-from ...bhp_visit_tracking.models import BaseVisitTracking
-from ...bhp_common.choices import YES_NO
+from edc_core.bhp_base_model.fields import OtherCharField
+from edc_core.bhp_registration.models import BaseRegisteredSubjectModel
+from edc_core.bhp_crypto.utils import mask_encrypted
+from edc_core.bhp_visit_tracking.models import BaseVisitTracking
+from edc_core.bhp_common.choices import YES_NO
 from ..managers import OffStudyManager
 from ..exceptions import SubjectOffStudyDateError
 

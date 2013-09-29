@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 
-from ...bhp_section.classes.base_section_index_view import BaseSectionIndexView
-from ...bhp_section.classes import site_sections, BaseSectionView
+from edc_core.bhp_section.classes.base_section_index_view import BaseSectionIndexView
+from edc_core.bhp_section.classes import site_sections, BaseSectionView
 
 
 class SectionOneView(BaseSectionView):

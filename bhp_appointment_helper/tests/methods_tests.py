@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime
 from dateutil.relativedelta import relativedelta
 from django.test import TestCase
-from ...bhp_appointment.tests.factories import ConfigurationFactory
+from edc_core.bhp_appointment.tests.factories import ConfigurationFactory
 from ..classes import AppointmentDateHelper
 
 

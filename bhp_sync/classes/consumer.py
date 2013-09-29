@@ -17,7 +17,7 @@ nullhandler = logger.addHandler(NullHandler())
 class Consumer(object):
 
     def __init__(self):
-        from ...bhp_dispatch.classes import SignalManager
+        from edc_core.bhp_dispatch.classes import SignalManager
         self.signal_manager = SignalManager()
 
     def consume(self, using=None, lock_name=None, **kwargs):

@@ -1,4 +1,4 @@
-from ...bhp_base_form.forms import BaseModelForm
+from edc_core.bhp_base_form.forms import BaseModelForm
 from ..models import RegisteredSubject
 
 

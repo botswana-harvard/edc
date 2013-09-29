@@ -1,9 +1,9 @@
 import factory
 from datetime import datetime
-from ....bhp_registration.tests.factories import RegisteredSubjectFactory
-from ....bhp_visit.tests.factories import VisitDefinitionFactory
-from ....bhp_variables.tests.factories import StudySiteFactory
-from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from edc_core.bhp_registration.tests.factories import RegisteredSubjectFactory
+from edc_core.bhp_visit.tests.factories import VisitDefinitionFactory
+from edc_core.bhp_variables.tests.factories import StudySiteFactory
+from edc_core.bhp_base_model.tests.factories import BaseUuidModelFactory
 from ...models import Appointment
 
 

@@ -1,5 +1,5 @@
 from django import forms
-from bhp_lab_entry.models import ScheduledLabEntryBucket
+from .models import ScheduledLabEntryBucket
 
 
 class ScheduledLabEntryBucketForm (forms.ModelForm):

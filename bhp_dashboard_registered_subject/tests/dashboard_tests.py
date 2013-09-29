@@ -1,17 +1,17 @@
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.contenttypes.models import ContentType
-from ...bhp_registration.tests.factories import RegisteredSubjectFactory
-from ...bhp_content_type_map.models import ContentTypeMap
-from ...bhp_visit.tests.factories import VisitDefinitionFactory, ScheduleGroupFactory, MembershipFormFactory
-from ...bhp_dashboard_registered_subject.classes import RegisteredSubjectDashboard
-from ...bhp_lab_tracker.classes import LabTracker, site_lab_tracker
-from ...bhp_content_type_map.classes import ContentTypeMapHelper
-from ...bhp_base_test.models import TestVisit, TestConsentWithMixin, TestRequisition, TestSubjectLocator
-from ...bhp_base_test.tests.factories import TestConsentWithMixinFactory
-from ...bhp_dashboard.exceptions import DashboardModelError
-from ...bhp_lab_tracker.models import TestResultModel
-from ...bhp_appointment.models import Configuration
+from edc_core.bhp_registration.tests.factories import RegisteredSubjectFactory
+from edc_core.bhp_content_type_map.models import ContentTypeMap
+from edc_core.bhp_visit.tests.factories import VisitDefinitionFactory, ScheduleGroupFactory, MembershipFormFactory
+from edc_core.bhp_dashboard_registered_subject.classes import RegisteredSubjectDashboard
+from edc_core.bhp_lab_tracker.classes import LabTracker, site_lab_tracker
+from edc_core.bhp_content_type_map.classes import ContentTypeMapHelper
+from edc_core.bhp_base_test.models import TestVisit, TestConsentWithMixin, TestRequisition, TestSubjectLocator
+from edc_core.bhp_base_test.tests.factories import TestConsentWithMixinFactory
+from edc_core.bhp_dashboard.exceptions import DashboardModelError
+from edc_core.bhp_lab_tracker.models import TestResultModel
+from edc_core.bhp_appointment.models import Configuration
 
 
 class DashboardTests(TestCase):

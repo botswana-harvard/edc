@@ -1,8 +1,8 @@
 from datetime import datetime
-from ...bhp_content_type_map.classes import ContentTypeMapHelper
-from ...bhp_content_type_map.models import ContentTypeMap
-from ...bhp_base_test.models import TestConsent
-from ...bhp_variables.tests.factories import StudySiteFactory, StudySpecificFactory
+from edc_core.bhp_content_type_map.classes import ContentTypeMapHelper
+from edc_core.bhp_content_type_map.models import ContentTypeMap
+from edc_core.bhp_base_test.models import TestConsent
+from edc_core.bhp_variables.tests.factories import StudySiteFactory, StudySpecificFactory
 from .factories import ConsentCatalogueFactory
 
 

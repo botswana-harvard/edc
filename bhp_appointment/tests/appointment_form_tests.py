@@ -1,5 +1,5 @@
-from ...bhp_visit.tests.factories import VisitDefinitionFactory
-from ...bhp_content_type_map.models import ContentTypeMap
+from edc_core.bhp_visit.tests.factories import VisitDefinitionFactory
+from edc_core.bhp_content_type_map.models import ContentTypeMap
 from ..forms import AppointmentForm
 from .base_appointment_tests import BaseAppointmentTests
 

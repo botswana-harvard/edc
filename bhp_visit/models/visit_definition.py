@@ -2,7 +2,7 @@ from datetime import timedelta
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.core.validators import MaxLengthValidator
-from ...bhp_content_type_map.models import ContentTypeMap
+from edc_core.bhp_content_type_map.models import ContentTypeMap
 from ..utils import get_lower_window_days, get_upper_window_days
 from ..models import ScheduleGroup
 from ..models import BaseWindowPeriodItem

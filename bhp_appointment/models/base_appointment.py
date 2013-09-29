@@ -1,8 +1,8 @@
 from django.db import models
 try:
-    from ...bhp_dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
+    from edc_core.bhp_dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
 except ImportError:
-    from ...bhp_sync.models import BaseSyncUuidModel
+    from edc_core.bhp_sync.models import BaseSyncUuidModel
 from ..choices import APPT_STATUS
 
 

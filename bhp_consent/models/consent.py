@@ -1,5 +1,5 @@
-from ...bhp_base_model.fields import IdentityTypeField
-from ...bhp_crypto.fields import EncryptedIdentityField
+from edc_core.bhp_base_model.fields import IdentityTypeField
+from edc_core.bhp_crypto.fields import EncryptedIdentityField
 from ..models import BaseConsent
 
 

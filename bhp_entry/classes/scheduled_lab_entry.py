@@ -1,4 +1,4 @@
-from ...bhp_lab_entry.models import ScheduledLabEntryBucket
+from edc_core.bhp_lab_entry.models import ScheduledLabEntryBucket
 from .base_scheduled_entry import BaseScheduledEntry
 
 

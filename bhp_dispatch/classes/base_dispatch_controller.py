@@ -2,8 +2,8 @@ import logging
 from django.db.models.query import QuerySet
 from django.db.models import get_models, get_app, get_model
 from edc_lab.lab_requisition.models import BaseRequisition
-from ...bhp_sync.models import BaseSyncUuidModel
-from ...bhp_consent.models import BaseConsent
+from edc_core.bhp_sync.models import BaseSyncUuidModel
+from edc_core.bhp_consent.models import BaseConsent
 from ..exceptions import (AlreadyDispatchedItem, AlreadyReturnedController, DispatchError,
                           DispatchContainerError, AlreadyDispatchedContainer, DispatchControllerNotReady, DispatchItemError)
 from ..models import DispatchContainerRegister

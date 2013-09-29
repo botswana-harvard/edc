@@ -1,8 +1,8 @@
 #from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from ...bhp_base_model.fields import IdentityTypeField
-from ...bhp_botswana.fields import EncryptedOmangField
-from ...bhp_consent.models import BaseConsent
+from edc_core.bhp_base_model.fields import IdentityTypeField
+from edc_core.bhp_botswana.fields import EncryptedOmangField
+from edc_core.bhp_consent.models import BaseConsent
 
 
 class BaseBwConsent(BaseConsent):

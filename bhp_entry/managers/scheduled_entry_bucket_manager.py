@@ -1,7 +1,7 @@
 from django.db.models import get_model
-from ...bhp_content_type_map.models import ContentTypeMap
-from ...bhp_registration.models import RegisteredSubject
-from ...bhp_visit.models import VisitDefinition
+from edc_core.bhp_content_type_map.models import ContentTypeMap
+from edc_core.bhp_registration.models import RegisteredSubject
+from edc_core.bhp_visit.models import VisitDefinition
 from ..managers import BaseEntryBucketManager
 
 

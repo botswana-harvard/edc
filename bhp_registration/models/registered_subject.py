@@ -3,13 +3,13 @@ from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import ugettext as _
-from ...audit_trail.audit import AuditTrail
-from ...bhp_common.choices import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
-from ...bhp_base_model.fields import IdentityTypeField
-from ...bhp_variables.models import StudySite
-from ...bhp_subject.models import BaseSubject
-from ...bhp_crypto.fields import EncryptedIdentityField, SaltField
-from ...bhp_crypto.utils import mask_encrypted
+from edc_core.audit_trail.audit import AuditTrail
+from edc_core.bhp_common.choices import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
+from edc_core.bhp_base_model.fields import IdentityTypeField
+from edc_core.bhp_variables.models import StudySite
+from edc_core.bhp_subject.models import BaseSubject
+from edc_core.bhp_crypto.fields import EncryptedIdentityField, SaltField
+from edc_core.bhp_crypto.utils import mask_encrypted
 from ..managers import RegisteredSubjectManager
 
 

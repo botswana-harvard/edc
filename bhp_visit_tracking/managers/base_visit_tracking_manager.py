@@ -1,7 +1,7 @@
 import dateutil.parser
 from datetime import timedelta
 from django.db import models
-from ...bhp_appointment.models import Appointment
+from edc_core.bhp_appointment.models import Appointment
 
 
 class BaseVisitTrackingManager(models.Manager):

@@ -1,4 +1,4 @@
-from ...bhp_lock.models import BaseLockModel
+from edc_core.bhp_lock.models import BaseLockModel
 
 
 class SyncLockModel(BaseLockModel):

@@ -1,11 +1,11 @@
 from datetime import datetime
 from django.test import TestCase
-from ...bhp_visit.tests.factories import VisitDefinitionFactory
-from ...bhp_registration.tests.factories import RegisteredSubjectFactory
-from ...bhp_content_type_map.models import ContentTypeMap
-from ...bhp_content_type_map.classes import ContentTypeMapHelper
-from ...bhp_lab_tracker.classes import site_lab_tracker
-from ...bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from edc_core.bhp_visit.tests.factories import VisitDefinitionFactory
+from edc_core.bhp_registration.tests.factories import RegisteredSubjectFactory
+from edc_core.bhp_content_type_map.models import ContentTypeMap
+from edc_core.bhp_content_type_map.classes import ContentTypeMapHelper
+from edc_core.bhp_lab_tracker.classes import site_lab_tracker
+from edc_core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 from ..models import Appointment, PreAppointmentContact
 from factories import ConfigurationFactory
 

@@ -1,5 +1,5 @@
 from django.db import models
-from ...bhp_base_model.models import BaseUuidModel
+from edc_core.bhp_base_model.models import BaseUuidModel
 from ..choices import VISIT_INTERVAL_UNITS
 from ..classes import WindowPeriod
 

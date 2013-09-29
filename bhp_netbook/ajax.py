@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
 from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
-from ..bhp_nmap.utils import all_uphosts
+from edc_core.bhp_nmap.utils import all_uphosts
 
 
 @dajaxice_register

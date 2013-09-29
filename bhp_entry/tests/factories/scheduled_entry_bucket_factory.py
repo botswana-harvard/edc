@@ -1,5 +1,5 @@
 import factory
-from ....bhp_appointment.tests.factories import AppointmentFactory
+from edc_core.bhp_appointment.tests.factories import AppointmentFactory
 from ...models import ScheduledEntryBucket
 from .base_entry_bucket_factory import BaseEntryBucketFactory
 from .entry_factory import EntryFactory

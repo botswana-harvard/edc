@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import get_app, get_models
-from ...bhp_appointment_helper.models import BaseAppointmentHelperModel
+from edc_core.bhp_appointment_helper.models import BaseAppointmentHelperModel
 from ..managers import RegisteredSubjectManager
 from .registered_subject import RegisteredSubject
 
@@ -40,7 +40,7 @@ class BaseRegisteredSubjectModel (BaseAppointmentHelperModel):
 
     def get_visit_model_cls(self, instance=None):
         """Returns the visit model which is a subclass of :class:`BaseVisitTracking`."""
-        from ...bhp_visit_tracking.models.base_visit_tracking import BaseVisitTracking
+        from edc_core.bhp_visit_tracking.models.base_visit_tracking import BaseVisitTracking
         if not instance:
             instance = self
         if instance.get_visit_model_app():
@@ -55,7 +55,7 @@ class BaseRegisteredSubjectModel (BaseAppointmentHelperModel):
 
     def get_visit_model(self, instance):
         """Returns the visit model which is a subclass of :class:`BaseVisitTracking`."""
-        from ...bhp_visit_tracking.models.base_visit_tracking import BaseVisitTracking
+        from edc_core.bhp_visit_tracking.models.base_visit_tracking import BaseVisitTracking
         for model in get_models(get_app(instance._meta.app_label)):
             if isinstance(model(), BaseVisitTracking):
                 return model

@@ -1,12 +1,12 @@
 from django.db.models import signals
-from ...bhp_base_model.models import BaseModel
-from ...bhp_sync.models.signals import serialize_on_save, serialize_m2m_on_save
-from ...bhp_visit_tracking.models.signals import base_visit_tracking_add_or_update_entry_buckets_on_post_save
-from ...bhp_lab_tracker.models.signals import tracker_on_post_save, tracker_on_post_delete
-from ...bhp_consent.models.signals import is_consented_instance_on_pre_save
-from ...bhp_subject.models.signals import base_subject_get_or_create_registered_subject_on_post_save
-from ...bhp_appointment.models import pre_appointment_contact_on_post_save, pre_appointment_contact_on_post_delete
-from ...bhp_appointment_helper.models import prepare_appointments_on_post_save
+from edc_core.bhp_base_model.models import BaseModel
+from edc_core.bhp_sync.models.signals import serialize_on_save, serialize_m2m_on_save
+from edc_core.bhp_visit_tracking.models.signals import base_visit_tracking_add_or_update_entry_buckets_on_post_save
+from edc_core.bhp_lab_tracker.models.signals import tracker_on_post_save, tracker_on_post_delete
+from edc_core.bhp_consent.models.signals import is_consented_instance_on_pre_save
+from edc_core.bhp_subject.models.signals import base_subject_get_or_create_registered_subject_on_post_save
+from edc_core.bhp_appointment.models import pre_appointment_contact_on_post_save, pre_appointment_contact_on_post_delete
+from edc_core.bhp_appointment_helper.models import prepare_appointments_on_post_save
 
 
 class SignalManager(object):

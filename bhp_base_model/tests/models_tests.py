@@ -1,5 +1,5 @@
 from django.test import TestCase
-from ...bhp_base_test.models import TestModel, TestManyToMany, TestForeignKey
+from edc_core.bhp_base_test.models import TestModel, TestManyToMany, TestForeignKey
 
 
 class ModelsTests(TestCase):

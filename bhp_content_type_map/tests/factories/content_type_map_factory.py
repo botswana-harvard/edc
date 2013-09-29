@@ -1,5 +1,5 @@
 import factory
-from ....bhp_base_model.tests.factories import BaseModelFactory
+from edc_core.bhp_base_model.tests.factories import BaseModelFactory
 from ...models import ContentTypeMap
 from .content_type_factory import ContentTypeFactory
 

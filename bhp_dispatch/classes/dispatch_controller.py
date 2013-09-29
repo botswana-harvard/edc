@@ -3,9 +3,9 @@ from django.db.models import get_model
 from django.core.exceptions import FieldError
 from django.db.models import get_models, get_app
 from edc_lab.lab_base_model.models import BaseLabListModel, BaseLabListUuidModel
-from ...bhp_visit_tracking.classes import VisitModelHelper
-from ...bhp_lab_tracker.models import HistoryModel
-from ...bhp_base_model.models import BaseListModel
+from edc_core.bhp_visit_tracking.classes import VisitModelHelper
+from edc_core.bhp_lab_tracker.models import HistoryModel
+from edc_core.bhp_base_model.models import BaseListModel
 from ..classes import BaseDispatchController
 from ..exceptions import DispatchModelError, DispatchError, AlreadyDispatchedContainer
 from .controller_register import registered_controllers

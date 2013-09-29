@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from ...bhp_sync.models import BaseSyncUuidModel
+from edc_core.bhp_sync.models import BaseSyncUuidModel
 from ..managers import ConfigurationManager
 
 

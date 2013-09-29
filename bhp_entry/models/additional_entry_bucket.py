@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from ...bhp_content_type_map.models import ContentTypeMap
+from edc_core.bhp_content_type_map.models import ContentTypeMap
 from ..managers import AdditionalEntryBucketManager
 from .base_entry_bucket import BaseEntryBucket
 

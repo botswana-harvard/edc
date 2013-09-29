@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext as _
-from ...bhp_base_model.models import BaseUuidModel
-from ...bhp_base_model.fields import NameField, InitialsField
+from edc_core.bhp_base_model.models import BaseUuidModel
+from edc_core.bhp_base_model.fields import NameField, InitialsField
 
 
 class PrincipalInvestigator (BaseUuidModel):

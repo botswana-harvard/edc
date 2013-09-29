@@ -5,11 +5,11 @@ from django.core.urlresolvers import reverse
 from django.conf.urls.defaults import patterns, url
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from ...bhp_common.utils import convert_from_camel
-from ...bhp_section.classes import site_sections
-from ...bhp_context.classes import BaseContext
-from ...bhp_base_model.models import BaseModel
-from ...bhp_registration.models import RegisteredSubject
+from edc_core.bhp_common.utils import convert_from_camel
+from edc_core.bhp_section.classes import site_sections
+from edc_core.bhp_context.classes import BaseContext
+from edc_core.bhp_base_model.models import BaseModel
+from edc_core.bhp_registration.models import RegisteredSubject
 from ..exceptions import DashboardModelError
 
 

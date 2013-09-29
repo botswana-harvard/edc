@@ -1,7 +1,7 @@
 from django.db.models import get_model
-from ...bhp_sync.exceptions import ProducerError
-from ...bhp_sync.models import OutgoingTransaction
-from ...bhp_sync.classes import Consumer
+from edc_core.bhp_sync.exceptions import ProducerError
+from edc_core.bhp_sync.models import OutgoingTransaction
+from edc_core.bhp_sync.classes import Consumer
 from ..exceptions import (AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError,
                           DispatchModelError, DispatchControllerNotReady, DispatchItemError)
 from ..models import TestItem, DispatchItemRegister, DispatchContainerRegister, TestContainer

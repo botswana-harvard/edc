@@ -11,3 +11,4 @@ from .test_consent_history_factory import TestConsentHistoryFactory
 from .test_many_to_many_factory import TestManyToManyFactory
 from .test_foreign_key_factory import TestForeignKeyFactory
 from .test_model_factory import TestModelFactory
+from .test_dispatch_factory import *

@@ -10,22 +10,22 @@ from django.utils import translation
 from edc_lab.lab_clinic_api.classes import EdcLab
 from edc_lab.lab_requisition.models import BaseBaseRequisition
 from edc_lab.lab_packing.models import BasePackingList
-from ...bhp_common.utils import convert_from_camel
-from ...bhp_entry_rules.classes import rule_groups
-from ...bhp_visit.classes import MembershipFormHelper
-from ...bhp_entry.classes import ScheduledEntry, AdditionalEntry
-from ...bhp_visit.exceptions import MembershipFormError
-from ...bhp_appointment.models import Appointment
-from ...bhp_visit.models import MembershipForm
-from ...bhp_lab_entry.models import ScheduledLabEntryBucket, AdditionalLabEntryBucket
-from ...bhp_visit_tracking.models import BaseVisitTracking
-from ...bhp_registration.models import RegisteredSubject
-from ...bhp_subject_summary.models import Link
-from ...bhp_locator.models import BaseLocator
-from ...bhp_data_manager.models import ActionItem
-from ...bhp_subject_config.models import SubjectConfiguration
-from ...bhp_consent.models import BaseConsent
-from ...bhp_dashboard.classes import Dashboard
+from edc_core.bhp_common.utils import convert_from_camel
+from edc_core.bhp_entry_rules.classes import rule_groups
+from edc_core.bhp_visit.classes import MembershipFormHelper
+from edc_core.bhp_entry.classes import ScheduledEntry, AdditionalEntry
+from edc_core.bhp_visit.exceptions import MembershipFormError
+from edc_core.bhp_appointment.models import Appointment
+from edc_core.bhp_visit.models import MembershipForm
+from edc_core.bhp_lab_entry.models import ScheduledLabEntryBucket, AdditionalLabEntryBucket
+from edc_core.bhp_visit_tracking.models import BaseVisitTracking
+from edc_core.bhp_registration.models import RegisteredSubject
+from edc_core.bhp_subject_summary.models import Link
+from edc_core.bhp_locator.models import BaseLocator
+from edc_core.bhp_data_manager.models import ActionItem
+from edc_core.bhp_subject_config.models import SubjectConfiguration
+from edc_core.bhp_consent.models import BaseConsent
+from edc_core.bhp_dashboard.classes import Dashboard
 from .scheduled_entry_context import ScheduledEntryContext
 
 

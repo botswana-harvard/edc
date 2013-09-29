@@ -1,9 +1,9 @@
 from django.db import models
 try:
-    from ...bhp_sync.classes import BaseSyncModel as BaseUuidModel
+    from edc_core.bhp_sync.classes import BaseSyncModel as BaseUuidModel
 except ImportError:
-    from ...bhp_base_model.models import BaseUuidModel
-from ...audit_trail.audit import AuditTrail
+    from edc_core.bhp_base_model.models import BaseUuidModel
+from edc_core.audit_trail.audit import AuditTrail
 
 
 class Criteria(BaseUuidModel):

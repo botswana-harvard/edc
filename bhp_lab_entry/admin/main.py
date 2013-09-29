@@ -1,9 +1,9 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin, BaseTabularInline
-from bhp_registration.models import RegisteredSubject
-from bhp_appointment.models import Appointment
-from bhp_lab_entry.forms import ScheduledLabEntryBucketForm
-from bhp_lab_entry.models import LabEntry, LabEntryUnscheduled, ScheduledLabEntryBucket, AdditionalLabEntryBucket
+from edc_core.bhp_base_admin.admin import BaseModelAdmin, BaseTabularInline
+from edc_core.bhp_registration.models import RegisteredSubject
+from edc_core.bhp_appointment.models import Appointment
+from ..forms import ScheduledLabEntryBucketForm
+from ..models import LabEntry, LabEntryUnscheduled, ScheduledLabEntryBucket, AdditionalLabEntryBucket
 
 
 class LabEntryAdmin(BaseModelAdmin):

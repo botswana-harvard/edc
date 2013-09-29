@@ -1,5 +1,5 @@
 from django.core.exceptions import ImproperlyConfigured
-from ...bhp_base_form.forms import BaseModelForm
+from edc_core.bhp_base_form.forms import BaseModelForm
 
 
 class BaseRegisteredSubjectModelForm(BaseModelForm):

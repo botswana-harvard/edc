@@ -1,4 +1,4 @@
-from ...bhp_subject.managers import BaseSubjectManager
+from edc_core.bhp_subject.managers import BaseSubjectManager
 
 
 class BaseConsentManager(BaseSubjectManager):

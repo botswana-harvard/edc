@@ -4,14 +4,14 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
-from ...bhp_crypto.fields import EncryptedLastnameField, EncryptedTextField
-from ...bhp_crypto.utils import mask_encrypted
-from ...bhp_base_model.validators import datetime_not_future, datetime_not_before_study_start, eligible_if_no
-from ...bhp_common.choices import YES_NO
-from ...bhp_variables.models import StudySite
-from ...bhp_common.utils import formatted_age
-from ...bhp_base_model.validators import eligible_if_yes
-from ...bhp_subject.models import BaseSubject
+from edc_core.bhp_crypto.fields import EncryptedLastnameField, EncryptedTextField
+from edc_core.bhp_crypto.utils import mask_encrypted
+from edc_core.bhp_base_model.validators import datetime_not_future, datetime_not_before_study_start, eligible_if_no
+from edc_core.bhp_common.choices import YES_NO
+from edc_core.bhp_variables.models import StudySite
+from edc_core.bhp_common.utils import formatted_age
+from edc_core.bhp_base_model.validators import eligible_if_yes
+from edc_core.bhp_subject.models import BaseSubject
 from ..exceptions import ConsentError
 from ..classes import ConsentedSubjectIdentifier
 from .base_consent_history import BaseConsentHistory

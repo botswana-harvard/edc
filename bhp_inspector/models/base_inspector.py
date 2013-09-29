@@ -1,4 +1,4 @@
-from ...bhp_base_model.models import BaseUuidModel
+from edc_core.bhp_base_model.models import BaseUuidModel
 from django.db import models
 
 

@@ -10,13 +10,13 @@ from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q, Count, Max
 from edc_lab.lab_base_model.models import BaseLabListModel, BaseLabListUuidModel
-from ...bhp_base_model.models import BaseListModel
-from ...bhp_visit.models import VisitDefinition, ScheduleGroup
-from ...bhp_variables.models import StudySite
-from ...bhp_entry.models import BaseEntryBucket
-from ...bhp_sync.classes import BaseProducer
-from ...bhp_sync.helpers import TransactionHelper
-from ...bhp_sync.exceptions import PendingTransactionError
+from edc_core.bhp_base_model.models import BaseListModel
+from edc_core.bhp_visit.models import VisitDefinition, ScheduleGroup
+from edc_core.bhp_variables.models import StudySite
+from edc_core.bhp_entry.models import BaseEntryBucket
+from edc_core.bhp_sync.classes import BaseProducer
+from edc_core.bhp_sync.helpers import TransactionHelper
+from edc_core.bhp_sync.exceptions import PendingTransactionError
 from ..exceptions import ControllerBaseModelError
 from .controller_register import registered_controllers
 from .signal_manager import SignalManager
@@ -167,7 +167,7 @@ class BaseController(BaseProducer):
 
     def _get_allowed_base_models(self, additional_base_model_class=None):
         """Returns a tuple of base model classes that may be serialized to json."""
-        from ...bhp_lab_tracker.models import BaseHistoryModel
+        from edc_core.bhp_lab_tracker.models import BaseHistoryModel
         base_model_class = self.get_allowed_base_models()
         if not isinstance(base_model_class, list):
             raise TypeError('Expected list of base_model classes.')
@@ -188,7 +188,7 @@ class BaseController(BaseProducer):
 
     def _get_base_models_for_default_serialization(self):
         """Wraps :func:`get_allowed_base_models`."""
-        from ...bhp_lab_tracker.models import BaseHistoryModel
+        from edc_core.bhp_lab_tracker.models import BaseHistoryModel
         base_model_class = self.get_base_models_for_default_serialization()
         if not isinstance(base_model_class, list):
             raise TypeError('Expected base_model classes as a list. Got{0}'.format(base_model_class))

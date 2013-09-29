@@ -1,10 +1,10 @@
 import copy
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from ...bhp_consent.models import BaseConsentedUuidModel
-from ...bhp_base_model.validators import datetime_not_before_study_start, datetime_not_future, datetime_is_after_consent
-from ...bhp_base_model.fields import OtherCharField
-from ...bhp_appointment.models import Appointment
+from edc_core.bhp_consent.models import BaseConsentedUuidModel
+from edc_core.bhp_base_model.validators import datetime_not_before_study_start, datetime_not_future, datetime_is_after_consent
+from edc_core.bhp_base_model.fields import OtherCharField
+from edc_core.bhp_appointment.models import Appointment
 from ..managers import BaseVisitTrackingManager
 from ..choices import VISIT_REASON
 from ..settings import VISIT_REASON_REQUIRED_CHOICES, VISIT_REASON_NO_FOLLOW_UP_CHOICES, VISIT_REASON_FOLLOW_UP_CHOICES

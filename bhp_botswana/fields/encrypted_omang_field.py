@@ -1,6 +1,6 @@
 import re
 from django.forms import ValidationError
-from ...bhp_crypto.fields import EncryptedIdentityField
+from edc_core.bhp_crypto.fields import EncryptedIdentityField
 
 
 class EncryptedOmangField(EncryptedIdentityField):

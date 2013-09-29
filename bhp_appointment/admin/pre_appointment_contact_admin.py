@@ -1,6 +1,6 @@
 from django.contrib import admin
-from ...bhp_base_admin.admin import BaseModelAdmin
-from ...bhp_base_admin.admin import BaseTabularInline
+from edc_core.bhp_base_admin.admin import BaseModelAdmin
+from edc_core.bhp_base_admin.admin import BaseTabularInline
 from ..forms import PreAppointmentContactForm
 from ..models import PreAppointmentContact
 

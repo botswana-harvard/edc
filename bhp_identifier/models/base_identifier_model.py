@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from ...bhp_sync.models import BaseSyncUuidModel
+from edc_core.bhp_sync.models import BaseSyncUuidModel
 from ..managers import IdentifierManager
 from .base_sequence import BaseSequence
 

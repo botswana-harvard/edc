@@ -9,11 +9,11 @@ from django.conf import settings
 from django.db.models import signals
 from edc_lab.lab_base_model.models import BaseLabListModel, BaseLabModel
 from edc_lab.lab_base_model.models import BaseLabUuidModel
-from ...bhp_common.utils import td_to_string
-from ...bhp_base_model.models import BaseModel
-from ...bhp_sync.models import BaseSyncUuidModel
-from ...bhp_base_model.models import BaseUuidModel
-from ...bhp_consent.models.signals import add_models_to_catalogue
+from edc_core.bhp_common.utils import td_to_string
+from edc_core.bhp_base_model.models import BaseModel
+from edc_core.bhp_sync.models import BaseSyncUuidModel
+from edc_core.bhp_base_model.models import BaseUuidModel
+from edc_core.bhp_consent.models.signals import add_models_to_catalogue
 from ..exceptions import BackupError, RestoreError
 from .base_prepare_device import BasePrepareDevice
 

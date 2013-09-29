@@ -1,6 +1,6 @@
 from django.contrib import admin
-from ...bhp_base_admin.admin import BaseModelAdmin
-from ...bhp_supplemental_fields.classes import SupplementalFields, ConditionalFields
+from edc_core.bhp_base_admin.admin import BaseModelAdmin
+from edc_core.bhp_supplemental_fields.classes import SupplementalFields, ConditionalFields
 from ..models import TestModel, TestManyToMany, TestForeignKey
 from ..forms import TestModelForm
 

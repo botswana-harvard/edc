@@ -1,8 +1,8 @@
 import itertools
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from ...bhp_base_model.models import BaseModel
-from ...bhp_appointment_helper.models import BaseAppointmentMixin
+from edc_core.bhp_base_model.models import BaseModel
+from edc_core.bhp_appointment_helper.models import BaseAppointmentMixin
 
 
 class MembershipFormHelper(object):

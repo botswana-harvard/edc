@@ -1,6 +1,6 @@
 from django.db import models
-from ...bhp_base_model.models import BaseUuidModel
-from ...bhp_base_model.fields import MyUUIDField
+from edc_core.bhp_base_model.models import BaseUuidModel
+from edc_core.bhp_base_model.fields import MyUUIDField
 from ..choices import AUDITCODES
 
 

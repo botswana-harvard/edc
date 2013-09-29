@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import datetime
-from ...bhp_registration.models import RegisteredSubject
-from ...bhp_base_test.tests.factories import TestConsentFactory
+from edc_core.bhp_registration.models import RegisteredSubject
+from edc_core.bhp_base_test.tests.factories import TestConsentFactory
 from ..models import BaseConsentHistory
 
 

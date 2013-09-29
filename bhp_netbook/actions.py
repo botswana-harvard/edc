@@ -1,5 +1,5 @@
 from datetime import datetime
-from ..bhp_nmap.utils import all_uphosts
+from edc_core.bhp_nmap.utils import all_uphosts
 from .models import Netbook
 
 

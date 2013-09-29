@@ -1,4 +1,4 @@
-from ..bhp_base_admin.utils import ModelExporter
+from edc_core.bhp_base_admin.utils import ModelExporter
 
 
 def export_as_html(modeladmin, request, queryset, **kwargs):

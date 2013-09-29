@@ -1,8 +1,8 @@
 from django.test import TestCase
-from ...bhp_registration.models import RegisteredSubject
-from ...bhp_base_test.forms import TestSubjectUuidModelForm
-from ...bhp_base_test.tests.factories import TestConsentFactory
-from ...bhp_base_test.tests.factories import TestManyToManyFactory, TestForeignKeyFactory
+from edc_core.bhp_registration.models import RegisteredSubject
+from edc_core.bhp_base_test.forms import TestSubjectUuidModelForm
+from edc_core.bhp_base_test.tests.factories import TestConsentFactory
+from edc_core.bhp_base_test.tests.factories import TestManyToManyFactory, TestForeignKeyFactory
 from .base_methods import BaseMethods
 
 

@@ -1,7 +1,7 @@
 from datetime import datetime, date
 from django.db.models import get_model
-from ...bhp_registration.models import RegisteredSubject
-from ...bhp_visit_tracking.settings import VISIT_REASON_NO_FOLLOW_UP_CHOICES
+from edc_core.bhp_registration.models import RegisteredSubject
+from edc_core.bhp_visit_tracking.settings import VISIT_REASON_NO_FOLLOW_UP_CHOICES
 from ..models import Entry
 from .base_scheduled_entry import BaseScheduledEntry
 

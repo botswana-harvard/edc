@@ -2,7 +2,7 @@ from tastypie.serializers import Serializer
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import DjangoAuthorization
 from tastypie.resources import ModelResource
-from ...bhp_sync.models import OutgoingTransaction, MiddleManTransaction
+from edc_core.bhp_sync.models import OutgoingTransaction, MiddleManTransaction
 
 """
 from django.contrib.auth.models import User

@@ -1,9 +1,9 @@
 from django.db import models
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from ...bhp_appointment_helper.models import BaseAppointmentMixin
-from ...bhp_content_type_map.models import ContentTypeMap
-from ...bhp_base_model.models import BaseUuidModel
+from edc_core.bhp_appointment_helper.models import BaseAppointmentMixin
+from edc_core.bhp_content_type_map.models import ContentTypeMap
+from edc_core.bhp_base_model.models import BaseUuidModel
 from ..managers import MembershipFormManager
 
 

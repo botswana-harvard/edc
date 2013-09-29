@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
-from ...bhp_base_model.models import BaseUuidModel
+from edc_core.bhp_base_model.models import BaseUuidModel
 from ..classes import TransactionProducer
 from ..__init__ import MODULE_APP_LABEL
 

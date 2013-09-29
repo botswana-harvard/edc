@@ -1,8 +1,8 @@
 import logging
-from ...bhp_entry.classes import ScheduledEntry
-from ...bhp_entry.models import ScheduledEntryBucket, Entry
-from ...bhp_registration.models import RegisteredSubject
-from ...bhp_visit_tracking.models import BaseVisitTracking
+from edc_core.bhp_entry.classes import ScheduledEntry
+from edc_core.bhp_entry.models import ScheduledEntryBucket, Entry
+from edc_core.bhp_registration.models import RegisteredSubject
+from edc_core.bhp_visit_tracking.models import BaseVisitTracking
 from .base_rule import BaseRule
 
 logger = logging.getLogger(__name__)

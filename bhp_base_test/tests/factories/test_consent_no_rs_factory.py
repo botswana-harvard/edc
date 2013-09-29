@@ -1,5 +1,5 @@
 import factory
-from ....bhp_common.choices import IDENTITY_TYPE
+from edc_core.bhp_common.choices import IDENTITY_TYPE
 from ...models import TestConsent
 from .test_consent_factory import BaseConsentFactory
 

@@ -1,4 +1,4 @@
-from ...bhp_consent.models import BaseConsentedUuidModel
+from edc_core.bhp_consent.models import BaseConsentedUuidModel
 from .base_appointment_mixin import BaseAppointmentMixin
 
 

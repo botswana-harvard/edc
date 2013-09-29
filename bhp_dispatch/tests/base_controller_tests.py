@@ -1,11 +1,12 @@
 from django.test import TestCase
-from ...bhp_sync.models import Producer, OutgoingTransaction, IncomingTransaction
-from ...bhp_sync.tests.factories import ProducerFactory
-from ...bhp_base_test.tests.factories import TestManyToManyFactory
-from ..models import TestItem, TestContainer, DispatchItemRegister, DispatchContainerRegister, TestItemBypassForEdit
+from edc_core.bhp_sync.models import Producer, OutgoingTransaction, IncomingTransaction
+from edc_core.bhp_sync.tests.factories import ProducerFactory
+from edc_core.bhp_base_test.tests.factories import TestManyToManyFactory
+from edc_core.bhp_base_test.models import TestDispatchItem, TestDispatchContainer, TestDispatchItemBypassForEdit
+from edc_core.bhp_base_test.tests.factories import TestDispatchItemFactory, TestDispatchContainerFactory, TestDispatchItemBypassForEditFactory
+from ..models import DispatchItemRegister, DispatchContainerRegister
 from ..classes import BaseDispatchController, DispatchController, ReturnController
 from ..exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem
-from .factories import TestItemFactory, TestContainerFactory, TestItemBypassForEditFactory
 
 
 class BaseControllerTests(TestCase):
@@ -44,10 +45,10 @@ class BaseControllerTests(TestCase):
         l7 = TestManyToManyFactory()
         l8 = TestManyToManyFactory()
         l9 = TestManyToManyFactory()
-        test_container = TestContainerFactory()
-        t1 = TestItemFactory(test_container=test_container)
-        t2 = TestItemFactory(test_container=test_container)
-        t3 = TestItemFactory(test_container=test_container)
+        test_container = TestDispatchContainerFactory()
+        t1 = TestDispatchItemFactory(test_container=test_container)
+        t2 = TestDispatchItemFactory(test_container=test_container)
+        t3 = TestDispatchItemFactory(test_container=test_container)
         t1.test_many_to_many.add(l1)
         t1.test_many_to_many.add(l2)
         t2.test_many_to_many.add(l3)
@@ -71,7 +72,7 @@ class BaseControllerTests(TestCase):
         self.assertEqual(DispatchItemRegister.objects.filter(item_model_name='TestContainer').count(), 0)
         dispatch_controller.dispatch()
         self.assertEqual(DispatchContainerRegister.objects.all().count(), 1)
-        for test_item in TestItem.objects.using(self.using_destination).all():
+        for test_item in TestDispatchItem.objects.using(self.using_destination).all():
             print test_item
             self.assertGreater(test_item.test_many_to_many.all().count(), 0)
             print test_item.test_many_to_many.all()
@@ -81,22 +82,22 @@ class BaseControllerTests(TestCase):
         class TestController(DispatchController):
 
             def dispatch_prep(self):
-                self.dispatch_user_items_as_json(TestItem.objects.all())
+                self.dispatch_user_items_as_json(TestDispatchItem.objects.all())
 
         DispatchContainerRegister.objects.all().delete()
         DispatchItemRegister.objects.all().delete()
 
         producer = ProducerFactory(name=self.using_destination, settings_key=self.using_destination)
-        test_container = TestContainerFactory()
-        TestItemFactory(test_container=test_container)
-        TestItemFactory(test_container=test_container)
-        TestItemFactory(test_container=test_container)
+        test_container = TestDispatchContainerFactory()
+        TestDispatchItemFactory(test_container=test_container)
+        TestDispatchItemFactory(test_container=test_container)
+        TestDispatchItemFactory(test_container=test_container)
         self.assertEqual(DispatchContainerRegister.objects.all().count(), 0)
         dispatch_controller = TestController(
             self.using_source,
             self.using_destination,
             self.user_container_app_label,
-            'testcontainer',
+            'testdispatchcontainer',
             'test_container_identifier',
             test_container.test_container_identifier, 'http://')
         self.assertEqual(DispatchContainerRegister.objects.all().count(), 0)
@@ -105,12 +106,12 @@ class BaseControllerTests(TestCase):
         dispatch_controller.dispatch()
         self.assertEqual(DispatchContainerRegister.objects.all().count(), 1)
         self.assertEqual(DispatchItemRegister.objects.filter(item_model_name='TestContainer').count(), 1)
-        self.assertEqual(TestItem.objects.using(self.using_destination).all().count(), 3)
+        self.assertEqual(TestDispatchItem.objects.using(self.using_destination).all().count(), 3)
         self.assertEqual(DispatchItemRegister.objects.all().count(), 4)
-        self.assertEqual(dispatch_controller.get_session_container_class_counter_count(TestItem), 4)
+        self.assertEqual(dispatch_controller.get_session_container_class_counter_count(TestDispatchItem), 4)
 
-        TestItemFactory(test_container=test_container)
-        TestItemFactory(test_container=test_container)
+        TestDispatchItemFactory(test_container=test_container)
+        TestDispatchItemFactory(test_container=test_container)
 
 #         # reload controller
 #         self.assertRaises(AlreadyRegisteredController, TestController,
@@ -124,7 +125,7 @@ class BaseControllerTests(TestCase):
             self.using_source,
             self.using_destination,
             self.user_container_app_label,
-            'testcontainer',
+            'testdispatchcontainer',
             'test_container_identifier',
             test_container.test_container_identifier, 'http://', retry=True)
         self.assertEqual(len(dispatch_controller.get_session_container('dispatched')), 4)
@@ -133,25 +134,25 @@ class BaseControllerTests(TestCase):
         #print dispatch_controller.get_session_container('serialized')
         dispatch_controller.dispatch()
         # assert counts on session container
-        self.assertEqual(dispatch_controller.get_session_container_class_counter_count(TestItem), 0)
+        self.assertEqual(dispatch_controller.get_session_container_class_counter_count(TestDispatchItem), 0)
 
     def test_p3(self):
         """Test P3."""
         class TestController(DispatchController):
 
             def dispatch_prep(self):
-                self.dispatch_user_items_as_json(TestItem.objects.all())
+                self.dispatch_user_items_as_json(TestDispatchItem.objects.all())
         print "TEST P3"
         print "clear all tables"
         DispatchContainerRegister.objects.all().delete()
         DispatchItemRegister.objects.all().delete()
         print "create new container and items"
         producer = ProducerFactory(name=self.using_destination, settings_key=self.using_destination)
-        test_container = TestContainerFactory()
+        test_container = TestDispatchContainerFactory()
         print "create 3 items for this container"
-        TestItemFactory(test_container=test_container)
-        TestItemFactory(test_container=test_container)
-        TestItemFactory(test_container=test_container)
+        TestDispatchItemFactory(test_container=test_container)
+        TestDispatchItemFactory(test_container=test_container)
+        TestDispatchItemFactory(test_container=test_container)
         print "assert nothing in DispatchContainerRegister"
         self.assertEqual(DispatchContainerRegister.objects.all().count(), 0)
         print "instantiate a new dispatch controller with container {0}".format(test_container)
@@ -174,8 +175,8 @@ class BaseControllerTests(TestCase):
         print "try to save test container, raise an AlreadyDispatchedContainer"
         self.assertRaises(AlreadyDispatchedContainer, test_container.save)
         print "create 2 more items for this container"
-        TestItemFactory(test_container=test_container)
-        TestItemFactory(test_container=test_container)
+        TestDispatchItemFactory(test_container=test_container)
+        TestDispatchItemFactory(test_container=test_container)
         print "try to call dispatch again, raises AlreadyDispatchedContainer. Can only call dispatch once."
         self.assertRaises(AlreadyDispatchedContainer, dispatch_controller.dispatch, debug=True)
         print "instantiate a new dispatch controller with the same dispatched container"
@@ -191,7 +192,7 @@ class BaseControllerTests(TestCase):
         print "try to save test container, raise an AlreadyDispatchedContainer"
         self.assertRaises(AlreadyDispatchedContainer, test_container.save)
         print "requery test container"
-        test_container = TestContainer.objects.get(test_container_identifier=test_container.test_container_identifier)
+        test_container = TestDispatchContainer.objects.get(test_container_identifier=test_container.test_container_identifier)
         print "confirm container is dispatched_as_container"
         self.assertTrue(test_container.is_dispatched_as_container())
         self.assertEqual(DispatchContainerRegister.objects.filter(is_dispatched=True).count(), 1)
@@ -202,7 +203,7 @@ class BaseControllerTests(TestCase):
         print "return all items"
         return_controller.return_dispatched_items()
         print "requery container"
-        test_container = TestContainer.objects.get(test_container_identifier=test_container.test_container_identifier)
+        test_container = TestDispatchContainer.objects.get(test_container_identifier=test_container.test_container_identifier)
         print "confirm container is not dispatched_as_container"
         self.assertFalse(test_container.is_dispatched_as_container())
         self.assertEqual(DispatchContainerRegister.objects.filter(is_dispatched=True).count(), 0)
@@ -228,7 +229,7 @@ class BaseControllerTests(TestCase):
         class TestController(DispatchController):
 
             def dispatch_prep(self):
-                self.dispatch_user_items_as_json(TestItemBypassForEdit.objects.all())
+                self.dispatch_user_items_as_json(TestDispatchItemBypassForEdit.objects.all())
 
         print "TEST P4"
         print "clear all tables"
@@ -236,12 +237,12 @@ class BaseControllerTests(TestCase):
         DispatchItemRegister.objects.all().delete()
         print "create new container and items"
         producer = ProducerFactory(name=self.using_destination, settings_key=self.using_destination)
-        test_container = TestContainerFactory()
+        test_container = TestDispatchContainerFactory()
         print "create 3 TestItemBypassForEdit items for this container"
-        test_item1 = TestItemBypassForEditFactory(test_container=test_container)
+        test_item1 = TestDispatchItemBypassForEditFactory(test_container=test_container)
         print test_item1
-        TestItemBypassForEditFactory(test_container=test_container)
-        TestItemBypassForEditFactory(test_container=test_container)
+        TestDispatchItemBypassForEditFactory(test_container=test_container)
+        TestDispatchItemBypassForEditFactory(test_container=test_container)
         print "assert nothing in DispatchContainerRegister"
         self.assertEqual(DispatchContainerRegister.objects.all().count(), 0)
         print "instantiate a new dispatch controller with container {0}".format(test_container)
@@ -249,7 +250,7 @@ class BaseControllerTests(TestCase):
             self.using_source,
             self.using_destination,
             self.user_container_app_label,
-            'testcontainer',
+            'testdispatchcontainer',
             'test_container_identifier',
             test_container.test_container_identifier, 'http://')
         print "assert nothing is in session container, yet ..."
@@ -269,12 +270,12 @@ class BaseControllerTests(TestCase):
         self.assertRaises(AlreadyDispatchedItem, test_item1.save)
 
     def create_test_container(self):
-        self.test_container = TestContainer.objects.create(test_container_identifier=self.user_container_identifier)
+        self.test_container = TestDispatchContainer.objects.create(test_container_identifier=self.user_container_identifier)
 
     def create_test_item(self):
         if not self.test_container:
             self.create_test_container()
-        self.test_item = TestItem.objects.create(test_item_identifier=self.user_container_identifier, test_container=self.test_container)
+        self.test_item = TestDispatchItem.objects.create(test_item_identifier=self.user_container_identifier, test_container=self.test_container)
 
     def create_producer(self, is_active=False):
         # add a in_active producer

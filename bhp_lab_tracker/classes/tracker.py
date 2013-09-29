@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from django.db.models import ForeignKey, OneToOneField, get_model
 from django.core.exceptions import ImproperlyConfigured
-from ...bhp_base_model.models import BaseModel
+from edc_core.bhp_base_model.models import BaseModel
 from ..models import HistoryModel, DefaultValueLog
 from .helpers import TrackerNamedTpl
 from .history_updater import HistoryUpdater
@@ -279,7 +279,7 @@ class LabTracker(object):
         return None
 
     def _set_history_query_options(self):
-        from ...bhp_visit_tracking.models import BaseVisitTracking
+        from edc_core.bhp_visit_tracking.models import BaseVisitTracking
         self._history_query_options = {}
         for tracker in self.get_trackers():
             query_string = None

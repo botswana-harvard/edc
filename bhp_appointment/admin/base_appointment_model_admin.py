@@ -1,5 +1,5 @@
 from django.db.models import get_model
-from ...bhp_base_admin.admin import BaseModelAdmin
+from edc_core.bhp_base_admin.admin import BaseModelAdmin
 from ..models import Appointment
 
 

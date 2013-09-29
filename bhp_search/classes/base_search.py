@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from django import forms
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from ...bhp_crypto.fields import BaseEncryptedField
+from edc_core.bhp_crypto.fields import BaseEncryptedField
 from ..exceptions import SearchModelError, SearchAttributeError
 from .defaults import defaults
 from .patterns import patterns
@@ -46,7 +46,7 @@ class BaseSearch(object):
             self._context[k] = v
 
     def set_section(self):
-        from ...bhp_section.classes import BaseSectionView
+        from edc_core.bhp_section.classes import BaseSectionView
         self._section = self.section
         if not self._section:
             raise SearchAttributeError('Class attribute section may not be None for class {0}. Set this in the class declaration.'.format(self))

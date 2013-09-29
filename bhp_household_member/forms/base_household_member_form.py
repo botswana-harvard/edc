@@ -1,5 +1,5 @@
 from django import forms
-from ...bhp_common.utils import check_initials_field
+from edc_core.bhp_common.utils import check_initials_field
 
 
 class BaseHouseholdMemberForm(forms.ModelForm):

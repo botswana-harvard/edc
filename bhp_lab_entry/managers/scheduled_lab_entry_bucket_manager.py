@@ -1,11 +1,9 @@
 from datetime import datetime
 from django.db import models
 from django.db.models import ForeignKey, Q
-#from django.db.models.base import ModelBase
-#from bhp_content_type_map.models import ContentTypeMap
-from bhp_visit_tracking.models import BaseVisitTracking
-from bhp_entry.managers import BaseEntryBucketManager
-from bhp_lab_entry.models import LabEntry
+from edc_core.bhp_visit_tracking.models import BaseVisitTracking
+from edc_core.bhp_entry.managers import BaseEntryBucketManager
+from ..models import LabEntry
 
 
 class ScheduledLabEntryBucketManager(BaseEntryBucketManager):

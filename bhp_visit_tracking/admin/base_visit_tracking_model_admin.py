@@ -1,6 +1,6 @@
 from django.db.models import ForeignKey
-from ...bhp_base_admin.admin import BaseModelAdmin
-from ...bhp_export_data.actions import export_as_csv_action
+from edc_core.bhp_base_admin.admin import BaseModelAdmin
+from edc_core.bhp_export_data.actions import export_as_csv_action
 from ..classes import VisitModelHelper
 
 

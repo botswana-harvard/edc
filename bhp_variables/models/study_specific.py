@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.validators import RegexValidator, MinLengthValidator
-from ...bhp_base_model.models import BaseUuidModel
+from edc_core.bhp_base_model.models import BaseUuidModel
 from ..choices import GENDER_OF_CONSENT, MACHINE_TYPE
 from ..managers import StudySpecificManager
 

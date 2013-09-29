@@ -1,6 +1,6 @@
 import factory
 from datetime import date
-from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from edc_core.bhp_base_model.tests.factories import BaseUuidModelFactory
 
 
 class BaseSubjectFactory(BaseUuidModelFactory):

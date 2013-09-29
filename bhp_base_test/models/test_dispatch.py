@@ -1,21 +1,49 @@
 from django.db import models
-from ...audit_trail.audit import AuditTrail
-from ...bhp_base_model.models import BaseListModel
-from ...bhp_base_test.models import TestManyToMany
-from .base_dispatch_sync_uuid_model import BaseDispatchSyncUuidModel
-from .test_container import TestContainer
+from edc_core.audit_trail.audit import AuditTrail
+from edc_core.bhp_base_model.models import BaseListModel
+from edc_core.bhp_base_test.models import TestManyToMany
+from edc_core.bhp_dispatch.models import BaseDispatchSyncUuidModel
 
 
-class TestList(BaseListModel):
+class TestDispatchList(BaseListModel):
     class Meta:
-        app_label = 'bhp_dispatch'
+        app_label = 'bhp_base_test'
 
 
-class TestItem(BaseDispatchSyncUuidModel):
+class TestDispatchContainer(BaseDispatchSyncUuidModel):
+
+    test_container_identifier = models.CharField(max_length=35, unique=True)
+
+    comment = models.CharField(max_length=50, null=True)
+
+    objects = models.Manager()
+
+    history = AuditTrail()
+
+    def __unicode__(self):
+        return self.test_container_identifier
+
+    def dispatched_as_container_identifier_attr(self, using=None):
+        return 'test_container_identifier'
+
+    def is_dispatch_container_model(self):
+        return True
+
+    def dispatch_container_lookup(self):
+        return None
+
+    def include_for_dispatch(self):
+        return True
+
+    class Meta:
+        app_label = 'bhp_base_test'
+
+
+class TestDispatchItem(BaseDispatchSyncUuidModel):
 
     test_item_identifier = models.CharField(max_length=35, unique=True)
 
-    test_container = models.ForeignKey(TestContainer)
+    test_container = models.ForeignKey(TestDispatchContainer)
 
     test_many_to_many = models.ManyToManyField(TestManyToMany)
 
@@ -32,20 +60,20 @@ class TestItem(BaseDispatchSyncUuidModel):
         return False
 
     def dispatch_container_lookup(self, using=None):
-        return (TestContainer, 'test_container__test_container_identifier')
+        return (TestDispatchContainer, 'test_container__test_container_identifier')
 
     def include_for_dispatch(self):
         return True
 
     class Meta:
-        app_label = 'bhp_dispatch'
+        app_label = 'bhp_base_test'
 
 
-class TestItemTwo(BaseDispatchSyncUuidModel):
+class TestDispatchItemTwo(BaseDispatchSyncUuidModel):
 
     test_item_identifier = models.CharField(max_length=35, unique=True)
 
-    test_item = models.ForeignKey(TestItem)
+    test_item = models.ForeignKey(TestDispatchItem)
 
     comment = models.CharField(max_length=50, null=True)
 
@@ -66,14 +94,14 @@ class TestItemTwo(BaseDispatchSyncUuidModel):
         return True
 
     class Meta:
-        app_label = 'bhp_dispatch'
+        app_label = 'bhp_base_test'
 
 
-class TestItemThree(BaseDispatchSyncUuidModel):
+class TestDispatchItemThree(BaseDispatchSyncUuidModel):
 
     test_item_identifier = models.CharField(max_length=35, unique=True)
 
-    test_item_two = models.ForeignKey(TestItemTwo)
+    test_item_two = models.ForeignKey(TestDispatchItemTwo)
 
     comment = models.CharField(max_length=50, null=True)
 
@@ -94,16 +122,16 @@ class TestItemThree(BaseDispatchSyncUuidModel):
         return True
 
     class Meta:
-        app_label = 'bhp_dispatch'
+        app_label = 'bhp_base_test'
 
 
-class TestItemM2M(BaseDispatchSyncUuidModel):
+class TestDispatchItemM2M(BaseDispatchSyncUuidModel):
 
     test_item_identifier = models.CharField(max_length=35, unique=True)
 
-    test_item_three = models.ForeignKey(TestItemThree)
+    test_item_three = models.ForeignKey(TestDispatchItemThree)
 
-    m2m = models.ManyToManyField(TestList)
+    m2m = models.ManyToManyField(TestDispatchList)
 
     comment = models.CharField(max_length=50, null=True)
 
@@ -124,14 +152,14 @@ class TestItemM2M(BaseDispatchSyncUuidModel):
         return True
 
     class Meta:
-        app_label = 'bhp_dispatch'
+        app_label = 'bhp_base_test'
 
 
-class TestItemBypassForEdit(BaseDispatchSyncUuidModel):
+class TestDispatchItemBypassForEdit(BaseDispatchSyncUuidModel):
 
     test_item_identifier = models.CharField(max_length=35, unique=True)
 
-    test_container = models.ForeignKey(TestContainer)
+    test_container = models.ForeignKey(TestDispatchContainer)
 
     test_many_to_many = models.ManyToManyField(TestManyToMany)
 
@@ -165,10 +193,10 @@ class TestItemBypassForEdit(BaseDispatchSyncUuidModel):
         return False
 
     def dispatch_container_lookup(self, using=None):
-        return (TestContainer, 'test_container__test_container_identifier')
+        return (TestDispatchContainer, 'test_container__test_container_identifier')
 
     def include_for_dispatch(self):
         return True
 
     class Meta:
-        app_label = 'bhp_dispatch'
+        app_label = 'bhp_base_test'

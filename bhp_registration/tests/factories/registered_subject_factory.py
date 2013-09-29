@@ -1,5 +1,5 @@
 import factory
-from ....bhp_subject.tests.factories import BaseSubjectFactory
+from edc_core.bhp_subject.tests.factories import BaseSubjectFactory
 from ...models import RegisteredSubject
 
 

@@ -1,4 +1,4 @@
-from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from edc_core.bhp_base_model.tests.factories import BaseUuidModelFactory
 from ...models import MembershipForm
 
 starting_seq_num = 1000

@@ -1,6 +1,6 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from ...bhp_visit.models import VisitDefinition
+from edc_core.bhp_visit.models import VisitDefinition
 
 
 class ApptDateTimeDescriptor(object):

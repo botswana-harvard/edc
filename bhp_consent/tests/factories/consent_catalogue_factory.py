@@ -1,7 +1,7 @@
 import factory
 from datetime import datetime
-from ....bhp_base_model.tests.factories import BaseUuidModelFactory
-from ....bhp_content_type_map.tests.factories import ContentTypeMapFactory
+from edc_core.bhp_base_model.tests.factories import BaseUuidModelFactory
+from edc_core.bhp_content_type_map.tests.factories import ContentTypeMapFactory
 from ...models import ConsentCatalogue
 
 

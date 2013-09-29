@@ -1,7 +1,7 @@
 import socket
 from datetime import datetime
 from django.conf import settings
-from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from edc_core.bhp_base_model.tests.factories import BaseUuidModelFactory
 from ...models import StudySpecific
 
 

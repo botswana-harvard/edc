@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ...bhp_base_admin.admin import BaseModelAdmin
+from edc_core.bhp_base_admin.admin import BaseModelAdmin
 from ..models import Producer
 from ..actions import reset_producer_status
 

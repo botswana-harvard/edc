@@ -1,1 +1,1 @@
-from unscheduled_lab_entry import UnscheduledLabEntry
+from .unscheduled_lab_entry import UnscheduledLabEntry

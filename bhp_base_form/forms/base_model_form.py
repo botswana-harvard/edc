@@ -2,7 +2,7 @@ from django import forms
 from django.db.models.query import QuerySet
 from django.conf import settings
 from django.db.models import OneToOneField, ForeignKey, get_model
-from ...bhp_visit_tracking.models import BaseVisitTracking
+from edc_core.bhp_visit_tracking.models import BaseVisitTracking
 from ..classes import LogicCheck
 
 

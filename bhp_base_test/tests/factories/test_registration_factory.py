@@ -1,4 +1,4 @@
-from ....bhp_registration.tests.factories import BaseRegistrationFactory
+from edc_core.bhp_registration.tests.factories import BaseRegistrationFactory
 from ...models import TestRegistration
 
 

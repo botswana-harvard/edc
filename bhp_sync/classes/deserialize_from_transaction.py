@@ -4,7 +4,7 @@ import socket
 from django.core import serializers
 from django.db.models import ForeignKey
 from django.db.utils import IntegrityError
-from ...bhp_crypto.classes import FieldCryptor
+from edc_core.bhp_crypto.classes import FieldCryptor
 from .transaction_producer import TransactionProducer
 
 

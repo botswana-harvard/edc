@@ -1,4 +1,4 @@
-from base_lab_entry import BaseLabEntry
+from .base_lab_entry import BaseLabEntry
 
 
 class LabEntryUnscheduled(BaseLabEntry):

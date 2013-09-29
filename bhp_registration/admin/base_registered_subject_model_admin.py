@@ -1,6 +1,6 @@
-from ...bhp_crypto.admin import BaseCryptorModelAdmin
-from ...bhp_export_data.actions import export_as_csv_action
-from ...bhp_appointment.models import Appointment
+from edc_core.bhp_crypto.admin import BaseCryptorModelAdmin
+from edc_core.bhp_export_data.actions import export_as_csv_action
+from edc_core.bhp_appointment.models import Appointment
 from ..models import RegisteredSubject
 
 

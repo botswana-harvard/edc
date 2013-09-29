@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 
 from django.contrib.auth.models import User
 from django.test.client import RequestFactory
-from ...bhp_base_test.models import TestModel
+from edc_core.bhp_base_test.models import TestModel
 from ..exceptions import NextUrlError
 
 admin.autodiscover()

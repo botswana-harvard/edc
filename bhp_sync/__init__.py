@@ -1,1 +1,1 @@
-MODULE_APP_LABEL = 'edc_core.bhp_sync'
+MODULE_APP_LABEL = 'bhp_sync'

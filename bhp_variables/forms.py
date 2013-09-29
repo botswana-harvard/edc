@@ -1,7 +1,7 @@
 import socket
 import re
 from django import forms
-from ..bhp_base_form.forms import BaseModelForm
+from edc_core.bhp_base_form.forms import BaseModelForm
 from .models import StudySpecific
 
 

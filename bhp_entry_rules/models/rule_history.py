@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.db import models
-from ...bhp_base_model.models import BaseModel
+from edc_core.bhp_base_model.models import BaseModel
 
 
 class RuleHistory(BaseModel):

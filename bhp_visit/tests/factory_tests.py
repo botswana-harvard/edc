@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
-from ...bhp_content_type_map.models import ContentTypeMap
-from ...bhp_content_type_map.classes import ContentTypeMapHelper
+from edc_core.bhp_content_type_map.models import ContentTypeMap
+from edc_core.bhp_content_type_map.classes import ContentTypeMapHelper
 from ..models import MembershipForm, ScheduleGroup, VisitDefinition
 from .factories import VisitDefinitionFactory, ScheduleGroupFactory, MembershipFormFactory
 

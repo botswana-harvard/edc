@@ -2,11 +2,11 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.validators import RegexValidator
 from django.core.exceptions import ImproperlyConfigured
-from ...bhp_sync.models import BaseSyncUuidModel
-from ...bhp_common.choices import YES_NO
-from ...bhp_crypto.fields import EncryptedLastnameField, EncryptedTextField
-from ...bhp_base_model.validators import datetime_not_future, datetime_not_before_study_start
-from ...bhp_variables.models import StudySite
+from edc_core.bhp_sync.models import BaseSyncUuidModel
+from edc_core.bhp_common.choices import YES_NO
+from edc_core.bhp_crypto.fields import EncryptedLastnameField, EncryptedTextField
+from edc_core.bhp_base_model.validators import datetime_not_future, datetime_not_before_study_start
+from edc_core.bhp_variables.models import StudySite
 from ..classes import ConsentHelper
 from ..managers import BaseConsentUpdateManager
 from .base_consent import BaseConsent

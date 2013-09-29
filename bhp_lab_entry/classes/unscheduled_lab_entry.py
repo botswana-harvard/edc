@@ -1,5 +1,5 @@
-from bhp_lab_entry.models import UnscheduledLabEntryBucket
-from bhp_entry.classes import BaseEntry
+from edc_core.bhp_entry.classes import BaseEntry
+from ..models import UnscheduledLabEntryBucket
 
 
 class UnscheduledLabEntry(BaseEntry):

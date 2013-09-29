@@ -1,5 +1,5 @@
 # from django.core.urlresolvers import reverse
-# from ...bhp_common.models import MyModelAdmin
+# from edc_core.bhp_common.models import MyModelAdmin
 # from bhp_entry.models import ScheduledEntryBucket
 # 
 # 

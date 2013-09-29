@@ -1,6 +1,6 @@
 import numpy
 from django.test import TestCase
-from ...bhp_base_test.models import TestModel
+from edc_core.bhp_base_test.models import TestModel
 from ..classes import SupplementalFields
 
 

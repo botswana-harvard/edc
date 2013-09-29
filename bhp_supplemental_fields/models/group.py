@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
-from ...bhp_base_model.models import BaseUuidModel
+from edc_core.bhp_base_model.models import BaseUuidModel
 
 
 class Group(BaseUuidModel):
