@@ -1,6 +1,6 @@
 from datetime import datetime
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_base_test.models import TestSubjectResultModel
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...models import TestSubjectResultModel
 
 
 class TestSubjectResultModelFactory(BaseUuidModelFactory):

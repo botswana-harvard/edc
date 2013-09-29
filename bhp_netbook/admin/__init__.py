@@ -1,1 +1,1 @@
-from main import NetbookAdmin, NetbookUserAdmin
+from .main import NetbookAdmin, NetbookUserAdmin

@@ -2,9 +2,8 @@ import pprint
 from django.core import serializers
 from django.test import TestCase
 from django.db.models import get_app, get_models
-from bhp_sync.classes import SerializeToTransaction, DeserializeFromTransaction
-from bhp_crypto.classes import FieldCryptor
-
+from edc_core.bhp_sync.classes import SerializeToTransaction
+from edc_core.bhp_crypto.classes import FieldCryptor
 
 
 class BaseNaturalKeyTests(TestCase):

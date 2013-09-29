@@ -1,19 +1,19 @@
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from django.test import TestCase
-from bhp_content_type_map.classes import ContentTypeMapHelper
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_registration.tests.factories import RegisteredSubjectFactory
-from bhp_appointment.models import Appointment
-from bhp_appointment.tests.factories import ConfigurationFactory, AppointmentFactory
-from bhp_visit.models import VisitDefinition
-from bhp_visit.tests.factories import VisitDefinitionFactory
-from bhp_base_test.models import TestSubjectVisit
-from bhp_consent.models import AttachedModel
-from bhp_base_test.tests.factories import TestConsentFactory
-from bhp_consent.tests.factories import ConsentCatalogueFactory
-from bhp_variables.tests.factories import StudySiteFactory
-from bhp_base_test.models import TestOffStudy
+from ...bhp_content_type_map.classes import ContentTypeMapHelper
+from ...bhp_content_type_map.models import ContentTypeMap
+from ...bhp_registration.tests.factories import RegisteredSubjectFactory
+from ...bhp_appointment.models import Appointment
+from ...bhp_appointment.tests.factories import ConfigurationFactory, AppointmentFactory
+from ...bhp_visit.models import VisitDefinition
+from ...bhp_visit.tests.factories import VisitDefinitionFactory
+from ...bhp_base_test.models import TestSubjectVisit
+from ...bhp_consent.models import AttachedModel
+from ...bhp_base_test.tests.factories import TestConsentFactory
+from ...bhp_consent.tests.factories import ConsentCatalogueFactory
+from ...bhp_variables.tests.factories import StudySiteFactory
+from ...bhp_base_test.models import TestOffStudy
 
 
 class OffStudyMethodsTests(TestCase):

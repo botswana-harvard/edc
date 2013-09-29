@@ -1,4 +1,4 @@
-from base_off_study import BaseOffStudy
+from .base_off_study import BaseOffStudy
 
 
 class TestOffStudy(BaseOffStudy):

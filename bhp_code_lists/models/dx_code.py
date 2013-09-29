@@ -1,5 +1,5 @@
 from django.db import models
-from base_code_list import BaseCodeList
+from .base_code_list import BaseCodeList
 
 
 class DxCode (BaseCodeList):

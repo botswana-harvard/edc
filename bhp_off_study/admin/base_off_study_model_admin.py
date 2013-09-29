@@ -1,5 +1,5 @@
-from bhp_registration.admin import BaseRegisteredSubjectModelAdmin
-from bhp_appointment.models import Appointment
+from ...bhp_registration.admin import BaseRegisteredSubjectModelAdmin
+from ...bhp_appointment.models import Appointment
 
 
 class BaseOffStudyModelAdmin(BaseRegisteredSubjectModelAdmin):

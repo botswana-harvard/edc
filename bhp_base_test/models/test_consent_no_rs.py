@@ -1,8 +1,8 @@
 from django.db import models
-from bhp_base_model.fields import IdentityTypeField
-from bhp_crypto.fields import EncryptedIdentityField
-from bhp_consent.models import BaseConsent
-from bhp_consent.managers import BaseConsentManager
+from edc_core.bhp_base_model.fields import IdentityTypeField
+from edc_core.bhp_crypto.fields import EncryptedIdentityField
+from edc_core.bhp_consent.models import BaseConsent
+from edc_core.bhp_consent.managers import BaseConsentManager
 
 
 class TestConsentNoRs(BaseConsent):

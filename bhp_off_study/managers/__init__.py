@@ -1,1 +1,1 @@
-from off_study_manager import OffStudyManager
+from .off_study_manager import OffStudyManager

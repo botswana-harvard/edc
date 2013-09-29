@@ -1,5 +1,5 @@
 from django.db import models
-from bhp_registration.models import RegisteredSubject
+from ...bhp_registration.models import RegisteredSubject
 
 
 class OffStudyManager(models.Manager):

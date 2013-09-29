@@ -1,4 +1,4 @@
-from bhp_off_study.models import BaseOffStudy
+from edc_core.bhp_off_study.models import BaseOffStudy
 
 
 class TestOffStudy(BaseOffStudy):

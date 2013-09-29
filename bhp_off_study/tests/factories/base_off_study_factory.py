@@ -1,7 +1,7 @@
 import factory
 from datetime import date
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_registration.tests.factories import RegisteredSubjectFactory
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ....bhp_registration.tests.factories import RegisteredSubjectFactory
 
 
 class BaseOffStudyFactory(BaseUuidModelFactory):

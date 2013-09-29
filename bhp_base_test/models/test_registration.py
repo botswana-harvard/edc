@@ -1,7 +1,7 @@
-from bhp_registration.models import BaseRegistrationModel
-from bhp_base_test.managers import TestRegistrationManager
-from test_off_study_mixin import TestOffStudyMixin
-from test_base_off_study import TestBaseOffStudy
+from edc_core.bhp_registration.models import BaseRegistrationModel
+from ..managers import TestRegistrationManager
+from .test_off_study_mixin import TestOffStudyMixin
+from .test_base_off_study import TestBaseOffStudy
 
 
 class TestRegistration(TestOffStudyMixin, BaseRegistrationModel):

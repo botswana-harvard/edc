@@ -1,1 +1,1 @@
-from base_bw_consent import BaseBwConsent
+from .base_bw_consent import BaseBwConsent

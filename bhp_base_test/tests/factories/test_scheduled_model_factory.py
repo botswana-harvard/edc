@@ -1,6 +1,5 @@
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-
-from bhp_base_test.models import TestScheduledModel
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...models import TestScheduledModel
 
 
 class TestScheduledModelFactory(BaseUuidModelFactory):

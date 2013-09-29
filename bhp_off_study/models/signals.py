@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from base_off_study import BaseOffStudy
+from .base_off_study import BaseOffStudy
 
 
 @receiver(post_save, weak=False, dispatch_uid="base_off_study_post_save")

@@ -1,7 +1,6 @@
-#from django.db import models
-from audit_trail.audit import AuditTrail
-from ...bhp_base_model.models import BaseModel
-from ...bhp_crypto.fields import EncryptedCharField, EncryptedTextField, EncryptedFirstnameField, EncryptedLastnameField
+from edc_core.audit_trail.audit import AuditTrail
+from edc_core.bhp_base_model.models import BaseModel
+from edc_core.bhp_crypto.fields import EncryptedCharField, EncryptedTextField, EncryptedFirstnameField, EncryptedLastnameField
 
 
 class EncryptedTestModel(BaseModel):

@@ -1,5 +1,5 @@
-from bhp_off_study.mixins import OffStudyMixin
-from test_base_off_study import TestBaseOffStudy
+from edc_core.bhp_off_study.mixins import OffStudyMixin
+from .test_base_off_study import TestBaseOffStudy
 
 
 class TestOffStudyMixin(OffStudyMixin):

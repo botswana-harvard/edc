@@ -1,5 +1,5 @@
-from bhp_base_form.forms import BaseModelForm
-from bhp_base_test.models import TestModel, TestSubjectUuidModel
+from edc_core.bhp_base_form.forms import BaseModelForm
+from ..models import TestModel, TestSubjectUuidModel
 
 
 class TestSubjectUuidModelForm (BaseModelForm):

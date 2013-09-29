@@ -1,8 +1,7 @@
 import factory
-from datetime import datetime
-from bhp_base_model.models import TestModel
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_base_model.tests.factories import TestForeignKeyFactory
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...models import TestModel
+from .test_foreign_key_factory import TestForeignKeyFactory
 
 
 class TestModelFactory(BaseUuidModelFactory):

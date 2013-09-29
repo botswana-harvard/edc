@@ -1,6 +1,6 @@
 from django.db import models
-from bhp_base_model.models import BaseUuidModel
-from test_visit import TestVisit
+from edc_core.bhp_base_model.models import BaseUuidModel
+from .test_visit import TestVisit
 
 
 class TestScheduledModel(BaseUuidModel):

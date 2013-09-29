@@ -1,8 +1,9 @@
 from django.db import models
-from bhp_registration.models import RegisteredSubject
-from bhp_consent.models import BaseConsentedUuidModel
-from bhp_base_model.models import TestForeignKey, TestManyToMany
-from test_off_study_mixin import TestOffStudyMixin
+from edc_core.bhp_registration.models import RegisteredSubject
+from edc_core.bhp_consent.models import BaseConsentedUuidModel
+from .test_foreign_key import TestForeignKey
+from .test_many_to_many import TestManyToMany
+from .test_off_study_mixin import TestOffStudyMixin
 
 
 class TestSubjectUuidModel(TestOffStudyMixin, BaseConsentedUuidModel):

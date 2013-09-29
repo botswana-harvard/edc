@@ -1,1 +1,1 @@
-from dx_code_factory import DxCodeFactory
+from .dx_code_factory import DxCodeFactory

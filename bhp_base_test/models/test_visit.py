@@ -1,4 +1,4 @@
-from bhp_visit_tracking.models import BaseVisitTracking
+from edc_core.bhp_visit_tracking.models import BaseVisitTracking
 
 
 class TestVisit(BaseVisitTracking):

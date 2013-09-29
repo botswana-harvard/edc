@@ -1,5 +1,5 @@
 from django.db import models
-from bhp_base_model.models import BaseModel
+from ...bhp_base_model.models import BaseModel
 
 
 TRACK_STATUS = (('IN', 'In'), ('OUT', 'Out'))

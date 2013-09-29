@@ -1,5 +1,5 @@
 from django import forms
-from bhp_consent.forms import BaseConsentedModelForm
+from ...bhp_consent.forms import BaseConsentedModelForm
 
 
 class BaseOffStudyForm(BaseConsentedModelForm):

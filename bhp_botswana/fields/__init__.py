@@ -1,1 +1,1 @@
-from encrypted_omang_field import EncryptedOmangField
+from .encrypted_omang_field import EncryptedOmangField

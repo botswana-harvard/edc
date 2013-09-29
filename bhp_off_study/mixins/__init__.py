@@ -1,1 +1,1 @@
-from off_study_mixin import OffStudyMixin
+from .off_study_mixin import OffStudyMixin

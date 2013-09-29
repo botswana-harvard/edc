@@ -1,1 +1,1 @@
-from base_off_study_model_admin import BaseOffStudyModelAdmin
+from .base_off_study_model_admin import BaseOffStudyModelAdmin

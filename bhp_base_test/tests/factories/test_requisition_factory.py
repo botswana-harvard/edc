@@ -1,7 +1,7 @@
 import factory
-from lab_requisition.tests.factories import BaseRequisitionFactory
-from bhp_base_test.models import TestRequisition
-from bhp_base_test.tests.factories import TestVisitFactory
+from edc_lab.lab_requisition.tests.factories import BaseRequisitionFactory
+from ...models import TestRequisition
+from .test_visit_factory import TestVisitFactory
 
 
 class TestRequisitionFactory(BaseRequisitionFactory):

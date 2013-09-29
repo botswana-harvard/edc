@@ -1,1 +1,1 @@
-from test_registration_manager import TestRegistrationManager
+from .test_registration_manager import TestRegistrationManager

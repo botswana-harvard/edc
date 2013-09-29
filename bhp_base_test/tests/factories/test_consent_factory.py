@@ -1,9 +1,9 @@
 import factory
 from datetime import datetime
-from edc_lib.bhp_base_test.models import TestConsent, TestConsentWithMixin
-from edc_lib.bhp_common.choices import IDENTITY_TYPE
-from edc_lib.bhp_subject.tests.factories import BaseSubjectFactory
-from edc_lib.bhp_variables.tests.factories import StudySiteFactory
+from ....bhp_base_test.models import TestConsent, TestConsentWithMixin
+from ....bhp_common.choices import IDENTITY_TYPE
+from ....bhp_subject.tests.factories import BaseSubjectFactory
+from ....bhp_variables.tests.factories import StudySiteFactory
 
 
 class BaseConsentBasicsFactory(BaseSubjectFactory):

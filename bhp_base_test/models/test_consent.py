@@ -1,11 +1,11 @@
 from django.db import models
-from bhp_base_model.fields import IdentityTypeField
-from bhp_crypto.fields import EncryptedIdentityField
-from bhp_registration.models import RegisteredSubject
-from bhp_consent.models import BaseConsent
-from bhp_consent.managers import BaseConsentManager
-from bhp_appointment_helper.models import BaseAppointmentMixin
-from test_consent_history import TestConsentHistory
+from edc_core.bhp_base_model.fields import IdentityTypeField
+from edc_core.bhp_crypto.fields import EncryptedIdentityField
+from edc_core.bhp_registration.models import RegisteredSubject
+from edc_core.bhp_consent.models import BaseConsent
+from edc_core.bhp_consent.managers import BaseConsentManager
+from edc_core.bhp_appointment_helper.models import BaseAppointmentMixin
+from .test_consent_history import TestConsentHistory
 
 
 class BaseTestConsent(BaseConsent):

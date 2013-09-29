@@ -1,6 +1,5 @@
-from django.db import models
-from bhp_consent.models import BaseConsentHistory
-from bhp_consent.managers import BaseConsentHistoryManager
+from edc_core.bhp_consent.models import BaseConsentHistory
+from edc_core.bhp_consent.managers import BaseConsentHistoryManager
 
 
 class ConsentHistoryManager(BaseConsentHistoryManager):

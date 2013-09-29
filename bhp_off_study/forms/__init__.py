@@ -1,1 +1,1 @@
-from base_off_study_form import BaseOffStudyForm
+from .base_off_study_form import BaseOffStudyForm

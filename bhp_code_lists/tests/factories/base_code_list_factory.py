@@ -1,5 +1,5 @@
 import factory
-from bhp_base_model.tests.factories import BaseModelFactory
+from ....bhp_base_model.tests.factories import BaseModelFactory
 
 
 class BaseCodeListFactory(BaseModelFactory):

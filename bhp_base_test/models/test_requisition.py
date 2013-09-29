@@ -1,7 +1,7 @@
 from django.db import models
-from audit_trail.audit import AuditTrail
-from lab_requisition.models import BaseRequisition
-from bhp_base_test.models import TestVisit
+from edc_lab.lab_requisition.models import BaseRequisition
+from edc_core.audit_trail.audit import AuditTrail
+from ..models import TestVisit
 
 
 class TestRequisition(BaseRequisition):
