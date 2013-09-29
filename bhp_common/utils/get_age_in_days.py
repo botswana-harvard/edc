@@ -1,4 +1,5 @@
-from datetime import *
+from datetime import datetime, time
+
 
 def get_age_in_days(reference_date, dob):
     #convert dob to datetime, assume born midnight

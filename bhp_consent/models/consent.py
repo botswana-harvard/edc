@@ -1,6 +1,6 @@
-from bhp_base_model.fields import IdentityTypeField
-from bhp_crypto.fields import EncryptedIdentityField
-from bhp_consent.models import BaseConsent
+from ...bhp_base_model.fields import IdentityTypeField
+from ...bhp_crypto.fields import EncryptedIdentityField
+from ..models import BaseConsent
 
 
 class Consent(BaseConsent):

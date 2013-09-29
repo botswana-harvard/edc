@@ -1,8 +1,8 @@
 import factory
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_visit.tests.factories import VisitDefinitionFactory
-from bhp_content_type_map.tests.factories import ContentTypeMapFactory
-from bhp_entry.models import Entry
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ....bhp_visit.tests.factories import VisitDefinitionFactory
+from ....bhp_content_type_map.tests.factories import ContentTypeMapFactory
+from ...models import Entry
 
 
 class EntryFactory(BaseUuidModelFactory):

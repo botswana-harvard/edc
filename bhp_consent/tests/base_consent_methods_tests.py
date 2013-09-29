@@ -1,17 +1,17 @@
 import re
 from datetime import datetime
 from django.test import TestCase
-from bhp_variables.models import StudySite
-from bhp_variables.tests.factories import StudySiteFactory
-from bhp_registration.models import RegisteredSubject
-from bhp_base_model.models import TestForeignKey, TestManyToMany
-from bhp_base_test.models import TestConsent, TestSubjectUuidModel, TestConsentNoRs
-from bhp_consent.tests.factories import ConsentCatalogueFactory
-from bhp_identifier.exceptions import IdentifierError
-from bhp_content_type_map.classes import ContentTypeMapHelper
-from bhp_content_type_map.models import ContentTypeMap
-from base_methods import BaseMethods
-from bhp_registration.tests.factories import RegisteredSubjectFactory
+from ...bhp_variables.models import StudySite
+from ...bhp_variables.tests.factories import StudySiteFactory
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_base_test.models import TestForeignKey, TestManyToMany, TestConsent, TestSubjectUuidModel, TestConsentNoRs
+from ...bhp_base_test.tests.factories import TestConsentFactory
+from ...bhp_identifier.exceptions import IdentifierError
+from ...bhp_content_type_map.classes import ContentTypeMapHelper
+from ...bhp_content_type_map.models import ContentTypeMap
+from ...bhp_registration.tests.factories import RegisteredSubjectFactory
+from .factories import ConsentCatalogueFactory
+from .base_methods import BaseMethods
 
 
 class BaseConsentMethodsTests(TestCase, BaseMethods):
@@ -20,7 +20,6 @@ class BaseConsentMethodsTests(TestCase, BaseMethods):
         self.create_study_variables()
 
     def test_subject_consent_save(self):
-        from bhp_base_test.tests.factories import TestConsentFactory
         print 'TEST SUBJECT CONSENT WITH KEY TO RS'
         TestConsent.objects.all().delete()
         RegisteredSubject.objects.all().delete()

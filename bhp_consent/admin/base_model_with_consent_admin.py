@@ -1,6 +1,6 @@
 from django.db.models import ForeignKey
-from bhp_crypto.admin import BaseCryptorModelAdmin
-from bhp_registration.models import RegisteredSubject
+from ...bhp_crypto.admin import BaseCryptorModelAdmin
+from ...bhp_registration.models import RegisteredSubject
 
 # is this used??
 

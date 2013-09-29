@@ -1,8 +1,8 @@
 from django.shortcuts import render_to_response, HttpResponse
 from django.template import RequestContext
-from bhp_map.classes import site_mappers
-from bhp_map.exceptions import MapperError
-from bhp_map.utils import calc_dist, get_longitude, get_latitude
+from ..classes import site_mappers
+from ..exceptions import MapperError
+from ..utils import calc_dist, get_longitude, get_latitude
 
 
 def db_update(request, **kwargs):

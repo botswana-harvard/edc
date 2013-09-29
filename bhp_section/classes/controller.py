@@ -3,8 +3,8 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
-from base_section_view import BaseSectionView
-from helpers import SectionNamedTpl
+from .base_section_view import BaseSectionView
+from .helpers import SectionNamedTpl
 
 
 class AlreadyRegistered(Exception):

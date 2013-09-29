@@ -1,5 +1,5 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
+from ...bhp_base_admin.admin import BaseModelAdmin
 
 
 class BaseLocatorModelAdmin(BaseModelAdmin):
@@ -39,4 +39,3 @@ class BaseLocatorModelAdmin(BaseModelAdmin):
         "has_caretaker_alt": admin.VERTICAL,
 
         }
-# admin.site.register(BaseLocatorForm, BaseLocatorFormAdmin)

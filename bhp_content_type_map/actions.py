@@ -1,5 +1,4 @@
-from models import ContentTypeMap
-#from django.contrib.contenttypes.management import update_all_contenttypes
+from .models import ContentTypeMap
 
 
 def pop_and_sync(modeladmin, request, queryset):

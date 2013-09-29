@@ -1,5 +1,5 @@
-from bhp_registration.models import RegisteredSubject
-from bhp_base_form.forms import BaseModelForm
+from ...bhp_base_form.forms import BaseModelForm
+from ..models import RegisteredSubject
 
 
 class RegisteredSubjectForm (BaseModelForm):

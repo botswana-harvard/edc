@@ -1,6 +1,6 @@
 from django.db import models
-from bhp_base_model.models import BaseUuidModel
-from bhp_variables.managers import StudySiteManager
+from ...bhp_base_model.models import BaseUuidModel
+from ..managers import StudySiteManager
 
 
 class StudySite(BaseUuidModel):

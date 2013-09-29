@@ -1,1 +1,1 @@
-from base_locator_model_admin import BaseLocatorModelAdmin
+from .base_locator_model_admin import BaseLocatorModelAdmin

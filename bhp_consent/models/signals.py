@@ -1,10 +1,10 @@
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.db.models import get_app, get_models
 from django.dispatch import receiver
-from consent_catalogue import ConsentCatalogue
-from attached_model import AttachedModel
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_consent.models import BaseConsent, BaseConsentedUuidModel
+from ...bhp_content_type_map.models import ContentTypeMap
+from ..models import BaseConsent, BaseConsentedUuidModel
+from .consent_catalogue import ConsentCatalogue
+from .attached_model import AttachedModel
 
 
 @receiver(pre_save, weak=False, dispatch_uid='is_consented_instance_on_pre_save')

@@ -1,4 +1,4 @@
-from base_encrypted_field import BaseEncryptedField
+from .base_encrypted_field import BaseEncryptedField
 
 
 class LocalRsaEncryptionField(BaseEncryptedField):

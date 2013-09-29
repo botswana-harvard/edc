@@ -1,1 +1,1 @@
-from base_household_member import BaseHouseholdMember
+from .base_household_member import BaseHouseholdMember

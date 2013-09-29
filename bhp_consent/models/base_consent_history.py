@@ -1,7 +1,7 @@
 from django.db import models
-from bhp_base_model.models import BaseUuidModel
-from bhp_registration.models import RegisteredSubject
-from bhp_consent.managers import BaseConsentHistoryManager
+from ...bhp_base_model.models import BaseUuidModel
+from ...bhp_registration.models import RegisteredSubject
+from ..managers import BaseConsentHistoryManager
 
 
 class BaseConsentHistory(BaseUuidModel):

@@ -1,1 +1,1 @@
-from excluded_admin import ExcludedAdmin
+from .excluded_admin import ExcludedAdmin

@@ -1,7 +1,7 @@
 from django.test import TestCase
-from bhp_identifier.classes import Identifier
-from bhp_identifier.models import IdentifierTracker
-from bhp_identifier.exceptions import CheckDigitError, IdentifierEncodingError, IdentifierDecodingError
+from ..classes import Identifier
+from ..models import IdentifierTracker
+from ..exceptions import CheckDigitError, IdentifierEncodingError, IdentifierDecodingError
 
 
 class IdentifierMethodsTests(TestCase):

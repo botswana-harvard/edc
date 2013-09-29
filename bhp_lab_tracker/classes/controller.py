@@ -6,8 +6,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
-from helpers import TrackerNamedTpl
-from history_updater import HistoryUpdater
+from .helpers import TrackerNamedTpl
+from .history_updater import HistoryUpdater
 
 logger = logging.getLogger(__name__)
 

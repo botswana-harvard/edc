@@ -1,2 +1,2 @@
-from base_haart_history import BaseHaartHistory
-from base_haart_modification import BaseHaartModification
+from .base_haart_history import BaseHaartHistory
+from .base_haart_modification import BaseHaartModification

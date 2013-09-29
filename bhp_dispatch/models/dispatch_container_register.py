@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from base_dispatch import BaseDispatch
+from .base_dispatch import BaseDispatch
 
 
 class DispatchContainerRegister(BaseDispatch):

@@ -1,5 +1,5 @@
 from django.db import models
-from base_history_model import BaseHistoryModel
+from .base_history_model import BaseHistoryModel
 
 
 class HistoryModel(BaseHistoryModel):

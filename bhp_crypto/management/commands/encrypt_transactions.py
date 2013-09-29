@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
-from bhp_crypto.classes import FieldCryptor
 from django.db.models import get_model
+from ...classes import FieldCryptor
+
 
 #usage: python manage.py encrypt_transactions outgoing/incoming
 class Command(BaseCommand):

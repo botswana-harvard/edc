@@ -1,5 +1,5 @@
 from django.db.models import get_model
-from rule import Rule
+from .base_rule import BaseRule
 
 """
 
@@ -27,7 +27,7 @@ to the bucket.py in the app add something like this
 """
 
 
-class AdditionalModelRule(Rule):
+class AdditionalModelRule(BaseRule):
 
     """ add an entry in AdditionalEntryBucket if logic """
 

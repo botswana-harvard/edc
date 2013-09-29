@@ -1,6 +1,6 @@
 import factory
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_visit.models import ScheduleGroup
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...models import ScheduleGroup
 
 starting_seq_num = 1000
 

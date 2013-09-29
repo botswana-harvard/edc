@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.db import models
-from bhp_base_model.models import BaseUuidModel
+from ...bhp_base_model.models import BaseUuidModel
 
 
 class PendingIdentifier(BaseUuidModel):

@@ -1,9 +1,9 @@
 from django.db import models
-from audit_trail.audit import AuditTrail
-from bhp_sync.models import BaseSyncUuidModel
-from bhp_content_type_map.models import ContentTypeMap
-from consent_catalogue import ConsentCatalogue
-from bhp_consent.managers import AttachedModelManager
+from ...audit_trail.audit import AuditTrail
+from ...bhp_sync.models import BaseSyncUuidModel
+from ...bhp_content_type_map.models import ContentTypeMap
+from ..managers import AttachedModelManager
+from .consent_catalogue import ConsentCatalogue
 
 
 class AttachedModel(BaseSyncUuidModel):

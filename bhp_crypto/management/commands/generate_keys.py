@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from bhp_crypto.utils import setup_new_keys
+from ...utils import setup_new_keys
 
 
 class Command(BaseCommand):

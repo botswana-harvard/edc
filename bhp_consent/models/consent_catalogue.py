@@ -1,10 +1,10 @@
 from django.db import models
-from audit_trail.audit import AuditTrail
-from bhp_sync.models import BaseSyncUuidModel
-from bhp_base_model.validators import datetime_not_before_study_start
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_consent.choices import CONSENT_TYPES
-from bhp_consent.managers import ConsentCatalogueManager
+from ...audit_trail.audit import AuditTrail
+from ...bhp_sync.models import BaseSyncUuidModel
+from ...bhp_base_model.validators import datetime_not_before_study_start
+from ...bhp_content_type_map.models import ContentTypeMap
+from ..choices import CONSENT_TYPES
+from ..managers import ConsentCatalogueManager
 
 
 class ConsentCatalogue(BaseSyncUuidModel):

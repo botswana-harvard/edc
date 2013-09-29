@@ -1,5 +1,5 @@
 from decimal import Decimal
-from local_rsa_encryption_field import LocalRsaEncryptionField
+from .local_rsa_encryption_field import LocalRsaEncryptionField
 
 
 class EncryptedDecimalField(LocalRsaEncryptionField):

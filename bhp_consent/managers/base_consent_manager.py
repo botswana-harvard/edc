@@ -1,4 +1,4 @@
-from bhp_subject.managers import BaseSubjectManager
+from ...bhp_subject.managers import BaseSubjectManager
 
 
 class BaseConsentManager(BaseSubjectManager):

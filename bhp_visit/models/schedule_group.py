@@ -1,8 +1,8 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from bhp_base_model.models import BaseUuidModel
-from bhp_visit.models import MembershipForm
-from bhp_visit.managers import ScheduleGroupManager
+from ...bhp_base_model.models import BaseUuidModel
+from ..models import MembershipForm
+from ..managers import ScheduleGroupManager
 
 
 class ScheduleGroup(BaseUuidModel):

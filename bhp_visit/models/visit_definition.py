@@ -2,12 +2,12 @@ from datetime import timedelta
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.core.validators import MaxLengthValidator
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_visit.utils import get_lower_window_days, get_upper_window_days
-from bhp_visit.models import ScheduleGroup
-from bhp_visit.models import BaseWindowPeriodItem
-from bhp_visit.managers import VisitDefinitionManager
-from bhp_visit.validators import is_visit_tracking_model
+from ...bhp_content_type_map.models import ContentTypeMap
+from ..utils import get_lower_window_days, get_upper_window_days
+from ..models import ScheduleGroup
+from ..models import BaseWindowPeriodItem
+from ..managers import VisitDefinitionManager
+from ..validators import is_visit_tracking_model
 
 
 class VisitDefinition(BaseWindowPeriodItem):

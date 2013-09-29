@@ -1,1 +1,1 @@
-from required_fields import *
+from .required_fields import *

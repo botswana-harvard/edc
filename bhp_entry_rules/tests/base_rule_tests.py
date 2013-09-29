@@ -1,5 +1,5 @@
 from django.test import TestCase
-from bhp_entry_rules.classes import BaseRule
+from ..classes import BaseRule
 
 
 class BaseRuleTests(TestCase):

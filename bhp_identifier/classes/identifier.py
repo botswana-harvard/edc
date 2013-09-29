@@ -1,9 +1,9 @@
 import re
 from datetime import datetime
 from django.db import IntegrityError
-from bhp_identifier.models import IdentifierTracker
-from bhp_identifier.exceptions import IdentifierError
-from bhp_identifier.exceptions import CheckDigitError, IdentifierEncodingError, IdentifierDecodingError, IndentifierFormatError
+from ..models import IdentifierTracker
+from ..exceptions import IdentifierError
+from ..exceptions import CheckDigitError, IdentifierEncodingError, IdentifierDecodingError, IndentifierFormatError
 
 
 class Identifier(object):

@@ -1,4 +1,4 @@
-from bhp_subject.tests.factories import BaseSubjectFactory
+from ....bhp_subject.tests.factories import BaseSubjectFactory
 
 
 class BaseConsentBasicsFactory(BaseSubjectFactory):

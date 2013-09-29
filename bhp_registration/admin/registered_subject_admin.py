@@ -1,7 +1,7 @@
 from django.contrib import admin
-from bhp_crypto.admin import BaseCryptorModelAdmin
-from bhp_registration.models import RegisteredSubject
-from bhp_registration.forms import RegisteredSubjectForm
+from ...bhp_crypto.admin import BaseCryptorModelAdmin
+from ..models import RegisteredSubject
+from ..forms import RegisteredSubjectForm
 
 
 class RegisteredSubjectAdmin (BaseCryptorModelAdmin):

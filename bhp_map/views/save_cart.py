@@ -1,8 +1,8 @@
 import itertools
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
-from bhp_map.classes import site_mappers
-from bhp_map.exceptions import MapperError
+from ..classes import site_mappers
+from ..exceptions import MapperError
 
 
 def save_cart(request, **kwargs):

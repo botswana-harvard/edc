@@ -1,1 +1,1 @@
-from identifier_manager import IdentifierManager
+from .identifier_manager import IdentifierManager

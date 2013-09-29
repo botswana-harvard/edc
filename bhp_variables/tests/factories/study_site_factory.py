@@ -1,6 +1,6 @@
 import factory
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_variables.models import StudySite
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...models import StudySite
 
 
 class StudySiteFactory(BaseUuidModelFactory):

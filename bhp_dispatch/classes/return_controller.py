@@ -1,10 +1,10 @@
 from datetime import datetime
 from django.db.models import get_model
 from django.db.models.query import QuerySet
-from bhp_sync.exceptions import PendingTransactionError
-from bhp_dispatch.exceptions import DispatchContainerError, AlreadyReturned
-from bhp_dispatch.models import DispatchContainerRegister, DispatchItemRegister
-from base_return import BaseReturn
+from ...bhp_sync.exceptions import PendingTransactionError
+from ..exceptions import DispatchContainerError, AlreadyReturned
+from ..models import DispatchContainerRegister, DispatchItemRegister
+from .base_return import BaseReturn
 
 
 class ReturnController(BaseReturn):
@@ -23,7 +23,7 @@ class ReturnController(BaseReturn):
         user_containers = []
         if kwargs.get('selected_container_identifiers', None):
             dispatch_container_registers = DispatchContainerRegister.objects.filter(container_identifier__in=kwargs.get('selected_container_identifiers', None),
-                                                                                    producer=self.get_producer(), 
+                                                                                    producer=self.get_producer(),
                                                                                     is_dispatched=True)
         else:
             dispatch_container_registers = DispatchContainerRegister.objects.filter(producer=self.get_producer(), is_dispatched=True)
@@ -79,7 +79,7 @@ class ReturnController(BaseReturn):
             DispatchItemRegister.objects.filter(pk=dispatch_item_register.pk).update(
                     return_datetime=datetime.now(),
                     is_dispatched=False)
-            #if dispatch_item_register.dispatch_container_register:
+            # if dispatch_item_register.dispatch_container_register:
             #    dispatch_container_registers.append(dispatch_item_register.dispatch_container_register)
         return dispatch_container_registers
 
@@ -138,7 +138,7 @@ class ReturnController(BaseReturn):
     def _lock_container_in_producer(self, user_container):
         dispatch_container_register = self.get_dispatch_container_register(user_container)
         self._to_json(dispatch_container_register, DispatchContainerRegister)
-    
+
     def return_selected_items(self, dispatched_container_list):
         if not dispatched_container_list:
             raise TypeError('dispatched container list cannot be None')
@@ -148,7 +148,7 @@ class ReturnController(BaseReturn):
             self._lock_container_in_producer(user_container)
             self._return_by_user_container(user_container)
         return 'Containers {0}, have been returned from producer \'{1}\''.format(str(dispatched_container_list), self.get_producer_name())
-    
+
     def return_dispatched_items(self, queryset=None):
         """Loops thru dispatch container instances for this producer and returns them."""
         if isinstance(queryset, QuerySet):
@@ -160,5 +160,3 @@ class ReturnController(BaseReturn):
                 self._lock_container_in_producer(user_container)
                 self._return_by_user_container(user_container)
         return 'All containers have been returned from producer \'{0}\''.format(self.get_producer_name())
-    
-    

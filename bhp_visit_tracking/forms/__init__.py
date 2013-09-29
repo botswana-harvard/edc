@@ -1,1 +1,1 @@
-from base_visit_tracking_form import BaseVisitTrackingForm
+from .base_visit_tracking_form import BaseVisitTrackingForm

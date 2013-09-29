@@ -1,4 +1,4 @@
-from bhp_crypto.classes import BaseCryptor
+from ..classes import BaseCryptor
 
 
 def mask_encrypted(value):

@@ -1,7 +1,7 @@
 import numpy
 from django.test import TestCase
-from bhp_base_test.models import TestModel
-from bhp_supplemental_fields.classes import SupplementalFields
+from ...bhp_base_test.models import TestModel
+from ..classes import SupplementalFields
 
 
 class TestSupplementalFields(TestCase):

@@ -1,11 +1,10 @@
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
-from bhp_dashboard.classes import Dashboard
-from bhp_dashboard.exceptions import DashboardModelError
-from bhp_registration.models import RegisteredSubject
-from bhp_registration.tests.factories import RegisteredSubjectFactory
-from bhp_base_test.models import TestConsent, TestVisit
-from bhp_base_test.tests.factories import TestConsentFactory
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_base_test.models import TestConsent, TestVisit
+from ...bhp_base_test.tests.factories import TestConsentFactory
+from ..classes import Dashboard
+from ..exceptions import DashboardModelError
 
 
 class DashboardMethodTests(TestCase):
@@ -57,7 +56,7 @@ class DashboardMethodTests(TestCase):
         dashboard.add_dashboard_model({'test_consent': TestConsent})
         self.assertIn('test_consent', dashboard.get_dashboard_models())
         print 'assert OK if dashboard model is specified (and added) at init instead of on the dashboard instance'
-        
+
         class D1(Dashboard):
             dashboard_url_name = 'subject_dashboard_url'
 

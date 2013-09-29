@@ -1,7 +1,7 @@
 import factory
-from bhp_base_model.tests.factories import BaseModelFactory
-from bhp_content_type_map.models import ContentTypeMap
-from content_type_factory import ContentTypeFactory
+from ....bhp_base_model.tests.factories import BaseModelFactory
+from ...models import ContentTypeMap
+from .content_type_factory import ContentTypeFactory
 
 
 class ContentTypeMapFactory(BaseModelFactory):

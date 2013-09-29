@@ -1,5 +1,5 @@
-from bhp_lab_entry.models import ScheduledLabEntryBucket
-from base_scheduled_entry import BaseScheduledEntry
+from ...bhp_lab_entry.models import ScheduledLabEntryBucket
+from .base_scheduled_entry import BaseScheduledEntry
 
 
 class ScheduledLabEntry(BaseScheduledEntry):

@@ -7,15 +7,15 @@ from tastypie.models import ApiKey
 from django.db.models import Model
 from django.conf import settings
 from django.db.models import signals
-from bhp_common.utils import td_to_string
-from bhp_base_model.models import BaseModel
-from bhp_sync.models import BaseSyncUuidModel
-from bhp_base_model.models import BaseUuidModel
-from lab_base_model.models import BaseLabUuidModel
-from bhp_consent.models.signals import add_models_to_catalogue
-from base_prepare_device import BasePrepareDevice
-from bhp_dispatch.exceptions import BackupError, RestoreError
-from lab_base_model.models import BaseLabListModel, BaseLabModel
+from edc_lab.lab_base_model.models import BaseLabListModel, BaseLabModel
+from edc_lab.lab_base_model.models import BaseLabUuidModel
+from ...bhp_common.utils import td_to_string
+from ...bhp_base_model.models import BaseModel
+from ...bhp_sync.models import BaseSyncUuidModel
+from ...bhp_base_model.models import BaseUuidModel
+from ...bhp_consent.models.signals import add_models_to_catalogue
+from ..exceptions import BackupError, RestoreError
+from .base_prepare_device import BasePrepareDevice
 
 
 logger = logging.getLogger(__name__)

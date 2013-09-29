@@ -7,7 +7,6 @@ class Hasher(object):
     def __init__(self, *args, **kwargs):
         self.length = self._get_hash_length()
         self.iterations = 40
-        #super(Hasher, self).__init__(*args, **kwargs)
 
     def new_hasher(self, value=''):
         return hashlib.sha256(value.decode('ascii', 'ignore'))

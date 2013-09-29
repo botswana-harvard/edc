@@ -1,6 +1,6 @@
 from django.db import models
-from audit_trail.audit import AuditTrail
-from bhp_dispatch.models import BaseDispatchSyncUuidModel
+from ...audit_trail.audit import AuditTrail
+from ..models import BaseDispatchSyncUuidModel
 
 
 class TestContainer(BaseDispatchSyncUuidModel):

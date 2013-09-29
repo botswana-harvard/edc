@@ -1,11 +1,8 @@
-from M2Crypto import Rand, RSA
 from M2Crypto.RSA import RSAError
 from django.test import TestCase
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from bhp_crypto.classes import Cryptor, FieldCryptor
-from bhp_crypto.fields import EncryptedFirstnameField, EncryptedLastnameField
-from bhp_crypto.exceptions import AlgorithmError, EncryptionKeyError, ModeError
+from ..classes import Cryptor, FieldCryptor
+from ..exceptions import AlgorithmError, EncryptionKeyError, ModeError
 
 
 class CryptorMethodsTests(TestCase):

@@ -1,6 +1,6 @@
 from django import forms
-from bhp_base_form.forms import BaseModelForm
-from bhp_consent.models import AttachedModel
+from ...bhp_base_form.forms import BaseModelForm
+from ..models import AttachedModel
 
 
 class BaseConsentedModelForm(BaseModelForm):

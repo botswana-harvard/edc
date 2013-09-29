@@ -1,13 +1,11 @@
-# Import django modules
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.db.models import Q
-from bhp_map.classes import site_mappers
-from bhp_map.exceptions import MapperError
+from ..classes import site_mappers
+from ..exceptions import MapperError
 
 
 def draw_site_polygon(request, **kwargs):
-    """Plot items from base selection criteria.
+    """Plots items from base selection criteria.
 
       * Filter points to plot by sending coordinates of a selected ward only to the items.html template.
       * Regions contain sections    """
@@ -21,10 +19,8 @@ def draw_site_polygon(request, **kwargs):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_item_label))
     else:
         m = site_mappers.get_registry(mapper_name)()
-        item_target_field = 'target'
         action_script_url_name = 'map_add_cart_url'
         has_items = False
-        mapper_mapper_item_label = m.get_item_label()
         identifiers = request.session.get('identifiers', [])
         selected_section = request.POST.get(m.get_section_field_attr())
         cart_size = len(identifiers)
@@ -54,7 +50,6 @@ def draw_site_polygon(request, **kwargs):
         payload_empty =True
         
         gps_coordinates = []
-            
         landmark_list = []
         landmarks = m.get_landmarks()
         for place, lat, lon in landmarks:

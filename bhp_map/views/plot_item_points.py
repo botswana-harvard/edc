@@ -1,9 +1,8 @@
-# Import django modules
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.db.models import Q
-from bhp_map.classes import site_mappers
-from bhp_map.exceptions import MapperError
+from ..classes import site_mappers
+from ..exceptions import MapperError
 
 
 def plot_item_points(request, **kwargs):
@@ -21,7 +20,6 @@ def plot_item_points(request, **kwargs):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_item_label))
     else:
         m = site_mappers.get_registry(mapper_name)()
-        item_target_field = 'target'
         action_script_url = 'map_add_cart_url'
         has_items = False
         identifiers = request.session.get('identifiers', [])
@@ -66,7 +64,6 @@ def plot_item_points(request, **kwargs):
             section_color_code_list.append([key_color[:-1], sec_value])
         if payload:
             has_items = True
-        
         landmark_list = []
         landmarks = m.get_landmarks()
         for place, lon, lat in landmarks:

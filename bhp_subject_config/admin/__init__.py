@@ -1,1 +1,1 @@
-from subject_configuration_admin import SubjectConfigurationAdmin
+from .subject_configuration_admin import SubjectConfigurationAdmin

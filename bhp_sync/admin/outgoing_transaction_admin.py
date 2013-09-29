@@ -1,7 +1,7 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_sync.models import OutgoingTransaction
-from bhp_sync.actions import reset_outgoing_transaction_middle_as_consumed, reset_outgoing_transaction_middle_as_not_consumed, reset_outgoing_transaction_server_as_consumed, reset_outgoing_transaction_server_as_not_consumed
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ..models import OutgoingTransaction
+from ..actions import reset_outgoing_transaction_middle_as_consumed, reset_outgoing_transaction_middle_as_not_consumed, reset_outgoing_transaction_server_as_consumed, reset_outgoing_transaction_server_as_not_consumed
 
 
 class OutgoingTransactionAdmin (BaseModelAdmin):

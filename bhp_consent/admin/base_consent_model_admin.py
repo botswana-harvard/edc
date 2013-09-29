@@ -1,6 +1,6 @@
 from django.contrib import admin
-from bhp_crypto.admin import BaseCryptorModelAdmin
-from bhp_consent.actions import flag_as_verified_against_paper, unflag_as_verified_against_paper
+from ...bhp_crypto.admin import BaseCryptorModelAdmin
+from ..actions import flag_as_verified_against_paper, unflag_as_verified_against_paper
 
 
 class BaseConsentModelAdmin(BaseCryptorModelAdmin):

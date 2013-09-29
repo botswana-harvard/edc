@@ -1,7 +1,7 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin, BaseStackedInline
-from bhp_dispatch.models import DispatchItemRegister
-from bhp_dispatch.actions import set_is_dispatched
+from ...bhp_base_admin.admin import BaseModelAdmin, BaseStackedInline
+from ..models import DispatchItemRegister
+from ..actions import set_is_dispatched
 
 
 class DispatchItemRegisterInline(BaseStackedInline):

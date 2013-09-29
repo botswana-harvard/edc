@@ -1,1 +1,1 @@
-from is_legal_combination import *
+from .is_legal_combination import *

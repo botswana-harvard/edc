@@ -1,1 +1,1 @@
-from section_method_tests import SectionMethodTests
+from .section_method_tests import SectionMethodTests

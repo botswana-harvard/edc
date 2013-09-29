@@ -1,6 +1,6 @@
 from django.db import models
-from bhp_consent.models import BaseConsentedUuidModel
-from bhp_haart.choices import ARV_DRUG_LIST
+from ...bhp_consent.models import BaseConsentedUuidModel
+from ..choices import ARV_DRUG_LIST
 
 
 class BaseHaartHistory(BaseConsentedUuidModel):

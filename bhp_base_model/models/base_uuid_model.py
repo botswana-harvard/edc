@@ -1,5 +1,5 @@
-from base_model import BaseModel
-from bhp_base_model.fields import MyUUIDField
+from ..fields import MyUUIDField
+from .base_model import BaseModel
 
 
 class BaseUuidModel(BaseModel):

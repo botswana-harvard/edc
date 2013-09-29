@@ -3,15 +3,15 @@ import uuid
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from django.conf import settings
-from bhp_device.classes import Device
-from bhp_identifier.exceptions import IdentifierError, IndentifierFormatError
-from check_digit import CheckDigit
+from ...bhp_device.classes import Device
+from ..exceptions import IdentifierError, IndentifierFormatError
+from .check_digit import CheckDigit
 
 
 class BaseIdentifier(object):
     """ Base class for all identifiers."""
 
-    def __init__(self, identifier_format=None, app_name=None, model_name=None, site_code=None, padding=None, 
+    def __init__(self, identifier_format=None, app_name=None, model_name=None, site_code=None, padding=None,
                  modulus=None, identifier_prefix=None, is_derived=False, add_check_digit=None, using=None,
                  sequence_app_label=None, sequence_model_name=None):
         self.identifier_format = None

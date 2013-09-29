@@ -1,7 +1,7 @@
 import copy
 from django.db.models import get_model
 from django.core.urlresolvers import reverse
-from bhp_common.utils import convert_from_camel
+from ...bhp_common.utils import convert_from_camel
 
 
 class ScheduledEntryContext(object):

@@ -1,7 +1,7 @@
 import logging
 from django.core.management.base import BaseCommand
-from bhp_lab_tracker.classes import site_lab_tracker
-from bhp_lab_tracker.models import HistoryModel
+from ...classes import site_lab_tracker
+from ...models import HistoryModel
 
 
 site_lab_tracker.autodiscover()

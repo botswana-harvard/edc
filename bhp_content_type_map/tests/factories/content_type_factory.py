@@ -1,6 +1,6 @@
 import factory
-from bhp_base_model.tests.factories import BaseModelFactory
 from django.contrib.contenttypes.models import ContentType
+from ....bhp_base_model.tests.factories import BaseModelFactory
 
 
 class ContentTypeFactory(BaseModelFactory):

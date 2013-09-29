@@ -1,6 +1,6 @@
 import logging
-from base_controller import BaseController
-from controller_register import registered_controllers
+from .base_controller import BaseController
+from .controller_register import registered_controllers
 
 logger = logging.getLogger(__name__)
 

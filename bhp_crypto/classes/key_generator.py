@@ -2,8 +2,7 @@ import os
 import base64
 from M2Crypto import Rand, RSA, EVP
 from django.conf import settings
-
-from cryptor import Cryptor
+from .cryptor import Cryptor
 
 
 class KeyGenerator(object):

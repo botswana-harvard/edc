@@ -1,13 +1,12 @@
 import factory
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_consent.tests.factories import ConsentCatalogueFactory
-from bhp_content_type_map.tests.factories import ContentTypeMapFactory
-from bhp_consent.models import AttachedModel
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...models import AttachedModel
+from .consent_catalogue_factory import ConsentCatalogueFactory
 
 
 class AttachedModelFactory(BaseUuidModelFactory):
     FACTORY_FOR = AttachedModel
 
     consent_catalogue = factory.SubFactory(ConsentCatalogueFactory)
-    content_type_map = '' # factory.SubFactory(ContentTypeMapFactory, content_type=factory.SelfAttribute('..content_type_map.content_type'))
+    content_type_map = ''
     is_active = True

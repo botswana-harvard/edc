@@ -1,12 +1,7 @@
 import csv
 import datetime
 from django.http import HttpResponse
-try:
-    from django.db.models.constants import LOOKUP_SEP
-except:
-    # django 1.5
-    from django.db.models.sql.constants import LOOKUP_SEP
-from django.db.models import ManyToManyField
+from django.db.models.sql.constants import LOOKUP_SEP
 
 
 def export_as_csv_action(description="Export selected objects as CSV file",
@@ -56,13 +51,13 @@ def export_as_csv_action(description="Export selected objects as CSV file",
         Added exra_fields and changed accordingly
         """
 
-        #export_queryset_as_csv(modeladmin, request, queryset)
+        # export_queryset_as_csv(modeladmin, request, queryset)
 
         opts = modeladmin.model._meta
 
         field_names = [field.name for field in opts.fields]
 
-        # add extra fields to field_names, these are django-style query_strings  
+        # add extra fields to field_names, these are django-style query_strings
         if extra_fields:
             # extra fields is list of dicts of [{'label': 'query_string'}, {}...]
             for item in extra_fields:
@@ -116,8 +111,8 @@ def export_as_csv_action(description="Export selected objects as CSV file",
                 row.append(values)
             writer.writerow(row)
 
-            #writer.writerow([unicode(getattr(obj, field)).encode("utf-8","replace") for field in field_names])
-            #writer.writerow([unicode(obj[field]).encode("utf-8","replace") for field in field_names])            
+            # writer.writerow([unicode(getattr(obj, field)).encode("utf-8","replace") for field in field_names])
+            # writer.writerow([unicode(obj[field]).encode("utf-8","replace") for field in field_names])
 
         return response
 

@@ -1,7 +1,6 @@
-import factory
 from datetime import date
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_haart.choices import ARV_STATUS_WITH_NEVER, ARV_DRUG_LIST, DOSE_STATUS, ARV_MODIFICATION_REASON
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...choices import ARV_DRUG_LIST
 
 
 class BaseHaartHistoryFactory(BaseUuidModelFactory):

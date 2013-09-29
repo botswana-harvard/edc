@@ -1,1 +1,1 @@
-from study_specific_admin import StudySpecificAdmin
+from .study_specific_admin import StudySpecificAdmin

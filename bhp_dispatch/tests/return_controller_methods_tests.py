@@ -1,12 +1,12 @@
 from django.db.models import get_model
-from bhp_sync.exceptions import PendingTransactionError, ProducerError
-from bhp_sync.models import OutgoingTransaction
-from bhp_sync.classes import Consumer
-from bhp_dispatch.exceptions import (AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError,
-                                    DispatchModelError, DispatchControllerNotReady, DispatchItemError)
-from bhp_dispatch.models import TestItem, DispatchItemRegister, DispatchContainerRegister, TestContainer
-from bhp_dispatch.classes import ReturnController, BaseDispatchController
-from base_controller_tests import BaseControllerTests
+from ...bhp_sync.exceptions import ProducerError
+from ...bhp_sync.models import OutgoingTransaction
+from ...bhp_sync.classes import Consumer
+from ..exceptions import (AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError,
+                          DispatchModelError, DispatchControllerNotReady, DispatchItemError)
+from ..models import TestItem, DispatchItemRegister, DispatchContainerRegister, TestContainer
+from ..classes import ReturnController, BaseDispatchController
+from .base_controller_tests import BaseControllerTests
 
 
 class ReturnControllerMethodsTests(BaseControllerTests):

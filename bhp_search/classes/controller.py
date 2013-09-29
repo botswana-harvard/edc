@@ -3,7 +3,7 @@ from django.conf import settings
 from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
 from django.core.exceptions import ImproperlyConfigured
-from base_search import BaseSearch
+from .base_search import BaseSearch
 
 
 class AlreadyRegistered(Exception):

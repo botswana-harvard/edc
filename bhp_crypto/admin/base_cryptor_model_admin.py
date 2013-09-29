@@ -1,5 +1,5 @@
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_crypto import actions
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ..actions import encrypt, decrypt
 
 
 class BaseCryptorModelAdmin (BaseModelAdmin):
@@ -8,6 +8,6 @@ class BaseCryptorModelAdmin (BaseModelAdmin):
     other stuff. """
 
     def __init__(self, *args, **kwargs):
-        self.actions.append(actions.encrypt)
-        self.actions.append(actions.decrypt)
+        self.actions.append(encrypt)
+        self.actions.append(decrypt)
         super(BaseCryptorModelAdmin, self).__init__(*args, **kwargs)

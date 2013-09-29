@@ -1,4 +1,4 @@
-from bhp_dispatch.exceptions import AlreadyRegisteredController
+from ..exceptions import AlreadyRegisteredController
 
 
 class ControllerRegister(object):

@@ -1,9 +1,7 @@
-
 from django.db import models
 from django.core.urlresolvers import reverse
-#from django.core.urlresolvers import NoReverseMatch
 from django_extensions.db.models import TimeStampedModel
-from bhp_base_model.fields import HostnameCreationField, HostnameModificationField
+from ..fields import HostnameCreationField, HostnameModificationField
 
 
 class BaseModel(TimeStampedModel):

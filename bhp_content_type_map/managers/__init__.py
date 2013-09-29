@@ -1,1 +1,1 @@
-from content_type_map_manager import ContentTypeMapManager
+from .content_type_map_manager import ContentTypeMapManager

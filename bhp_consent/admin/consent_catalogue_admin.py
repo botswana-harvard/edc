@@ -1,7 +1,7 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_consent.models import ConsentCatalogue
-from bhp_consent.forms import ConsentCatalogueForm
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ..models import ConsentCatalogue
+from ..forms import ConsentCatalogueForm
 
 
 class ConsentCatalogueAdmin(BaseModelAdmin):

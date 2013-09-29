@@ -1,6 +1,6 @@
 import factory
-from bhp_subject.tests.factories import BaseSubjectFactory
-from bhp_registration.models import RegisteredSubject
+from ....bhp_subject.tests.factories import BaseSubjectFactory
+from ...models import RegisteredSubject
 
 
 class RegisteredSubjectFactory(BaseSubjectFactory):

@@ -1,6 +1,6 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_visit.models import ScheduleGroup
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ..models import ScheduleGroup
 
 
 class ScheduleGroupAdmin(BaseModelAdmin):

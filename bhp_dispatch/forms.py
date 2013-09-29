@@ -1,5 +1,5 @@
 from django import forms
-from bhp_sync.models import Producer
+from ..bhp_sync.models import Producer
 
 
 class DispatchForm(forms.Form):

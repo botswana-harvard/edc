@@ -1,1 +1,1 @@
-from base_locator import BaseLocator
+from .base_locator import BaseLocator

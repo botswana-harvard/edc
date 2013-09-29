@@ -1,17 +1,9 @@
 import time
-from datetime import datetime
 from django.test import LiveServerTestCase
-from django.db.models import CharField, ForeignKey, OneToOneField
 from django.contrib.auth.models import User
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
-from bhp_content_type_map.classes import ContentTypeMapHelper
-from bhp_consent.models import ConsentCatalogue
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_variables.models import StudySpecific
-from selenium.webdriver.support.ui import Select, WebDriverWait
-from bhp_base_model.models import TestManyToMany
-from bhp_base_model.models import TestForeignKey, TestModel
+from ...bhp_base_test.models import TestManyToMany, TestForeignKey, TestModel
 
 
 class MySeleniumTests(LiveServerTestCase):
@@ -68,5 +60,3 @@ class MySeleniumTests(LiveServerTestCase):
         self.selenium.find_element_by_xpath('//a[@href="{0}/"]'.format(pk)).click()
         self.assertEqual([test_many_to_many.name for test_many_to_many in TestModel.objects.get(pk=pk).test_many_to_many.all()], ['test_m2m2'])
         time.sleep(5)
-        
-

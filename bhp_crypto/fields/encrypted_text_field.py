@@ -1,5 +1,5 @@
 from django.forms import widgets
-from local_aes_encryption_field import LocalAesEncryptionField
+from .local_aes_encryption_field import LocalAesEncryptionField
 
 
 class EncryptedTextField(LocalAesEncryptionField):

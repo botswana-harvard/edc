@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from bhp_using.exceptions import UsingError, UsingSourceError, UsingDestinationError
-from bhp_using.classes import BaseUsing
+from ..exceptions import UsingError, UsingSourceError, UsingDestinationError
+from ..classes import BaseUsing
 
 
 class BaseUsingMethodsTests(TestCase):

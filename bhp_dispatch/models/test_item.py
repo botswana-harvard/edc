@@ -1,8 +1,9 @@
 from django.db import models
-from audit_trail.audit import AuditTrail
-from bhp_base_model.models import BaseListModel, TestManyToMany
-from base_dispatch_sync_uuid_model import BaseDispatchSyncUuidModel
-from test_container import TestContainer
+from ...audit_trail.audit import AuditTrail
+from ...bhp_base_model.models import BaseListModel
+from ...bhp_base_test.models import TestManyToMany
+from .base_dispatch_sync_uuid_model import BaseDispatchSyncUuidModel
+from .test_container import TestContainer
 
 
 class TestList(BaseListModel):

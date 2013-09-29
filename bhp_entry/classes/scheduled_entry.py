@@ -1,9 +1,9 @@
 from datetime import datetime, date
 from django.db.models import get_model
-from bhp_entry.models import Entry
-from bhp_registration.models import RegisteredSubject
-from bhp_visit_tracking.settings import VISIT_REASON_NO_FOLLOW_UP_CHOICES
-from base_scheduled_entry import BaseScheduledEntry
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_visit_tracking.settings import VISIT_REASON_NO_FOLLOW_UP_CHOICES
+from ..models import Entry
+from .base_scheduled_entry import BaseScheduledEntry
 
 
 class ScheduledEntry(BaseScheduledEntry):
@@ -49,42 +49,6 @@ class ScheduledEntry(BaseScheduledEntry):
             except:
                 pass
         self._bucket_model_instance = bucket_model_instance
-
-#     def check_visit_model_reason_field(self, visit_model_instance):
-#         """Confirms visit model has a reason attribute and the choices tuple uses required values correctly.
-# 
-#         Called before visit model instance is set for this class.
-# 
-#         You can override the default list of required reasons by overriding the method 'get_visit_reason_choices'
-#         on the visit model."""
-# 
-#         #visit_reason_choices = visit_model_instance.get_visit_reason_choices()
-#         visit_reason_choices = visit_model_instance._get_visit_reason_choices()
-#         if not isinstance(visit_reason_choices, dict):
-#             raise TypeError('Expected dictionary from get_visit_reason_choices(). Got {0}'.format(visit_reason_choices))
-#         # check that the user visit reasons conform to use the required key words
-#         found = []
-#         visit_reason_required_keys = VISIT_REASON_REQUIRED_CHOICES
-#         visit_reason_required_keys.sort()
-#         for k in visit_reason_required_keys:
-#             # look for each required word
-#             for v in visit_reason_choices:
-#                 if k == v:
-#                     found.append(k)
-#         found.sort()
-#         if found != visit_reason_required_keys:
-#             raise ImproperlyConfigured('Visit model method \'get_visit_reason_choices\' must return a list of choices using each of the required words {0}. Got {1}.'.format(visit_reason_required_keys, visit_reason_choices))
-#         # ensure visir model has field reason
-#         for f in visit_model_instance.__class__._meta.fields:
-#             if f.name == 'reason':
-#                 field = f
-#                 break
-#         if not field:
-#             raise ImproperlyConfigured('Visit model requires field \'reason\'.')
-#         #for word in required_reasons:
-#         #    if word in visit_model_instance.reason.lower() and visit_model_instance.reason.lower() != word:
-#         #        raise ImproperlyConfigured('Visit model attribute \'reason\' value \'{1}\' is invalid. Must be \'{0}\'. The words {2} are reserved, as is, for the reason choices tuple. Check your visit model\'s field or form field definition.'.format(word, visit_model_instance.reason.lower(), required_reasons))
-#         return visit_reason_choices
 
     def show_scheduled_entries(self, registered_subject, visit_model_instance=None):
         visit_model_instance = visit_model_instance or self.get_visit_model_instance()

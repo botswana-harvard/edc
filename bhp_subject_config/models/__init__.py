@@ -1,1 +1,1 @@
-from subject_configuration import SubjectConfiguration
+from .subject_configuration import SubjectConfiguration

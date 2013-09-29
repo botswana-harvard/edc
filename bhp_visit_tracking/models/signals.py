@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from base_visit_tracking import BaseVisitTracking
-from bhp_entry.classes import ScheduledEntry
+from ...bhp_entry.classes import ScheduledEntry
+from .base_visit_tracking import BaseVisitTracking
 
 
 @receiver(post_save, weak=False, dispatch_uid="base_visit_tracking_check_in_progress_on_post_save")

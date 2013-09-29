@@ -1,5 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import get_model, F, Max
+from django.db.models import get_model, F
 
 
 class ContentTypeMapHelper(object):

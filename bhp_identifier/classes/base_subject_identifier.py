@@ -1,6 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
-from base_identifier import BaseIdentifier
+from .base_identifier import BaseIdentifier
 
 
 class BaseSubjectIdentifier(BaseIdentifier):

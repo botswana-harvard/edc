@@ -1,6 +1,6 @@
 from django.contrib import admin
-from bhp_crypto.admin import BaseCryptorModelAdmin
-from bhp_registration.models import SubjectIdentifierAuditTrail
+from ...bhp_crypto.admin import BaseCryptorModelAdmin
+from ..models import SubjectIdentifierAuditTrail
 
 
 class SubjectIdentifierAuditTrailAdmin(BaseCryptorModelAdmin):

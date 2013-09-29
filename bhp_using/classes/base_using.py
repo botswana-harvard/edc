@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from bhp_using.exceptions import UsingError, UsingSourceError, UsingDestinationError
+from ..exceptions import UsingError, UsingSourceError, UsingDestinationError
 
 
 class BaseUsing(object):

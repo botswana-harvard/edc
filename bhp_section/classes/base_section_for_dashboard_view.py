@@ -1,5 +1,5 @@
 #from django.views.base import View  # for 1.5
-from base_section_view import BaseSectionView
+from .base_section_view import BaseSectionView
 
 
 # class Section(View):  # 1.5

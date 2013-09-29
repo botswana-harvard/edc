@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.conf import settings
-from bhp_identifier.classes import BaseSubjectIdentifier
-from bhp_identifier.exceptions import CheckDigitError, IdentifierEncodingError, IdentifierDecodingError, IndentifierFormatError, IndentifierFormatKeyError
-from bhp_identifier.models import Sequence
+from ..classes import BaseSubjectIdentifier
+from ..exceptions import IndentifierFormatError
+from ..models import Sequence
 
 
 class BaseSubjectIdentifierMethodsTests(TestCase):

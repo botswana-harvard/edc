@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db.models import get_model
 from django.forms import ValidationError
-from bhp_identifier.models import SubjectIdentifier, DerivedSubjectIdentifier
+from ..models import SubjectIdentifier, DerivedSubjectIdentifier
 
 
 class Partner(object):
@@ -21,21 +21,21 @@ class Partner(object):
             raise ValidationError('Unknown index_identifier {0}.'.format(index_identifier))
         subject_identifier = "{0}-10".format(index_identifier)
         # create/save to DerivedSubjectIdentifier
-        DerivedSubjectIdentifier.objects.create(subject_identifier=subject_identifier, 
-                                                base_identifier=index_identifier)        
+        DerivedSubjectIdentifier.objects.create(subject_identifier=subject_identifier,
+                                                base_identifier=index_identifier)
         RegisteredSubject = get_model('bhp_registration', 'registeredsubject')
-        if not RegisteredSubject.objects.filter(relative_identifier = index_identifier):
+        if not RegisteredSubject.objects.filter(relative_identifier=index_identifier):
 #            RegisteredSubject.objects.update_with(consent, )
-            RegisteredSubject.objects.create(    
-                relative_identifier = index_identifier, 
-                subject_identifier = subject_identifier,
-                registration_datetime = datetime.now(),
-                subject_type = subject_type, 
-                created = datetime.now(),
-                first_name = kwargs.get('first_name'),
-                initials = kwargs.get('initials'),
-                registration_status = 'not_contacted',
-                study_site = kwargs.get('site'),       
+            RegisteredSubject.objects.create(
+                relative_identifier=index_identifier,
+                subject_identifier=subject_identifier,
+                registration_datetime=datetime.now(),
+                subject_type=subject_type,
+                created=datetime.now(),
+                first_name=kwargs.get('first_name'),
+                initials=kwargs.get('initials'),
+                registration_status='not_contacted',
+                study_site=kwargs.get('site'),
                 )
         else:
             ValidationError('A partner has already been registered for index {}'.format(index_identifier))

@@ -1,1 +1,1 @@
-from registered_subject_manager import RegisteredSubjectManager
+from .registered_subject_manager import RegisteredSubjectManager

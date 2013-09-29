@@ -1,2 +1,2 @@
-from base_subject import BaseSubject
-from signals import *
+from .base_subject import BaseSubject
+from .signals import *

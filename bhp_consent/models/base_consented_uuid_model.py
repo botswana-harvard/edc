@@ -1,10 +1,10 @@
 from django.conf import settings
 if 'bhp_dispatch' in settings.INSTALLED_APPS:
-    from bhp_dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
+    from ...bhp_dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
 else:
-    from bhp_sync.models import BaseSyncUuidModel
-from bhp_off_study.exceptions import SubjectOffStudyError
-from bhp_consent.classes import ConsentHelper
+    from ...bhp_sync.models import BaseSyncUuidModel
+from ...bhp_off_study.exceptions import SubjectOffStudyError
+from ..classes import ConsentHelper
 
 
 class BaseConsentedUuidModel(BaseSyncUuidModel):

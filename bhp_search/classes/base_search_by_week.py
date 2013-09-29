@@ -1,7 +1,7 @@
 from django.db.models import Q
-from bhp_search.forms import WeekYearSearchForm
-from base_search import BaseSearch
-from week import Week
+from ..forms import WeekYearSearchForm
+from .base_search import BaseSearch
+from .week import Week
 
 
 class BaseSearchByWeek(BaseSearch):

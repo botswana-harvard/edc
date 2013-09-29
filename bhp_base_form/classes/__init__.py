@@ -1,1 +1,1 @@
-from logic_check import LogicCheck
+from .logic_check import LogicCheck

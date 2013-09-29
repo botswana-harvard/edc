@@ -1,1 +1,1 @@
-from content_type_map_factory import ContentTypeMapFactory
+from .content_type_map_factory import ContentTypeMapFactory

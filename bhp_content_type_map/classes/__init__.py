@@ -1,1 +1,1 @@
-from content_type_map_helper import ContentTypeMapHelper
+from .content_type_map_helper import ContentTypeMapHelper

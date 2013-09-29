@@ -1,5 +1,5 @@
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_visit.models import MembershipForm
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...models import MembershipForm
 
 starting_seq_num = 1000
 

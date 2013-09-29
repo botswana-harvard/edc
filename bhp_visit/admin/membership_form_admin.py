@@ -1,7 +1,7 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_visit.models import MembershipForm
-from bhp_visit.forms import MembershipFormForm
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ..models import MembershipForm
+from ..forms import MembershipFormForm
 
 
 class MembershipFormAdmin (BaseModelAdmin):

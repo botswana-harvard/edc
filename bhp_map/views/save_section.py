@@ -1,9 +1,7 @@
-# Import django modules
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from bhp_map.classes import site_mappers
-from bhp_map.exceptions import MapperError
-from bhp_map.utils import get_longitude, get_latitude
+from ..classes import site_mappers
+from ..exceptions import MapperError
 
 
 def save_section(request, **kwargs):
@@ -17,7 +15,6 @@ def save_section(request, **kwargs):
         raise MapperError('Mapper class \'{0}\' does is not registered.'.format(mapper_name))
     else:
         m = site_mappers.get_registry(mapper_name)()
-        #selected_section = request.GET.get('section')
         selected_region = request.GET.get(m.get_region_field_attr())
         message = ""
         is_error = False
@@ -28,7 +25,6 @@ def save_section(request, **kwargs):
         if item_identifiers:
             item_identifiers = item_identifiers.split(",")
         items = []
-        c = m.region_field_attr
         if item_identifiers:
             items = m.get_item_model_cls().objects.filter(**{'{0}__in'.format(m.identifier_field_attr): item_identifiers})
             for item in items:

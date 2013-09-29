@@ -1,1 +1,1 @@
-from visit_model_helper import VisitModelHelper
+from .visit_model_helper import VisitModelHelper

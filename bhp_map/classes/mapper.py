@@ -1,14 +1,13 @@
-from vtown import geo                   # pip install geo-utils or download at https://pypi.python.org/pypi/geo-utils
-from vtown.geo.polygon import Polygon   # pip install geo-utils or download at https://pypi.python.org/pypi/geo-utils
+#from vtown import geo                   # pip install geo-utils or download at https://pypi.python.org/pypi/geo-utils
+#from vtown.geo.polygon import Polygon   # pip install geo-utils or download at https://pypi.python.org/pypi/geo-utils
 import math
-
 from geopy import distance
 from geopy import Point
 from datetime import date, timedelta
 from django.conf import settings
 from django.utils.encoding import smart_str
-from bhp_base_model.models import BaseUuidModel
-from bhp_map.exceptions import MapperError
+from ...bhp_base_model.models import BaseUuidModel
+from ..exceptions import MapperError
 
 
 class Mapper(object):

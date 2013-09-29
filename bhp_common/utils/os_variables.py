@@ -1,21 +1,17 @@
 import re, socket, sys
 import syslog
-#from ifconfig import ifconfig
 from django import forms
 from django.core.exceptions import ValidationError
-from bhp_variables.models import StudySpecific
+
 
 def os_variables():
-       
-    syslog.syslog('os_variables:')
-        
-    variables = {}
 
-   
+    syslog.syslog('os_variables:')
+    variables = {}
     variables['hostname'] = socket.gethostname()
     variables['wlan_network'] = ""
     variables['warnings'] = []
-    
+
     """
 
     #netbook checks

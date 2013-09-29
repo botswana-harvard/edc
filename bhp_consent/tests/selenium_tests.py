@@ -2,12 +2,11 @@ import time
 from django.test import LiveServerTestCase
 from django.contrib.auth.models import User
 from selenium.webdriver.firefox.webdriver import WebDriver
-from selenium.webdriver.common.keys import Keys
-from bhp_registration.models import RegisteredSubject
 from selenium.webdriver.support.ui import WebDriverWait
-from bhp_consent.models import TestSubjectUuidModel
-from bhp_base_model.models import TestForeignKey, TestManyToMany
-from base_methods import BaseMethods
+from selenium.webdriver.common.keys import Keys
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_base_test.models import TestSubjectUuidModel, TestForeignKey, TestManyToMany
+from .base_methods import BaseMethods
 
 
 class SeleniumTests(LiveServerTestCase, BaseMethods):

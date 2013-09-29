@@ -1,7 +1,7 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from models import Link
-from forms import LinkForm
+from ..bhp_base_admin.admin import BaseModelAdmin
+from .models import Link
+from .forms import LinkForm
 
 
 class LinkAdmin(BaseModelAdmin):

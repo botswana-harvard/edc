@@ -1,10 +1,9 @@
-import re
 from django import forms
 from django.db.models.query import QuerySet
 from django.conf import settings
 from django.db.models import OneToOneField, ForeignKey, get_model
-from bhp_visit_tracking.models import BaseVisitTracking
-from bhp_base_form.classes import LogicCheck
+from ...bhp_visit_tracking.models import BaseVisitTracking
+from ..classes import LogicCheck
 
 
 class BaseModelForm(forms.ModelForm):

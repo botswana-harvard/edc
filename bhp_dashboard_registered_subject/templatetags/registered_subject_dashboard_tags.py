@@ -1,9 +1,6 @@
-#from datetime import *
-#from dateutil.relativedelta import *
 from django import template
 from django.core.urlresolvers import reverse
-#from django.db.models import ForeignKey
-from bhp_visit_tracking.classes import VisitModelHelper
+from ...bhp_visit_tracking.classes import VisitModelHelper
 
 register = template.Library()
 

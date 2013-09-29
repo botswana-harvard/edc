@@ -1,1 +1,1 @@
-from subject_configuration_form import SubjectConfigurationForm
+from .subject_configuration_form import SubjectConfigurationForm

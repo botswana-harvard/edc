@@ -1,1 +1,1 @@
-from search_methods_tests import SearchMethodsTests
+from .search_methods_tests import SearchMethodsTests

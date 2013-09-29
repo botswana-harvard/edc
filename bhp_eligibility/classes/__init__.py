@@ -1,1 +1,1 @@
-from criteria import Criteria
+from .criteria import Criteria

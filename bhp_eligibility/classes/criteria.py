@@ -1,6 +1,6 @@
 from datetime import timedelta
 from django.db.models import Q, get_model
-from bhp_eligibility.models import Criteria as CriteriaModel
+from ..models import Criteria as CriteriaModel
 
 
 class Criteria(object):

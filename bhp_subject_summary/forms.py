@@ -1,5 +1,5 @@
-from bhp_base_form.forms import BaseModelForm
-from models import Link
+from ..bhp_base_form.forms import BaseModelForm
+from .models import Link
 
 
 class LinkForm (BaseModelForm):

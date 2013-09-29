@@ -1,10 +1,11 @@
 import re
 from django.test import TestCase
 from django.conf import settings
-from bhp_registration.models import RegisteredSubject
-
-from bhp_identifier.exceptions import IdentifierError
-from factories import RegisteredSubjectFactory
+from ...bhp_base_test.models import TestConsent
+from ...bhp_base_test.tests.factories import TestConsentFactory
+from ...bhp_identifier.exceptions import IdentifierError
+from ..models import RegisteredSubject
+from .factories import RegisteredSubjectFactory
 
 
 class ModelTests(TestCase):
@@ -18,8 +19,6 @@ class ModelTests(TestCase):
 
     def test_p2(self):
         """Tests natural key."""
-        from bhp_base_test.models import TestConsent
-        from bhp_base_test.tests.factories import TestConsentFactory
 
         re_pk = re.compile('[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}')
         for index, cls_tpl in enumerate([(RegisteredSubject, RegisteredSubjectFactory), (TestConsent, TestConsentFactory)]):

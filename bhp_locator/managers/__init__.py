@@ -1,1 +1,1 @@
-from base_locator_manager import BaseLocatorManager
+from .base_locator_manager import BaseLocatorManager

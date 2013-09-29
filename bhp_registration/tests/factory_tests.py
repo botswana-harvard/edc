@@ -1,5 +1,5 @@
 from django.test import TestCase
-from factories import RegisteredSubjectFactory
+from .factories import RegisteredSubjectFactory
 
 
 class FactoryTests(TestCase):

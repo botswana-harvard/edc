@@ -1,1 +1,1 @@
-from show_url_patterns import show_url_patterns
+from .show_url_patterns import show_url_patterns

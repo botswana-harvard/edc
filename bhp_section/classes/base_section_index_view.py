@@ -1,4 +1,4 @@
-from controller import site_sections
+from .controller import site_sections
 from ...bhp_search.classes import site_search
 
 

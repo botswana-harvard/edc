@@ -1,2 +1,2 @@
-from registered_subject_dashboard import RegisteredSubjectDashboard
-from scheduled_entry_context import ScheduledEntryContext
+from .registered_subject_dashboard import RegisteredSubjectDashboard
+from .scheduled_entry_context import ScheduledEntryContext

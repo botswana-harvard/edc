@@ -1,7 +1,7 @@
 import logging
-from bhp_lab_entry.classes import UnscheduledLabEntry
-from bhp_lab_entry.models import UnscheduledLabEntryBucket
-from scheduled_data_rule import ScheduledDataRule
+from ...bhp_lab_entry.classes import UnscheduledLabEntry
+from ...bhp_lab_entry.models import UnscheduledLabEntryBucket
+from .scheduled_data_rule import ScheduledDataRule
 
 logger = logging.getLogger(__name__)
 

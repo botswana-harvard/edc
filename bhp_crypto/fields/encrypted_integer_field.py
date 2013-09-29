@@ -1,4 +1,4 @@
-from local_rsa_encryption_field import LocalRsaEncryptionField
+from .local_rsa_encryption_field import LocalRsaEncryptionField
 
 
 class EncryptedIntegerField(LocalRsaEncryptionField):

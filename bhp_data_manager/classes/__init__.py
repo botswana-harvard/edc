@@ -1,1 +1,1 @@
-from data_manager_cls import data_manager
+from .data_manager_cls import data_manager

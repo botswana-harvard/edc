@@ -1,6 +1,6 @@
 import re
-from local_rsa_encryption_field import LocalRsaEncryptionField
 from django.forms import ValidationError
+from .local_rsa_encryption_field import LocalRsaEncryptionField
 
 
 class EncryptedFirstnameField(LocalRsaEncryptionField):

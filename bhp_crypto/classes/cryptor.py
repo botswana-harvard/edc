@@ -2,13 +2,11 @@ import os
 import base64
 import copy
 import sys
-from M2Crypto import Rand, RSA, EVP
 import logging
-
+from M2Crypto import Rand, RSA, EVP
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
-#from django.contrib.auth.models import User
-from bhp_crypto.exceptions import EncryptionError, AlgorithmError, EncryptionKeyError, ModeError
+from ..exceptions import EncryptionError, AlgorithmError, EncryptionKeyError, ModeError
 
 from base_cryptor import BaseCryptor
 

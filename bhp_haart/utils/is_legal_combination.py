@@ -1,7 +1,7 @@
 
 
-def is_legal_combination( **kwargs ):
+def is_legal_combination(**kwargs):
 
-    """ calculate base on modification record if combination is legal"""
-    
+    """ Calculates base on modification record if combination is legal"""
+
     return True

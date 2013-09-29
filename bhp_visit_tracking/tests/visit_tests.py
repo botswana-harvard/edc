@@ -1,21 +1,21 @@
 from django.test import TestCase
-from bhp_visit.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
-from bhp_entry.tests.factories import EntryFactory
-from bhp_content_type_map.classes import ContentTypeMapHelper
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_base_test.models import TestVisit
-from bhp_consent.tests.factories import ConsentCatalogueFactory
-from bhp_appointment.tests.factories import ConfigurationFactory
-from bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-from bhp_lab_tracker.classes import site_lab_tracker
-from bhp_registration.models import RegisteredSubject
-from bhp_appointment.models import Appointment
+from ...bhp_visit.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+from ...bhp_entry.tests.factories import EntryFactory
+from ...bhp_content_type_map.classes import ContentTypeMapHelper
+from ...bhp_content_type_map.models import ContentTypeMap
+from ...bhp_base_test.models import TestVisit
+from ...bhp_consent.tests.factories import ConsentCatalogueFactory
+from ...bhp_appointment.tests.factories import ConfigurationFactory
+from ...bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from ...bhp_lab_tracker.classes import site_lab_tracker
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_appointment.models import Appointment
 
 
 class VisitTests(TestCase):
 
     def test_p1(self):
-        from bhp_base_test.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory, TestScheduledModelFactory
+        from ...bhp_base_test.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory, TestScheduledModelFactory
         site_lab_tracker.autodiscover()
         StudySpecificFactory()
         study_site = StudySiteFactory()
@@ -82,4 +82,3 @@ class VisitTests(TestCase):
         appointment = Appointment.objects.get(visit_definition__code='1010')
         TestVisitFactory(appointment=appointment, reason='off_study')
         print 'assert off study form entry was created (additional)'
-        

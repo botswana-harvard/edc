@@ -1,7 +1,7 @@
 import factory
 from datetime import datetime
-from bhp_variables.tests.factories import StudySiteFactory
-from base_consent_basics_factory import BaseConsentBasicsFactory
+from ....bhp_variables.tests.factories import StudySiteFactory
+from .base_consent_basics_factory import BaseConsentBasicsFactory
 
 
 class BaseConsentFactory(BaseConsentBasicsFactory):

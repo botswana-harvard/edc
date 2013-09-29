@@ -1,4 +1,5 @@
 
+
 class SummaryContextDescriptor(object):
 
     def __init__(self):
@@ -12,8 +13,6 @@ class SummaryContextDescriptor(object):
     def __set__(self, instance):
         dct = {}
         for attr in dir(instance):
-            if not attr[0:1] == '_' and not attr == 'subject_identifier' :
-                dct[attr] = getattr(instance, attr)       
+            if not attr[0:1] == '_' and not attr == 'subject_identifier':
+                dct[attr] = getattr(instance, attr)
         return dct
-
-                

@@ -1,9 +1,9 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from bhp_sync.models import BaseSyncUuidModel
-from base_sequence import BaseSequence
-from bhp_identifier.managers import IdentifierManager
+from ...bhp_sync.models import BaseSyncUuidModel
+from ..managers import IdentifierManager
+from .base_sequence import BaseSequence
 
 
 class BaseIdentifierModel(BaseSyncUuidModel):

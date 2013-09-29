@@ -1,4 +1,3 @@
-from .admin import TransactionAdmin
 from .admin import RequestLogAdmin
 from .incoming_transaction_admin import IncomingTransactionAdmin
 from .outgoing_transaction_admin import OutgoingTransactionAdmin

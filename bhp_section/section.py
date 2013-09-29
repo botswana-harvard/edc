@@ -1,4 +1,4 @@
-from classes import BaseSectionView, site_sections
+from .classes import BaseSectionView, site_sections
 
 
 class SectionAppointmentView(BaseSectionView):
@@ -8,15 +8,6 @@ class SectionAppointmentView(BaseSectionView):
     # section_template =
 
 site_sections.register(SectionAppointmentView)
-
-
-# class SectionLabView(BaseSectionView):
-#     section_name = 'lab'
-#     section_display_name = 'Labs'
-#     section_display_index = 120
-#     # section_template =
-#
-# site_sections.register(SectionLabView)
 
 
 class SectionAdministrationView(BaseSectionView):

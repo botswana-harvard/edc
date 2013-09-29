@@ -1,1 +1,1 @@
-from base_string import BaseString
+from .base_string import BaseString

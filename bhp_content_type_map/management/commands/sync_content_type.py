@@ -1,6 +1,6 @@
 import logging
 from django.core.management.base import BaseCommand
-from bhp_content_type_map.models import ContentTypeMap
+from ...models import ContentTypeMap
 
 
 logger = logging.getLogger(__name__)

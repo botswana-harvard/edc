@@ -9,12 +9,11 @@ class FundingSource(models.Model):
 
     description = models.TextField(
         max_length=500,
-        )    
+        )
 
     def __unicode__(self):
         return '%s %s' % (self.name, self.reference)
-        
+
     class Meta:
         ordering = ['name']
         app_label = 'bhp_research_protocol'
-

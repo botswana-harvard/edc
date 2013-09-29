@@ -1,6 +1,6 @@
 import inspect
 from datetime import datetime
-from bhp_lab_tracker.models import HistoryModel
+from ..models import HistoryModel
 
 
 class HistoryUpdater(object):

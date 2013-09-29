@@ -1,7 +1,7 @@
 from django.contrib import admin
-from bhp_data_manager.models import ModelHelpText
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_data_manager.forms import  ModelHelpTextForm
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ..models import ModelHelpText
+from ..forms import  ModelHelpTextForm
 
 
 class ModelHelpTextAdmin(BaseModelAdmin):

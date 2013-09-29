@@ -1,11 +1,9 @@
 import logging
-import copy
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
-from bhp_sync.models import BaseSyncUuidModel
-from bhp_dispatch.exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError
-#from bhp_dispatch.models import DispatchItemRegister, DispatchContainerRegister
+from ...bhp_sync.models import BaseSyncUuidModel
+from ..exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError
 
 
 logger = logging.getLogger(__name__)

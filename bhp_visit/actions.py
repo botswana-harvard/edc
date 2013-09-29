@@ -1,5 +1,4 @@
-from django.contrib import messages
-from bhp_base_admin.utils import ModelExporter
+from ..bhp_base_admin.utils import ModelExporter
 
 
 def export_as_html(modeladmin, request, queryset, **kwargs):

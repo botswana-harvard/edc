@@ -1,9 +1,9 @@
 from django.db import models
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_common.choices import YES_NO_OPTIONAL
-from bhp_visit.models import BaseWindowPeriodItem, VisitDefinition
-from bhp_entry.choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
-from bhp_entry.managers import EntryBucketManager
+from ...bhp_content_type_map.models import ContentTypeMap
+from ...bhp_common.choices import YES_NO_OPTIONAL
+from ...bhp_visit.models import BaseWindowPeriodItem, VisitDefinition
+from ..choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
+from ..managers import EntryBucketManager
 
 
 class Entry(BaseWindowPeriodItem):

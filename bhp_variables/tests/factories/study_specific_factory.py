@@ -1,8 +1,8 @@
 import socket
 from datetime import datetime
 from django.conf import settings
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_variables.models import StudySpecific
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ...models import StudySpecific
 
 
 class StudySpecificFactory(BaseUuidModelFactory):

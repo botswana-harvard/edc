@@ -1,1 +1,1 @@
-from cryptor_methods_tests import CryptorMethodsTests
+from .cryptor_methods_tests import CryptorMethodsTests

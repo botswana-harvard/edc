@@ -1,8 +1,7 @@
-# Import django modules
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from bhp_map.classes import site_mappers
-from bhp_map.exceptions import MapperError
+from ..classes import site_mappers
+from ..exceptions import MapperError
 
 
 def clear_section(request, **kwargs):
@@ -15,7 +14,7 @@ def clear_section(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' does is not registered.'.format(mapper_name))
     else:
-        m = site_mappers.get_registry(mapper_name)() 
+        m = site_mappers.get_registry(mapper_name)()
         selected_region = request.POST.get(m.get_region_field_attr())
         items = m.get_item_model_cls().objects.filter(**{m.region_field_attr: selected_region})
         if items:

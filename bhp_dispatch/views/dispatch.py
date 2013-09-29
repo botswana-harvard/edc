@@ -1,15 +1,11 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from bhp_dispatch.forms import DispatchForm
-from bhp_dispatch.classes import DispatchController
-from bhp_dispatch.exceptions import DispatchAttributeError
+from ..forms import DispatchForm
+from ..classes import DispatchController
+from ..exceptions import DispatchAttributeError
 
 
-#@login_required
-#@csrf_protect
 def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs):
     """Receives a list of user container identifiers and user selects the producer to dispatch to.
 

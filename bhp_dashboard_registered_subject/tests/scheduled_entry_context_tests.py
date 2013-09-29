@@ -1,16 +1,16 @@
 from django.contrib import admin
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
-from bhp_content_type_map.classes import ContentTypeMapHelper
-from bhp_entry.tests.factories import ScheduledEntryBucketFactory, EntryFactory
-from bhp_dashboard_registered_subject.classes import ScheduledEntryContext
-from bhp_registration.tests.factories import RegisteredSubjectFactory
-from bhp_appointment.tests.factories import AppointmentFactory, ConfigurationFactory
-from bhp_base_test.tests.factories import TestVisitFactory, TestScheduledModelFactory
-from bhp_base_test.models import TestVisit, TestScheduledModel
-from bhp_visit.tests.factories import VisitDefinitionFactory
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_entry.models import Entry
+from ...bhp_content_type_map.classes import ContentTypeMapHelper
+from ...bhp_entry.tests.factories import ScheduledEntryBucketFactory, EntryFactory
+from ...bhp_registration.tests.factories import RegisteredSubjectFactory
+from ...bhp_appointment.tests.factories import AppointmentFactory, ConfigurationFactory
+from ...bhp_base_test.tests.factories import TestVisitFactory, TestScheduledModelFactory
+from ...bhp_base_test.models import TestVisit, TestScheduledModel
+from ...bhp_visit.tests.factories import VisitDefinitionFactory
+from ...bhp_content_type_map.models import ContentTypeMap
+from ...bhp_entry.models import Entry
+from ..classes import ScheduledEntryContext
 
 
 class ScheduledEntryContextTests(TestCase):

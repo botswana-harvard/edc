@@ -2,32 +2,18 @@ from datetime import datetime
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 from django.db.models import get_model
-from bhp_registration.models import RegisteredSubject
-from bhp_sync.models import Producer, OutgoingTransaction, IncomingTransaction
-from bhp_sync.exceptions import PendingTransactionError, ProducerError
-from bhp_sync.classes import Consumer
-from bhp_using.exceptions import UsingError, UsingSourceError, UsingDestinationError
-from bhp_dispatch.classes import BaseController, ReturnController, BaseDispatchController
-from bhp_dispatch.exceptions import (DispatchError, AlreadyDispatched, AlreadyDispatchedItem, DispatchControllerNotReady,
-                                     AlreadyReturnedController, DispatchItemError, AlreadyDispatchedContainer)
-from bhp_dispatch.models import TestList, TestItem, TestItemTwo, TestItemThree, TestItemM2M, DispatchItemRegister, DispatchContainerRegister, TestContainer
-from base_controller_tests import BaseControllerTests
-from bhp_dispatch.classes import registered_controllers
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_sync.models import Producer, OutgoingTransaction, IncomingTransaction
+from ...bhp_sync.exceptions import PendingTransactionError, ProducerError
+from ...bhp_using.exceptions import UsingError, UsingSourceError
+from ..classes import BaseController, ReturnController, BaseDispatchController
+from ..exceptions import (DispatchError, AlreadyDispatched, DispatchControllerNotReady,
+                          DispatchItemError, AlreadyDispatchedContainer)
+from ..models import TestList, TestItem, TestItemTwo, TestItemThree, TestItemM2M, DispatchItemRegister, DispatchContainerRegister, TestContainer
+from .base_controller_tests import BaseControllerTests
 
 
 class DispatchControllerMethodsTests(BaseControllerTests):
-
-    #fixtures = ['test_configuration.json']
-
-#    def setUp(self):
-#        super(DispatchControllerMethodsTests, self).setUp()
-
-#    def create_test_item(self):
-#        self.test_item = TestItem.objects.create(test_item_identifier=self.dispatch_container_identifier)
-#
-#    def create_producer(self, is_active=False):
-#        # add a in_active producer
-#        self.producer = Producer.objects.create(name='test_producer', settings_key=self.using_destination, is_active=is_active)
 
     def test_base_methods(self):
         # Base tests

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from bhp_entry_rules.models import RuleHistory
+from .models import RuleHistory
 
 
 class RuleHistoryAdmin(admin.ModelAdmin):

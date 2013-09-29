@@ -1,4 +1,4 @@
-from bhp_section.classes import section_index_view, site_sections
+from .classes import section_index_view, site_sections
 
 section_index_view.setup()
 urlpatterns = []

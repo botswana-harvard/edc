@@ -1,16 +1,14 @@
 import logging
 from django.db.models import get_model
 from django.core.exceptions import FieldError
-from django.db.models import get_models, get_app, signals
-from django.db.models.query import QuerySet
-from bhp_visit_tracking.classes import VisitModelHelper
-from bhp_lab_tracker.models import HistoryModel
-from bhp_dispatch.classes import BaseDispatchController
-from bhp_dispatch.exceptions import DispatchModelError, DispatchError, AlreadyDispatchedContainer
-from bhp_sync.exceptions import PendingTransactionError
-from bhp_base_model.models import BaseListModel
-from lab_base_model.models import BaseLabListModel, BaseLabListUuidModel
-from controller_register import registered_controllers
+from django.db.models import get_models, get_app
+from edc_lab.lab_base_model.models import BaseLabListModel, BaseLabListUuidModel
+from ...bhp_visit_tracking.classes import VisitModelHelper
+from ...bhp_lab_tracker.models import HistoryModel
+from ...bhp_base_model.models import BaseListModel
+from ..classes import BaseDispatchController
+from ..exceptions import DispatchModelError, DispatchError, AlreadyDispatchedContainer
+from .controller_register import registered_controllers
 
 
 logger = logging.getLogger(__name__)
@@ -204,7 +202,7 @@ class DispatchController(BaseDispatchController):
         """
         Appointments = get_model('bhp_appointment', 'Appointment')
         #appointments = Appointments.objects.filter(registered_subject=registered_subject)
-        appointments = Appointments.objects.filter(registered_subject=registered_subject, 
+        appointments = Appointments.objects.filter(registered_subject=registered_subject,
                                                    appt_datetime__range=(start_datetime,
                                                                          end_datetime))
         if appointments:
@@ -317,7 +315,7 @@ class DispatchController(BaseDispatchController):
     def dispatch_registered_subjects(self):
         logger.info("Updating the Registered Subjects table...")
         self.update_model(('bhp_registration', 'RegisteredSubject'))
-        
+
     def send_cypts(self, crypts_to_send, **kwargs):
-        logger.info('  dispatching {0} crypts to {1}.'.format(crypts_to_send.count(),self.get_using_destination()))
-        self._to_json(crypts_to_send, kwargs.get('additional_class',None))
+        logger.info('  dispatching {0} crypts to {1}.'.format(crypts_to_send.count(), self.get_using_destination()))
+        self._to_json(crypts_to_send, kwargs.get('additional_class', None))

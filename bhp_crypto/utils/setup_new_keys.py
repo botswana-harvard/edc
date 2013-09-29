@@ -8,7 +8,7 @@ from datetime import datetime
 
 from django.conf import settings
 
-from bhp_crypto.classes import KeyGenerator
+from ..classes import KeyGenerator
 
 
 def setup_new_keys():

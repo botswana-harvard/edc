@@ -1,11 +1,11 @@
 from django.test import TestCase
-from bhp_sync.models import Producer, OutgoingTransaction, IncomingTransaction
-from bhp_dispatch.models import TestItem, TestContainer, DispatchItemRegister, DispatchContainerRegister, TestItemBypassForEdit
-from bhp_dispatch.classes import BaseDispatchController, DispatchController, ReturnController
-from bhp_sync.tests.factories import ProducerFactory
-from bhp_dispatch.exceptions import AlreadyRegisteredController, AlreadyDispatchedContainer, AlreadyDispatchedItem
-from bhp_base_model.tests.factories import TestManyToManyFactory
-from factories import TestItemFactory, TestContainerFactory, TestItemBypassForEditFactory
+from ...bhp_sync.models import Producer, OutgoingTransaction, IncomingTransaction
+from ...bhp_sync.tests.factories import ProducerFactory
+from ...bhp_base_test.tests.factories import TestManyToManyFactory
+from ..models import TestItem, TestContainer, DispatchItemRegister, DispatchContainerRegister, TestItemBypassForEdit
+from ..classes import BaseDispatchController, DispatchController, ReturnController
+from ..exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem
+from .factories import TestItemFactory, TestContainerFactory, TestItemBypassForEditFactory
 
 
 class BaseControllerTests(TestCase):

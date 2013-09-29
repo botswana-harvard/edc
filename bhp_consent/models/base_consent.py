@@ -4,17 +4,17 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
-from bhp_crypto.fields import EncryptedLastnameField, EncryptedTextField
-from bhp_crypto.utils import mask_encrypted
-from bhp_base_model.validators import datetime_not_future, datetime_not_before_study_start, eligible_if_no
-from bhp_common.choices import YES_NO
-from bhp_variables.models import StudySite
-from bhp_common.utils import formatted_age
-from bhp_base_model.validators import eligible_if_yes
-from bhp_subject.models import BaseSubject
-from bhp_consent.exceptions import ConsentError
-from bhp_consent.classes import ConsentedSubjectIdentifier
-from base_consent_history import BaseConsentHistory
+from ...bhp_crypto.fields import EncryptedLastnameField, EncryptedTextField
+from ...bhp_crypto.utils import mask_encrypted
+from ...bhp_base_model.validators import datetime_not_future, datetime_not_before_study_start, eligible_if_no
+from ...bhp_common.choices import YES_NO
+from ...bhp_variables.models import StudySite
+from ...bhp_common.utils import formatted_age
+from ...bhp_base_model.validators import eligible_if_yes
+from ...bhp_subject.models import BaseSubject
+from ..exceptions import ConsentError
+from ..classes import ConsentedSubjectIdentifier
+from .base_consent_history import BaseConsentHistory
 
 # allow a settings attribute to override the unique constraint on the
 # subject identifier

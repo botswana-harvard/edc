@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from bhp_sms.classes import Sms
-from bhp_identifier.models import PendingIdentifier
-from subject_identifier import SubjectIdentifier
+from ...bhp_sms.classes import Sms
+from ...bhp_identifier.models import PendingIdentifier
+from .subject_identifier import SubjectIdentifier
 
 
 class SmsSubjectIdentifier(SubjectIdentifier):

@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from django.db.models import Max
-from base_lock import BaseLock
+from .base_lock import BaseLock
 
 logger = logging.getLogger(__name__)
 

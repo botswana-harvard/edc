@@ -1,8 +1,8 @@
 from datetime import datetime
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
-from bhp_crypto.classes import ModelCryptor, FieldCryptor
-from bhp_crypto.models import Crypt
+from ...classes import ModelCryptor, FieldCryptor
+from ...models import Crypt
 
 
 class Command(BaseCommand):

@@ -1,15 +1,13 @@
-# Import django modules
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from bhp_map.classes import site_mappers
-from bhp_map.exceptions import MapperError
+from ..classes import site_mappers
+from ..exceptions import MapperError
 
 
 def item_map(request, **kwargs):
     """Displays map for a subject on the dashboard
 
-        Show the location visually on the map of a subject from the dash by clicking the view map button
-        on the dashboard
+    Show the location visually on the map of a subject from the dash by clicking the view map button on the dashboard
     """
     mapper_name = kwargs.get('mapper_name', '')
     if not site_mappers.get_registry(mapper_name):
@@ -22,7 +20,6 @@ def item_map(request, **kwargs):
             raise MapperError('Attribute longitude may not be None. Got {0}'.format(kwargs))
         if not latitude:
             raise MapperError('Attribute latitude may not be None. Got {0}'.format(kwargs))
-       
         identifier = kwargs.get('identifier', None)
         landmark_list = []
         landmarks = m.get_landmarks()

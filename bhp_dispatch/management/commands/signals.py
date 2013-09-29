@@ -42,7 +42,7 @@ class Command(BaseCommand):
             m2m_changed = list(set(m2m_changed))
             m2m_changed.sort()
             print '  {0}\n  {1}'.format(m2m_changed[0], '\n  '.join(m2m_changed[1:]))
-        from bhp_dispatch.classes import SignalManager
+        from ...classes import SignalManager
         print 'Signals disconnected by bhp_dispatch (from SignalManager)...'
         print '  all audit_serialize_on_save_xxx signals'
         print '  all audit_on_save_xxx signals'

@@ -1,4 +1,4 @@
-from bhp_crypto.classes import ModelCryptor
+from .classes import ModelCryptor
 
 
 def encrypt(modeladmin, request, queryset, **kwargs):

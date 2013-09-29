@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
-from bhp_content_type_map.models import ContentTypeMap
-from factories import VisitDefinitionFactory, ScheduleGroupFactory, MembershipFormFactory
-from bhp_visit.models import MembershipForm, ScheduleGroup, VisitDefinition
-from bhp_content_type_map.classes import ContentTypeMapHelper
+from ...bhp_content_type_map.models import ContentTypeMap
+from ...bhp_content_type_map.classes import ContentTypeMapHelper
+from ..models import MembershipForm, ScheduleGroup, VisitDefinition
+from .factories import VisitDefinitionFactory, ScheduleGroupFactory, MembershipFormFactory
 
 
 class FactoryTests(TestCase):

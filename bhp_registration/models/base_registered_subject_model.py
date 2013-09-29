@@ -1,8 +1,8 @@
 from django.db import models
 from django.db.models import get_app, get_models
-from bhp_appointment_helper.models import BaseAppointmentHelperModel
-from bhp_registration.managers import RegisteredSubjectManager
-from registered_subject import RegisteredSubject
+from ...bhp_appointment_helper.models import BaseAppointmentHelperModel
+from ..managers import RegisteredSubjectManager
+from .registered_subject import RegisteredSubject
 
 
 class BaseRegisteredSubjectModel (BaseAppointmentHelperModel):

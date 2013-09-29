@@ -1,1 +1,1 @@
-from base_list_manager import BaseListManager
+from .base_list_manager import BaseListManager

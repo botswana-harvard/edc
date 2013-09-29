@@ -1,1 +1,1 @@
-from base_using_methods_tests import BaseUsingMethodsTests
+from .base_using_methods_tests import BaseUsingMethodsTests

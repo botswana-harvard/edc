@@ -1,6 +1,6 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_identifier.models import SubjectIdentifier, IdentifierTracker, Sequence
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ..models import SubjectIdentifier, IdentifierTracker, Sequence
 
 
 class SubjectIdentifierAdmin(BaseModelAdmin):

@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from bhp_sync.models import BaseSyncUuidModel
-from bhp_appointment.choices import APPT_STATUS
+from ...bhp_sync.models import BaseSyncUuidModel
+from ...bhp_appointment.choices import APPT_STATUS
 
 
 class SubjectConfiguration(BaseSyncUuidModel):

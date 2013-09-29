@@ -1,8 +1,8 @@
 from django.db.models import get_model
-from bhp_entry.managers import BaseEntryBucketManager
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_registration.models import RegisteredSubject
-from bhp_visit.models import VisitDefinition
+from ...bhp_content_type_map.models import ContentTypeMap
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_visit.models import VisitDefinition
+from ..managers import BaseEntryBucketManager
 
 
 class ScheduledEntryBucketManager(BaseEntryBucketManager):

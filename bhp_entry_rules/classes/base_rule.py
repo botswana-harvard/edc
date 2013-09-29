@@ -1,13 +1,14 @@
 import re
 from datetime import date, datetime
 from django.db.models import get_model, Model, IntegerField
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_consent.classes import ConsentHelper
-from bhp_registration.models import RegisteredSubject
-from bhp_visit_tracking.models import BaseVisitTracking
-from bhp_entry.models import BaseEntryBucket
-from bhp_entry.classes import BaseEntry
-from logic import Logic
+from ...bhp_content_type_map.models import ContentTypeMap
+from ...bhp_consent.classes import ConsentHelper
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_visit_tracking.models import BaseVisitTracking
+from ...bhp_entry.models import BaseEntryBucket
+from ...bhp_entry.classes import BaseEntry
+from ...bhp_lab_tracker.classes import site_lab_tracker
+from .logic import Logic
 
 
 class BaseRule(object):
@@ -77,7 +78,6 @@ class BaseRule(object):
         raise AttributeError('Evaluate should be overridden. Nothing to do.')
 
     def set_site_lab_tracker(self):
-        from bhp_lab_tracker.classes import site_lab_tracker
         self._site_lab_tracker = site_lab_tracker
 
     def get_site_lab_tracker(self):

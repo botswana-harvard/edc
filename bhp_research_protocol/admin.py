@@ -1,6 +1,6 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_research_protocol.models import Protocol, PrincipalInvestigator, SiteLeader, FundingSource, Site, Location
+from ..bhp_base_admin.admin import BaseModelAdmin
+from .models import Protocol, PrincipalInvestigator, SiteLeader, FundingSource, Site, Location
 
 
 class PrincipalInvestigatorAdmin(BaseModelAdmin):

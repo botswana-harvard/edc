@@ -1,1 +1,1 @@
-from base_subject_factory import BaseSubjectFactory
+from .base_subject_factory import BaseSubjectFactory

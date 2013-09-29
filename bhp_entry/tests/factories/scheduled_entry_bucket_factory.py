@@ -1,8 +1,8 @@
 import factory
-from bhp_appointment.tests.factories import AppointmentFactory
-from bhp_entry.models import ScheduledEntryBucket
-from base_entry_bucket_factory import BaseEntryBucketFactory
-from entry_factory import EntryFactory
+from ....bhp_appointment.tests.factories import AppointmentFactory
+from ...models import ScheduledEntryBucket
+from .base_entry_bucket_factory import BaseEntryBucketFactory
+from .entry_factory import EntryFactory
 
 
 class ScheduledEntryBucketFactory(BaseEntryBucketFactory):

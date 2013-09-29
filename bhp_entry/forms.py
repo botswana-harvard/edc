@@ -1,5 +1,5 @@
 from django import forms
-from bhp_entry.models import ScheduledEntryBucket
+from .models import ScheduledEntryBucket
 
 
 class ScheduledEntryBucketForm (forms.ModelForm):

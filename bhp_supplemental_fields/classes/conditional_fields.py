@@ -1,6 +1,6 @@
 import random
-from bhp_supplemental_fields.models import Excluded
-from base import Base
+from ..models import Excluded
+from .base import Base
 
 
 class ConditionalFields(Base):

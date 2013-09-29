@@ -1,6 +1,6 @@
 from django.db.models import Q
-from bhp_search.forms import DateRangeSearchForm
-from base_search import BaseSearch
+from ..forms import DateRangeSearchForm
+from .base_search import BaseSearch
 
 
 class BaseSearchByDate(BaseSearch):

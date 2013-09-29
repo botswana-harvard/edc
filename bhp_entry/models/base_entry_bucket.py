@@ -1,7 +1,7 @@
 from django.db import models
-from bhp_base_model.models import BaseUuidModel
-from bhp_registration.models import RegisteredSubject
-from bhp_entry.choices import ENTRY_STATUS
+from ...bhp_base_model.models import BaseUuidModel
+from ...bhp_registration.models import RegisteredSubject
+from ..choices import ENTRY_STATUS
 
 
 class BaseEntryBucket(BaseUuidModel):

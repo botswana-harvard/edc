@@ -2,7 +2,7 @@ ARV_DRUG_LIST = (
     ('Nevirapine', 'NVP'),
     ('Kaletra', 'KAL'),
     ('Aluvia', 'ALU'),
-    ('Truvada','TRV'),
+    ('Truvada', 'TRV'),
     ('Tenoforvir', 'TDF',),
     ('Zidovudine', 'AZT'),
     ('Lamivudine', '3TC'),
@@ -28,9 +28,9 @@ ARV_MODIFICATION_REASON = (
     ('Toxicity decreased_resolved', 'Toxicity decreased/resolved'),
     ('Completed PMTCT intervention', 'Completed PMTCT intervention'),
     ('Completed postpartum tail', 'Completed postpartum "tail"'),
-    ('Scheduled dose increase','Scheduled dose increase'),
+    ('Scheduled dose increase', 'Scheduled dose increase'),
     ('Confirmed infant HIV infection, ending study drug', 'Confirmed infant HIV infection, ending study drug'),
-    ('completed protocol','Completion of protocol-required period of study treatment'),
+    ('completed protocol', 'Completion of protocol-required period of study treatment'),
     ('HAART not available', 'HAART not available'),
     ('Anemia', 'Anemia'),
     ('Bleeding', 'Bleeding'),
@@ -49,34 +49,34 @@ ARV_MODIFICATION_REASON = (
     ('Hypersensitivity_allergic reaction', 'Hypersensitivity / allergic reaction'),
     ('Pancreatitis', 'Pancreatitis'),
     ('Lactic Acidiosis', 'Lactic Acidiosis'),
-    ('Pancytopenia', 'Pancytopenia'), 
+    ('Pancytopenia', 'Pancytopenia'),
     ('Virologic failure', 'Virologic failure'),
     ('Immunologic failure', 'Immunologic failure(CD4)'),
-    ('Clinical failure',  'Clinical failure'), 
+    ('Clinical failure', 'Clinical failure'),
     ('Clinician request', 'Clinician request, other reason (including convenience)'),
-    ('Subject request', 'Subject request, other reason (including convenience)'), 
+    ('Subject request', 'Subject request, other reason (including convenience)'),
     ('Non-adherence with clinic visits', 'Non-adherence with clinic visits'),
-    ('Non-adherence with ARVs', 'Non-adherence with ARVs'), 
+    ('Non-adherence with ARVs', 'Non-adherence with ARVs'),
     ('Death', 'Death'),
     ('OTHER', 'Other'),
-)    
+)
 
 ARV_STATUS = (
     ('no_mod', '1. No modifications made to existing HAART treatment',),
     ('start', '2. Started antriretroviral treatment since last attended scheduled visit(including today)',),
-    ('discontinued','3. Permanently discontinued antiretroviral treatment at or before last study visit',),
+    ('discontinued', '3. Permanently discontinued antiretroviral treatment at or before last study visit',),
     ('modified', '4. Change in at least one antiretroviral medication since last attended scheduled visit (including today)(dose modification, permanent discontinuation, temporary hold, resumption / initiation after temporary hold)',),
 )
 
 ARV_STATUS_WITH_NEVER = (
-    
+
     ('no_mod', '1. No modifications made since the last attended scheduled visit or today'),
     ('start', '2. Starting today or has started since last attended scheduled visit'),
     ('discontinued', '3. Permanently discontinued at or before the last attended scheduled visit'),
     ('never started', '4. Never started'),
     ('modified', '5. Change in at least one medication since the last attended scheduled visit or today'),
     ('N/A', 'Not applicable'),
-)  
+)
 
 DOSE_STATUS = (
     ('New', 'New'),

@@ -1,1 +1,1 @@
-from rule_history import RuleHistory
+from .rule_history import RuleHistory

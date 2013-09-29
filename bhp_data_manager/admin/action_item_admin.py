@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from bhp_data_manager.models import ActionItem
-from bhp_registration.models import RegisteredSubject
-from bhp_data_manager.forms import ActionItemForm
-from base_admin import BaseAdmin
-from bhp_data_manager.classes import data_manager
+from ...bhp_registration.models import RegisteredSubject
+from ..forms import ActionItemForm
+from ..models import ActionItem
+from ..classes import data_manager
+from .base_admin import BaseAdmin
 
 
 class ActionItemAdmin(BaseAdmin):

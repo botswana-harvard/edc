@@ -1,1 +1,1 @@
-from admin_tests import AdminTests
+from .admin_tests import AdminTests

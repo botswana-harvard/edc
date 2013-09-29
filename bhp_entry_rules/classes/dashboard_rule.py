@@ -1,5 +1,4 @@
 from django.db.models import get_model
-#from bhp_entry.classes import ScheduledEntry
 from controller import rule_groups
 
 
@@ -20,20 +19,6 @@ class DashboardRule(object):
 
     def run(self, **kwargs):
         pass
-#        if self.bucket_type == 'scheduled':
-#            self.bucket_model = get_model('bhp_entry', 'scheduledentrybucket')
-#        elif self.bucket_type == 'additional':
-#            # TODO: test rule.run for additional entry bucket
-#            self.bucket_model = get_model('bhp_entry', 'additionalentrybucket')
-#        else:
-#            raise AttributeError('Invalid bucket type. Must be \'scheduled\', \'additional\'. Got %s ' % (self.bucket_type,))
-#        if not self.visit_model_instance:
-#            self.visit_model_instance = kwargs.get('visit_model_instance')
-#        scheduled_entry = ScheduledEntry()
-#        if self.required:
-#            scheduled_entry.update_status(self.model, self.visit_model_instance, 'new')
-#        else:
-#            scheduled_entry.update_status(self.model, self.visit_model_instance, 'not_required')
 
 
 class DashboardRuleContainer(object):

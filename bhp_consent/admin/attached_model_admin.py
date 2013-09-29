@@ -1,6 +1,6 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin, BaseTabularInline
-from bhp_consent.models import AttachedModel
+from ...bhp_base_admin.admin import BaseModelAdmin, BaseTabularInline
+from ..models import AttachedModel
 
 
 class AttachedModelInlineAdmin(BaseTabularInline):

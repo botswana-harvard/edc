@@ -1,8 +1,7 @@
-# Import django modules
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from bhp_map.classes import site_mappers
-from bhp_map.exceptions import MapperError
+from ..classes import site_mappers
+from ..exceptions import MapperError
 
 
 def set_section(request, **kwargs):
@@ -26,13 +25,11 @@ def set_section(request, **kwargs):
         identifiers = request.session.get('identifiers', [])
         action_script_url = 'save_section_url'
         cart_size = len(identifiers)
-        sections = m.get_sections()
         selected_region = request.POST.get(m.get_region_field_attr())
-        region_field = m.get_region_field_attr()
         request.session['icon'] = request.POST.get('marker_icon')
-        if m.item_model_cls.objects.filter(**{m.get_region_field_attr() : None}).exists():
+        if m.item_model_cls.objects.filter(**{m.get_region_field_attr(): None}).exists():
             has_items = True
-            items = m.item_model_cls.objects.filter(**{m.get_region_field_attr() : None})
+            items = m.item_model_cls.objects.filter(**{m.get_region_field_attr(): None})
 
         icon = str(request.session['icon'])
         payload = m.prepare_map_points(items,

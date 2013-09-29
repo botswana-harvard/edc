@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.db import models
-from edc_lib.bhp_base_model.models import BaseUuidModel
+from ...bhp_base_model.models import BaseUuidModel
 from ..classes import TransactionProducer
 
 

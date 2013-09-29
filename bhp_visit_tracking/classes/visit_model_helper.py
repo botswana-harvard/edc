@@ -1,7 +1,7 @@
 from django.db.models import ForeignKey, OneToOneField
 from django.db.models import get_app, get_models
-from bhp_visit_tracking.models import BaseVisitTracking
-from bhp_visit_tracking.exceptions import VisitTrackingError
+from ..models import BaseVisitTracking
+from ..exceptions import VisitTrackingError
 
 
 class VisitModelHelper(object):

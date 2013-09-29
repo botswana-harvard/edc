@@ -1,6 +1,6 @@
 import logging
 from django.core.management.base import BaseCommand, CommandError
-from bhp_dispatch.classes import DispatchController
+from ...classes import DispatchController
 
 logger = logging.getLogger(__name__)
 

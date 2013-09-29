@@ -1,7 +1,6 @@
 import factory
 from datetime import date
-from django.conf import settings
-from bhp_base_model.tests.factories import BaseUuidModelFactory
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
 
 
 class BaseSubjectFactory(BaseUuidModelFactory):

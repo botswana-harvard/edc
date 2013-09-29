@@ -1,9 +1,8 @@
 from django.db import models
-# from django.core.urlresolvers import reverse
-from bhp_appointment.models import Appointment
-from bhp_entry.models import BaseEntryBucket
-from entry import Entry
-from bhp_entry.managers import ScheduledEntryBucketManager
+from ...bhp_appointment.models import Appointment
+from ..managers import ScheduledEntryBucketManager
+from ..models import BaseEntryBucket
+from .entry import Entry
 
 
 class ScheduledEntryBucket(BaseEntryBucket):

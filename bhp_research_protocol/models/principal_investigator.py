@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext as _
-from bhp_base_model.models import BaseUuidModel
-from bhp_base_model.fields import NameField, InitialsField
+from ...bhp_base_model.models import BaseUuidModel
+from ...bhp_base_model.fields import NameField, InitialsField
 
 
 class PrincipalInvestigator (BaseUuidModel):
@@ -22,6 +22,3 @@ class PrincipalInvestigator (BaseUuidModel):
         ordering = ['last_name', 'first_name']
         unique_together = ['last_name', 'first_name']
         app_label = 'bhp_research_protocol'
-
-    def get_absolute_url(self):
-        return "/bhp_lab_registration/principalinvestigator/%s/" % self.id

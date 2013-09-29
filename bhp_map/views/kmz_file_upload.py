@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from bhp_map.classes import Mapper, site_mappers
-from bhp_map.exceptions import MapperError
+from ..classes import Mapper, site_mappers
+from ..exceptions import MapperError
 
 
 def kmz_file_upload(request, **kwargs):
@@ -11,7 +11,6 @@ def kmz_file_upload(request, **kwargs):
     """
     template = 'kmz_file_upload.html'
     mapper_name = kwargs.get('mapper_name', '')
-    mapper_names = []
     m = None
     if not mapper_name:
         mapper_names = [mname for mname in site_mappers.get_registry()]
@@ -21,7 +20,6 @@ def kmz_file_upload(request, **kwargs):
         if not issubclass(m, Mapper):
             raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_name))
         m = site_mappers.get_registry(mapper_name)()
-        
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,

@@ -1,4 +1,4 @@
-from bhp_base_admin.admin import BaseTabularInline
+from ...bhp_base_admin.admin import BaseTabularInline
 
 
 class BaseConsentUpdateInlineAdmin(BaseTabularInline):

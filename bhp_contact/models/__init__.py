@@ -1,1 +1,1 @@
-from base_contact_log_item import BaseContactLogItem
+from .base_contact_log_item import BaseContactLogItem

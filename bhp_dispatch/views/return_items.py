@@ -1,11 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-#from django.core.exceptions import ObjectDoesNotExist
-#from django.http import Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from bhp_sync.models import Producer
-from bhp_dispatch.classes import ReturnController
+from ...bhp_sync.models import Producer
+from ..classes import ReturnController
 
 
 @login_required

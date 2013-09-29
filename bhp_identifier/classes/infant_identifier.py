@@ -1,8 +1,8 @@
 from datetime import datetime
 from django.db.models import get_model
-from bhp_identifier.models import SubjectIdentifier
-from bhp_identifier.exceptions import IdentifierError
-from base_subject_identifier import BaseSubjectIdentifier
+from ..models import SubjectIdentifier
+from ..exceptions import IdentifierError
+from .base_subject_identifier import BaseSubjectIdentifier
 
 
 class InfantIdentifier(BaseSubjectIdentifier):

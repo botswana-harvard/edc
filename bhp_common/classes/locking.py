@@ -10,9 +10,7 @@ class LockableObject(object):
     default_timeout = 45
 
     def __init__(self, *args, **kwargs):
-
         super(LockableObject, self).__init__(*args, **kwargs)
-
         self.dbcursor = connection.cursor()
         self.lock_id = None
 
@@ -21,22 +19,16 @@ class LockableObject(object):
                           self.lock_id)
 
     def lock(self):
-
         if hasattr(self, 'id'):
             self.lock_id = self.id
         else:
             self.lock_id = 0
-
         lock_name = self.get_lock_name()
-
         self.dbcursor.execute('select get_lock("%s",%s) as lock_success' % (lock_name,
                                                                             self.default_timeout))
-
         success = (self.dbcursor.fetchone()[0] == 1)
-
         if not success:
-            raise EnvironmentError, 'Acquiring lock "%s" timed out after %d seconds' % (lock_name, self.default_timeout)
-
+            raise EnvironmentError('Acquiring lock "{0}" timed out after {1} seconds'.format(lock_name, self.default_timeout))
         return success
 
     def unlock(self):
@@ -46,11 +38,8 @@ class LockableObject(object):
 def require_object_lock(func):
 
     def wrapped(*args, **kwargs):
-
         lock_object = args[0]
-
         lock_object.lock()
-
         try:
             return func(*args, **kwargs)
         finally:

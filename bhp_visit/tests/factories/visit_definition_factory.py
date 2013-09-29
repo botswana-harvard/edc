@@ -1,8 +1,7 @@
 import factory
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_visit.models import VisitDefinition
-from bhp_content_type_map.tests.factories import ContentTypeMapFactory
-#from django.contrib.contenttypes.models import ContentType
+from ....bhp_base_model.tests.factories import BaseUuidModelFactory
+from ....bhp_content_type_map.tests.factories import ContentTypeMapFactory
+from ...models import VisitDefinition
 
 starting_seq_num = 1000
 

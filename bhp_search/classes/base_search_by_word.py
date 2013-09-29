@@ -1,12 +1,11 @@
-from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models import Q
-from bhp_crypto.fields import BaseEncryptedField
-from bhp_registration.models import RegisteredSubject
-from bhp_consent.models import BaseConsent
-from bhp_search.forms import SearchForm
-from bhp_search.exceptions import SearchError
-from base_search import BaseSearch
+from ...bhp_crypto.fields import BaseEncryptedField
+from ...bhp_registration.models import RegisteredSubject
+from ...bhp_consent.models import BaseConsent
+from ..forms import SearchForm
+from ..exceptions import SearchError
+from .base_search import BaseSearch
 
 
 class BaseSearchByWord(BaseSearch):
@@ -31,11 +30,6 @@ class BaseSearchByWord(BaseSearch):
 
         """
         model = self.get_search_model_cls()
-#         if not isinstance(model(), RegisteredSubject):
-#             if not 'registered_subject' in dir(model()) and not isinstance(model(), BaseConsent):
-#                 raise ImproperlyConfigured('Search models must have a foreign key to '
-#                                                'model RegisteredSubject or be a subclass of '
-#                                                'BaseConsent. Got model {0}.'.format(model._meta.object_name.lower()))
         if not self.context.get('dbname', None):
             self.update_context(dbname='default')
         # expect a single k,v pair so that we have just one search term
@@ -94,8 +88,5 @@ class BaseSearchByWord(BaseSearch):
                 else:
                     raise SearchError('model contains a field type not handled. Got {0} from model {1}.'.format(field, model))
             self.update_context(order_by=self.order_by)
-#             raise ImproperlyConfigured('Search models must have a foreign key to model '
-#                                        'RegisteredSubject or be a subclass of BaseConsent. '
-#                                        'Got model {0}.'.format(model._meta.object_name.lower()))
         search_result = model.objects.filter(qset).order_by(self.context.get('order_by'))
         return search_result

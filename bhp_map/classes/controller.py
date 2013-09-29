@@ -2,8 +2,8 @@ import copy
 from django.conf import settings
 from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
-from bhp_map.exceptions import MapperError
-from mapper import Mapper
+from ..exceptions import MapperError
+from .mapper import Mapper
 
 
 class AlreadyRegistered(Exception):

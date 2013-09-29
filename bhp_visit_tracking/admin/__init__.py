@@ -1,1 +1,1 @@
-from base_visit_tracking_model_admin import BaseVisitTrackingModelAdmin
+from .base_visit_tracking_model_admin import BaseVisitTrackingModelAdmin

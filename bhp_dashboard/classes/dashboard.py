@@ -2,15 +2,15 @@ import copy
 import re
 import inspect
 from django.core.urlresolvers import reverse
-from django.conf.urls.defaults import patterns, include, url
+from django.conf.urls.defaults import patterns, url
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from bhp_common.utils import convert_from_camel
-from bhp_section.classes import site_sections
-from bhp_context.classes import BaseContext
-from bhp_base_model.models import BaseModel
-from bhp_registration.models import RegisteredSubject
-from bhp_dashboard.exceptions import DashboardModelError
+from ...bhp_common.utils import convert_from_camel
+from ...bhp_section.classes import site_sections
+from ...bhp_context.classes import BaseContext
+from ...bhp_base_model.models import BaseModel
+from ...bhp_registration.models import RegisteredSubject
+from ..exceptions import DashboardModelError
 
 
 class Dashboard(object):

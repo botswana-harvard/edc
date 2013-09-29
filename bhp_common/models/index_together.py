@@ -12,10 +12,8 @@ Usage is like so ...
 class MyModel(models.Model):
     field_1 = models.IntegerField()
     field_2 = models.IntegerField()
-    
     field_3 = models.IntegerField()
     field_4 = models.IntegerField()
-    
     _index_together = (('field_1', 'field_2'), ('field3', 'field4'))
 
 """
@@ -23,42 +21,45 @@ class MyModel(models.Model):
 from django.db import connection
 from django.conf import settings
 
+
 def create_index(model):
     meta = getattr(model, '_meta', None)
-    if not meta: return 0
-    
-    #if settings.DATABASE_ENGINE == 'mysql':
-    if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':    
+    if not meta:
+        return 0
+
+    # if settings.DATABASE_ENGINE == 'mysql':
+    if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
         func = create_index_mysql
-    #elif settings.DATABASE_ENGINE == 'sqlite3':
+    # elif settings.DATABASE_ENGINE == 'sqlite3':
     #    func = create_index_sqlite3
     else:
         return 0
-    
+
     successes = 0
-    
+
     index_tuples = getattr(model, '_index_together', [])
     for index_tuple in index_tuples:
         columns = [meta.get_field(field).column for field in index_tuple]
         name = '_'.join(columns)[:63]
         table = meta.db_table
         successes += func(name, table, columns)
-        
+
     if successes:
         print '%d indices created' % successes
     return successes
 
+
 def create_index_mysql(name, table, columns):
-    cursor = connection.cursor()    
+    cursor = connection.cursor()
     sql = "CREATE INDEX %s ON %s (%s)" % (
         name, table, ', '.join(columns))
-        
+
     from MySQLdb import OperationalError
     try:
         cursor.execute(sql)
         return 1
     except OperationalError as x:
-        if x.args[0] != 1061: # 1061 means duplicate key name / we can ignore
+        if x.args[0] != 1061:  # 1061 means duplicate key name / we can ignore
             raise
         return 0
     finally:

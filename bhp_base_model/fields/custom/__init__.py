@@ -1,1 +1,1 @@
-from custom_fields import *
+from .custom_fields import *

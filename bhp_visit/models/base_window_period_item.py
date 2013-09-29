@@ -1,7 +1,7 @@
 from django.db import models
-from bhp_base_model.models import BaseUuidModel
-from bhp_visit.choices import VISIT_INTERVAL_UNITS
-from bhp_visit.classes import WindowPeriod
+from ...bhp_base_model.models import BaseUuidModel
+from ..choices import VISIT_INTERVAL_UNITS
+from ..classes import WindowPeriod
 
 
 class BaseWindowPeriodItem(BaseUuidModel):

@@ -1,1 +1,1 @@
-from base_visit_tracking_factory import BaseVisitTrackingFactory
+from .base_visit_tracking_factory import BaseVisitTrackingFactory

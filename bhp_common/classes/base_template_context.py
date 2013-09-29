@@ -1,5 +1,5 @@
 from django.conf import settings
-from bhp_common.utils import os_variables
+from ..utils import os_variables
 
 
 class BaseContext(dict):

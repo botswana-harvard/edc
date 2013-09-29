@@ -2,7 +2,7 @@ import socket
 import re
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from bhp_variables.models import StudySpecific
+from ...bhp_variables.models import StudySpecific
 
 
 class Device(object):

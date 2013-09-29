@@ -1,6 +1,6 @@
 import copy
 import random
-from bhp_supplemental_fields.models import Excluded
+from ..models import Excluded
 
 
 class Base(object):

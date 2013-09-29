@@ -5,10 +5,10 @@ from django.db import IntegrityError
 from django.db.models import Model, get_model, get_models, get_app, Max, ForeignKey, OneToOneField
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User, Group, Permission
-from bhp_base_model.models import BaseListModel
-from bhp_userprofile.models import UserProfile
-from bhp_content_type_map.classes import ContentTypeMapHelper
-from base_controller import BaseController
+from ...bhp_base_model.models import BaseListModel
+from ...bhp_userprofile.models import UserProfile
+from ...bhp_content_type_map.classes import ContentTypeMapHelper
+from .base_controller import BaseController
 
 
 logger = logging.getLogger(__name__)

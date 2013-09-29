@@ -1,8 +1,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-#from bhp_mapping.helpers import get_regions
-from bhp_map.exceptions import MapperError
-from bhp_map.classes import site_mappers
+from ..exceptions import MapperError
+from ..classes import site_mappers
 
 
 def clear_all_sections(request, **kwargs):

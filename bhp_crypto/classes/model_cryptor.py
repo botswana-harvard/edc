@@ -2,8 +2,7 @@ import sys
 from django.db.models import get_models, get_app
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-
-from bhp_crypto.fields import BaseEncryptedField
+from ..fields import BaseEncryptedField
 
 
 class ModelCryptor(object):

@@ -1,7 +1,7 @@
 from django.db import models
 from base_model import BaseModel
-from bhp_base_model.fields import TransCharField
-from bhp_base_model.managers import BaseListManager
+from ..fields import TransCharField
+from ..managers import BaseListManager
 
 
 class BaseListModel(BaseModel):

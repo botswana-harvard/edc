@@ -1,4 +1,4 @@
-from bhp_identifier.classes import SubjectIdentifier
+from ...bhp_identifier.classes import SubjectIdentifier
 
 
 class ConsentedSubjectIdentifier(SubjectIdentifier):

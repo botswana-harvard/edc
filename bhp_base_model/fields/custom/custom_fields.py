@@ -3,7 +3,7 @@ from django.utils.translation import ugettext as _
 from django.db import models
 from django.db.models import CharField, DateTimeField, DecimalField
 from django.forms import RegexField
-from bhp_common.choices import DATE_ESTIMATED, IDENTITY_TYPE
+from ....bhp_common.choices import DATE_ESTIMATED, IDENTITY_TYPE
 
 
 class TransCharField(CharField):

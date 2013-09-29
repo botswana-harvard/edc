@@ -1,5 +1,5 @@
 from django import template
-from bhp_dispatch.models import DispatchItemRegister
+from ..models import DispatchItemRegister
 
 register = template.Library()
 

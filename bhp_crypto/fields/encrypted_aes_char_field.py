@@ -1,4 +1,4 @@
-from local_aes_encryption_field import LocalAesEncryptionField
+from .local_aes_encryption_field import LocalAesEncryptionField
 
 
 class EncryptedAesCharField(LocalAesEncryptionField):

@@ -1,6 +1,6 @@
 from django import forms
 from django.conf import settings
-from bhp_consent.forms import BaseConsentedModelForm
+from ...bhp_consent.forms import BaseConsentedModelForm
 
 
 class BaseVisitTrackingForm(BaseConsentedModelForm):

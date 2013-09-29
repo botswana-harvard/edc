@@ -1,1 +1,1 @@
-from base_household_member_form import BaseHouseholdMemberForm
+from .base_household_member_form import BaseHouseholdMemberForm

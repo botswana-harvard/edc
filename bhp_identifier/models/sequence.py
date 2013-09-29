@@ -1,4 +1,4 @@
-from base_sequence import BaseSequence
+from .base_sequence import BaseSequence
 
 
 class Sequence(BaseSequence):

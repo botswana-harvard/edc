@@ -1,7 +1,7 @@
 import logging
-from bhp_entry.classes import AdditionalEntry
-from bhp_entry.models import AdditionalEntryBucket
-from base_rule import BaseRule
+from ...bhp_entry.classes import AdditionalEntry
+from ...bhp_entry.models import AdditionalEntryBucket
+from .base_rule import BaseRule
 
 logger = logging.getLogger(__name__)
 

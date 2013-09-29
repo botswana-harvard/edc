@@ -1,5 +1,5 @@
 from django import forms
-from bhp_subject_config.models import SubjectConfiguration
+from ..models import SubjectConfiguration
 
 
 class SubjectConfigurationForm (forms.ModelForm):

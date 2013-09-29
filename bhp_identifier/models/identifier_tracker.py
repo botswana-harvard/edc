@@ -1,5 +1,5 @@
 from django.db import models
-from bhp_sync.models import BaseSyncUuidModel
+from ...bhp_sync.models import BaseSyncUuidModel
 
 
 class IdentifierTracker(BaseSyncUuidModel):

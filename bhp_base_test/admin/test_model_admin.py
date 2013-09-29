@@ -1,8 +1,8 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_supplemental_fields.classes import SupplementalFields, ConditionalFields
-from bhp_base_test.models import TestModel
-from bhp_base_test.forms import TestModelForm
+from ...bhp_base_admin.admin import BaseModelAdmin
+from ...bhp_supplemental_fields.classes import SupplementalFields, ConditionalFields
+from ..models import TestModel, TestManyToMany, TestForeignKey
+from ..forms import TestModelForm
 
 
 class TestModelAdmin(BaseModelAdmin):
@@ -16,3 +16,15 @@ class TestModelAdmin(BaseModelAdmin):
 admin.site.register(TestModel, TestModelAdmin)
 
 
+class TestManyToManyAdmin(BaseModelAdmin):
+
+    pass
+
+admin.site.register(TestManyToMany, TestManyToManyAdmin)
+
+
+class TestForeignKeyAdmin(BaseModelAdmin):
+
+    pass
+
+admin.site.register(TestForeignKey, TestForeignKeyAdmin)

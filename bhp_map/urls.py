@@ -1,8 +1,6 @@
-import os
 from django.conf.urls.defaults import patterns, url
-from bhp_map.classes import site_mappers
-from django.conf import settings
-from bhp_map.exceptions import MapperError
+from .classes import site_mappers
+
 site_mappers.autodiscover()
 
 urlpatterns = patterns('bhp_map.views',
@@ -22,10 +20,8 @@ urlpatterns = patterns('bhp_map.views',
 
     url(r'^add_cart/(?P<mapper_name>\w+)/', 'add_to_cart', name='map_add_cart_url'),
     url(r'^update_cart/(?P<mapper_name>\w+)/', 'update_cart', name='update_identifier_cart'),
-#     url(r'^empty_cart/(?P<mapper_name>\w+)/', 'empty_cart'),
     url(r'^checkout/(?P<mapper_name>\w+)/', 'checkout_cart', name='map_checkout_cart_url'),
     url(r'^complete/(?P<mapper_name>\w+)/', 'save_cart', name='complete_cart_save'),
-    
     url(r'^upload_kmz/(?P<mapper_name>\w+)/', 'kmz_file_upload', name='kmz_file_upload_url'),
     url(r'^create_kmz_itemsdata_list.pop[0]/(?P<mapper_name>\w+)/', 'create_kmz_items', name='create_kmz_items_url'),
     url(r'^view/(?P<mapper_name>\w+)/', 'plot_item_points', name='map_plot_item_points_url'),
@@ -34,7 +30,7 @@ urlpatterns = patterns('bhp_map.views',
     url(r'^save_section/(?P<mapper_name>\w+)/', 'save_section', name='save_section_url'),
     url(r'^save_sub_section/(?P<mapper_name>\w+)/', 'save_sub_section', name='save_sub_section_url'),
     url(r'^clear_section/(?P<mapper_name>\w+)/', 'clear_section', name='clear_section_url'),
-     url(r'^clear_all_sections/(?P<mapper_name>\w+)/', 'clear_all_sections', name='clear_all_sections_url'),
+    url(r'^clear_all_sections/(?P<mapper_name>\w+)/', 'clear_all_sections', name='clear_all_sections_url'),
     url(r'^upload_item_map/(?P<mapper_name>\w+)/', 'upload_item_map', name='upload_item_map_url'),
     url(r'^map_section/(?P<mapper_name>\w+)/', 'map_section', name='map_section_url'),
     url(r'^map_sub_sections/(?P<mapper_name>\w+)/', 'map_sub_sections', name='map_sub_sections_url'),
@@ -48,4 +44,3 @@ for mapper_name in site_mappers.get_registry().iterkeys():
     urlpatterns += patterns('bhp_map.views', url(r'^(?P<mapper_name>{0})/$'.format(mapper_name), 'map_index', name='selected_map_index_url'))
 
 urlpatterns += patterns('bhp_map.views', url(r'^', 'map_index', name='map_index_url'))
-

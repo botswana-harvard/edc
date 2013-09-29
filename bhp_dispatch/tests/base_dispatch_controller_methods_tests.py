@@ -1,12 +1,12 @@
 from django.db import IntegrityError
 from django.db.models import get_model
 from django.test import TestCase
-from bhp_sync.models import Producer
-from bhp_sync.exceptions import ProducerError
-from bhp_dispatch.classes import BaseDispatch, ReturnController, BaseDispatchController
-from bhp_dispatch.exceptions import DispatchError, AlreadyDispatchedContainer, AlreadyRegisteredController
-from bhp_dispatch.models import DispatchContainerRegister, TestContainer, DispatchItemRegister
-from bhp_dispatch.tests.factories import TestContainerFactory
+from ...bhp_sync.models import Producer
+from ...bhp_sync.exceptions import ProducerError
+from ..classes import BaseDispatch, ReturnController, BaseDispatchController
+from ..exceptions import AlreadyDispatchedContainer, AlreadyRegisteredController
+from ..models import DispatchContainerRegister, TestContainer, DispatchItemRegister
+from ..tests.factories import TestContainerFactory
 
 
 class BaseDispatchControllerMethodsTests(TestCase):
