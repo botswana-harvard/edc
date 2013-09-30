@@ -12,4 +12,4 @@ class TestRegistration(TestOffStudyMixin, BaseRegistrationModel):
         return TestBaseOffStudy
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'

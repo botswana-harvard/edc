@@ -7,7 +7,7 @@ class TestVisit(BaseVisitTracking):
         return False
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
 
 
 class TestSubjectVisit(BaseVisitTracking):
@@ -16,7 +16,7 @@ class TestSubjectVisit(BaseVisitTracking):
         return False
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
 
 
 class TestSubjectVisitTwo(BaseVisitTracking):
@@ -25,7 +25,7 @@ class TestSubjectVisitTwo(BaseVisitTracking):
         return False
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
 
 
 class TestSubjectVisitThree(BaseVisitTracking):
@@ -34,4 +34,4 @@ class TestSubjectVisitThree(BaseVisitTracking):
         return False
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'

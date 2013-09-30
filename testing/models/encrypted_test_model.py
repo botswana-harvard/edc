@@ -31,4 +31,4 @@ class EncryptedTestModel(BaseModel):
         return ''
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'

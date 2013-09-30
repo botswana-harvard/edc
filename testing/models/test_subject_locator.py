@@ -11,4 +11,4 @@ class TestSubjectLocator(BaseLocator):
         return self.test_visit.get_subject_identifier()
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'

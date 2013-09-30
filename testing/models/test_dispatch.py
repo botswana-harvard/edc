@@ -1,13 +1,13 @@
 from django.db import models
 from edc.audit.audit_trail import AuditTrail
 from edc.base.model.models import BaseListModel
-from edc.core.bhp_base_test.models import TestManyToMany
+from edc.testing.models import TestManyToMany
 from edc.device.dispatch.models import BaseDispatchSyncUuidModel
 
 
 class TestDispatchList(BaseListModel):
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
 
 
 class TestDispatchContainer(BaseDispatchSyncUuidModel):
@@ -36,7 +36,7 @@ class TestDispatchContainer(BaseDispatchSyncUuidModel):
         return True
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
 
 
 class TestDispatchItem(BaseDispatchSyncUuidModel):
@@ -66,7 +66,7 @@ class TestDispatchItem(BaseDispatchSyncUuidModel):
         return True
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
 
 
 class TestDispatchItemTwo(BaseDispatchSyncUuidModel):
@@ -94,7 +94,7 @@ class TestDispatchItemTwo(BaseDispatchSyncUuidModel):
         return True
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
 
 
 class TestDispatchItemThree(BaseDispatchSyncUuidModel):
@@ -122,7 +122,7 @@ class TestDispatchItemThree(BaseDispatchSyncUuidModel):
         return True
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
 
 
 class TestDispatchItemM2M(BaseDispatchSyncUuidModel):
@@ -152,7 +152,7 @@ class TestDispatchItemM2M(BaseDispatchSyncUuidModel):
         return True
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
 
 
 class TestDispatchItemBypassForEdit(BaseDispatchSyncUuidModel):
@@ -199,4 +199,4 @@ class TestDispatchItemBypassForEdit(BaseDispatchSyncUuidModel):
         return True
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'

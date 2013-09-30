@@ -11,4 +11,4 @@ class TestModel(BaseUuidModel):
     f5 = models.CharField(max_length=10)
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'

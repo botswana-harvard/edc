@@ -3,7 +3,7 @@ from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, Sc
 from edc.subject.entry.tests.factories import EntryFactory
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_base_test.models import TestVisit
+from edc.testing.models import TestVisit
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
@@ -15,12 +15,12 @@ from edc.subject.appointment.models import Appointment
 class VisitTests(TestCase):
 
     def test_p1(self):
-        from edc.core.bhp_base_test.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory, TestScheduledModelFactory
+        from edc.testing.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory, TestScheduledModelFactory
         site_lab_tracker.autodiscover()
         StudySpecificFactory()
         study_site = StudySiteFactory()
         ConfigurationFactory()
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
 
         content_type_map_helper = ContentTypeMapHelper()
         content_type_map_helper.populate()

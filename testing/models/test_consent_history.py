@@ -23,4 +23,4 @@ class TestConsentHistory(BaseConsentHistory):
     objects = ConsentHistoryManager()
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'

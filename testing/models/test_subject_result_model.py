@@ -24,4 +24,4 @@ class TestSubjectResultModel(BaseUuidModel):
         return self.subject_identifier
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'

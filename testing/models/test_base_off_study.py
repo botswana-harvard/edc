@@ -11,4 +11,4 @@ class TestBaseOffStudy(BaseOffStudy):
         return '{0} '.format(self.registered_subject)
 
     class Meta:
-        app_label = "bhp_base_test"
+        app_label = 'testing'

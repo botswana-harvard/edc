@@ -10,4 +10,4 @@ class TestOffStudy(BaseOffStudy):
         return 'visit_tracking'
 
     class Meta:
-        app_label = 'bhp_base_test'
+        app_label = 'testing'
