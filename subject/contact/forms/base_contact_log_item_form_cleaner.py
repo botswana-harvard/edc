@@ -1,20 +1,7 @@
 from django import forms
-# from django.contrib.admin.widgets import AdminRadioSelect, AdminRadioFieldRenderer
-# from bhp_contact.choices import INFO_PROVIDER, CONTACT_TYPE
 
 
 class BaseContactLogItemFormCleaner (object):
-
-#    contact_type = forms.ChoiceField(
-#        label='Contact type',
-#        choices=[choice for choice in CONTACT_TYPE],
-#        widget=AdminRadioSelect(renderer=AdminRadioFieldRenderer),
-#        )
-#    information_provider = forms.ChoiceField(
-#        label='Information provider',
-#        choices=[choice for choice in INFO_PROVIDER],
-#        widget=AdminRadioSelect(renderer=AdminRadioFieldRenderer),
-#        )
 
     def clean(self, cleaned_data):
         if not cleaned_data.get('is_contacted', None):

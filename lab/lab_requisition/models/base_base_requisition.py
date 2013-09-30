@@ -8,7 +8,7 @@ except ImportError:
 from edc.base.model.fields import InitialsField
 from edc.choices.common import YES_NO
 from edc.core.bhp_variables.models import StudySite
-from edc.core.bhp_device.classes import Device
+from edc.device.device.classes import Device
 from edc.core.bhp_string.classes import BaseString
 from edc.lab.lab_clinic_api.models import Panel
 from edc.lab.lab_clinic_api.models import AliquotType

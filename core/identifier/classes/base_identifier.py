@@ -3,7 +3,7 @@ import uuid
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from django.conf import settings
-from edc.core.bhp_device.classes import Device
+from edc.device.device.classes import Device
 from ..exceptions import IdentifierError, IndentifierFormatError
 from .check_digit import CheckDigit
 

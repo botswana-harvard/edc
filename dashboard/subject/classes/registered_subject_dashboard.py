@@ -818,8 +818,8 @@ class RegisteredSubjectDashboard(Dashboard):
         .. seealso:: :class:`lab_clinic_api.classes.EdcLabResults`"""
 
         if self._get_requisition_model():
-            edc.lab = EdcLabResults()
-            return edc.lab.render(self.get_subject_identifier(), False)
+            edc_lab_results = EdcLabResults()
+            return edc_lab_results.render(self.get_subject_identifier(), False)
         return ''
 
     def get_locator_model(self):
@@ -829,7 +829,7 @@ class RegisteredSubjectDashboard(Dashboard):
         return None
 
     def _set_locator_model(self):
-        """Sets the locator model class which must be a subclass of bhp_locator.BaseLocator."""
+        """Sets the locator model class which must be a subclass of edc.subject.locator.BaseLocator."""
         self._locator_model = self.get_locator_model()
         if self._locator_model:
             if not issubclass(self._locator_model, BaseLocator):

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from edc.core.bhp_device.classes import Device
+from edc.device.device.classes import Device
 from edc.core.identifier.classes import Identifier
 from edc.core.bhp_base_test.models import TestRequisition
 

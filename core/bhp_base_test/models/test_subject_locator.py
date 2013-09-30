@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.bhp_locator.models import BaseLocator
+from edc.subject.locator.models import BaseLocator
 from .test_visit import TestVisit
 
 
