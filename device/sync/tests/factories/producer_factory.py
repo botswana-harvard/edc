@@ -1,5 +1,5 @@
-from bhp_base_model.tests.factories import BaseUuidModelFactory
-from bhp_sync.models import Producer
+from edc.base.model.tests.factories import BaseUuidModelFactory
+from edc.device.sync.models import Producer
 
 
 class ProducerFactory(BaseUuidModelFactory):

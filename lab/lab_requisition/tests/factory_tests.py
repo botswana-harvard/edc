@@ -1,8 +1,8 @@
 from django.test import TestCase
-# from bhp_content_type_map.classes import ContentTypeMapHelper
+# from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 # from edc.subject.appointment.tests.factories import ConfigurationFactory
-# # from bhp_content_type_map.models import ContentTypeMap
-# from bhp_base_test.tests.factories import TestRequisitionFactory
+# # from edc.core.bhp_content_type_map.models import ContentTypeMap
+# from edc.testing.tests.factories import TestRequisitionFactory
 # from lab_clinic_api.tests.factories import AliquotTypeFactory
 
 

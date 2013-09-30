@@ -1,5 +1,5 @@
 # from django.core.management.base import BaseCommand
-# from bhp_visit.models import MembershipForm
+# from edc.subject.visit_schedule.models import MembershipForm
 # 
 # 
 # class Command(BaseCommand):

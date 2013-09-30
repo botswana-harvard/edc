@@ -93,7 +93,7 @@ class BaseConsentMethodsTests(TestCase, BaseMethods):
         print 'ok'
 
     def test_subject_consent_no_registered_subject(self):
-        from bhp_base_test.tests.factories import TestConsentNoRsFactory
+        from edc.testing.tests.factories import TestConsentNoRsFactory
 
         print 'TEST SUBJECT CONSENT WITH NO KEY TO RS'
         TestConsent.objects.all().delete()

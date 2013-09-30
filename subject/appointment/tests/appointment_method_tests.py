@@ -90,7 +90,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
  
     def test_validate_appt_status(self):
         # setup visit 1000
-        from bhp_base_test.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory, TestScheduledModelFactory
+        from edc.testing.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory, TestScheduledModelFactory
         app_label = 'bhp_base_test'
         site_lab_tracker.autodiscover()
         StudySpecificFactory()

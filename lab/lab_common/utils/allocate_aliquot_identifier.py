@@ -1,5 +1,5 @@
 from lab_aliquot.models import Aliquot
-from bhp_variables.models import StudySpecific
+from edc.core.bhp_variables.models import StudySpecific
 
 
 def AllocateAliquotIdentifier(user, aliquot_type):

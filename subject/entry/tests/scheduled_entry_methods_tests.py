@@ -3,15 +3,15 @@
 # from bhp_entry.classes import ScheduledEntry
 # from datetime import datetime, date, timedelta
 # from bhp_lab_tracker.classes import lab_tracker
-# from bhp_variables.models import StudySpecific, StudySite
-# from bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+# from edc.core.bhp_variables.models import StudySpecific, StudySite
+# from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 # from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 # from edc.subject.appointment.tests.factories import ConfigurationFactory
-# from bhp_visit.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
-# from bhp_content_type_map.classes import ContentTypeMapHelper
-# from bhp_content_type_map.models import ContentTypeMap
-# from bhp_base_test.tests.factories import TestConsentFactory, TestBaseOffStudyFactory
-# from bhp_base_test.models import TestConsent, TestRegistration, TestVisit
+# from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+# from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
+# from edc.core.bhp_content_type_map.models import ContentTypeMap
+# from edc.testing.tests.factories import TestConsentFactory, TestBaseOffStudyFactory
+# from edc.testing.models import TestConsent, TestRegistration, TestVisit
 # 
 # 
 # class ScheduledEntryMethodsTests(TestCase):

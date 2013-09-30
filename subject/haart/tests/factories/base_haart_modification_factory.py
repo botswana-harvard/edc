@@ -1,6 +1,6 @@
 import factory
 from datetime import date
-from bhp_base_model.tests.factories import BaseUuidModelFactory
+from edc.base.model.tests.factories import BaseUuidModelFactory
 from bhp_haart.choices import ARV_DRUG_LIST, DOSE_STATUS, ARV_MODIFICATION_REASON
 
 

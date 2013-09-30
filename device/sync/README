@@ -7,13 +7,13 @@ ALLOW_MODEL_SERIALIZATION = True
 add this to your models.py
 
 try:
-    from bhp_sync.classes import BaseSyncModel as BaseUuidModel
+    from edc.device.sync.classes import BaseSyncModel as BaseUuidModel
 except ImportError:
-    from bhp_base_model.classes import BaseUuidModel
+    from edc.base.model.classes import BaseUuidModel
     
 -or just-
 
-from bhp_sync.classes import BaseSyncModel as BaseUuidModel
+from edc.device.sync.classes import BaseSyncModel as BaseUuidModel
 
 
 IMPORTANT:

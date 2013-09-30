@@ -3,10 +3,10 @@ from django.test import TestCase
 import datetime
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
-from bhp_content_type_map.models import ContentTypeMap
-from bhp_sync.classes import Consumer, DeserializeFromTransaction
+from edc.core.bhp_content_type_map.models import ContentTypeMap
+from edc.device.sync.classes import Consumer, DeserializeFromTransaction
 from edc.subject.consent.models import ConsentCatalogue
-from bhp_sync.models import Producer, OutgoingTransaction, IncomingTransaction
+from edc.device.sync.models import Producer, OutgoingTransaction, IncomingTransaction
 
 
 class SyncMethodsTests(TestCase):
