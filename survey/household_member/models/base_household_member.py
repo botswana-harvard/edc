@@ -102,7 +102,7 @@ class BaseHouseholdMember(BaseDispatchSyncUuidModel):
 
     @property
     def is_moved(self):
-        from bcpp_subject.models import SubjectMoved
+        from apps.bcpp_subject.models import SubjectMoved
         retval = False
         if SubjectMoved.objects.filter(household_member=self, survey=self.survey):
             retval = True
