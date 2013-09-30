@@ -15,6 +15,6 @@ class SyncLock(BaseLock):
 
     def __init__(self, db):
         self.db = db
-        SyncLockModel = get_model('bhp_sync', 'SyncLockModel')
-        SyncImportHistoryModel = get_model('bhp_sync', 'SyncImportHistoryModel')
+        SyncLockModel = get_model('sync', 'SyncLockModel')
+        SyncImportHistoryModel = get_model('sync', 'SyncImportHistoryModel')
         super(SyncLock, self).__init__(db, SyncLockModel, SyncImportHistoryModel)

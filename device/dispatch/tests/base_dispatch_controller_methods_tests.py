@@ -3,7 +3,7 @@ from django.db.models import get_model
 from django.test import TestCase
 from edc.device.sync.models import Producer
 from edc.device.sync.exceptions import ProducerError
-from edc.core.bhp_base_test.tests.factories import TestDspContainerFactory, TestDspContainer
+from edc.testing.tests.factories import TestDspContainerFactory, TestDspContainer
 from ..classes import BaseDispatch, ReturnController, BaseDispatchController
 from ..exceptions import AlreadyDispatchedContainer, AlreadyRegisteredController
 from ..models import DispatchContainerRegister, DispatchItemRegister

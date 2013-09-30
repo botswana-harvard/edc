@@ -33,8 +33,8 @@ class TransactionProducer(object):
         retval = False
         #using = kwargs.get('using', 'default')
         producer_name = kwargs.get('producer_name', self.value)
-        OutgoingTransaction = get_model('bhp_sync', 'outgoingtransaction')
-        Producer = get_model('bhp_sync', 'producer')
+        OutgoingTransaction = get_model('sync', 'outgoingtransaction')
+        Producer = get_model('sync', 'producer')
         if OutgoingTransaction.objects.using(using).all().exists():
             if not Producer.objects.using(using).filter(name=producer_name).exists():
                 logger.warning('Unknown Producer {0}. Not checking for outgoing transactions. (Note: using database key \'{1}\')'.format(producer_name, using))

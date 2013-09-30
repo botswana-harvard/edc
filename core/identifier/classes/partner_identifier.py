@@ -14,7 +14,7 @@ class PartnerIdentifier(BaseSubjectIdentifier):
         if not SubjectIdentifier.objects.filter(identifier=subject_identifier):
             raise ValidationError('Unknown subject_identifier {0}.'.format(subject_identifier))
         options.update(
-            app_name='bhp_identifier',
+            app_name='identifier',
             models_name='derived_subject_identifier',
             subject_identifier=kwargs.get('subject_identifier'),
             user=kwargs.get('user'),

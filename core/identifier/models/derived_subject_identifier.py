@@ -18,4 +18,5 @@ class DerivedSubjectIdentifier(BaseModel):
         return self.subject_identifier
 
     class Meta:
-        app_label = "bhp_identifier"
+        app_label = 'identifier'
+        db_table = 'bhp_identifier_derivedsubjectidentifier'

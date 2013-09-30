@@ -1,7 +1,7 @@
 from django.test import TestCase
 from edc.device.device.classes import Device
 from edc.core.identifier.classes import Identifier
-from edc.core.bhp_base_test.models import TestRequisition
+from edc.testing.models import TestRequisition
 
 
 class RequisitionMethodsTest(TestCase):

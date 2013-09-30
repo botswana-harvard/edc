@@ -34,9 +34,9 @@ class BaseIdentifier(object):
         if 'PROJECT_IDENTIFIER_MODULUS' not in dir(settings):
             modulus = modulus or 7
         self.identifier_format = identifier_format or "{prefix}-{site_code}{device_id}{sequence}"
-        self.app_name = app_name or 'bhp_identifier'
+        self.app_name = app_name or 'identifier'
         self.model_name = model_name or 'subjectidentifier'
-        self._sequence_app_label = sequence_app_label or 'bhp_identifier'
+        self._sequence_app_label = sequence_app_label or 'identifier'
         self._sequence_model_name = sequence_model_name or 'sequence'
         self.padding = padding or 4
         self.modulus = modulus or settings.PROJECT_IDENTIFIER_MODULUS

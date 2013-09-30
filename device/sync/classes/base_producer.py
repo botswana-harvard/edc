@@ -15,7 +15,7 @@ class BaseProducer(BaseUsing):
         """Sets the instance of the current producer based on the ORM `using` parameter for the destination.
 
         .. note:: The producer must always exist on the source."""
-        Producer = get_model('bhp_sync', 'Producer')
+        Producer = get_model('sync', 'Producer')
         if self._producer:
             raise ProducerError('Producer may not be changed once set. Create a new DispatchController instead.')
 #        # try to determine producer from using_destination

@@ -7,8 +7,8 @@ from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory, S
 from edc.dashboard.subject.classes import RegisteredSubjectDashboard
 from edc.subject.lab_tracker.classes import LabTracker, site_lab_tracker
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_base_test.models import TestVisit, TestConsentWithMixin, TestRequisition, TestSubjectLocator
-from edc.core.bhp_base_test.tests.factories import TestConsentWithMixinFactory
+from edc.testing.models import TestVisit, TestConsentWithMixin, TestRequisition, TestSubjectLocator
+from edc.testing.tests.factories import TestConsentWithMixinFactory
 from edc.dashboard.base.exceptions import DashboardModelError
 from edc.subject.lab_tracker.models import TestResultModel
 from edc.subject.appointment.models import Configuration

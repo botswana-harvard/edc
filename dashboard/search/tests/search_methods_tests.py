@@ -2,8 +2,8 @@ from django.test import TestCase
 from django.core.paginator import Page
 from django.db.models.query import QuerySet
 from edc.dashboard.section.classes import BaseSectionView, site_sections
-from edc.core.bhp_base_test.models import TestConsent
-from edc.core.bhp_base_test.tests.factories import TestConsentFactory
+from edc.testing.models import TestConsent
+from edc.testing.tests.factories import TestConsentFactory
 from ..classes import BaseSearchByWord, site_search
 from ..exceptions import SearchModelError, SearchAttributeError
 

@@ -3,7 +3,7 @@ import base64
 import copy
 import sys
 import logging
-from M2Crypto import Rand, RSA, EVP
+from M2Crypto import RSA, EVP
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 from ..exceptions import EncryptionError, AlgorithmError, EncryptionKeyError, ModeError
@@ -153,10 +153,10 @@ class Cryptor(BaseCryptor):
         """ Decrypted and set the AES key using the rsa private key for the given mode.
 
         Keyword Arguments:
-         - algorithm -- must be 'aes' (default: no default). 
+         - algorithm -- must be 'aes' (default: no default).
          - mode -- the mode dictionary key. For example local (default: no default).
 
-        .. Note:: have not implemented default values for keyword args as a precaution for an incorrectly configured instance. 
+        .. Note:: have not implemented default values for keyword args as a precaution for an incorrectly configured instance.
 
         """
         algorithm = kwargs.get('algorithm', self.algorithm)

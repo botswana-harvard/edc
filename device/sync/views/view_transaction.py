@@ -12,7 +12,7 @@ def view_transaction(request, **kwargs):
     cryptor = FieldCryptor('aes', 'local')
     model_name = kwargs.get('model_name')
     pk = kwargs.get('pk')
-    model = get_model('bhp_sync', model_name)
+    model = get_model('sync', model_name)
     model_instance = model.objects.get(pk=pk)
     textfields = {}
     charfields = {}

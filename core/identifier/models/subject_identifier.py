@@ -7,5 +7,6 @@ class SubjectIdentifier(BaseIdentifierModel):
     objects = models.Manager()
 
     class Meta:
-        app_label = "bhp_identifier"
+        app_label = 'identifier'
+        db_table = 'bhp_identifier_subjectidentifier'
         ordering = ['-created']

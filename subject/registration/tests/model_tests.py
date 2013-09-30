@@ -1,8 +1,8 @@
 import re
 from django.test import TestCase
 from django.conf import settings
-from edc.core.bhp_base_test.models import TestConsent
-from edc.core.bhp_base_test.tests.factories import TestConsentFactory
+from edc.testing.models import TestConsent
+from edc.testing.tests.factories import TestConsentFactory
 from edc.core.identifier.exceptions import IdentifierError
 from ..models import RegisteredSubject
 from .factories import RegisteredSubjectFactory

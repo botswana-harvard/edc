@@ -4,8 +4,8 @@ from django.test import TestCase
 from edc.core.bhp_variables.models import StudySite
 from edc.core.bhp_variables.tests.factories import StudySiteFactory
 from edc.subject.registration.models import RegisteredSubject
-from edc.core.bhp_base_test.models import TestForeignKey, TestM2m, TestConsent, TestSubjectUuidModel, TestConsentNoRs
-from edc.core.bhp_base_test.tests.factories import TestConsentFactory
+from edc.testing.models import TestForeignKey, TestM2m, TestConsent, TestSubjectUuidModel, TestConsentNoRs
+from edc.testing.tests.factories import TestConsentFactory
 from edc.core.identifier.exceptions import IdentifierError
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap

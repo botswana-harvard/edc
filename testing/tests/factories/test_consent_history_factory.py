@@ -1,5 +1,5 @@
 from edc.base.model.tests.factories import BaseUuidModelFactory
-from edc.core.bhp_base_test.models import TestConsentHistory
+from edc.testing.models import TestConsentHistory
 
 
 class TestConsentHistoryFactory(BaseUuidModelFactory):

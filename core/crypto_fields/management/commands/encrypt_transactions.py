@@ -14,16 +14,16 @@ class Command(BaseCommand):
         if not args:
             self.stdout.write('Encrypting both incoming and outgoing.\n')
             self.stdout.write('Starting with incoming.\n')
-            self.encrypt_tx(field_cryptor, get_model('bhp_sync', 'incomingtransaction'))
+            self.encrypt_tx(field_cryptor, get_model('sync', 'incomingtransaction'))
 
             self.stdout.write('Processing with outgoing.\n')
-            self.encrypt_tx(field_cryptor, get_model('bhp_sync', 'outgoingtransaction'))
+            self.encrypt_tx(field_cryptor, get_model('sync', 'outgoingtransaction'))
         else:
             for model_name in args:
                 if model_name.lower() == 'outgoing':
-                    model = get_model('bhp_sync', 'outgoingtransaction')
+                    model = get_model('sync', 'outgoingtransaction')
                 elif model_name.lower() == 'incoming':
-                    model = get_model('bhp_sync', 'incomingtransaction')
+                    model = get_model('sync', 'incomingtransaction')
                 else:
                     raise CommandError('Model {} not found'.format(model_name))
             if model:

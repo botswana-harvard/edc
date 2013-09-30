@@ -3,7 +3,7 @@ from django.core.exceptions import ImproperlyConfigured
 from edc.subject.entry.tests.factories import EntryFactory
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_base_test.models import TestSubjectVisit, TestSubjectVisitTwo, TestSubjectVisitThree
+from edc.testing.models import TestSubjectVisit, TestSubjectVisitTwo, TestSubjectVisitThree
 from .factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 
 

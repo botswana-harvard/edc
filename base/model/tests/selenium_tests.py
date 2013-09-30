@@ -3,7 +3,7 @@ from django.test import LiveServerTestCase
 from django.contrib.auth.models import User
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
-from edc.core.bhp_base_test.models import TestM2m, TestForeignKey, TestModel
+from edc.testing.models import TestM2m, TestForeignKey, TestModel
 
 
 class MySeleniumTests(LiveServerTestCase):

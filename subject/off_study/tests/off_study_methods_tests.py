@@ -8,12 +8,12 @@ from edc.subject.appointment.models import Appointment
 from edc.subject.appointment.tests.factories import ConfigurationFactory, AppointmentFactory
 from edc.subject.visit_schedule.models import VisitDefinition
 from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
-from edc.core.bhp_base_test.models import TestSubjectVisit
+from edc.testing.models import TestSubjectVisit
 from edc.subject.consent.models import AttachedModel
-from edc.core.bhp_base_test.tests.factories import TestConsentFactory
+from edc.testing.tests.factories import TestConsentFactory
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.core.bhp_variables.tests.factories import StudySiteFactory
-from edc.core.bhp_base_test.models import TestOffStudy
+from edc.testing.models import TestOffStudy
 
 
 class OffStudyMethodsTests(TestCase):

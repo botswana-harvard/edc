@@ -44,6 +44,7 @@ class IdentifierTracker(BaseSyncUuidModel):
         return self.identifier
 
     class Meta:
-        app_label = 'bhp_identifier'
+        app_label = 'identifier'
+        db_table = 'bhp_identifier_identifiertracker'
         ordering = ['root_number', 'counter']
         unique_together = ['root_number', 'counter']

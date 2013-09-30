@@ -5,7 +5,7 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from edc.subject.registration.models import RegisteredSubject
-from edc.core.bhp_base_test.models import TestSubjectUuidModel, TestForeignKey, TestM2m
+from edc.testing.models import TestSubjectUuidModel, TestForeignKey, TestM2m
 from .base_methods import BaseMethods
 
 

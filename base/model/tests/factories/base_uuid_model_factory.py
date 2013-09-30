@@ -1,4 +1,4 @@
-from bhp_factory.factories import BaseFactory
+from edc.testing.factory.factories import BaseFactory
 
 starting_seq_num = 0
 

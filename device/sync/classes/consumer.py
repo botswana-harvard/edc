@@ -24,7 +24,7 @@ class Consumer(object):
         """Consumes ALL incoming transactions on \'using\' in order by ('producer', 'timestamp')."""
         if not using:
             using = None
-        IncomingTransaction = get_model('bhp_sync', 'IncomingTransaction')
+        IncomingTransaction = get_model('sync', 'IncomingTransaction')
         check_hostname = kwargs.get('check_hostname', True)
         deserialize_from_transaction = DeserializeFromTransaction()
         tot = IncomingTransaction.objects.using(using).filter(is_consumed=False).count()
@@ -71,8 +71,8 @@ class Consumer(object):
             using_destination = 'default'
         if using_source == using_destination:
             raise TransactionConsumerError('Cannot fetch outgoing transactions from myself')
-        OutgoingTransaction = get_model('bhp_sync', 'OutgoingTransaction')
-        IncomingTransaction = get_model('bhp_sync', 'IncomingTransaction')
+        OutgoingTransaction = get_model('sync', 'OutgoingTransaction')
+        IncomingTransaction = get_model('sync', 'IncomingTransaction')
         for outgoing_transaction in OutgoingTransaction.objects.using(using_source).filter(is_consumed=False):
             new_incoming_transaction = IncomingTransaction()
             # copy outgoing attr into new incoming

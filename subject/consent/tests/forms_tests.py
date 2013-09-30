@@ -1,8 +1,8 @@
 from django.test import TestCase
 from edc.subject.registration.models import RegisteredSubject
-from edc.core.bhp_base_test.forms import TestSubjectUuidModelForm
-from edc.core.bhp_base_test.tests.factories import TestConsentFactory
-from edc.core.bhp_base_test.tests.factories import TestM2mFactory, TestForeignKeyFactory
+from edc.testing.forms import TestSubjectUuidModelForm
+from edc.testing.tests.factories import TestConsentFactory
+from edc.testing.tests.factories import TestM2mFactory, TestForeignKeyFactory
 from .base_methods import BaseMethods
 
 

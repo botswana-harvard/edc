@@ -16,5 +16,5 @@ nullhandler = logger.addHandler(NullHandler())
 class ImportHistory(BaseImportHistory):
 
     def __init__(self, db, lock_name):
-        SyncImportHistoryModel = get_model('bhp_sync', 'SyncImportHistoryModel')
+        SyncImportHistoryModel = get_model('sync', 'SyncImportHistoryModel')
         super(ImportHistory, self).__init__(db, lock_name, SyncLock, SyncImportHistoryModel)

@@ -21,7 +21,7 @@ class SerializeToTransaction(object):
             if kwargs.get('created'):
                 action = 'I'
             transaction_producer = TransactionProducer()
-            OutgoingTransaction = get_model('bhp_sync', 'outgoingtransaction')
+            OutgoingTransaction = get_model('sync', 'outgoingtransaction')
             use_natural_keys = False
             if 'natural_key' in dir(sender):
                 use_natural_keys = True

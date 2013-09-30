@@ -42,7 +42,7 @@ class ModelCryptor(object):
             for model in get_models(get_app(app_name)):
                 encrypted_fields = self.get_encrypted_fields(model)
                 if encrypted_fields:
-                    encrypted_models[model._meta.object_name.lower()] = {'model': model, 
+                    encrypted_models[model._meta.object_name.lower()] = {'model': model,
                                                                          'encrypted_fields': encrypted_fields}
         return encrypted_models
 
