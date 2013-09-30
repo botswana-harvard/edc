@@ -21,10 +21,10 @@ class Migration(SchemaMigration):
             ('is_contacted', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('information_provider', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('appointment', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bhp_appointment.Appointment'])),
+            ('appointment', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['appointment.Appointment'])),
             ('is_confirmed', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
-        db.send_create_signal('bhp_appointment', ['PreAppointmentContact'])
+        db.send_create_signal('appointment', ['PreAppointmentContact'])
 
         # Adding model 'PreAppointmentContactAudit'
         db.create_table('bhp_appointment_preappointmentcontact_audit', (
@@ -40,13 +40,13 @@ class Migration(SchemaMigration):
             ('is_contacted', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('information_provider', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('appointment', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_preappointmentcontact', to=orm['bhp_appointment.Appointment'])),
+            ('appointment', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_preappointmentcontact', to=orm['appointment.Appointment'])),
             ('is_confirmed', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('_audit_timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('_audit_change_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
         ))
-        db.send_create_signal('bhp_appointment', ['PreAppointmentContactAudit'])
+        db.send_create_signal('appointment', ['PreAppointmentContactAudit'])
 
         # Adding field 'AppointmentAudit.appt_close_datetime'
         db.add_column('bhp_appointment_appointment_audit', 'appt_close_datetime',
@@ -74,7 +74,7 @@ class Migration(SchemaMigration):
 
 
     models = {
-        'bhp_appointment.appointment': {
+        'appointment.appointment': {
             'Meta': {'ordering': "['registered_subject', 'appt_datetime']", 'unique_together': "(('registered_subject', 'visit_definition', 'visit_instance'),)", 'object_name': 'Appointment'},
             'appt_close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'appt_datetime': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True'}),
@@ -92,15 +92,15 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'is_confirmed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_registration.RegisteredSubject']"}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['registration.RegisteredSubject']"}),
             'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']", 'null': 'True'}),
             'timepoint_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
-            'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_visit.VisitDefinition']"}),
+            'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['visit_schedule.VisitDefinition']"}),
             'visit_instance': ('django.db.models.fields.CharField', [], {'default': "'0'", 'max_length': '1', 'null': 'True', 'db_index': 'True', 'blank': 'True'})
         },
-        'bhp_appointment.appointmentaudit': {
+        'appointment.appointmentaudit': {
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'AppointmentAudit', 'db_table': "'bhp_appointment_appointment_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
@@ -122,15 +122,15 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
             'is_confirmed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_+'", 'to': "orm['bhp_registration.RegisteredSubject']"}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_+'", 'to': "orm['registration.RegisteredSubject']"}),
             'study_site': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_appointment'", 'null': 'True', 'to': "orm['bhp_variables.StudySite']"}),
             'timepoint_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
-            'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_+'", 'to': "orm['bhp_visit.VisitDefinition']"}),
+            'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_+'", 'to': "orm['visit_schedule.VisitDefinition']"}),
             'visit_instance': ('django.db.models.fields.CharField', [], {'default': "'0'", 'max_length': '1', 'null': 'True', 'db_index': 'True', 'blank': 'True'})
         },
-        'bhp_appointment.configuration': {
+        'appointment.configuration': {
             'Meta': {'object_name': 'Configuration'},
             'allowed_iso_weekdays': ('django.db.models.fields.IntegerField', [], {'default': '12345'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -143,9 +143,9 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_appointment.holiday': {
+        'appointment.holiday': {
             'Meta': {'ordering': "['holiday_date']", 'object_name': 'Holiday'},
-            'configuration': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_appointment.Configuration']"}),
+            'configuration': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['appointment.Configuration']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'holiday_date': ('django.db.models.fields.DateField', [], {'unique': 'True'}),
             'holiday_name': ('django.db.models.fields.CharField', [], {'default': "'holiday'", 'max_length': '25'}),
@@ -156,9 +156,9 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_appointment.preappointmentcontact': {
+        'appointment.preappointmentcontact': {
             'Meta': {'object_name': 'PreAppointmentContact'},
-            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_appointment.Appointment']"}),
+            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['appointment.Appointment']"}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'contact_datetime': ('django.db.models.fields.DateTimeField', [], {}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -172,13 +172,13 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_appointment.preappointmentcontactaudit': {
+        'appointment.preappointmentcontactaudit': {
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'PreAppointmentContactAudit', 'db_table': "'bhp_appointment_preappointmentcontact_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
-            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_preappointmentcontact'", 'to': "orm['bhp_appointment.Appointment']"}),
+            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_preappointmentcontact'", 'to': "orm['appointment.Appointment']"}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'contact_datetime': ('django.db.models.fields.DateTimeField', [], {}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -206,7 +206,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_registration.registeredsubject': {
+        'registration.registeredsubject': {
             'Meta': {'ordering': "['subject_identifier']", 'unique_together': "(('identity', 'first_name', 'dob', 'initials', 'registration_identifier'),)", 'object_name': 'RegisteredSubject'},
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -252,7 +252,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_visit.membershipform': {
+        'visit_schedule.membershipform': {
             'Meta': {'object_name': 'MembershipForm'},
             'category': ('django.db.models.fields.CharField', [], {'default': "'subject'", 'max_length': '25', 'null': 'True'}),
             'content_type_map': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'+'", 'unique': 'True', 'to': "orm['bhp_content_type_map.ContentTypeMap']"}),
@@ -265,7 +265,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
         },
-        'bhp_visit.schedulegroup': {
+        'visit_schedule.schedulegroup': {
             'Meta': {'ordering': "['group_name']", 'object_name': 'ScheduleGroup'},
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -274,12 +274,12 @@ class Migration(SchemaMigration):
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
-            'membership_form': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_visit.MembershipForm']"}),
+            'membership_form': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['visit_schedule.MembershipForm']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_visit.visitdefinition': {
+        'visit_schedule.visitdefinition': {
             'Meta': {'ordering': "['code', 'time_point']", 'object_name': 'VisitDefinition'},
             'base_interval': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'base_interval_unit': ('django.db.models.fields.CharField', [], {'default': "'D'", 'max_length': '10'}),
@@ -293,7 +293,7 @@ class Migration(SchemaMigration):
             'lower_window': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'lower_window_unit': ('django.db.models.fields.CharField', [], {'default': "'D'", 'max_length': '10'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'schedule_group': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['bhp_visit.ScheduleGroup']", 'symmetrical': 'False'}),
+            'schedule_group': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['visit_schedule.ScheduleGroup']", 'symmetrical': 'False'}),
             'time_point': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '35', 'db_index': 'True'}),
             'upper_window': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -310,4 +310,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['bhp_appointment']
+    complete_apps = ['appointment']

@@ -47,5 +47,6 @@ class DispatchItemRegister(BaseDispatch):
         return "Dispatch Item {0} {1} -> {2} ({3})".format(self.item_model_name, self.item_identifier, self.producer.name, self.is_dispatched)
 
     class Meta:
-        app_label = "bhp_dispatch"
+        app_label = "dispatch"
+        db_table = 'bhp_dispatch_dispatchitemregister'
         unique_together = (('dispatch_container_register', 'item_pk', 'item_identifier', 'is_dispatched'), )

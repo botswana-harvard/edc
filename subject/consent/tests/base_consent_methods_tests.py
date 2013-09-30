@@ -4,7 +4,7 @@ from django.test import TestCase
 from edc.core.bhp_variables.models import StudySite
 from edc.core.bhp_variables.tests.factories import StudySiteFactory
 from edc.subject.registration.models import RegisteredSubject
-from edc.core.bhp_base_test.models import TestForeignKey, TestManyToMany, TestConsent, TestSubjectUuidModel, TestConsentNoRs
+from edc.core.bhp_base_test.models import TestForeignKey, TestM2m, TestConsent, TestSubjectUuidModel, TestConsentNoRs
 from edc.core.bhp_base_test.tests.factories import TestConsentFactory
 from edc.core.identifier.exceptions import IdentifierError
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
@@ -161,8 +161,8 @@ class BaseConsentMethodsTests(TestCase, BaseMethods):
 
     def test_subject_uuid_model(self):
         self.test_consent_catalogue()
-        test_m2m2 = TestManyToMany.objects.create(name='test_m2m2', short_name='test_m2m2')
-        TestManyToMany.objects.create(name='test_m2m3', short_name='test_m2m3')
+        test_m2m2 = TestM2m.objects.create(name='test_m2m2', short_name='test_m2m2')
+        TestM2m.objects.create(name='test_m2m3', short_name='test_m2m3')
         TestForeignKey.objects.create(name='test_fk', short_name='test_fk')
         registered_subject = RegisteredSubjectFactory(subject_identifier="TEST_SUBJECT_UUID", subject_type='test_subject_type')
         TestConsent.objects.create(

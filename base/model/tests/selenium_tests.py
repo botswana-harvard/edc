@@ -3,7 +3,7 @@ from django.test import LiveServerTestCase
 from django.contrib.auth.models import User
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
-from edc.core.bhp_base_test.models import TestManyToMany, TestForeignKey, TestModel
+from edc.core.bhp_base_test.models import TestM2m, TestForeignKey, TestModel
 
 
 class MySeleniumTests(LiveServerTestCase):
@@ -17,9 +17,9 @@ class MySeleniumTests(LiveServerTestCase):
         self.adminuser.save()
         self.logged_in = False
         self.login()
-        TestManyToMany.objects.create(name='test_m2m1', short_name='test_m2m1')
-        TestManyToMany.objects.create(name='test_m2m2', short_name='test_m2m2')
-        TestManyToMany.objects.create(name='test_m2m3', short_name='test_m2m3')
+        TestM2m.objects.create(name='test_m2m1', short_name='test_m2m1')
+        TestM2m.objects.create(name='test_m2m2', short_name='test_m2m2')
+        TestM2m.objects.create(name='test_m2m3', short_name='test_m2m3')
         TestForeignKey.objects.create(name='test_fk', short_name='test_fk')
         #self.survey = "MPP Year 1"
 

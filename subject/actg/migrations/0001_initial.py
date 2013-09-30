@@ -21,7 +21,7 @@ class Migration(SchemaMigration):
             ('short_description', self.gf('django.db.models.fields.CharField')(max_length=300)),
             ('full_description', self.gf('django.db.models.fields.TextField')(max_length=600)),
         ))
-        db.send_create_signal('bhp_actg_reference', ['Appendix40'])
+        db.send_create_signal('actg', ['Appendix40'])
 
 
     def backwards(self, orm):
@@ -31,7 +31,7 @@ class Migration(SchemaMigration):
 
 
     models = {
-        'bhp_actg_reference.appendix40': {
+        'actg.appendix40': {
             'Meta': {'object_name': 'Appendix40'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '25'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -46,4 +46,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['bhp_actg_reference']
+    complete_apps = ['actg']

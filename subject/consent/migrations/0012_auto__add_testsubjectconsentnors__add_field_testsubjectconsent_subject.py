@@ -47,7 +47,7 @@ class Migration(SchemaMigration):
             ('identity_type', self.gf('django.db.models.fields.CharField')(max_length=15)),
             ('confirm_identity', self.gf('django.db.models.fields.CharField')(max_length=78L, unique=True, null=True, blank=True)),
         ))
-        db.send_create_signal('bhp_consent', ['TestSubjectConsentNoRS'])
+        db.send_create_signal('consent', ['TestSubjectConsentNoRS'])
 
         # Adding field 'TestSubjectConsent.subject_identifier_as_pk'
         db.add_column('bhp_consent_testsubjectconsent', 'subject_identifier_as_pk',
@@ -108,7 +108,7 @@ class Migration(SchemaMigration):
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
         'bhp_base_model.testmanytomany': {
-            'Meta': {'object_name': 'TestManyToMany'},
+            'Meta': {'object_name': 'TestM2m'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'display_index': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
             'field_name': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
@@ -122,9 +122,9 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
-        'bhp_consent.attachedmodel': {
+        'consent.attachedmodel': {
             'Meta': {'unique_together': "(('consent_catalogue', 'content_type_map'),)", 'object_name': 'AttachedModel'},
-            'consent_catalogue': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_consent.ConsentCatalogue']"}),
+            'consent_catalogue': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['consent.ConsentCatalogue']"}),
             'content_type_map': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_content_type_map.ContentTypeMap']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
@@ -135,13 +135,13 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_consent.attachedmodelaudit': {
+        'consent.attachedmodelaudit': {
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'AttachedModelAudit', 'db_table': "'bhp_consent_attachedmodel_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
-            'consent_catalogue': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_attachedmodel'", 'to': "orm['bhp_consent.ConsentCatalogue']"}),
+            'consent_catalogue': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_attachedmodel'", 'to': "orm['consent.ConsentCatalogue']"}),
             'content_type_map': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_attachedmodel'", 'to': "orm['bhp_content_type_map.ContentTypeMap']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
@@ -152,7 +152,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_consent.consentcatalogue': {
+        'consent.consentcatalogue': {
             'Meta': {'ordering': "['name', 'version']", 'unique_together': "(('name', 'version'),)", 'object_name': 'ConsentCatalogue'},
             'add_for_app': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
             'consent_type': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
@@ -170,7 +170,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.IntegerField', [], {})
         },
-        'bhp_consent.consentcatalogueaudit': {
+        'consent.consentcatalogueaudit': {
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'ConsentCatalogueAudit', 'db_table': "'bhp_consent_consentcatalogue_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
@@ -192,7 +192,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.IntegerField', [], {})
         },
-        'bhp_consent.testsubjectconsent': {
+        'consent.testsubjectconsent': {
             'Meta': {'object_name': 'TestSubjectConsent'},
             'assessment_score': ('django.db.models.fields.CharField', [], {'default': "'Yes'", 'max_length': '3', 'null': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
@@ -221,7 +221,7 @@ class Migration(SchemaMigration):
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
             'may_store_samples': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['bhp_registration.RegisteredSubject']", 'unique': 'True', 'null': 'True'}),
+            'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['registration.RegisteredSubject']", 'unique': 'True', 'null': 'True'}),
             'study_questions': ('django.db.models.fields.CharField', [], {'default': "'Yes'", 'max_length': '3', 'null': 'True', 'blank': 'True'}),
             'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']"}),
             'subject_identifier': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'unique': 'True', 'max_length': '50', 'blank': 'True'}),
@@ -232,7 +232,7 @@ class Migration(SchemaMigration):
             'user_provided_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '35', 'null': 'True'}),
             'witness_name': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True', 'blank': 'True'})
         },
-        'bhp_consent.testsubjectconsentnors': {
+        'consent.testsubjectconsentnors': {
             'Meta': {'object_name': 'TestSubjectConsentNoRS'},
             'assessment_score': ('django.db.models.fields.CharField', [], {'default': "'Yes'", 'max_length': '3', 'null': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
@@ -271,7 +271,7 @@ class Migration(SchemaMigration):
             'user_provided_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '35', 'null': 'True'}),
             'witness_name': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True', 'blank': 'True'})
         },
-        'bhp_consent.testsubjectuuidmodel': {
+        'consent.testsubjectuuidmodel': {
             'Meta': {'object_name': 'TestSubjectUuidModel'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
@@ -279,9 +279,9 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
-            'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['bhp_registration.RegisteredSubject']", 'unique': 'True'}),
+            'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['registration.RegisteredSubject']", 'unique': 'True'}),
             'test_foreign_key': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_base_model.TestForeignKey']"}),
-            'test_many_to_many': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['bhp_base_model.TestManyToMany']", 'symmetrical': 'False'}),
+            'test_many_to_many': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['bhp_base_model.TestM2m']", 'symmetrical': 'False'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
@@ -299,7 +299,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_registration.registeredsubject': {
+        'registration.registeredsubject': {
             'Meta': {'ordering': "['subject_identifier']", 'unique_together': "(('identity', 'first_name', 'dob', 'initials', 'registration_identifier'),)", 'object_name': 'RegisteredSubject'},
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -355,4 +355,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['bhp_consent']
+    complete_apps = ['consent']

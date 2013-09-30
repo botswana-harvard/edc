@@ -25,7 +25,7 @@ class Migration(SchemaMigration):
 
 
     models = {
-        'bhp_code_lists.arvcode': {
+        'code_lists.arvcode': {
             'Meta': {'object_name': 'ArvCode'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -39,7 +39,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_code_lists.arvdosestatus': {
+        'code_lists.arvdosestatus': {
             'Meta': {'object_name': 'ArvDoseStatus'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -53,7 +53,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_code_lists.arvmodificationcode': {
+        'code_lists.arvmodificationcode': {
             'Meta': {'object_name': 'ArvModificationCode'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -67,7 +67,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_code_lists.bodysitecode': {
+        'code_lists.bodysitecode': {
             'Meta': {'object_name': 'BodySiteCode'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -81,7 +81,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_code_lists.dxcode': {
+        'code_lists.dxcode': {
             'Meta': {'object_name': 'DxCode'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -95,7 +95,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_code_lists.medicationcode': {
+        'code_lists.medicationcode': {
             'Meta': {'object_name': 'MedicationCode'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -109,7 +109,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_code_lists.organismcode': {
+        'code_lists.organismcode': {
             'Meta': {'object_name': 'OrganismCode'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -123,7 +123,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_code_lists.ssxcode': {
+        'code_lists.ssxcode': {
             'Meta': {'object_name': 'SsxCode'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -137,7 +137,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_code_lists.wcsdxadult': {
+        'code_lists.wcsdxadult': {
             'Meta': {'object_name': 'WcsDxAdult'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -151,7 +151,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_code_lists.wcsdxped': {
+        'code_lists.wcsdxped': {
             'Meta': {'object_name': 'WcsDxPed'},
             'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -167,4 +167,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['bhp_code_lists']
+    complete_apps = ['code_lists']

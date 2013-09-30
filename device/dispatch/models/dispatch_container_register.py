@@ -37,5 +37,6 @@ class DispatchContainerRegister(BaseDispatch):
     to_items.allow_tags = True
 
     class Meta:
-        app_label = "bhp_dispatch"
+        app_label = "dispatch"
+        db_table = 'bhp_dispatch_dispatchcontainerregister'
         unique_together = ('container_app_label', 'container_model_name', 'container_pk')

@@ -160,159 +160,10 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Removing index on 'AdverseEventStudyRelation', fields ['user_created']
-        db.delete_index('bhp_adverse_adverseeventstudyrelation', ['user_created'])
-
-        # Removing index on 'AdverseEventStudyRelation', fields ['display_index']
-        db.delete_index('bhp_adverse_adverseeventstudyrelation', ['display_index'])
-
-        # Removing index on 'AdverseEventStudyRelation', fields ['user_modified']
-        db.delete_index('bhp_adverse_adverseeventstudyrelation', ['user_modified'])
-
-        # Removing index on 'AdverseEventStudyRelation', fields ['short_name']
-        db.delete_index('bhp_adverse_adverseeventstudyrelation', ['short_name'])
-
-        # Removing index on 'AdverseEventStudyRelation', fields ['name']
-        db.delete_index('bhp_adverse_adverseeventstudyrelation', ['name'])
-
-        # Removing index on 'AdverseEventReportType', fields ['user_created']
-        db.delete_index('bhp_adverse_adverseeventreporttype', ['user_created'])
-
-        # Removing index on 'AdverseEventReportType', fields ['display_index']
-        db.delete_index('bhp_adverse_adverseeventreporttype', ['display_index'])
-
-        # Removing index on 'AdverseEventReportType', fields ['user_modified']
-        db.delete_index('bhp_adverse_adverseeventreporttype', ['user_modified'])
-
-        # Removing index on 'AdverseEventReportType', fields ['short_name']
-        db.delete_index('bhp_adverse_adverseeventreporttype', ['short_name'])
-
-        # Removing index on 'AdverseEventReportType', fields ['name']
-        db.delete_index('bhp_adverse_adverseeventreporttype', ['name'])
-
-        # Removing index on 'DeathReasonHospitalized', fields ['user_created']
-        db.delete_index('bhp_adverse_deathreasonhospitalized', ['user_created'])
-
-        # Removing index on 'DeathReasonHospitalized', fields ['display_index']
-        db.delete_index('bhp_adverse_deathreasonhospitalized', ['display_index'])
-
-        # Removing index on 'DeathReasonHospitalized', fields ['user_modified']
-        db.delete_index('bhp_adverse_deathreasonhospitalized', ['user_modified'])
-
-        # Removing index on 'DeathReasonHospitalized', fields ['short_name']
-        db.delete_index('bhp_adverse_deathreasonhospitalized', ['short_name'])
-
-        # Removing index on 'DeathReasonHospitalized', fields ['name']
-        db.delete_index('bhp_adverse_deathreasonhospitalized', ['name'])
-
-        # Removing index on 'Ae010AdverseStudyRel', fields ['user_created']
-        db.delete_index('bhp_adverse_ae010adversestudyrel', ['user_created'])
-
-        # Removing index on 'Ae010AdverseStudyRel', fields ['display_index']
-        db.delete_index('bhp_adverse_ae010adversestudyrel', ['display_index'])
-
-        # Removing index on 'Ae010AdverseStudyRel', fields ['user_modified']
-        db.delete_index('bhp_adverse_ae010adversestudyrel', ['user_modified'])
-
-        # Removing index on 'Ae010AdverseStudyRel', fields ['short_name']
-        db.delete_index('bhp_adverse_ae010adversestudyrel', ['short_name'])
-
-        # Removing index on 'Ae010AdverseStudyRel', fields ['name']
-        db.delete_index('bhp_adverse_ae010adversestudyrel', ['name'])
-
-        # Removing index on 'DeathCauseInfo', fields ['user_created']
-        db.delete_index('bhp_adverse_deathcauseinfo', ['user_created'])
-
-        # Removing index on 'DeathCauseInfo', fields ['display_index']
-        db.delete_index('bhp_adverse_deathcauseinfo', ['display_index'])
-
-        # Removing index on 'DeathCauseInfo', fields ['user_modified']
-        db.delete_index('bhp_adverse_deathcauseinfo', ['user_modified'])
-
-        # Removing index on 'DeathCauseInfo', fields ['short_name']
-        db.delete_index('bhp_adverse_deathcauseinfo', ['short_name'])
-
-        # Removing index on 'DeathCauseInfo', fields ['name']
-        db.delete_index('bhp_adverse_deathcauseinfo', ['name'])
-
-        # Removing index on 'Ae010ReportType', fields ['user_created']
-        db.delete_index('bhp_adverse_ae010reporttype', ['user_created'])
-
-        # Removing index on 'Ae010ReportType', fields ['display_index']
-        db.delete_index('bhp_adverse_ae010reporttype', ['display_index'])
-
-        # Removing index on 'Ae010ReportType', fields ['user_modified']
-        db.delete_index('bhp_adverse_ae010reporttype', ['user_modified'])
-
-        # Removing index on 'Ae010ReportType', fields ['short_name']
-        db.delete_index('bhp_adverse_ae010reporttype', ['short_name'])
-
-        # Removing index on 'Ae010ReportType', fields ['name']
-        db.delete_index('bhp_adverse_ae010reporttype', ['name'])
-
-        # Removing index on 'DeathMedicalResponsibility', fields ['user_created']
-        db.delete_index('bhp_adverse_deathmedicalresponsibility', ['user_created'])
-
-        # Removing index on 'DeathMedicalResponsibility', fields ['display_index']
-        db.delete_index('bhp_adverse_deathmedicalresponsibility', ['display_index'])
-
-        # Removing index on 'DeathMedicalResponsibility', fields ['user_modified']
-        db.delete_index('bhp_adverse_deathmedicalresponsibility', ['user_modified'])
-
-        # Removing index on 'DeathMedicalResponsibility', fields ['short_name']
-        db.delete_index('bhp_adverse_deathmedicalresponsibility', ['short_name'])
-
-        # Removing index on 'DeathMedicalResponsibility', fields ['name']
-        db.delete_index('bhp_adverse_deathmedicalresponsibility', ['name'])
-
-        # Removing index on 'SimpleAdverseEvent', fields ['user_created']
-        db.delete_index('bhp_adverse_simpleadverseevent', ['user_created'])
-
-        # Removing index on 'SimpleAdverseEvent', fields ['user_modified']
-        db.delete_index('bhp_adverse_simpleadverseevent', ['user_modified'])
-
-        # Removing index on 'DeathCauseCategory', fields ['user_created']
-        db.delete_index('bhp_adverse_deathcausecategory', ['user_created'])
-
-        # Removing index on 'DeathCauseCategory', fields ['display_index']
-        db.delete_index('bhp_adverse_deathcausecategory', ['display_index'])
-
-        # Removing index on 'DeathCauseCategory', fields ['user_modified']
-        db.delete_index('bhp_adverse_deathcausecategory', ['user_modified'])
-
-        # Removing index on 'DeathCauseCategory', fields ['short_name']
-        db.delete_index('bhp_adverse_deathcausecategory', ['short_name'])
-
-        # Removing index on 'DeathCauseCategory', fields ['name']
-        db.delete_index('bhp_adverse_deathcausecategory', ['name'])
-
-
-        # Changing field 'DeathCauseCategory.short_name'
-        db.alter_column('bhp_adverse_deathcausecategory', 'short_name', self.gf('django.db.models.fields.CharField')(default='-', max_length=250, unique=True))
-
-        # Changing field 'DeathMedicalResponsibility.short_name'
-        db.alter_column('bhp_adverse_deathmedicalresponsibility', 'short_name', self.gf('django.db.models.fields.CharField')(default='-', max_length=250, unique=True))
-
-        # Changing field 'Ae010ReportType.short_name'
-        db.alter_column('bhp_adverse_ae010reporttype', 'short_name', self.gf('django.db.models.fields.CharField')(default='-', max_length=250, unique=True))
-
-        # Changing field 'DeathCauseInfo.short_name'
-        db.alter_column('bhp_adverse_deathcauseinfo', 'short_name', self.gf('django.db.models.fields.CharField')(default='-', max_length=250, unique=True))
-
-        # Changing field 'Ae010AdverseStudyRel.short_name'
-        db.alter_column('bhp_adverse_ae010adversestudyrel', 'short_name', self.gf('django.db.models.fields.CharField')(default='-', max_length=250, unique=True))
-
-        # Changing field 'DeathReasonHospitalized.short_name'
-        db.alter_column('bhp_adverse_deathreasonhospitalized', 'short_name', self.gf('django.db.models.fields.CharField')(default='-', max_length=250, unique=True))
-
-        # Changing field 'AdverseEventReportType.short_name'
-        db.alter_column('bhp_adverse_adverseeventreporttype', 'short_name', self.gf('django.db.models.fields.CharField')(default='-', max_length=250, unique=True))
-
-        # Changing field 'AdverseEventStudyRelation.short_name'
-        db.alter_column('bhp_adverse_adverseeventstudyrelation', 'short_name', self.gf('django.db.models.fields.CharField')(default='-', max_length=250, unique=True))
+        pass
 
     models = {
-        'bhp_adverse.adverseeventreporttype': {
+        'adverse_event.adverseeventreporttype': {
             'Meta': {'ordering': "['display_index']", 'object_name': 'AdverseEventReportType'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'display_index': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
@@ -327,7 +178,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
-        'bhp_adverse.adverseeventstudyrelation': {
+        'adverse_event.adverseeventstudyrelation': {
             'Meta': {'ordering': "['display_index']", 'object_name': 'AdverseEventStudyRelation'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'display_index': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
@@ -342,7 +193,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
-        'bhp_adverse.ae010adversestudyrel': {
+        'adverse_event.ae010adversestudyrel': {
             'Meta': {'ordering': "['display_index']", 'object_name': 'Ae010AdverseStudyRel'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'display_index': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
@@ -357,7 +208,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
-        'bhp_adverse.ae010reporttype': {
+        'adverse_event.ae010reporttype': {
             'Meta': {'ordering': "['display_index']", 'object_name': 'Ae010ReportType'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'display_index': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
@@ -372,7 +223,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
-        'bhp_adverse.deathcausecategory': {
+        'adverse_event.deathcausecategory': {
             'Meta': {'ordering': "['display_index']", 'object_name': 'DeathCauseCategory'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'display_index': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
@@ -387,7 +238,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
-        'bhp_adverse.deathcauseinfo': {
+        'adverse_event.deathcauseinfo': {
             'Meta': {'ordering': "['display_index']", 'object_name': 'DeathCauseInfo'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'display_index': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
@@ -402,7 +253,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
-        'bhp_adverse.deathmedicalresponsibility': {
+        'adverse_event.deathmedicalresponsibility': {
             'Meta': {'ordering': "['display_index']", 'object_name': 'DeathMedicalResponsibility'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'display_index': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
@@ -417,7 +268,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
-        'bhp_adverse.deathreasonhospitalized': {
+        'adverse_event.deathreasonhospitalized': {
             'Meta': {'ordering': "['display_index']", 'object_name': 'DeathReasonHospitalized'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'display_index': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
@@ -432,9 +283,9 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
-        'bhp_adverse.simpleadverseevent': {
+        'adverse_event.simpleadverseevent': {
             'Meta': {'object_name': 'SimpleAdverseEvent'},
-            'adverse_study_rel': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_adverse.Ae010AdverseStudyRel']"}),
+            'adverse_study_rel': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['adverse_event.Ae010AdverseStudyRel']"}),
             'ae_desc': ('django.db.models.fields.TextField', [], {'max_length': '250'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'date_onset': ('django.db.models.fields.DateField', [], {}),
@@ -443,13 +294,13 @@ class Migration(SchemaMigration):
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_registration.RegisteredSubject']"}),
-            'report_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_adverse.Ae010ReportType']"}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['registration.RegisteredSubject']"}),
+            'report_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['adverse_event.Ae010ReportType']"}),
             'study_coord': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_registration.registeredsubject': {
+        'registration.registeredsubject': {
             'Meta': {'ordering': "['subject_identifier']", 'unique_together': "(('identity', 'first_name', 'dob', 'initials', 'registration_identifier'),)", 'object_name': 'RegisteredSubject'},
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -497,4 +348,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['bhp_adverse']
+    complete_apps = ['adverse_event']

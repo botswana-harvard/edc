@@ -3,7 +3,7 @@ from django.db.models import get_model
 from django.test import TestCase
 from edc.device.sync.models import Producer
 from edc.device.sync.exceptions import ProducerError
-from edc.core.bhp_base_test.tests.factories import TestDispatchContainerFactory, TestDispatchContainer
+from edc.core.bhp_base_test.tests.factories import TestDspContainerFactory, TestDspContainer
 from ..classes import BaseDispatch, ReturnController, BaseDispatchController
 from ..exceptions import AlreadyDispatchedContainer, AlreadyRegisteredController
 from ..models import DispatchContainerRegister, DispatchItemRegister
@@ -27,7 +27,7 @@ class BaseDispatchControllerMethodsTests(TestCase):
         self.create_test_container()
 
     def create_test_container(self):
-        self.test_container = TestDispatchContainer.objects.create(test_container_identifier=self.user_container_identifier)
+        self.test_container = TestDspContainer.objects.create(test_container_identifier=self.user_container_identifier)
 
 #     def test_container_p1(self):
 #         """Tests for exception if attempting to use a container as an item."""
@@ -42,7 +42,7 @@ class BaseDispatchControllerMethodsTests(TestCase):
 #             '0')
 
     def test_container_p2(self):
-        test_container = TestDispatchContainerFactory()
+        test_container = TestDspContainerFactory()
         base_controller = BaseDispatch(
             'default',
             'dispatch_destination',
@@ -67,7 +67,7 @@ class BaseDispatchControllerMethodsTests(TestCase):
             base_controller.get_container_register_instance().container_app_label,
             base_controller.get_container_register_instance().container_model_name)
         # assert this is TestContainer
-        self.assertTrue(issubclass(obj_cls, TestDispatchContainer))
+        self.assertTrue(issubclass(obj_cls, TestDspContainer))
         # assert this is TestContainer instance
         self.assertIsInstance(
             obj_cls.objects.get(**{dispatch_container_register.container_identifier_attrname: dispatch_container_register.container_identifier}),
@@ -81,7 +81,7 @@ class BaseDispatchControllerMethodsTests(TestCase):
         # assert that user container model method returns identifier attrname that is same as one used to init the class
         self.assertEqual(obj.dispatched_as_container_identifier_attr(), base_controller.get_user_container_identifier_attrname())
         # assert is an instance of TestContainer
-        self.assertTrue(isinstance(obj, TestDispatchContainer))
+        self.assertTrue(isinstance(obj, TestDspContainer))
         # assert is a dispatchable model
         self.assertTrue(obj.is_dispatchable_model())
         # assert that user container model is flagged as a container model
@@ -120,7 +120,7 @@ class BaseDispatchControllerMethodsTests(TestCase):
             base_controller.get_container_register_instance().container_app_label,
             base_controller.get_container_register_instance().container_model_name)
         # assert this is TestContainer
-        self.assertTrue(issubclass(user_container_cls, TestDispatchContainer))
+        self.assertTrue(issubclass(user_container_cls, TestDspContainer))
         # assert this is TestContainer instance
         self.assertIsInstance(
             user_container_cls.objects.get(**{dispatch_container_register.container_identifier_attrname: dispatch_container_register.container_identifier}),

@@ -25,7 +25,7 @@ class Migration(SchemaMigration):
         pass
 
     models = {
-        'bhp_appointment.appointment': {
+        'appointment.appointment': {
             'Meta': {'ordering': "['registered_subject', 'appt_datetime']", 'unique_together': "(('registered_subject', 'visit_definition', 'visit_instance'),)", 'object_name': 'Appointment'},
             'appt_close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'appt_datetime': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True'}),
@@ -43,12 +43,12 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'is_confirmed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_registration.RegisteredSubject']"}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['registration.RegisteredSubject']"}),
             'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']", 'null': 'True'}),
             'timepoint_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
-            'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_visit.VisitDefinition']"}),
+            'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['visit_schedule.VisitDefinition']"}),
             'visit_instance': ('django.db.models.fields.CharField', [], {'default': "'0'", 'max_length': '1', 'null': 'True', 'db_index': 'True', 'blank': 'True'})
         },
         'bhp_content_type_map.contenttypemap': {
@@ -65,9 +65,9 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_lab_entry.additionallabentrybucket': {
+        'lab_entry.additionallabentrybucket': {
             'Meta': {'ordering': "['registered_subject', 'lab_entry_unscheduled__panel__name']", 'unique_together': "(['appointment', 'lab_entry_unscheduled'],)", 'object_name': 'AdditionalLabEntryBucket'},
-            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_appointment.Appointment']"}),
+            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['appointment.Appointment']"}),
             'close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'current_entry_title': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True'}),
@@ -78,14 +78,14 @@ class Migration(SchemaMigration):
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
-            'lab_entry_unscheduled': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_lab_entry.LabEntryUnscheduled']"}),
+            'lab_entry_unscheduled': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['lab_entry.LabEntryUnscheduled']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_registration.RegisteredSubject']"}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['registration.RegisteredSubject']"}),
             'report_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_lab_entry.labentry': {
+        'lab_entry.labentry': {
             'Meta': {'ordering': "['visit_definition__code', 'entry_order']", 'unique_together': "(['visit_definition', 'panel'],)", 'object_name': 'LabEntry'},
             'base_interval': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'base_interval_unit': ('django.db.models.fields.CharField', [], {'default': "'D'", 'max_length': '10'}),
@@ -108,9 +108,9 @@ class Migration(SchemaMigration):
             'upper_window_unit': ('django.db.models.fields.CharField', [], {'default': "'D'", 'max_length': '10'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
-            'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_visit.VisitDefinition']"})
+            'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['visit_schedule.VisitDefinition']"})
         },
-        'bhp_lab_entry.labentryunscheduled': {
+        'lab_entry.labentryunscheduled': {
             'Meta': {'ordering': "['panel', 'entry_order']", 'object_name': 'LabEntryUnscheduled'},
             'base_interval': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'base_interval_unit': ('django.db.models.fields.CharField', [], {'default': "'D'", 'max_length': '10'}),
@@ -134,9 +134,9 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_lab_entry.scheduledlabentrybucket': {
+        'lab_entry.scheduledlabentrybucket': {
             'Meta': {'ordering': "['registered_subject', 'lab_entry__panel__name', 'appointment']", 'unique_together': "(['registered_subject', 'lab_entry', 'appointment'],)", 'object_name': 'ScheduledLabEntryBucket'},
-            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_appointment.Appointment']"}),
+            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['appointment.Appointment']"}),
             'close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'current_entry_title': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True'}),
@@ -147,16 +147,16 @@ class Migration(SchemaMigration):
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
-            'lab_entry': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_lab_entry.LabEntry']"}),
+            'lab_entry': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['lab_entry.LabEntry']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_registration.RegisteredSubject']"}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['registration.RegisteredSubject']"}),
             'report_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_lab_entry.unscheduledlabentrybucket': {
+        'lab_entry.unscheduledlabentrybucket': {
             'Meta': {'ordering': "['registered_subject', 'lab_entry_unscheduled__panel__name', 'appointment']", 'unique_together': "(['registered_subject', 'lab_entry_unscheduled', 'appointment'],)", 'object_name': 'UnscheduledLabEntryBucket'},
-            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_appointment.Appointment']"}),
+            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['appointment.Appointment']"}),
             'close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'current_entry_title': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True'}),
@@ -167,14 +167,14 @@ class Migration(SchemaMigration):
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
-            'lab_entry_unscheduled': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_lab_entry.LabEntryUnscheduled']"}),
+            'lab_entry_unscheduled': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['lab_entry.LabEntryUnscheduled']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_registration.RegisteredSubject']"}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['registration.RegisteredSubject']"}),
             'report_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_registration.registeredsubject': {
+        'registration.registeredsubject': {
             'Meta': {'ordering': "['subject_identifier']", 'unique_together': "(('first_name', 'dob', 'initials'),)", 'object_name': 'RegisteredSubject'},
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -221,7 +221,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_visit.membershipform': {
+        'visit_schedule.membershipform': {
             'Meta': {'object_name': 'MembershipForm'},
             'category': ('django.db.models.fields.CharField', [], {'default': "'subject'", 'max_length': '25', 'null': 'True'}),
             'content_type_map': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'+'", 'unique': 'True', 'to': "orm['bhp_content_type_map.ContentTypeMap']"}),
@@ -234,7 +234,7 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
         },
-        'bhp_visit.schedulegroup': {
+        'visit_schedule.schedulegroup': {
             'Meta': {'ordering': "['group_name']", 'object_name': 'ScheduleGroup'},
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -243,12 +243,12 @@ class Migration(SchemaMigration):
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
-            'membership_form': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_visit.MembershipForm']"}),
+            'membership_form': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['visit_schedule.MembershipForm']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_visit.visitdefinition': {
+        'visit_schedule.visitdefinition': {
             'Meta': {'ordering': "['code', 'time_point']", 'object_name': 'VisitDefinition'},
             'base_interval': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'base_interval_unit': ('django.db.models.fields.CharField', [], {'default': "'D'", 'max_length': '10'}),
@@ -262,7 +262,7 @@ class Migration(SchemaMigration):
             'lower_window': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'lower_window_unit': ('django.db.models.fields.CharField', [], {'default': "'D'", 'max_length': '10'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'schedule_group': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['bhp_visit.ScheduleGroup']", 'null': 'True', 'blank': 'True'}),
+            'schedule_group': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['visit_schedule.ScheduleGroup']", 'null': 'True', 'blank': 'True'}),
             'time_point': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '35', 'db_index': 'True'}),
             'upper_window': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -340,4 +340,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['bhp_lab_entry']
+    complete_apps = ['lab_entry']

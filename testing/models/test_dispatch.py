@@ -1,16 +1,16 @@
 from django.db import models
 from edc.audit.audit_trail import AuditTrail
 from edc.base.model.models import BaseListModel
-from edc.testing.models import TestManyToMany
+from edc.testing.models import TestM2m
 from edc.device.dispatch.models import BaseDispatchSyncUuidModel
 
 
-class TestDispatchList(BaseListModel):
+class TestDspList(BaseListModel):
     class Meta:
         app_label = 'testing'
 
 
-class TestDispatchContainer(BaseDispatchSyncUuidModel):
+class TestDspContainer(BaseDispatchSyncUuidModel):
 
     test_container_identifier = models.CharField(max_length=35, unique=True)
 
@@ -39,13 +39,13 @@ class TestDispatchContainer(BaseDispatchSyncUuidModel):
         app_label = 'testing'
 
 
-class TestDispatchItem(BaseDispatchSyncUuidModel):
+class TestDspItem(BaseDispatchSyncUuidModel):
 
     test_item_identifier = models.CharField(max_length=35, unique=True)
 
-    test_container = models.ForeignKey(TestDispatchContainer)
+    test_container = models.ForeignKey(TestDspContainer)
 
-    test_many_to_many = models.ManyToManyField(TestManyToMany)
+    test_m2m = models.ManyToManyField(TestM2m)
 
     comment = models.CharField(max_length=50, null=True)
 
@@ -60,7 +60,7 @@ class TestDispatchItem(BaseDispatchSyncUuidModel):
         return False
 
     def dispatch_container_lookup(self, using=None):
-        return (TestDispatchContainer, 'test_container__test_container_identifier')
+        return (TestDspContainer, 'test_container__test_container_identifier')
 
     def include_for_dispatch(self):
         return True
@@ -69,11 +69,11 @@ class TestDispatchItem(BaseDispatchSyncUuidModel):
         app_label = 'testing'
 
 
-class TestDispatchItemTwo(BaseDispatchSyncUuidModel):
+class TestDspItemTwo(BaseDispatchSyncUuidModel):
 
     test_item_identifier = models.CharField(max_length=35, unique=True)
 
-    test_item = models.ForeignKey(TestDispatchItem)
+    test_item = models.ForeignKey(TestDspItem)
 
     comment = models.CharField(max_length=50, null=True)
 
@@ -97,11 +97,11 @@ class TestDispatchItemTwo(BaseDispatchSyncUuidModel):
         app_label = 'testing'
 
 
-class TestDispatchItemThree(BaseDispatchSyncUuidModel):
+class TestDspItemThree(BaseDispatchSyncUuidModel):
 
     test_item_identifier = models.CharField(max_length=35, unique=True)
 
-    test_item_two = models.ForeignKey(TestDispatchItemTwo)
+    test_item_two = models.ForeignKey(TestDspItemTwo)
 
     comment = models.CharField(max_length=50, null=True)
 
@@ -125,13 +125,13 @@ class TestDispatchItemThree(BaseDispatchSyncUuidModel):
         app_label = 'testing'
 
 
-class TestDispatchItemM2M(BaseDispatchSyncUuidModel):
+class TestDspItemM2M(BaseDispatchSyncUuidModel):
 
     test_item_identifier = models.CharField(max_length=35, unique=True)
 
-    test_item_three = models.ForeignKey(TestDispatchItemThree)
+    test_item_three = models.ForeignKey(TestDspItemThree)
 
-    m2m = models.ManyToManyField(TestDispatchList)
+    m2m = models.ManyToManyField(TestDspList)
 
     comment = models.CharField(max_length=50, null=True)
 
@@ -155,13 +155,13 @@ class TestDispatchItemM2M(BaseDispatchSyncUuidModel):
         app_label = 'testing'
 
 
-class TestDispatchItemBypassForEdit(BaseDispatchSyncUuidModel):
+class TestDspItemBypass(BaseDispatchSyncUuidModel):
 
     test_item_identifier = models.CharField(max_length=35, unique=True)
 
-    test_container = models.ForeignKey(TestDispatchContainer)
+    test_container = models.ForeignKey(TestDspContainer)
 
-    test_many_to_many = models.ManyToManyField(TestManyToMany)
+    test_m2m = models.ManyToManyField(TestM2m)
 
     f1 = models.CharField(max_length=35)
     f2 = models.CharField(max_length=35)
@@ -193,7 +193,7 @@ class TestDispatchItemBypassForEdit(BaseDispatchSyncUuidModel):
         return False
 
     def dispatch_container_lookup(self, using=None):
-        return (TestDispatchContainer, 'test_container__test_container_identifier')
+        return (TestDspContainer, 'test_container__test_container_identifier')
 
     def include_for_dispatch(self):
         return True

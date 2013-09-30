@@ -2,7 +2,7 @@ from django.db import models
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.consent.models import BaseConsentedUuidModel
 from .test_foreign_key import TestForeignKey
-from .test_many_to_many import TestManyToMany
+from .test_m2m import TestM2m
 from .test_off_study_mixin import TestOffStudyMixin
 
 
@@ -14,7 +14,7 @@ class TestSubjectUuidModel(TestOffStudyMixin, BaseConsentedUuidModel):
 
     test_foreign_key = models.ForeignKey(TestForeignKey)
 
-    test_many_to_many = models.ManyToManyField(TestManyToMany)
+    test_m2m = models.ManyToManyField(TestM2m)
 
     objects = models.Manager()
 

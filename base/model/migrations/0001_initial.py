@@ -8,7 +8,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'TestManyToMany'
+        # Adding model 'TestM2m'
         db.create_table('bhp_base_model_testmanytomany', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
@@ -23,7 +23,7 @@ class Migration(SchemaMigration):
             ('field_name', self.gf('django.db.models.fields.CharField')(max_length=25, null=True, blank=True)),
             ('version', self.gf('django.db.models.fields.CharField')(default='1.0', max_length=35)),
         ))
-        db.send_create_signal('bhp_base_model', ['TestManyToMany'])
+        db.send_create_signal('bhp_base_model', ['TestM2m'])
 
         # Adding model 'TestForeignKey'
         db.create_table('bhp_base_model_testforeignkey', (
@@ -66,7 +66,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Deleting model 'TestManyToMany'
+        # Deleting model 'TestM2m'
         db.delete_table('bhp_base_model_testmanytomany')
 
         # Deleting model 'TestForeignKey'
@@ -96,7 +96,7 @@ class Migration(SchemaMigration):
             'version': ('django.db.models.fields.CharField', [], {'default': "'1.0'", 'max_length': '35'})
         },
         'bhp_base_model.testmanytomany': {
-            'Meta': {'object_name': 'TestManyToMany'},
+            'Meta': {'object_name': 'TestM2m'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'display_index': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
             'field_name': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
@@ -119,7 +119,7 @@ class Migration(SchemaMigration):
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'test_foreign_key': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_base_model.TestForeignKey']"}),
-            'test_many_to_many': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['bhp_base_model.TestManyToMany']", 'symmetrical': 'False'}),
+            'test_many_to_many': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['bhp_base_model.TestM2m']", 'symmetrical': 'False'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         }

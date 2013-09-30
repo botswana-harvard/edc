@@ -13,6 +13,6 @@ from .test_subject_result_model import TestSubjectResultModel
 from .test_subject_locator import TestSubjectLocator
 from .test_consent_history import TestConsentHistory
 from .test_foreign_key import TestForeignKey
-from .test_many_to_many import TestManyToMany
+from .test_m2m import TestM2m
 from .encrypted_test_model import EncryptedTestModel
-from .test_dispatch import TestDispatchItem, TestDispatchItemTwo, TestDispatchItemThree, TestDispatchList, TestDispatchItemM2M, TestDispatchItemBypassForEdit, TestDispatchContainer
+from .test_dispatch import TestDspItem, TestDspItemTwo, TestDspItemThree, TestDspList, TestDspItemM2M, TestDspItemBypass, TestDspContainer

@@ -48,7 +48,7 @@ class Migration(SchemaMigration):
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
-        'bhp_netbook.netbook': {
+        'netbook.netbook': {
             'Meta': {'ordering': "['name']", 'object_name': 'Netbook'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'date_purchased': ('django.db.models.fields.DateField', [], {}),
@@ -68,7 +68,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_netbook.netbookuser': {
+        'netbook.netbookuser': {
             'Meta': {'ordering': "['netbook']", 'unique_together': "(['netbook', 'user'],)", 'object_name': 'NetbookUser'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
@@ -76,18 +76,18 @@ class Migration(SchemaMigration):
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'s014'", 'max_length': '50', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'netbook': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_netbook.Netbook']"}),
+            'netbook': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['netbook.Netbook']"}),
             'start_date': ('django.db.models.fields.DateField', [], {}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250'})
         },
-        'bhp_netbook.svnhistory': {
+        'netbook.svnhistory': {
             'Meta': {'object_name': 'SvnHistory'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_revision_date': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
             'last_revision_number': ('django.db.models.fields.IntegerField', [], {'null': 'True'}),
-            'netbook': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_netbook.Netbook']"}),
+            'netbook': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['netbook.Netbook']"}),
             'repo': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'})
         },
         'contenttypes.contenttype': {
@@ -99,4 +99,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['bhp_netbook']
+    complete_apps = ['netbook']

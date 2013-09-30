@@ -2,7 +2,7 @@ from django.test import TestCase
 from edc.subject.registration.models import RegisteredSubject
 from edc.core.bhp_base_test.forms import TestSubjectUuidModelForm
 from edc.core.bhp_base_test.tests.factories import TestConsentFactory
-from edc.core.bhp_base_test.tests.factories import TestManyToManyFactory, TestForeignKeyFactory
+from edc.core.bhp_base_test.tests.factories import TestM2mFactory, TestForeignKeyFactory
 from .base_methods import BaseMethods
 
 
@@ -12,7 +12,7 @@ class FormsTests(TestCase, BaseMethods):
         subject_consent = TestConsentFactory()
         self.prepare_consent_catalogue()
         registered_subject = RegisteredSubject.objects.get(subject_identifier=subject_consent.subject_identifier)
-        test_m2m = TestManyToManyFactory(name='test_m2m', short_name='test_m2m')
+        test_m2m = TestM2mFactory(name='test_m2m', short_name='test_m2m')
         test_fk = TestForeignKeyFactory(name='test_fk', short_name='test_fk')
 
         form_data = {'name': 'TEST',

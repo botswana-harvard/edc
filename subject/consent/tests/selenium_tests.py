@@ -5,7 +5,7 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from edc.subject.registration.models import RegisteredSubject
-from edc.core.bhp_base_test.models import TestSubjectUuidModel, TestForeignKey, TestManyToMany
+from edc.core.bhp_base_test.models import TestSubjectUuidModel, TestForeignKey, TestM2m
 from .base_methods import BaseMethods
 
 
@@ -22,9 +22,9 @@ class SeleniumTests(LiveServerTestCase, BaseMethods):
         self.login()
         self.create_study_variables()
         self.prepare_consent_catalogue()
-        TestManyToMany.objects.create(name='test_m2m1', short_name='test_m2m1')
-        TestManyToMany.objects.create(name='test_m2m2', short_name='test_m2m2')
-        TestManyToMany.objects.create(name='test_m2m3', short_name='test_m2m3')
+        TestM2m.objects.create(name='test_m2m1', short_name='test_m2m1')
+        TestM2m.objects.create(name='test_m2m2', short_name='test_m2m2')
+        TestM2m.objects.create(name='test_m2m3', short_name='test_m2m3')
         TestForeignKey.objects.create(name='test_fk', short_name='test_fk')
 
     @classmethod

@@ -16,4 +16,5 @@ class PrepareHistory(BaseUuidModel):
         return "{0} @ {1}".format(self.producer.name, self.prepare_datetime)
 
     class Meta:
-        app_label = "bhp_dispatch"
+        app_label = "dispatch"
+        db_table = 'bhp_dispatch_preparehistory'

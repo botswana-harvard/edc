@@ -1,7 +1,7 @@
 from django.contrib import admin
 from edc.base.admin.admin import BaseModelAdmin
 from edc.core.bhp_supplemental_fields.classes import SupplementalFields, ConditionalFields
-from ..models import TestModel, TestManyToMany, TestForeignKey
+from ..models import TestModel, TestM2m, TestForeignKey
 from ..forms import TestModelForm
 
 
@@ -16,11 +16,11 @@ class TestModelAdmin(BaseModelAdmin):
 admin.site.register(TestModel, TestModelAdmin)
 
 
-class TestManyToManyAdmin(BaseModelAdmin):
+class TestM2mAdmin(BaseModelAdmin):
 
     pass
 
-admin.site.register(TestManyToMany, TestManyToManyAdmin)
+admin.site.register(TestM2m, TestM2mAdmin)
 
 
 class TestForeignKeyAdmin(BaseModelAdmin):

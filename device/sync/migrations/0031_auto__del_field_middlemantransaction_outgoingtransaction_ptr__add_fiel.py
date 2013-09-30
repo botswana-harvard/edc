@@ -30,7 +30,7 @@ class Migration(SchemaMigration):
             ('batch_seq', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
             ('batch_id', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
          ))
-        db.send_create_signal('bhp_sync', ['MiddleManTransaction'])
+        db.send_create_signal('sync', ['MiddleManTransaction'])
         
         db.add_column('bhp_sync_middlemantransaction', 'is_error', self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True), keep_default=False)
 
@@ -42,80 +42,9 @@ class Migration(SchemaMigration):
         
     def backwards(self, orm):
         pass
-        # Adding field 'MiddleManTransaction.outgoingtransaction_ptr'
-#         db.add_column('bhp_sync_middlemantransaction', 'outgoingtransaction_ptr',
-#                       self.gf('django.db.models.fields.related.OneToOneField')(default=2, to=orm['bhp_sync.OutgoingTransaction'], unique=True, primary_key=True),
-#                       keep_default=False)
-# 
-#         # Deleting field 'MiddleManTransaction.created'
-#         db.delete_column('bhp_sync_middlemantransaction', 'created')
-# 
-#         # Deleting field 'MiddleManTransaction.modified'
-#         db.delete_column('bhp_sync_middlemantransaction', 'modified')
-# 
-#         # Deleting field 'MiddleManTransaction.user_created'
-#         db.delete_column('bhp_sync_middlemantransaction', 'user_created')
-# 
-#         # Deleting field 'MiddleManTransaction.user_modified'
-#         db.delete_column('bhp_sync_middlemantransaction', 'user_modified')
-# 
-#         # Deleting field 'MiddleManTransaction.hostname_created'
-#         db.delete_column('bhp_sync_middlemantransaction', 'hostname_created')
-# 
-#         # Deleting field 'MiddleManTransaction.hostname_modified'
-#         db.delete_column('bhp_sync_middlemantransaction', 'hostname_modified')
-# 
-#         # Deleting field 'MiddleManTransaction.id'
-#         db.delete_column('bhp_sync_middlemantransaction', 'id')
-# 
-#         # Deleting field 'MiddleManTransaction.tx'
-#         db.delete_column('bhp_sync_middlemantransaction', 'tx')
-# 
-#         # Deleting field 'MiddleManTransaction.tx_name'
-#         db.delete_column('bhp_sync_middlemantransaction', 'tx_name')
-# 
-#         # Deleting field 'MiddleManTransaction.tx_pk'
-#         db.delete_column('bhp_sync_middlemantransaction', 'tx_pk')
-# 
-#         # Deleting field 'MiddleManTransaction.producer'
-#         db.delete_column('bhp_sync_middlemantransaction', 'producer')
-# 
-#         # Deleting field 'MiddleManTransaction.action'
-#         db.delete_column('bhp_sync_middlemantransaction', 'action')
-# 
-#         # Deleting field 'MiddleManTransaction.timestamp'
-#         db.delete_column('bhp_sync_middlemantransaction', 'timestamp')
-# 
-#         # Deleting field 'MiddleManTransaction.consumed_datetime'
-#         db.delete_column('bhp_sync_middlemantransaction', 'consumed_datetime')
-# 
-#         # Deleting field 'MiddleManTransaction.consumer'
-#         db.delete_column('bhp_sync_middlemantransaction', 'consumer')
-# 
-#         # Deleting field 'MiddleManTransaction.is_ignored'
-#         db.delete_column('bhp_sync_middlemantransaction', 'is_ignored')
-# 
-#         # Deleting field 'MiddleManTransaction.is_error'
-#         db.delete_column('bhp_sync_middlemantransaction', 'is_error')
-# 
-#         # Deleting field 'MiddleManTransaction.error'
-#         db.delete_column('bhp_sync_middlemantransaction', 'error')
-# 
-#         # Deleting field 'MiddleManTransaction.batch_seq'
-#         db.delete_column('bhp_sync_middlemantransaction', 'batch_seq')
-# 
-#         # Deleting field 'MiddleManTransaction.batch_id'
-#         db.delete_column('bhp_sync_middlemantransaction', 'batch_id')
-# 
-#         # Deleting field 'MiddleManTransaction.is_consumed_middleman'
-#         db.delete_column('bhp_sync_middlemantransaction', 'is_consumed_middleman')
-# 
-#         # Deleting field 'MiddleManTransaction.is_consumed_server'
-#         db.delete_column('bhp_sync_middlemantransaction', 'is_consumed_server')
-
 
     models = {
-        'bhp_sync.incomingtransaction': {
+        'sync.incomingtransaction': {
             'Meta': {'ordering': "['timestamp']", 'object_name': 'IncomingTransaction'},
             'action': ('django.db.models.fields.CharField', [], {'default': "'I'", 'max_length': '1'}),
             'batch_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
@@ -140,7 +69,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_sync.middlemantransaction': {
+        'sync.middlemantransaction': {
             'Meta': {'ordering': "['timestamp']", 'object_name': 'MiddleManTransaction'},
             'action': ('django.db.models.fields.CharField', [], {'default': "'I'", 'max_length': '1'}),
             'batch_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
@@ -165,7 +94,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_sync.outgoingtransaction': {
+        'sync.outgoingtransaction': {
             'Meta': {'ordering': "['timestamp']", 'object_name': 'OutgoingTransaction'},
             'action': ('django.db.models.fields.CharField', [], {'default': "'I'", 'max_length': '1'}),
             'batch_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
@@ -190,7 +119,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_sync.producer': {
+        'sync.producer': {
             'Meta': {'ordering': "['name']", 'unique_together': "(('settings_key', 'is_active'),)", 'object_name': 'Producer'},
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -209,7 +138,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_sync.requestlog': {
+        'sync.requestlog': {
             'Meta': {'object_name': 'RequestLog'},
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -217,13 +146,13 @@ class Migration(SchemaMigration):
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'One.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'producer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_sync.Producer']"}),
+            'producer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['sync.Producer']"}),
             'request_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 7, 31, 0, 0)'}),
             'status': ('django.db.models.fields.CharField', [], {'default': "'complete'", 'max_length': '25'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_sync.syncimporthistorymodel': {
+        'sync.syncimporthistorymodel': {
             'Meta': {'object_name': 'SyncImportHistoryModel'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'end_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
@@ -236,7 +165,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_sync.synclockmodel': {
+        'sync.synclockmodel': {
             'Meta': {'object_name': 'SyncLockModel'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'One.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
@@ -247,7 +176,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_sync.testitem': {
+        'sync.testitem': {
             'Meta': {'object_name': 'TestItem'},
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -259,7 +188,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_sync.testitemaudit': {
+        'sync.testitemaudit': {
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'TestItemAudit', 'db_table': "'bhp_sync_testitem_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
@@ -274,7 +203,7 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
-        'bhp_sync.transaction': {
+        'sync.transaction': {
             'Meta': {'ordering': "['timestamp']", 'object_name': 'Transaction'},
             'action': ('django.db.models.fields.CharField', [], {'default': "'I'", 'max_length': '1'}),
             'batch_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
@@ -299,4 +228,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['bhp_sync']
+    complete_apps = ['sync']
