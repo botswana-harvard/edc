@@ -2,14 +2,14 @@ from django.contrib import admin
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_entry.tests.factories import ScheduledEntryBucketFactory, EntryFactory
+from edc.subject.entry.tests.factories import ScheduledEntryBucketFactory, EntryFactory
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.subject.appointment.tests.factories import AppointmentFactory, ConfigurationFactory
 from edc.core.bhp_base_test.tests.factories import TestVisitFactory, TestScheduledModelFactory
 from edc.core.bhp_base_test.models import TestVisit, TestScheduledModel
 from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_entry.models import Entry
+from edc.subject.entry.models import Entry
 from ..classes import ScheduledEntryContext
 
 

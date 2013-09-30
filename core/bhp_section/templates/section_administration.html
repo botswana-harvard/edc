@@ -15,14 +15,14 @@
 <li><A href="/edc/bhp_variables/studyspecific/">Study Specific Variables</A>
 </ul>
 
-{% if 'edc.core.bhp_sync' in installed_apps and edc.core.bhp_dispatch not in installed_apps %}
+{% if 'edc.device.sync' in installed_apps and edc.device.dispatch not in installed_apps %}
 <H5>Device Synchronization</H5>
 <ul>
 <li><A href="/bhp_sync/">Synchronize devices with Community Server (Return)</A></li>
 </ul>
 {% endif %}
 
-{%  if 'edc.core.bhp_sync' in installed_apps and 'edc.core.bhp_dispatch' in installed_apps %}
+{%  if 'edc.device.sync' in installed_apps and 'edc.device.dispatch' in installed_apps %}
 <H5>Device Dispatch and Return</H5>
 <ul>
 <li><A name="dispatch-to-producer" href="/admin/mochudi_household/">Dispatch data to netbook</A>

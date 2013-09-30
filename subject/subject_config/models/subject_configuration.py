@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from edc.core.bhp_sync.models import BaseSyncUuidModel
+from edc.device.sync.models import BaseSyncUuidModel
 from edc.subject.appointment.choices import APPT_STATUS
 
 
@@ -28,7 +28,7 @@ class SubjectConfiguration(BaseSyncUuidModel):
         super(SubjectConfiguration, self).save(*args, **kwargs)
 
     def update_new_appointments(self):
-        Appointment = models.get_model('bhp_appointment', 'Appointment')
+        Appointment = models.get_model('appointment', 'Appointment')
 
         """Updates \'new\' appointments for this subject_identifier to reflect this appt_status."""
         if 'new' not in [x[0] for x in APPT_STATUS]:

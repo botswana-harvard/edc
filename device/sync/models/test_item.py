@@ -12,4 +12,5 @@ class TestItem(BaseSyncUuidModel):
     history = AuditTrail()
 
     class Meta:
-        app_label = 'bhp_sync'
+        app_label = 'sync'
+        db_table = 'bhp_sync_testitem'

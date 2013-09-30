@@ -18,7 +18,7 @@ class ScheduledEntryBucketManager(BaseEntryBucketManager):
             )
 
         visit_definition = VisitDefinition.objects.get(code=code)
-        Appointment = get_model('bhp_appointment', 'Appointment')
+        Appointment = get_model('appointment', 'Appointment')
         appointment = Appointment.objects.get(
             registered_subject=registered_subject,
             visit_definition=visit_definition,

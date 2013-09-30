@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.bhp_sync.models import BaseSyncUuidModel
+from edc.device.sync.models import BaseSyncUuidModel
 
 
 class DefaultValueLog(BaseSyncUuidModel):

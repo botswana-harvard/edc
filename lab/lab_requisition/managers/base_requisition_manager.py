@@ -1,6 +1,6 @@
 from django.db import models
 from edc.core.bhp_variables.models import StudySpecific
-from edc.core.bhp_identifier.classes import Identifier
+from edc.core.identifier.classes import Identifier
 
 
 class BaseRequisitionManager(models.Manager):

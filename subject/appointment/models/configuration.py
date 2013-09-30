@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.core.bhp_sync.models import BaseSyncUuidModel
+from edc.device.sync.models import BaseSyncUuidModel
 from ..managers import ConfigurationManager
 
 
@@ -45,4 +45,5 @@ class Configuration(BaseSyncUuidModel):
         return "{0}".format(self.allowed_iso_weekdays)
 
     class Meta:
-        app_label = 'bhp_appointment'
+        app_label = 'appointment'
+        db_table = 'bhp_appointment_configuration'

@@ -6,8 +6,6 @@ from edc.subject.consent.models import BaseConsentedUuidModel
 from edc.subject.registration.models import RegisteredSubject
 from ..choices import GRADING_SCALE
 
-""" list tables to be populated by study specific fixtures """
-
 
 class AdverseEventReportType (BaseListModel):
 

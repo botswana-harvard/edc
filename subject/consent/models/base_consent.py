@@ -7,7 +7,7 @@ from django.core.validators import RegexValidator
 from edc.core.crypto.fields import EncryptedLastnameField, EncryptedTextField
 from edc.core.crypto.utils import mask_encrypted
 from edc.base.model.validators import datetime_not_future, datetime_not_before_study_start, eligible_if_no
-from edc.core.bhp_common.choices import YES_NO
+from edc.choices.common import YES_NO
 from edc.core.bhp_variables.models import StudySite
 from edc.core.bhp_common.utils import formatted_age
 from edc.base.model.validators import eligible_if_yes

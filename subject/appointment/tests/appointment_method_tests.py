@@ -10,8 +10,8 @@ from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, Sc
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_base_test.models import TestConsent, TestVisit, TestScheduledModel
-from edc.core.bhp_entry.models import ScheduledEntryBucket
-from edc.core.bhp_entry.tests.factories import EntryFactory
+from edc.subject.entry.models import ScheduledEntryBucket
+from edc.subject.entry.tests.factories import EntryFactory
 from ..choices import APPT_STATUS
 from ..models import Appointment
 from .base_appointment_tests import BaseAppointmentTests

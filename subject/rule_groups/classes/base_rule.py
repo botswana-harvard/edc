@@ -5,8 +5,8 @@ from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.subject.consent.classes import ConsentHelper
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.core.bhp_entry.models import BaseEntryBucket
-from edc.core.bhp_entry.classes import BaseEntry
+from edc.subject.entry.models import BaseEntryBucket
+from edc.subject.entry.classes import BaseEntry
 from edc.core.bhp_lab_tracker.classes import site_lab_tracker
 from .logic import Logic
 

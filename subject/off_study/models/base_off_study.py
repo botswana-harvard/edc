@@ -6,7 +6,7 @@ from edc.base.model.fields import OtherCharField
 from edc.subject.registration.models import BaseRegisteredSubjectModel
 from edc.core.crypto.utils import mask_encrypted
 from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.core.bhp_common.choices import YES_NO
+from edc.choices.common import YES_NO
 from ..managers import OffStudyManager
 from ..exceptions import SubjectOffStudyDateError
 
@@ -77,7 +77,7 @@ class BaseOffStudy(BaseRegisteredSubjectModel):
 
     def post_save_clear_future_appointments(self):
         """Deletes appointments created after the off-study datetime if the appointment has no visit report."""
-        Appointment = models.get_model('bhp_appointment', 'appointment')
+        Appointment = models.get_model('appointment', 'appointment')
         visit_model_cls = self.get_visit_model_cls()
         if not visit_model_cls:
             raise ImproperlyConfigured('Model {0} cannot determine the visit model class for the app'.format(self._meta.object_name))

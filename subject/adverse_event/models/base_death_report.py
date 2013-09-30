@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.bhp_common.choices import YES_NO
+from edc.choices.common import YES_NO
 from edc.core.bhp_code_lists.models import DxCode
 from .base_death import BaseDeath
 

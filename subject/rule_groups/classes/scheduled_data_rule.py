@@ -1,6 +1,6 @@
 import logging
-from edc.core.bhp_entry.classes import ScheduledEntry
-from edc.core.bhp_entry.models import ScheduledEntryBucket, Entry
+from edc.subject.entry.classes import ScheduledEntry
+from edc.subject.entry.models import ScheduledEntryBucket, Entry
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_tracking.models import BaseVisitTracking
 from .base_rule import BaseRule

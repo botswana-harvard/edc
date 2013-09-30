@@ -1,6 +1,6 @@
 from django.db import models
 from edc.base.model.models import BaseModel
-from edc.core.bhp_common.choices import POS_NEG_ANY
+from edc.choices.common import POS_NEG_ANY
 from edc.lab.lab_common.choices import UNITS
 from ..choices import GENDER_OF_REFERENCE
 from ..utils import get_lower_range_days, get_upper_range_days

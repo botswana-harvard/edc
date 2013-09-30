@@ -10,4 +10,5 @@ class DxCode (BaseCodeList):
         return '%s: %s' % (self.code, self.short_name)
 
     class Meta:
-        app_label = "bhp_code_lists"
+        app_label = "code_lists"
+        db_table = 'bhp_code_lists_dxcode'  # TODO: remove when db schema is changed

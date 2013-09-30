@@ -15,7 +15,7 @@
 # #         )
 # 
 #     def handle(self, *args, **options):
-#         from bhp_appointment_helper.models import BaseAppointmentMixin
+#         from edc.subject.appointment_helper.models import BaseAppointmentMixin
 #         codes_for_category = MembershipForm.objects.codes_for_category
 #         categories = [membership_form.category for membership_form in MembershipForm.objects.all().order_by('category')]
 #         categories = list(set(categories))

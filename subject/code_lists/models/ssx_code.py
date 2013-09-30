@@ -7,4 +7,5 @@ class SsxCode (BaseCodeList):
         max_length=35)
 
     class Meta:
-        app_label = "bhp_code_lists"
+        app_label = "code_lists"
+        db_table = "bhp_code_lists_ssxcode"

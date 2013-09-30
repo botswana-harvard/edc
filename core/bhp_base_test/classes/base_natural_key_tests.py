@@ -2,7 +2,7 @@ import pprint
 from django.core import serializers
 from django.test import TestCase
 from django.db.models import get_app, get_models
-from edc.core.bhp_sync.classes import SerializeToTransaction
+from edc.device.sync.classes import SerializeToTransaction
 from edc.core.crypto.classes import FieldCryptor
 
 

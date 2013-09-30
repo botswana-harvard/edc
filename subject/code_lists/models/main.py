@@ -12,7 +12,8 @@ class WcsDxAdult(BaseCodeList):
         )
 
     class Meta:
-        app_label = "bhp_code_lists"
+        app_label = "code_lists"
+        db_table = "bhp_code_lists_wcsdxadult"  # TODO: remove when db schema is changed
 
 
 class WcsDxPed(BaseCodeList):
@@ -25,7 +26,8 @@ class WcsDxPed(BaseCodeList):
         )
 
     class Meta:
-        app_label = "bhp_code_lists"
+        app_label = "code_lists"
+        db_table = "bhp_code_lists_wcsdxped"  # TODO: remove when db schema is changed
 
 
 class MedicationCode (BaseCodeList):
@@ -33,7 +35,8 @@ class MedicationCode (BaseCodeList):
         max_length=35)
 
     class Meta:
-        app_label = "bhp_code_lists"
+        app_label = "code_lists"
+        db_table = "bhp_code_lists_medicationcode"  # TODO: remove when db schema is changed
 
 
 class BodySiteCode (BaseCodeList):
@@ -41,7 +44,8 @@ class BodySiteCode (BaseCodeList):
         max_length=35)
 
     class Meta:
-        app_label = "bhp_code_lists"
+        app_label = "code_lists"
+        db_table = "bhp_code_lists_bodysitecode"  # TODO: remove when db schema is changed
 
 
 class OrganismCode (BaseCodeList):
@@ -49,7 +53,8 @@ class OrganismCode (BaseCodeList):
         max_length=35)
 
     class Meta:
-        app_label = "bhp_code_lists"
+        app_label = "code_lists"
+        db_table = "bhp_code_lists_organismcode"  # TODO: remove when db schema is changed
 
 
 class ArvCode (BaseCodeList):
@@ -57,7 +62,8 @@ class ArvCode (BaseCodeList):
         max_length=35)
 
     class Meta:
-        app_label = "bhp_code_lists"
+        app_label = "code_lists"
+        db_table = "bhp_code_lists_arvcode"  # TODO: remove when db schema is changed
 
 
 class ArvDoseStatus (BaseCodeList):
@@ -65,7 +71,8 @@ class ArvDoseStatus (BaseCodeList):
         max_length=35)
 
     class Meta:
-        app_label = "bhp_code_lists"
+        app_label = "code_lists"
+        db_table = "bhp_code_lists_arvdosestatus"  # TODO: remove when db schema is changed
 
 
 class ArvModificationCode (BaseCodeList):
@@ -73,4 +80,5 @@ class ArvModificationCode (BaseCodeList):
         max_length=35)
 
     class Meta:
-        app_label = "bhp_code_lists"
+        app_label = "code_lists"
+        db_table = "bhp_code_lists_arvmodificationcode"  # TODO: remove when db schema is changed

@@ -7,7 +7,7 @@ class Consent(BaseConsent):
 
     """ Standard consent model.
 
-    .. seealso:: :class:`BaseConsent` in :mod:`bhp_botswana.classes` """
+    .. seealso:: :class:`BaseConsent` in :mod:`local.bw.classes` """
 
     identity = EncryptedIdentityField(
         unique=True,

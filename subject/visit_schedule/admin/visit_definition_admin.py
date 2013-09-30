@@ -1,7 +1,7 @@
 from django.contrib import admin
 from edc.base.admin.admin import BaseModelAdmin
-from edc.core.bhp_entry.admin import EntryInline
-from edc.core.bhp_lab_entry.admin import LabEntryInline
+from edc.subject.entry.admin import EntryInline
+from edc.subject.lab_entry.admin import LabEntryInline
 from ..models import VisitDefinition
 from ..actions import export_as_html
 

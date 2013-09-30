@@ -1,6 +1,6 @@
 import logging
-from edc.core.bhp_entry.classes import AdditionalEntry
-from edc.core.bhp_entry.models import AdditionalEntryBucket
+from edc.subject.entry.classes import AdditionalEntry
+from edc.subject.entry.models import AdditionalEntryBucket
 from .base_rule import BaseRule
 
 logger = logging.getLogger(__name__)

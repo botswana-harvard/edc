@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from edc.core.bhp_entry.classes import ScheduledEntry
+from edc.subject.entry.classes import ScheduledEntry
 from .base_visit_tracking import BaseVisitTracking
 
 

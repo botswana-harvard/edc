@@ -16,6 +16,7 @@ class LabEntryUnscheduled(BaseLabEntry):
         return '%s' % (self.panel.name)
 
     class Meta:
-        app_label = 'bhp_lab_entry'
+        app_label = 'lab_entry'
+        db_table = 'bhp_lab_entry_labentryunscheduled'
         verbose_name = "Lab Entry Unscheduled"
         ordering = ['panel', 'entry_order', ]

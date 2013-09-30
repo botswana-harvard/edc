@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import models
 from edc.base.model.fields import OtherCharField
-from edc.core.bhp_common.choices import YES_NO
+from edc.choices.common import YES_NO
 from edc.base.model.validators import date_not_before_study_start, date_not_future
 from edc.subject.registration.models import BaseRegisteredSubjectModel
 from ..managers import DeathManager

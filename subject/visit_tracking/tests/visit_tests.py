@@ -1,6 +1,6 @@
 from django.test import TestCase
 from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
-from edc.core.bhp_entry.tests.factories import EntryFactory
+from edc.subject.entry.tests.factories import EntryFactory
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_base_test.models import TestVisit

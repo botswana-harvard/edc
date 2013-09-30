@@ -61,4 +61,5 @@ class Netbook(BaseModel):
 
     class Meta:
         ordering = ['name']
-        app_label = 'bhp_netbook'
+        app_label = 'netbook'
+        db_table = 'bhp_netbook_netbook'

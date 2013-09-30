@@ -1,6 +1,6 @@
 from django.db import models
 from edc.audit.audit_trail import AuditTrail
-from edc.core.bhp_contact.models import BaseContactLogItem
+from edc.subject.contact.models import BaseContactLogItem
 from ..models import Appointment
 
 
@@ -67,9 +67,6 @@ class PreAppointmentContact(BaseContactLogItem):
     def __unicode__(self):
         return unicode(self.appointment)
 
-#    def save(self, *args, **kwargs):
-#        """Looks for a new_appt_datetime and decides if it can be used to modify the current appt datetime."""
-#        super(PreAppointmentContact, self).save(*args, **kwargs)
-
     class Meta:
-        app_label = 'bhp_appointment'
+        app_label = 'appointment'
+        db_table = 'bhp_appointment_preappointmentcontact'

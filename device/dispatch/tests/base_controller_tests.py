@@ -1,6 +1,6 @@
 from django.test import TestCase
-from edc.core.bhp_sync.models import Producer, OutgoingTransaction, IncomingTransaction
-from edc.core.bhp_sync.tests.factories import ProducerFactory
+from edc.device.sync.models import Producer, OutgoingTransaction, IncomingTransaction
+from edc.device.sync.tests.factories import ProducerFactory
 from edc.core.bhp_base_test.tests.factories import TestManyToManyFactory
 from edc.core.bhp_base_test.models import TestDispatchItem, TestDispatchContainer, TestDispatchItemBypassForEdit
 from edc.core.bhp_base_test.tests.factories import TestDispatchItemFactory, TestDispatchContainerFactory, TestDispatchItemBypassForEditFactory

@@ -45,7 +45,8 @@ class AdditionalEntryBucket(BaseEntryBucket):
         return is_keyed
 
     class Meta:
-        app_label = 'bhp_entry'
+        app_label = 'entry'
+        db_table = 'bhp_entry_additionalentrybucket'  # TODO: remove once schema is refactored
         verbose_name = "Subject Additional Entry Bucket"
         ordering = ['registered_subject', 'content_type_map', ]
         unique_together = ['registered_subject', 'content_type_map', ]

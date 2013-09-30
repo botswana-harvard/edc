@@ -1,8 +1,8 @@
 from django.db import IntegrityError
 from django.db.models import get_model
 from django.test import TestCase
-from edc.core.bhp_sync.models import Producer
-from edc.core.bhp_sync.exceptions import ProducerError
+from edc.device.sync.models import Producer
+from edc.device.sync.exceptions import ProducerError
 from edc.core.bhp_base_test.tests.factories import TestDispatchContainerFactory, TestDispatchContainer
 from ..classes import BaseDispatch, ReturnController, BaseDispatchController
 from ..exceptions import AlreadyDispatchedContainer, AlreadyRegisteredController

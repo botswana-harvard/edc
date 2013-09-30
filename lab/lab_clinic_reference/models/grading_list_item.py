@@ -1,6 +1,6 @@
 from django.db import models
 from edc.audit.audit_trail import AuditTrail
-from edc.core.bhp_common.choices import YES_NO_NA
+from edc.choices.common import YES_NO_NA
 from edc.lab.lab_reference.models import BaseReferenceListItem
 from edc.lab.lab_clinic_api.models import TestCode
 from .grading_list import GradingList

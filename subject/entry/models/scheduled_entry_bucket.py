@@ -30,7 +30,8 @@ class ScheduledEntryBucket(BaseEntryBucket):
         return self.appointment.natural_key() + self.entry.natural_key()
 
     class Meta:
-        app_label = 'bhp_entry'
+        app_label = 'entry'
+        db_table = 'bhp_entry_scheduledentrybucket'  # TODO: remove once schema is refactored
         verbose_name = "Subject Scheduled Entry Bucket"
         ordering = ['registered_subject', 'entry', 'appointment']
         unique_together = ['registered_subject', 'entry', 'appointment']

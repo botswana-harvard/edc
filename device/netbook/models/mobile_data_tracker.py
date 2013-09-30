@@ -24,4 +24,5 @@ class MobileDataTracker(BaseModel):
 
     class Meta:
         unique_together = ['app_label', 'model_name', 'identifier']
-        app_label = 'bhp_netbook'
+        app_label = 'netbook'
+        db_table = 'bhp_netbook_mobiledatatracker'

@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from edc.subject.appointment.models import Appointment
-from edc.core.bhp_entry.models import BaseEntryBucket
+from edc.subject.entry.models import BaseEntryBucket
 from ..managers import AdditionalLabEntryBucketManager
 from .lab_entry_unscheduled import LabEntryUnscheduled
 
@@ -32,7 +32,8 @@ class AdditionalLabEntryBucket(BaseEntryBucket):
         return '%s: %s' % (self.registered_subject.subject_identifier, self.lab_entry_unscheduled)
 
     class Meta:
-        app_label = 'bhp_lab_entry'
+        app_label = 'lab_entry'
+        db_table = 'bhp_lab_entry_additionallabentrybucket'
         verbose_name = "Subject Additional Lab Entry Bucket"
         ordering = ['registered_subject', 'lab_entry_unscheduled__panel__name']
         unique_together = ['appointment', 'lab_entry_unscheduled', ]

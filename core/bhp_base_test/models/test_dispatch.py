@@ -2,7 +2,7 @@ from django.db import models
 from edc.audit.audit_trail import AuditTrail
 from edc.base.model.models import BaseListModel
 from edc.core.bhp_base_test.models import TestManyToMany
-from edc.core.bhp_dispatch.models import BaseDispatchSyncUuidModel
+from edc.device.dispatch.models import BaseDispatchSyncUuidModel
 
 
 class TestDispatchList(BaseListModel):

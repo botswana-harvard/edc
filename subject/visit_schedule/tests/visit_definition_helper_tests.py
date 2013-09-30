@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
-from edc.core.bhp_entry.tests.factories import EntryFactory
+from edc.subject.entry.tests.factories import EntryFactory
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_base_test.models import TestSubjectVisit, TestSubjectVisitTwo, TestSubjectVisitThree

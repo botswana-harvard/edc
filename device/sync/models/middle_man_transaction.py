@@ -40,5 +40,6 @@ class MiddleManTransaction(BaseTransaction):
     objects = models.Manager()
 
     class Meta:
-        app_label = 'bhp_sync'
+        app_label = 'sync'
+        db_table = 'bhp_sync_middlemantransaction'
         ordering = ['timestamp']

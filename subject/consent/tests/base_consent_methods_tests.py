@@ -6,7 +6,7 @@ from edc.core.bhp_variables.tests.factories import StudySiteFactory
 from edc.subject.registration.models import RegisteredSubject
 from edc.core.bhp_base_test.models import TestForeignKey, TestManyToMany, TestConsent, TestSubjectUuidModel, TestConsentNoRs
 from edc.core.bhp_base_test.tests.factories import TestConsentFactory
-from edc.core.bhp_identifier.exceptions import IdentifierError
+from edc.core.identifier.exceptions import IdentifierError
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory

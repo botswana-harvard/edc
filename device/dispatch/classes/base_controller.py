@@ -13,10 +13,10 @@ from edc.lab.lab_base_model.models import BaseLabListModel, BaseLabListUuidModel
 from edc.base.model.models import BaseListModel
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc.core.bhp_variables.models import StudySite
-from edc.core.bhp_entry.models import BaseEntryBucket
-from edc.core.bhp_sync.classes import BaseProducer
-from edc.core.bhp_sync.helpers import TransactionHelper
-from edc.core.bhp_sync.exceptions import PendingTransactionError
+from edc.subject.entry.models import BaseEntryBucket
+from edc.device.sync.classes import BaseProducer
+from edc.device.sync.helpers import TransactionHelper
+from edc.device.sync.exceptions import PendingTransactionError
 from ..exceptions import ControllerBaseModelError
 from .controller_register import registered_controllers
 from .signal_manager import SignalManager

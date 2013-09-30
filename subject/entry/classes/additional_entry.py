@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.core.exceptions import FieldError
-from edc.core.bhp_entry.models import AdditionalEntryBucket
+from edc.subject.entry.models import AdditionalEntryBucket
 from .base_registered_subject_entry import BaseRegisteredSubjectEntry
 
 

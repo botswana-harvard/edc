@@ -2,11 +2,11 @@ from datetime import datetime
 from django.db import models
 from django.conf import settings
 try:
-    from edc.core.bhp_dispatch.models import BaseDispatchSyncUuidModel as BaseUuidModel
+    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseUuidModel
 except ImportError:
     from edc.base.model.models import BaseUuidModel
 from edc.base.model.fields import InitialsField
-from edc.core.bhp_common.choices import YES_NO
+from edc.choices.common import YES_NO
 from edc.core.bhp_variables.models import StudySite
 from edc.core.bhp_device.classes import Device
 from edc.core.bhp_string.classes import BaseString

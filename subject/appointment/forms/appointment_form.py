@@ -1,7 +1,7 @@
 from datetime import date
 from django import forms
 from django.core.exceptions import ValidationError
-from edc.core.bhp_entry.models import ScheduledEntryBucket
+from edc.subject.entry.models import ScheduledEntryBucket
 from edc.base.form.forms import BaseModelForm
 from ..models import Appointment
 

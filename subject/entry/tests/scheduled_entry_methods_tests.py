@@ -6,7 +6,7 @@
 # from bhp_variables.models import StudySpecific, StudySite
 # from bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 # from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-# from bhp_appointment.tests.factories import ConfigurationFactory
+# from edc.subject.appointment.tests.factories import ConfigurationFactory
 # from bhp_visit.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 # from bhp_content_type_map.classes import ContentTypeMapHelper
 # from bhp_content_type_map.models import ContentTypeMap

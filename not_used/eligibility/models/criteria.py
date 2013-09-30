@@ -1,6 +1,6 @@
 from django.db import models
 try:
-    from edc.core.bhp_sync.classes import BaseSyncModel as BaseUuidModel
+    from edc.device.sync.classes import BaseSyncModel as BaseUuidModel
 except ImportError:
     from edc.base.model.models import BaseUuidModel
 from edc.audit.audit_trail import AuditTrail

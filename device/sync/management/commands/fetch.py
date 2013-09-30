@@ -1,6 +1,6 @@
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
-from edc.core.bhp_sync.classes import SyncLock, ImportHistory, Consumer
+from edc.device.sync.classes import SyncLock, ImportHistory, Consumer
 
 
 class Command(BaseCommand):

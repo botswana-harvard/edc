@@ -1,6 +1,6 @@
 from django.db import models
 from edc.audit.audit_trail import AuditTrail
-from edc.core.bhp_sync.models import BaseSyncUuidModel
+from edc.device.sync.models import BaseSyncUuidModel
 from edc.base.model.validators import datetime_not_before_study_start
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from ..choices import CONSENT_TYPES

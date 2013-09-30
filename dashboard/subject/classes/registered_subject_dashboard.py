@@ -11,21 +11,21 @@ from edc.lab.lab_clinic_api.classes import EdcLabResults
 from edc.lab.lab_requisition.models import BaseBaseRequisition
 from edc.lab.lab_packing.models import BasePackingList
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.core.bhp_entry_rules.classes import rule_groups
+from edc.subject.rule_groups.classes import rule_groups
 from edc.subject.visit_schedule.classes import MembershipFormHelper
-from edc.core.bhp_entry.classes import ScheduledEntry, AdditionalEntry
+from edc.subject.entry.classes import ScheduledEntry, AdditionalEntry
 from edc.subject.visit_schedule.exceptions import MembershipFormError
 from edc.subject.appointment.models import Appointment
 from edc.subject.visit_schedule.models import MembershipForm
-from edc.core.bhp_lab_entry.models import ScheduledLabEntryBucket, AdditionalLabEntryBucket
+from edc.subject.lab_entry.models import ScheduledLabEntryBucket, AdditionalLabEntryBucket
 from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.subject_summary.models import Link
-from edc.core.bhp_locator.models import BaseLocator
+from edc.subject.locator.models import BaseLocator
 from edc.core.bhp_data_manager.models import ActionItem
 from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.consent.models import BaseConsent
-from edc.core.bhp_dashboard.classes import Dashboard
+from edc.dashboard.base.classes import Dashboard
 from edc.core.bhp_lab_tracker.classes import site_lab_tracker
 from edc.core.crypto.fields import EncryptedTextField
 from .scheduled_entry_context import ScheduledEntryContext
@@ -51,7 +51,7 @@ class RegisteredSubjectDashboard(Dashboard):
         Subclass in your local xxxx_dashboard classes module::
 
             from datetime import timedelta, date
-            from bhp_dashboard_registered_subject.classes import RegisteredSubjectDashboard
+            from edc.dashboard.subject.classes import RegisteredSubjectDashboard
             from maikalelo_infant.models import Birth, InfantVisit
             from maikalelo_maternal.models import MaternalConsent, MaternalLocator, MaternalEnrollment
             from maikalelo_lab.models import InfantRequisition

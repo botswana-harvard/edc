@@ -7,16 +7,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
 if 'bhp_dispatch' in settings.INSTALLED_APPS:
-    from edc.core.bhp_dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
+    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
 else:
-    from edc.core.bhp_sync.models import BaseSyncUuidModel
+    from edc.device.sync.models import BaseSyncUuidModel
 
-from edc.core.bhp_common.choices import GENDER_UNDETERMINED
+from edc.choices.common import GENDER_UNDETERMINED
 from edc.base.model.validators import dob_not_future, MinConsentAge, MaxConsentAge
 from edc.base.model.fields import IsDateEstimatedField
 from edc.core.crypto.fields import EncryptedFirstnameField, EncryptedLastnameField
 from edc.subject.consent.exceptions import ConsentError
-from edc.core.bhp_identifier.exceptions import IdentifierError
+from edc.core.identifier.exceptions import IdentifierError
 from ..managers import BaseSubjectManager
 
 

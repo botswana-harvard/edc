@@ -23,7 +23,7 @@ class AppointmentDateHelper(object):
         # not used
         self.allow_backwards = False
         # True if appointments should land on the same day for a subject
-        Configuration = get_model('bhp_appointment', 'configuration')
+        Configuration = get_model('appointment', 'configuration')
         config = Configuration.objects.get_configuration()
         self.use_same_weekday = config.use_same_weekday
         self.allowed_iso_weekdays = config.allowed_iso_weekdays
@@ -89,7 +89,7 @@ class AppointmentDateHelper(object):
 
     def _check_if_holiday(self, appt_datetime):
         """ Checks if appt_datetime lands on a holiday, if so, move forward """
-        Holiday = get_model('bhp_appointment', 'holiday')
+        Holiday = get_model('appointment', 'holiday')
         while appt_datetime.date() in [holiday.holiday_date for holiday in Holiday.objects.all()]:
             appt_datetime = appt_datetime + timedelta(days=+1)
             appt_datetime = self._check_if_allowed_isoweekday(appt_datetime)
@@ -123,7 +123,7 @@ class AppointmentDateHelper(object):
 
     def _move_on_appt_max_exceeded(self, original_appt_datetime, site, appointments_per_day_max=None, days_forward=None):
         """Moves appointment date to another date if the appointments_per_day_max is exceeded."""
-        from bhp_appointment.models import Appointment
+        from edc.subject.appointment.models import Appointment
         appt_datetime = copy.deepcopy(original_appt_datetime)
         if not appointments_per_day_max:
             appointments_per_day_max = self.appointments_per_day_max

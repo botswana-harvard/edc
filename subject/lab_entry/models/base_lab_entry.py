@@ -1,8 +1,8 @@
 from django.db import models
 from edc.lab.lab_clinic_api.models import Panel
-from edc.core.bhp_common.choices import YES_NO
+from edc.choices.common import YES_NO
 from edc.subject.visit_schedule.models import BaseWindowPeriodItem
-from edc.core.bhp_entry.choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
+from edc.subject.entry.choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
 
 
 class BaseLabEntry(BaseWindowPeriodItem):

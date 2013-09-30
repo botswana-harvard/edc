@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from edc.core.bhp_sync.models import Producer
+from edc.device.sync.models import Producer
 from ..classes import ReturnController
 
 

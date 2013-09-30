@@ -26,7 +26,8 @@ class LabEntry(BaseLabEntry):
         return '%s: %s' % (self.visit_definition.code, self.panel.name)
 
     class Meta:
-        app_label = 'bhp_lab_entry'
+        app_label = 'lab_entry'
+        db_table = 'bhp_lab_entry_labentry'
         verbose_name = "Lab Entry"
         ordering = ['visit_definition__code', 'entry_order', ]
         unique_together = ['visit_definition', 'panel', ]

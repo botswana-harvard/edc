@@ -200,7 +200,7 @@ class DispatchController(BaseDispatchController):
 
         ..seealso:: module :mod:`bhp_appointment`
         """
-        Appointments = get_model('bhp_appointment', 'Appointment')
+        Appointments = get_model('appointment', 'Appointment')
         #appointments = Appointments.objects.filter(registered_subject=registered_subject)
         appointments = Appointments.objects.filter(registered_subject=registered_subject,
                                                    appt_datetime__range=(start_datetime,
@@ -310,7 +310,7 @@ class DispatchController(BaseDispatchController):
 
     def dispatch_crypt(self):
         logger.info("Updating the Crypt table...")
-        self.update_model(('bhp_crypto', 'crypt'))
+        self.update_model(('crypto', 'crypt'))
 
     def dispatch_registered_subjects(self):
         logger.info("Updating the Registered Subjects table...")

@@ -11,7 +11,7 @@ from edc.lab.lab_base_model.models import BaseLabListModel, BaseLabModel
 from edc.lab.lab_base_model.models import BaseLabUuidModel
 from edc.core.bhp_common.utils import td_to_string
 from edc.base.model.models import BaseModel
-from edc.core.bhp_sync.models import BaseSyncUuidModel
+from edc.device.sync.models import BaseSyncUuidModel
 from edc.base.model.models import BaseUuidModel
 from edc.subject.consent.models.signals import add_models_to_catalogue
 from ..exceptions import BackupError, RestoreError

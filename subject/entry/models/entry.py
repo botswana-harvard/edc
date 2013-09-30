@@ -1,6 +1,6 @@
 from django.db import models
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_common.choices import YES_NO_OPTIONAL
+from edc.choices.common import YES_NO_OPTIONAL
 from edc.subject.visit_schedule.models import BaseWindowPeriodItem, VisitDefinition
 from ..choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
 from ..managers import EntryBucketManager
@@ -54,7 +54,8 @@ class Entry(BaseWindowPeriodItem):
         return '{0}: {1}'.format(self.visit_definition.code, self.content_type_map.content_type)
 
     class Meta:
-        app_label = 'bhp_entry'
+        app_label = 'entry'
+        db_table = 'bhp_entry_entry'  # TODO: remove once schema is refactored
         verbose_name = "Entry"
         ordering = ['visit_definition__code', 'entry_order', ]
         unique_together = ['visit_definition', 'content_type_map', ]

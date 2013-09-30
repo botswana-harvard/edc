@@ -1,13 +1,13 @@
 from datetime import datetime
 from django.db import models
-from edc.core.bhp_entry.managers import BaseEntryBucketManager
+from edc.subject.entry.managers import BaseEntryBucketManager
 from ..models import LabEntryUnscheduled
 
 
 class AdditionalLabEntryBucketManager(BaseEntryBucketManager):
 
     def get_by_natural_key(self, visit_definition_code, name, visit_instance, appt_status, visit_definition_code1, subject_identifier_as_pk):
-        Appointment = models.get_model('bhp_appointment', 'Appointment')
+        Appointment = models.get_model('appointment', 'Appointment')
         LabEntry = models.get_model('bhp_lab_entry', 'LabEntry')
         appointment = Appointment.objects.get_by_natural_key(visit_instance, appt_status, visit_definition_code1, subject_identifier_as_pk)
         lab_entry = LabEntry.objects.get_by_natural_key(visit_definition_code, name)

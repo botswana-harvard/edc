@@ -1,8 +1,7 @@
-#from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from edc.base.model.fields import IdentityTypeField
-from edc.subject.local.bw.fields import EncryptedOmangField
 from edc.subject.consent.models import BaseConsent
+from ..fields import EncryptedOmangField
 
 
 class BaseBwConsent(BaseConsent):

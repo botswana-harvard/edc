@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-from edc.core.bhp_common.choices import GENDER, ART_STATUS_UNKNOWN, POS_NEG_UNKNOWN
+from edc.choices.common import GENDER, ART_STATUS_UNKNOWN, POS_NEG_UNKNOWN
 from edc.base.model.models import BaseUuidModel
 from edc.base.model.fields import InitialsField, IsDateEstimatedField
 from edc.base.model.validators import dob_not_future

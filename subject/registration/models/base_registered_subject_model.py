@@ -16,7 +16,7 @@ class BaseRegisteredSubjectModel (BaseAppointmentHelperModel):
 
     Use this along with BaseRegisteredSubjectModelAdmin()
 
-    .. seealso:: This class inherits methods from bhp_appointment_helper that create appointments if the model
+    .. seealso:: This class inherits methods from edc.subject.appointment_helper that create appointments if the model
                  is configured as a ScheduledGroup model. See base class :mod:`bhp_appointment_helper.classes.BaseAppointmentHelperModel`.
 
     """

@@ -29,4 +29,5 @@ class NetbookUser(BaseModel):
     class Meta:
         unique_together = ['netbook', 'user']
         ordering = ['netbook']
-        app_label = 'bhp_netbook'
+        app_label = 'netbook'
+        db_table = 'bhp_netbook_netbookuser'
