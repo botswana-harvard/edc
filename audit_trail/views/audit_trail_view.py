@@ -2,9 +2,9 @@ from django.db.models import get_model
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from edc_core.bhp_base_model.models import BaseModel
-from edc_core.bhp_model_selector.classes import ModelSelector
-from edc_core.bhp_section.classes import section_index_view
+from edc.core.bhp_base_model.models import BaseModel
+from edc.core.bhp_model_selector.classes import ModelSelector
+from edc.core.bhp_section.classes import section_index_view
 from ..models import AuditComment
 from ..forms import AuditTrailForm
 

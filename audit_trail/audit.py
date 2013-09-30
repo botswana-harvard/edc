@@ -5,10 +5,10 @@ import re
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
-from edc_core.bhp_sync.models import BaseSyncUuidModel
-from edc_core.bhp_base_model.fields import MyUUIDField
-from edc_core.bhp_crypto.fields import BaseEncryptedField
-from edc_core.bhp_sync.classes import SerializeToTransaction
+from edc.core.bhp_sync.models import BaseSyncUuidModel
+from edc.core.bhp_base_model.fields import MyUUIDField
+from edc.core.bhp_crypto.fields import BaseEncryptedField
+from edc.core.bhp_sync.classes import SerializeToTransaction
 from __init__ import GLOBAL_TRACK_FIELDS
 
 value_error_re = re.compile("^.+'(.+)'$")

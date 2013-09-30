@@ -1,0 +1,6 @@
+from edc.core.bhp_base_model.tests.factories import BaseUuidModelFactory
+from edc.core.bhp_base_test.models import TestConsentHistory
+
+
+class TestConsentHistoryFactory(BaseUuidModelFactory):
+    FACTORY_FOR = TestConsentHistory
