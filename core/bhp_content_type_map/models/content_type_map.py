@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
-from edc.core.bhp_base_model.models import BaseModel
+from edc.base.model.models import BaseModel
 from ..managers import ContentTypeMapManager
 
 

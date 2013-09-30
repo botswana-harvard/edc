@@ -1,4 +1,4 @@
-from edc.core.bhp_off_study.tests.factories import BaseOffStudyFactory
+from edc.subject.off_study.tests.factories import BaseOffStudyFactory
 from ...models import TestBaseOffStudy
 
 

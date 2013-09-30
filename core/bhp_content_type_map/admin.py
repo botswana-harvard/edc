@@ -1,5 +1,5 @@
 from django.contrib import admin
-from edc.core.bhp_base_admin.admin import BaseModelAdmin
+from edc.base.admin.admin import BaseModelAdmin
 from .models import ContentTypeMap
 from .actions import pop_and_sync
 

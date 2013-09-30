@@ -1,6 +1,6 @@
 import factory
-from edc.core.bhp_base_model.tests.factories import BaseUuidModelFactory
-from edc.core.bhp_registration.tests.factories import RegisteredSubjectFactory
+from edc.base.model.tests.factories import BaseUuidModelFactory
+from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 
 
 class BaseEntryBucketFactory(BaseUuidModelFactory):

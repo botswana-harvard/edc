@@ -1,9 +1,9 @@
 from datetime import date, timedelta
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.core.bhp_crypto.fields import EncryptedTextField
-from edc.core.bhp_registration.models import RegisteredSubject
-from edc.core.bhp_base_model.models import BaseModel
+from edc.core.crypto.fields import EncryptedTextField
+from edc.subject.registration.models import RegisteredSubject
+from edc.base.model.models import BaseModel
 
 
 class ActionItem(BaseModel):

@@ -10,10 +10,10 @@ from django.db.models import signals
 from edc.lab.lab_base_model.models import BaseLabListModel, BaseLabModel
 from edc.lab.lab_base_model.models import BaseLabUuidModel
 from edc.core.bhp_common.utils import td_to_string
-from edc.core.bhp_base_model.models import BaseModel
+from edc.base.model.models import BaseModel
 from edc.core.bhp_sync.models import BaseSyncUuidModel
-from edc.core.bhp_base_model.models import BaseUuidModel
-from edc.core.bhp_consent.models.signals import add_models_to_catalogue
+from edc.base.model.models import BaseUuidModel
+from edc.subject.consent.models.signals import add_models_to_catalogue
 from ..exceptions import BackupError, RestoreError
 from .base_prepare_device import BasePrepareDevice
 
@@ -128,17 +128,16 @@ class PrepareDevice(BasePrepareDevice):
         if not step > 12:
             self.timer()
             logger.info("12. Updating registered subjects...")
-            #self.update_model(('bhp_registration', 'RegisteredSubject'), [RegisteredSubject])
-            logger.info('   Warning, skipping. use mysqldump for the RegisteredSubject table, bhp_registration_registeredsubject')
+            logger.info('   Warning, skipping. use mysqldump for the RegisteredSubject table, registration_registeredsubject')
         if not step > 13:
             self.timer()
-            logger.info("13. Updating bhp_consent Consent Catalogues...")
+            logger.info("13. Updating consent Consent Catalogues...")
             signals.post_save.disconnect(add_models_to_catalogue, weak=False, dispatch_uid="add_models_to_catalogue")
-            self.update_model(('bhp_consent', 'ConsentCatalogue'), [BaseSyncUuidModel])
+            self.update_model(('consent', 'ConsentCatalogue'), [BaseSyncUuidModel])
         if not step > 14:
             self.timer()
-            logger.info("14. Updating bhp_consent Attached Models...")
-            #self.update_model(('bhp_consent', 'AttachedModel'), [BaseSyncUuidModel])
+            logger.info("14. Updating consent Attached Models...")
+            #self.update_model(('consent', 'AttachedModel'), [BaseSyncUuidModel])
             signals.post_save.connect(add_models_to_catalogue, weak=False, dispatch_uid="add_models_to_catalogue")
         if not step > 15:
             self.timer()

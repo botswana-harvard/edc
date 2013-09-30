@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.bhp_consent.models import BaseConsentedUuidModel
+from edc.subject.consent.models import BaseConsentedUuidModel
 from ..choices import ARV_DRUG_LIST, ARV_MODIFICATION_REASON, DOSE_STATUS
 
 

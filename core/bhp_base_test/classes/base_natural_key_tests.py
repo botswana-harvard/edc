@@ -3,7 +3,7 @@ from django.core import serializers
 from django.test import TestCase
 from django.db.models import get_app, get_models
 from edc.core.bhp_sync.classes import SerializeToTransaction
-from edc.core.bhp_crypto.classes import FieldCryptor
+from edc.core.crypto.classes import FieldCryptor
 
 
 class BaseNaturalKeyTests(TestCase):

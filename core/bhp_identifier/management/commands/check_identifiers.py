@@ -2,7 +2,7 @@
 #import threading
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.subject.registration.models import RegisteredSubject
 from ...models import SubjectIdentifier
 
 

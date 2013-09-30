@@ -126,7 +126,7 @@ class Controller(object):
 
     def update_history_for_all(self, supress_messages=None):
         """Updates the history for all subjects in RegisteredSubject for all LabTrackers in the registry."""
-        RegisteredSubject = get_model('bhp_registration', 'RegisteredSubject')
+        RegisteredSubject = get_model('registration', 'RegisteredSubject')
         tot = RegisteredSubject.objects.values('subject_identifier').all().count()
         for lab_tracker_cls in self._registry:
             for index, registered_subject in enumerate(RegisteredSubject.objects.values('subject_identifier').filter(subject_identifier__isnull=False)):

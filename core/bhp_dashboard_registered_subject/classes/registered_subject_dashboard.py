@@ -12,22 +12,22 @@ from edc.lab.lab_requisition.models import BaseBaseRequisition
 from edc.lab.lab_packing.models import BasePackingList
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.core.bhp_entry_rules.classes import rule_groups
-from edc.core.bhp_visit.classes import MembershipFormHelper
+from edc.subject.visit_schedule.classes import MembershipFormHelper
 from edc.core.bhp_entry.classes import ScheduledEntry, AdditionalEntry
-from edc.core.bhp_visit.exceptions import MembershipFormError
-from edc.core.bhp_appointment.models import Appointment
-from edc.core.bhp_visit.models import MembershipForm
+from edc.subject.visit_schedule.exceptions import MembershipFormError
+from edc.subject.appointment.models import Appointment
+from edc.subject.visit_schedule.models import MembershipForm
 from edc.core.bhp_lab_entry.models import ScheduledLabEntryBucket, AdditionalLabEntryBucket
-from edc.core.bhp_visit_tracking.models import BaseVisitTracking
-from edc.core.bhp_registration.models import RegisteredSubject
-from edc.core.bhp_subject_summary.models import Link
+from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.subject_summary.models import Link
 from edc.core.bhp_locator.models import BaseLocator
 from edc.core.bhp_data_manager.models import ActionItem
-from edc.core.bhp_subject_config.models import SubjectConfiguration
-from edc.core.bhp_consent.models import BaseConsent
+from edc.subject.subject_config.models import SubjectConfiguration
+from edc.subject.consent.models import BaseConsent
 from edc.core.bhp_dashboard.classes import Dashboard
 from edc.core.bhp_lab_tracker.classes import site_lab_tracker
-from edc.core.bhp_crypto.fields import EncryptedTextField
+from edc.core.crypto.fields import EncryptedTextField
 from .scheduled_entry_context import ScheduledEntryContext
 
 

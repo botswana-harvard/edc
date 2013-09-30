@@ -1,7 +1,7 @@
 from django.db.models import get_model
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_registration.models import RegisteredSubject
-from edc.core.bhp_visit.models import VisitDefinition
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.visit_schedule.models import VisitDefinition
 from ..managers import BaseEntryBucketManager
 
 

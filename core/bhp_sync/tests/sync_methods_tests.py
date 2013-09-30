@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
 from bhp_content_type_map.models import ContentTypeMap
 from bhp_sync.classes import Consumer, DeserializeFromTransaction
-from bhp_consent.models import ConsentCatalogue
+from edc.subject.consent.models import ConsentCatalogue
 from bhp_sync.models import Producer, OutgoingTransaction, IncomingTransaction
 
 

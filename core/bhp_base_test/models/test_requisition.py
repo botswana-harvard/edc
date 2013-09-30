@@ -1,6 +1,6 @@
 from django.db import models
 from edc.lab.lab_requisition.models import BaseRequisition
-from edc.core.audit_trail.audit import AuditTrail
+from edc.audit.audit_trail import AuditTrail
 from ..models import TestVisit
 
 

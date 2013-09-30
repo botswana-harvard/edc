@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.core.bhp_base_model.models import BaseUuidModel
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.base.model.models import BaseUuidModel
+from edc.subject.registration.models import RegisteredSubject
 
 
 class BaseHistoryModel(BaseUuidModel):

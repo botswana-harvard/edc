@@ -1,6 +1,6 @@
 from django.contrib import admin
 from edc.core.bhp_export_data.actions import export_as_csv_action
-from edc.core.bhp_base_admin.admin import BaseModelAdmin
+from edc.base.admin.admin import BaseModelAdmin
 from .forms import ResultForm, ResultItemForm
 from .models import (Receive, Aliquot, Result, ResultItem, Review, Order, Panel, TestCode,
                      AliquotType, TestCodeGroup, AliquotCondition)

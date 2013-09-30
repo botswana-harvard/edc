@@ -2,9 +2,9 @@ import re
 from datetime import date, datetime
 from django.db.models import get_model, Model, IntegerField
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_consent.classes import ConsentHelper
-from edc.core.bhp_registration.models import RegisteredSubject
-from edc.core.bhp_visit_tracking.models import BaseVisitTracking
+from edc.subject.consent.classes import ConsentHelper
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.core.bhp_entry.models import BaseEntryBucket
 from edc.core.bhp_entry.classes import BaseEntry
 from edc.core.bhp_lab_tracker.classes import site_lab_tracker

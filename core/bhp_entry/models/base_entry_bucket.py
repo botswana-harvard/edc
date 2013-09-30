@@ -1,6 +1,6 @@
 from django.db import models
-from edc.core.bhp_base_model.models import BaseUuidModel
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.base.model.models import BaseUuidModel
+from edc.subject.registration.models import RegisteredSubject
 from ..choices import ENTRY_STATUS
 
 

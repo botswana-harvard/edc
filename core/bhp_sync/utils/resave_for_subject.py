@@ -1,6 +1,6 @@
 from django.db.models import get_models, get_model
-from bhp_appointment.models import Appointment
-from bhp_registration.models import RegisteredSubject
+from edc.subject.appointment.models import Appointment
+from edc.subject.registration.models import RegisteredSubject
 
 
 def resave_for_subject(subject_identifier, consent, visit, visit_key):

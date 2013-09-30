@@ -10,8 +10,8 @@ from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q, Count, Max
 from edc.lab.lab_base_model.models import BaseLabListModel, BaseLabListUuidModel
-from edc.core.bhp_base_model.models import BaseListModel
-from edc.core.bhp_visit.models import VisitDefinition, ScheduleGroup
+from edc.base.model.models import BaseListModel
+from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc.core.bhp_variables.models import StudySite
 from edc.core.bhp_entry.models import BaseEntryBucket
 from edc.core.bhp_sync.classes import BaseProducer

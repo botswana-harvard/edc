@@ -1,6 +1,6 @@
 from django.db import models
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_visit.models import VisitDefinition
+from edc.subject.visit_schedule.models import VisitDefinition
 
 
 class EntryBucketManager(models.Manager):

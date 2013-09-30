@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.db import models
-from edc.core.audit_trail.audit import AuditTrail
+from edc.audit.audit_trail import AuditTrail
 from edc.core.bhp_sync.models import BaseSyncUuidModel
 
 

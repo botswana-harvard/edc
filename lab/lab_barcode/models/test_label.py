@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.bhp_base_model.models import BaseUuidModel
+from edc.base.model.models import BaseUuidModel
 from .zpl_template import ZplTemplate
 
 

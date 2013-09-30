@@ -7,7 +7,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.db import IntegrityError
 from django.db.models import ForeignKey
 from edc.core.bhp_poll_mysql.poll_mysql import PollMySQL
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.subject.registration.models import RegisteredSubject
 from edc.core.bhp_research_protocol.models import Protocol
 from edc.lab.lab_receive.models import Receive as LisReceive
 from edc.lab.lab_aliquot.models import Aliquot as LisAliquot

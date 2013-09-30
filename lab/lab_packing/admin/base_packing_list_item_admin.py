@@ -1,4 +1,4 @@
-from edc.core.bhp_base_admin.admin import BaseModelAdmin
+from edc.base.admin.admin import BaseModelAdmin
 
 
 class BasePackingListItemAdmin(BaseModelAdmin):

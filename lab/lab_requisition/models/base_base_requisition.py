@@ -4,8 +4,8 @@ from django.conf import settings
 try:
     from edc.core.bhp_dispatch.models import BaseDispatchSyncUuidModel as BaseUuidModel
 except ImportError:
-    from edc.core.bhp_base_model.models import BaseUuidModel
-from edc.core.bhp_base_model.fields import InitialsField
+    from edc.base.model.models import BaseUuidModel
+from edc.base.model.fields import InitialsField
 from edc.core.bhp_common.choices import YES_NO
 from edc.core.bhp_variables.models import StudySite
 from edc.core.bhp_device.classes import Device

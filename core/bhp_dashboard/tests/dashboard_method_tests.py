@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.subject.registration.models import RegisteredSubject
 from edc.core.bhp_base_test.models import TestConsent, TestVisit
 from edc.core.bhp_base_test.tests.factories import TestConsentFactory
 from ..classes import Dashboard

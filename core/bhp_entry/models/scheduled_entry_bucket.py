@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.bhp_appointment.models import Appointment
+from edc.subject.appointment.models import Appointment
 from ..managers import ScheduledEntryBucketManager
 from ..models import BaseEntryBucket
 from .entry import Entry

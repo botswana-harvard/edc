@@ -73,7 +73,7 @@ class InfantIdentifier(BaseSubjectIdentifier):
 
     def get_identifier_post(self, new_identifier, **kwargs):
         """ Updates registered subject after a new subject identifier is created."""
-        RegisteredSubject = get_model('bhp_registration', 'registeredsubject')
+        RegisteredSubject = get_model('registration', 'registeredsubject')
         RegisteredSubject.objects.using(self.using).create(
                 subject_identifier=new_identifier,
                 registration_datetime=datetime.now(),

@@ -8,8 +8,8 @@ from django.core.exceptions import ImproperlyConfigured
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.core.bhp_section.classes import site_sections
 from edc.core.bhp_context.classes import BaseContext
-from edc.core.bhp_base_model.models import BaseModel
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.base.model.models import BaseModel
+from edc.subject.registration.models import RegisteredSubject
 from ..exceptions import DashboardModelError
 
 

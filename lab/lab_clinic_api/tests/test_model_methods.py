@@ -1,5 +1,5 @@
 from django.test import TestCase
-from edc.core.bhp_registration.tests.factories import RegisteredSubjectFactory
+from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.core.bhp_lab_tracker.classes import site_lab_tracker
 from .factories import AliquotFactory, AliquotConditionFactory, AliquotTypeFactory, ReceiveFactory, OrderFactory, ResultFactory, ResultItemFactory
 

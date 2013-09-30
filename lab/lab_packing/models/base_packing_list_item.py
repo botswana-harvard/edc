@@ -1,6 +1,6 @@
 from django.db import models
 from edc.core.bhp_sync.models import BaseSyncUuidModel
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.subject.registration.models import RegisteredSubject
 from edc.lab.lab_clinic_api.models import Panel
 from .base_packing_list import BasePackingList
 

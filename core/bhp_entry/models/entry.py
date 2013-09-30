@@ -1,7 +1,7 @@
 from django.db import models
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_common.choices import YES_NO_OPTIONAL
-from edc.core.bhp_visit.models import BaseWindowPeriodItem, VisitDefinition
+from edc.subject.visit_schedule.models import BaseWindowPeriodItem, VisitDefinition
 from ..choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
 from ..managers import EntryBucketManager
 

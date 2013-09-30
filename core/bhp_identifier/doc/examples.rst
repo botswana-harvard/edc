@@ -4,7 +4,7 @@ Examples
 Consenting Subjects
 -------------------
 
-By default, :meth:`save` in the base consent model from module :mod:`bhp_consent` uses an instance of 
+By default, :meth:`save` in the base consent model from module :mod:`consent` uses an instance of 
 :class:`bhp_identifier.classes.Subject` to allocate an identifier to the consenting subject:
 
 .. code-block:: python

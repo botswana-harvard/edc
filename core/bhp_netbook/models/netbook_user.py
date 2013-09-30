@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
-from edc.core.bhp_base_model.models import BaseModel
+from edc.base.model.models import BaseModel
 from .netbook import Netbook
 
 

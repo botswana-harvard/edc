@@ -1,5 +1,5 @@
 from django.contrib import admin
-from edc.core.bhp_visit_tracking.admin import BaseVisitTrackingModelAdmin
+from edc.subject.visit_tracking.admin import BaseVisitTrackingModelAdmin
 from edc.lab.lab_clinic_api.models import Panel
 from ..actions import flag_as_received, flag_as_not_received, flag_as_not_labelled, print_requisition_label
 

@@ -1,6 +1,6 @@
-from edc.core.audit_trail.audit import AuditTrail
-from edc.core.bhp_base_model.models import BaseModel
-from edc.core.bhp_crypto.fields import EncryptedCharField, EncryptedTextField, EncryptedFirstnameField, EncryptedLastnameField
+from edc.audit.audit_trail import AuditTrail
+from edc.base.model.models import BaseModel
+from edc.core.crypto.fields import EncryptedCharField, EncryptedTextField, EncryptedFirstnameField, EncryptedLastnameField
 
 
 class EncryptedTestModel(BaseModel):

@@ -1,4 +1,4 @@
-from edc.core.bhp_base_model.tests.factories import BaseListModelFactory
+from edc.base.model.tests.factories import BaseListModelFactory
 from ...models import TestManyToMany
 
 

@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.bhp_base_model.models import BaseModel
+from edc.base.model.models import BaseModel
 from edc.core.bhp_common.choices import POS_NEG_ANY
 from edc.lab.lab_common.choices import UNITS
 from ..choices import GENDER_OF_REFERENCE

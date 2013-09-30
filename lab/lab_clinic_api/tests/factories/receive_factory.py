@@ -1,5 +1,5 @@
 import factory
-from edc.core.bhp_registration.tests.factories import RegisteredSubjectFactory
+from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.lab.lab_receive.tests.factories import BaseReceiveFactory
 from ...models import Receive
 

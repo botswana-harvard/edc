@@ -1,6 +1,6 @@
 from django import forms
 from django.db.models import get_model
-from edc.core.bhp_base_form.forms import BaseModelForm
+from edc.base.form.forms import BaseModelForm
 from ..models import ModelHelpText
 
 

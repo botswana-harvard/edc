@@ -1,7 +1,7 @@
 import dateutil.parser
 from datetime import timedelta
 from django.db import models
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.subject.registration.models import RegisteredSubject
 
 
 class BaseLocatorManager(models.Manager):

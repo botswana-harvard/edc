@@ -1,5 +1,5 @@
 from django.contrib import messages
-from edc.core.bhp_crypto.classes import FieldCryptor
+from edc.core.crypto.classes import FieldCryptor
 from .classes import SerializeToTransaction
 
 

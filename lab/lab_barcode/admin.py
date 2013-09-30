@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib import messages
 
-from edc.core.bhp_base_admin.admin import BaseModelAdmin
+from edc.base.admin.admin import BaseModelAdmin
 from .models import ZplTemplate, LabelPrinter, Client, TestLabel
 from .forms import ZplTemplateForm, LabelPrinterForm
 from .exceptions import PrinterException

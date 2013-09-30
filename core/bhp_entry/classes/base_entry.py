@@ -25,7 +25,7 @@ class BaseEntry(object):
         self.set_visit_model_instance(visit_model_instance)
 
     def set_visit_model_base_cls(self):
-        from edc.core.bhp_visit_tracking.models import BaseVisitTracking
+        from edc.subject.visit_tracking.models import BaseVisitTracking
         self._visit_model_base_cls = BaseVisitTracking
 
     def get_visit_model_base_cls(self):

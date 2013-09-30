@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.bhp_base_model.validators import datetime_not_future
+from edc.base.model.validators import datetime_not_future
 from edc.lab.lab_base_model.models import BaseLabUuidModel
 from ..choices import ORDER_STATUS
 

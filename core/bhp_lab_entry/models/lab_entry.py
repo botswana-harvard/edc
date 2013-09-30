@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.bhp_visit.models import VisitDefinition
+from edc.subject.visit_schedule.models import VisitDefinition
 from .base_lab_entry import BaseLabEntry
 
 

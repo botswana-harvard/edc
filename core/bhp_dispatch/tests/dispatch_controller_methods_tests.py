@@ -2,7 +2,7 @@ from datetime import datetime
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 from django.db.models import get_model
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.subject.registration.models import RegisteredSubject
 from edc.core.bhp_sync.models import Producer, OutgoingTransaction, IncomingTransaction
 from edc.core.bhp_sync.exceptions import PendingTransactionError, ProducerError
 from edc.core.bhp_using.exceptions import UsingError, UsingSourceError

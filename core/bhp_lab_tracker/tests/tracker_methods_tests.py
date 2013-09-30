@@ -4,11 +4,11 @@ from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 from edc.lab.lab_clinic_api.models import ResultItem
 from edc.lab.lab_clinic_api.tests.factories import ResultItemFactory, AliquotConditionFactory, AliquotFactory, OrderFactory, ReceiveFactory, ResultFactory, TestCodeFactory
-from edc.core.bhp_appointment.tests.factories import ConfigurationFactory
+from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory
 from edc.core.bhp_base_test.models import TestSubjectResultModel
 from edc.core.bhp_base_test.tests.factories import TestSubjectResultModelFactory
-from edc.core.bhp_registration.tests.factories import RegisteredSubjectFactory
+from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from ..models import HistoryModel
 from ..classes import LabTracker, site_lab_tracker
 from ..classes.controller import AlreadyRegistered

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext as _
-from edc.core.bhp_base_model.validators import date_not_future, date_is_future
-from edc.core.bhp_base_model.models import BaseUuidModel
+from edc.base.model.validators import date_not_future, date_is_future
+from edc.base.model.models import BaseUuidModel
 from edc.core.bhp_common.choices import YES_NO
 from edc.core.bhp_research_protocol.models import Site
 from edc.core.bhp_research_protocol.models import Protocol

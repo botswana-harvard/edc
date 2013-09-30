@@ -1,11 +1,11 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.subject.registration.models import RegisteredSubject
 from edc.lab.lab_receive.models import BaseReceive
 
 
 class Receive(BaseReceive):
-    """ Stores receiving information and is linked to :class:`bhp_registration.RegisteredSubject` for patient
+    """ Stores receiving information and is linked to :class:`registration.RegisteredSubject` for patient
     identification and demographics."""
 
     registered_subject = models.ForeignKey(RegisteredSubject, null=True)

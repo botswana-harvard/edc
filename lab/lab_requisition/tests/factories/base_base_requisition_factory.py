@@ -1,6 +1,6 @@
 import factory
 from datetime import datetime
-from edc.core.bhp_base_model.tests.factories import BaseUuidModelFactory
+from edc.base.model.tests.factories import BaseUuidModelFactory
 from edc.core.bhp_variables.tests.factories import StudySiteFactory
 from edc.lab.lab_clinic_api.tests.factories import PanelFactory
 from edc.lab.lab_aliquot_list.tests.factories import AliquotTypeFactory

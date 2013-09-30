@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.core.bhp_appointment.models import Appointment
+from edc.subject.appointment.models import Appointment
 from edc.core.bhp_entry.models import BaseEntryBucket
 from ..managers import ScheduledLabEntryBucketManager
 from .lab_entry import LabEntry

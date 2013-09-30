@@ -1,7 +1,7 @@
 from django.contrib import admin
-from edc.core.bhp_base_admin.admin import BaseModelAdmin, BaseTabularInline
-from edc.core.bhp_registration.models import RegisteredSubject
-from edc.core.bhp_appointment.models import Appointment
+from edc.base.admin.admin import BaseModelAdmin, BaseTabularInline
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.appointment.models import Appointment
 from ..forms import ScheduledEntryBucketForm
 from ..models import Entry, ScheduledEntryBucket, AdditionalEntryBucket
 

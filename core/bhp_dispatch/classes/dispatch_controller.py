@@ -3,9 +3,9 @@ from django.db.models import get_model
 from django.core.exceptions import FieldError
 from django.db.models import get_models, get_app
 from edc.lab.lab_base_model.models import BaseLabListModel, BaseLabListUuidModel
-from edc.core.bhp_visit_tracking.classes import VisitModelHelper
+from edc.subject.visit_tracking.classes import VisitModelHelper
 from edc.core.bhp_lab_tracker.models import HistoryModel
-from edc.core.bhp_base_model.models import BaseListModel
+from edc.base.model.models import BaseListModel
 from ..classes import BaseDispatchController
 from ..exceptions import DispatchModelError, DispatchError, AlreadyDispatchedContainer
 from .controller_register import registered_controllers
@@ -216,7 +216,7 @@ class DispatchController(BaseDispatchController):
 
         .. note::
            By scheduled_instances, we are referring to models that have a foreign key to a subclass
-           of :mod:`bhp_visit_tracking`'s :class:`BaseVisitTracking` base model.
+           of :mod:`visit_tracking`'s :class:`BaseVisitTracking` base model.
            For example, to maternal_visit, infant_visit, subject_visit, patient_visit, etc
         """
 
@@ -314,7 +314,7 @@ class DispatchController(BaseDispatchController):
 
     def dispatch_registered_subjects(self):
         logger.info("Updating the Registered Subjects table...")
-        self.update_model(('bhp_registration', 'RegisteredSubject'))
+        self.update_model(('registration', 'RegisteredSubject'))
 
     def send_cypts(self, crypts_to_send, **kwargs):
         logger.info('  dispatching {0} crypts to {1}.'.format(crypts_to_send.count(), self.get_using_destination()))

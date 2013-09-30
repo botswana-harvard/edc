@@ -1,11 +1,11 @@
 from datetime import date, datetime
 from django.db import models
-from edc.core.bhp_consent.models import BaseConsentedUuidModel
-from edc.core.bhp_base_model.validators import datetime_not_before_study_start, datetime_not_future
+from edc.subject.consent.models import BaseConsentedUuidModel
+from edc.base.model.validators import datetime_not_before_study_start, datetime_not_future
 from edc.core.bhp_common.choices import YES_NO, YES_NO_DOESNT_WORK
-from edc.core.bhp_base_model.validators import BWCellNumber, BWTelephoneNumber
-from edc.core.bhp_crypto.fields import EncryptedCharField, EncryptedTextField
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.base.model.validators import BWCellNumber, BWTelephoneNumber
+from edc.core.crypto.fields import EncryptedCharField, EncryptedTextField
+from edc.subject.registration.models import RegisteredSubject
 from ..managers import BaseLocatorManager
 
 

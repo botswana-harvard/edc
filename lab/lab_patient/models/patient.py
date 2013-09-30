@@ -2,9 +2,9 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from edc.core.bhp_common.choices import GENDER, ART_STATUS_UNKNOWN, POS_NEG_UNKNOWN
-from edc.core.bhp_base_model.models import BaseUuidModel
-from edc.core.bhp_base_model.fields import InitialsField, IsDateEstimatedField
-from edc.core.bhp_base_model.validators import dob_not_future
+from edc.base.model.models import BaseUuidModel
+from edc.base.model.fields import InitialsField, IsDateEstimatedField
+from edc.base.model.validators import dob_not_future
 from edc.lab.lab_account.models import Account
 from edc.lab.lab_patient.managers import PatientManager
 

@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import models
 from django.db.models import ForeignKey, Q
-from edc.core.bhp_visit_tracking.models import BaseVisitTracking
+from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.core.bhp_entry.managers import BaseEntryBucketManager
 from ..models import LabEntry
 

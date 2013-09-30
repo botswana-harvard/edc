@@ -1,6 +1,6 @@
 from datetime import *
 from django.contrib import admin
-from edc.core.bhp_base_admin.admin import BaseModelAdmin
+from edc.base.admin.admin import BaseModelAdmin
 from edc.lab.lab_order.models import Order
 from .models import Result
 

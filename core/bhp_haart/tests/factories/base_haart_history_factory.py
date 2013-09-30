@@ -1,5 +1,5 @@
 from datetime import date
-from edc.core.bhp_base_model.tests.factories import BaseUuidModelFactory
+from edc.base.model.tests.factories import BaseUuidModelFactory
 from ...choices import ARV_DRUG_LIST
 
 

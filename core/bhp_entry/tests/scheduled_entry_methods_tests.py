@@ -5,8 +5,7 @@
 # from bhp_lab_tracker.classes import lab_tracker
 # from bhp_variables.models import StudySpecific, StudySite
 # from bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-# from bhp_registration.models import RegisteredSubject
-# from bhp_consent.tests.factories import ConsentCatalogueFactory
+# from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 # from bhp_appointment.tests.factories import ConfigurationFactory
 # from bhp_visit.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 # from bhp_content_type_map.classes import ContentTypeMapHelper

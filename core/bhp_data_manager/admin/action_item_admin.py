@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from edc.core.bhp_registration.models import RegisteredSubject
+from edc.subject.registration.models import RegisteredSubject
 from ..forms import ActionItemForm
 from ..models import ActionItem
 from ..classes import data_manager

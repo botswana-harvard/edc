@@ -6,7 +6,7 @@ from geopy import Point
 from datetime import date, timedelta
 from django.conf import settings
 from django.utils.encoding import smart_str
-from edc.core.bhp_base_model.models import BaseUuidModel
+from edc.base.model.models import BaseUuidModel
 from ..exceptions import MapperError
 
 

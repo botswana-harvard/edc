@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import models
-from edc.core.bhp_base_model.validators import datetime_not_future
-from edc.core.bhp_base_model.fields import InitialsField
+from edc.base.model.validators import datetime_not_future
+from edc.base.model.fields import InitialsField
 from edc.lab.lab_base_model.models import BaseLabUuidModel
 
 

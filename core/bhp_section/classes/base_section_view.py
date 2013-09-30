@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from edc.core.bhp_appointment.models import Appointment
+from edc.subject.appointment.models import Appointment
 from edc.core.bhp_search.classes import site_search
 from ..exceptions import SectionError
 
