@@ -40,7 +40,7 @@ class Crypt (BaseSyncUuidModel):
         return (self.hash, self.algorithm, self.mode,)
 
     class Meta:
-        app_label = 'crypto'
+        app_label = 'crypto_fields'
         db_table = 'bhp_crypto_crypt'
         verbose_name = 'Crypt'
         unique_together = (('hash', 'algorithm', 'mode'),)

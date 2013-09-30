@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Q
-from edc.core.crypto.fields import BaseEncryptedField
+from edc.core.crypto_fields.fields import BaseEncryptedField
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.consent.models import BaseConsent
 from ..forms import SearchForm

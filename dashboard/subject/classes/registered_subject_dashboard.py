@@ -26,8 +26,8 @@ from edc.core.bhp_data_manager.models import ActionItem
 from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.consent.models import BaseConsent
 from edc.dashboard.base.classes import Dashboard
-from edc.core.bhp_lab_tracker.classes import site_lab_tracker
-from edc.core.crypto.fields import EncryptedTextField
+from edc.subject.lab_tracker.classes import site_lab_tracker
+from edc.core.crypto_fields.fields import EncryptedTextField
 from .scheduled_entry_context import ScheduledEntryContext
 
 

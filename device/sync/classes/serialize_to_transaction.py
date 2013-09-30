@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db.models import get_model
 from django.core import serializers
-from edc.core.crypto.classes import FieldCryptor
+from edc.core.crypto_fields.classes import FieldCryptor
 from .transaction_producer import TransactionProducer
 
 

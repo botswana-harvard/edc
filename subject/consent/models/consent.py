@@ -1,5 +1,5 @@
 from edc.base.model.fields import IdentityTypeField
-from edc.core.crypto.fields import EncryptedIdentityField
+from edc.core.crypto_fields.fields import EncryptedIdentityField
 from ..models import BaseConsent
 
 

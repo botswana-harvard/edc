@@ -1,6 +1,6 @@
 from django.db.models import Count
 from django.core.management.base import BaseCommand
-from edc.core.bhp_lab_tracker.classes import site_lab_tracker
+from edc.subject.lab_tracker.classes import site_lab_tracker
 from ...models import IncomingTransaction
 
 site_lab_tracker.autodiscover()

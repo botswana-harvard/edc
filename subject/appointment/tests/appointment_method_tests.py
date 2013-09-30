@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.core.exceptions import ValidationError
 from edc.subject.visit_schedule.models import VisitDefinition
-from edc.core.bhp_lab_tracker.classes import site_lab_tracker
+from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory

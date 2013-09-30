@@ -2,7 +2,7 @@ import logging
 import re
 from datetime import datetime
 from edc.core.bhp_common.utils import get_age_in_days
-from edc.core.bhp_lab_tracker.classes import site_lab_tracker
+from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.lab.lab_test_code.models import BaseTestCode
 from edc.lab.lab_reference.models import BaseReferenceListItem
 

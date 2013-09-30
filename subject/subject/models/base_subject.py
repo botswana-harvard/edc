@@ -14,7 +14,7 @@ else:
 from edc.choices.common import GENDER_UNDETERMINED
 from edc.base.model.validators import dob_not_future, MinConsentAge, MaxConsentAge
 from edc.base.model.fields import IsDateEstimatedField
-from edc.core.crypto.fields import EncryptedFirstnameField, EncryptedLastnameField
+from edc.core.crypto_fields.fields import EncryptedFirstnameField, EncryptedLastnameField
 from edc.subject.consent.exceptions import ConsentError
 from edc.core.identifier.exceptions import IdentifierError
 from ..managers import BaseSubjectManager

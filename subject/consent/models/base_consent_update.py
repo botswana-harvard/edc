@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ImproperlyConfigured
 from edc.device.sync.models import BaseSyncUuidModel
 from edc.choices.common import YES_NO
-from edc.core.crypto.fields import EncryptedLastnameField, EncryptedTextField
+from edc.core.crypto_fields.fields import EncryptedLastnameField, EncryptedTextField
 from edc.base.model.validators import datetime_not_future, datetime_not_before_study_start
 from edc.core.bhp_variables.models import StudySite
 from ..classes import ConsentHelper

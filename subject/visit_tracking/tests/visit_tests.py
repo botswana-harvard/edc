@@ -7,7 +7,7 @@ from edc.testing.models import TestVisit
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-from edc.core.bhp_lab_tracker.classes import site_lab_tracker
+from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.appointment.models import Appointment
 

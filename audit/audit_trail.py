@@ -8,7 +8,7 @@ from django.contrib import admin
 from edc.device.sync.models import BaseSyncUuidModel
 from edc.device.sync.classes import SerializeToTransaction
 from edc.base.model.fields import MyUUIDField
-from edc.core.crypto.fields import BaseEncryptedField
+from edc.core.crypto_fields.fields import BaseEncryptedField
 from .__init__ import GLOBAL_TRACK_FIELDS
 
 value_error_re = re.compile("^.+'(.+)'$")

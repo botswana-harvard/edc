@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.core.crypto.fields import EncryptedTextField
+from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.subject.registration.models import RegisteredSubject
 from edc.base.model.models import BaseModel
 

@@ -5,7 +5,7 @@ from edc.core.bhp_variables.models import StudySpecific
 from edc.core.bhp_variables.choices import GENDER_OF_CONSENT
 from edc.core.bhp_common.utils import formatted_age
 from edc.base.form.forms import BaseModelForm
-from edc.core.crypto.fields import BaseEncryptedField
+from edc.core.crypto_fields.fields import BaseEncryptedField
 
 
 class BaseSubjectConsentForm(BaseModelForm):

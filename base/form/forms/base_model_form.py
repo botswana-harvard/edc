@@ -67,9 +67,9 @@ class BaseModelForm(forms.ModelForm):
                 if self._meta.model().is_dispatched:
                     raise forms.ValidationError('Cannot update. Form is currently dispatched')
         # encrypted fields may have their own validation code to run.
-        # See the custom field objects in edc.core.crypto.
+        # See the custom field objects in edc.core.crypto_fields.
         try:
-            from edc.core.crypto.fields import BaseEncryptedField
+            from edc.core.crypto_fields.fields import BaseEncryptedField
             for field in self._meta.model._meta.fields:
                 if isinstance(field, BaseEncryptedField):
                     field.validate_with_cleaned_data(field.attname, cleaned_data)

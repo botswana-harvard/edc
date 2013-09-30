@@ -30,7 +30,7 @@ would become:
     
 .. code-block:: python
     
-    from edc.core.crypto.fields import EncryptedIdentityField
+    from edc.core.crypto_fields.fields import EncryptedIdentityField
     
     class ConsentModel(BaseModel):
     

@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.crypto.classes import FieldCryptor
+from edc.core.crypto_fields.classes import FieldCryptor
 
 
 class IncomingTransactionManager(models.Manager):

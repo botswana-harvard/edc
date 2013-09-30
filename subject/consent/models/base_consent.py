@@ -4,8 +4,8 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
-from edc.core.crypto.fields import EncryptedLastnameField, EncryptedTextField
-from edc.core.crypto.utils import mask_encrypted
+from edc.core.crypto_fields.fields import EncryptedLastnameField, EncryptedTextField
+from edc.core.crypto_fields.utils import mask_encrypted
 from edc.base.model.validators import datetime_not_future, datetime_not_before_study_start, eligible_if_no
 from edc.choices.common import YES_NO
 from edc.core.bhp_variables.models import StudySite

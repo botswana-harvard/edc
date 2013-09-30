@@ -4,7 +4,7 @@ from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_lab_tracker.classes import site_lab_tracker
+from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 from ..models import Appointment, PreAppointmentContact
 from factories import ConfigurationFactory

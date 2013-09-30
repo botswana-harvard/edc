@@ -4,7 +4,7 @@ from django.core.exceptions import FieldError
 from django.db.models import get_models, get_app
 from edc.lab.lab_base_model.models import BaseLabListModel, BaseLabListUuidModel
 from edc.subject.visit_tracking.classes import VisitModelHelper
-from edc.core.bhp_lab_tracker.models import HistoryModel
+from edc.subject.lab_tracker.models import HistoryModel
 from edc.base.model.models import BaseListModel
 from ..classes import BaseDispatchController
 from ..exceptions import DispatchModelError, DispatchError, AlreadyDispatchedContainer

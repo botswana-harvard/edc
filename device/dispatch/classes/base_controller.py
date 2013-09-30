@@ -167,7 +167,7 @@ class BaseController(BaseProducer):
 
     def _get_allowed_base_models(self, additional_base_model_class=None):
         """Returns a tuple of base model classes that may be serialized to json."""
-        from edc.core.bhp_lab_tracker.models import BaseHistoryModel
+        from edc.subject.lab_tracker.models import BaseHistoryModel
         base_model_class = self.get_allowed_base_models()
         if not isinstance(base_model_class, list):
             raise TypeError('Expected list of base_model classes.')
@@ -188,7 +188,7 @@ class BaseController(BaseProducer):
 
     def _get_base_models_for_default_serialization(self):
         """Wraps :func:`get_allowed_base_models`."""
-        from edc.core.bhp_lab_tracker.models import BaseHistoryModel
+        from edc.subject.lab_tracker.models import BaseHistoryModel
         base_model_class = self.get_base_models_for_default_serialization()
         if not isinstance(base_model_class, list):
             raise TypeError('Expected base_model classes as a list. Got{0}'.format(base_model_class))

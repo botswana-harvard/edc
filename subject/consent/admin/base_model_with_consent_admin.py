@@ -1,5 +1,5 @@
 from django.db.models import ForeignKey
-from edc.core.crypto.admin import BaseCryptorModelAdmin
+from edc.core.crypto_fields.admin import BaseCryptorModelAdmin
 from edc.subject.registration.models import RegisteredSubject
 
 # is this used??

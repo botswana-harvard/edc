@@ -1,7 +1,7 @@
 from datetime import date
 from django.db import models
 from edc.base.model.models import BaseModel
-from edc.core.crypto.fields import EncryptedTextField
+from edc.core.crypto_fields.fields import EncryptedTextField
 
 
 class Comment(BaseModel):

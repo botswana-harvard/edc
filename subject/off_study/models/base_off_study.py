@@ -4,7 +4,7 @@ from django.db.models import Max, get_app, get_models
 from django.core.exceptions import ImproperlyConfigured
 from edc.base.model.fields import OtherCharField
 from edc.subject.registration.models import BaseRegisteredSubjectModel
-from edc.core.crypto.utils import mask_encrypted
+from edc.core.crypto_fields.utils import mask_encrypted
 from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.choices.common import YES_NO
 from ..managers import OffStudyManager

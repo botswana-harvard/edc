@@ -1,5 +1,5 @@
 from django.contrib import admin
-from edc.core.crypto.admin import BaseCryptorModelAdmin
+from edc.core.crypto_fields.admin import BaseCryptorModelAdmin
 from ..actions import flag_as_verified_against_paper, unflag_as_verified_against_paper
 
 

@@ -2,7 +2,7 @@ from django.db.models import signals
 from edc.base.model.models import BaseModel
 from edc.device.sync.models.signals import serialize_on_save, serialize_m2m_on_save
 from edc.subject.visit_tracking.models.signals import base_visit_tracking_add_or_update_entry_buckets_on_post_save
-from edc.core.bhp_lab_tracker.models.signals import tracker_on_post_save, tracker_on_post_delete
+from edc.subject.lab_tracker.models.signals import tracker_on_post_save, tracker_on_post_delete
 from edc.subject.consent.models.signals import is_consented_instance_on_pre_save
 from edc.subject.subject.models.signals import base_subject_get_or_create_registered_subject_on_post_save
 from edc.subject.appointment.models import pre_appointment_contact_on_post_save, pre_appointment_contact_on_post_delete

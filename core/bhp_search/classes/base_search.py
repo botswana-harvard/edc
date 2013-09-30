@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from django import forms
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from edc.core.crypto.fields import BaseEncryptedField
+from edc.core.crypto_fields.fields import BaseEncryptedField
 from ..exceptions import SearchModelError, SearchAttributeError
 from .defaults import defaults
 from .patterns import patterns

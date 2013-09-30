@@ -3,8 +3,8 @@ from django.db.models import get_model
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.db.models import TextField
-from edc.core.crypto.fields import EncryptedTextField
-from edc.core.crypto.classes import FieldCryptor
+from edc.core.crypto_fields.fields import EncryptedTextField
+from edc.core.crypto_fields.classes import FieldCryptor
 
 
 @login_required

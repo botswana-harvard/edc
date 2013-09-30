@@ -47,7 +47,7 @@ Generate new encryption keys::
 
     python manage.py shell_plus
     
-    >>>from edc.core.crypto.utils import setup_new_keys()
+    >>>from edc.core.crypto_fields.utils import setup_new_keys()
     >>>setup_new_keys()
     >>>exit()
     

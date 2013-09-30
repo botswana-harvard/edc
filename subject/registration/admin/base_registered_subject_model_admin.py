@@ -1,4 +1,4 @@
-from edc.core.crypto.admin import BaseCryptorModelAdmin
+from edc.core.crypto_fields.admin import BaseCryptorModelAdmin
 from edc.core.bhp_export_data.actions import export_as_csv_action
 from edc.subject.appointment.models import Appointment
 from ..models import RegisteredSubject

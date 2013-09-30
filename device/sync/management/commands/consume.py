@@ -1,7 +1,7 @@
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
-from edc.core.bhp_lab_tracker.classes import site_lab_tracker
+from edc.subject.lab_tracker.classes import site_lab_tracker
 from ...classes import SyncLock, ImportHistory, Consumer
 
 site_lab_tracker.autodiscover()

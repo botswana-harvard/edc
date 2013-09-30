@@ -8,8 +8,8 @@ from edc.choices.common import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
 from edc.base.model.fields import IdentityTypeField
 from edc.core.bhp_variables.models import StudySite
 from edc.subject.subject.models import BaseSubject
-from edc.core.crypto.fields import EncryptedIdentityField, SaltField
-from edc.core.crypto.utils import mask_encrypted
+from edc.core.crypto_fields.fields import EncryptedIdentityField, SaltField
+from edc.core.crypto_fields.utils import mask_encrypted
 from ..managers import RegisteredSubjectManager
 
 
