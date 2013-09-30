@@ -6,7 +6,7 @@ from django.conf.urls.defaults import patterns, url
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.core.bhp_section.classes import site_sections
+from edc.dashboard.section.classes import site_sections
 from edc.core.bhp_context.classes import BaseContext
 from edc.base.model.models import BaseModel
 from edc.subject.registration.models import RegisteredSubject

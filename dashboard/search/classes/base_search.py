@@ -46,7 +46,7 @@ class BaseSearch(object):
             self._context[k] = v
 
     def set_section(self):
-        from edc.core.bhp_section.classes import BaseSectionView
+        from edc.dashboard.section.classes import BaseSectionView
         self._section = self.section
         if not self._section:
             raise SearchAttributeError('Class attribute section may not be None for class {0}. Set this in the class declaration.'.format(self))
