@@ -64,7 +64,7 @@ class BaseController(BaseProducer):
             ``server_device_id``: settings.DEVICE_ID for server (default='99')
 
         Settings:
-            DISPATCH_APP_LABELS = a list of app_labels for apps that contain models to be monitored by bhp_dispatch. Models in apps not
+            DISPATCH_APP_LABELS = a list of app_labels for apps that contain models to be monitored by dispatch. Models in apps not
                                   here will be ignored by default. To ignore a model that exists in an app listed here, override the
                                   :func:`ignore_for_dispatch` method on the model. See model base class :class:`BaseSyncUuidModel` in
                                   module :mod:`bhp_sync`. For example: DISPATCH_APP_LABELS = ['mochudi_household', 'mochudi_subject', 'mochudi_lab']

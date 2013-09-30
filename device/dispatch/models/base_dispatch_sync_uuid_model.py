@@ -57,7 +57,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         For example: a household model instance may serve as a container for all household members and data."""
         is_dispatched = False
         if self.is_dispatch_container_model():
-            DispatchContainerRegister = get_model('bhp_dispatch', 'DispatchContainerRegister')
+            DispatchContainerRegister = get_model('dispatch', 'DispatchContainerRegister')
             if DispatchContainerRegister:
                 is_dispatched = DispatchContainerRegister.objects.using(using).filter(
                     container_identifier=getattr(self, self.dispatched_as_container_identifier_attr()),
@@ -175,7 +175,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         dispatch_item = None
         if self.id:
             if self.is_dispatchable_model():
-                DispatchItemRegister = get_model('bhp_dispatch', 'DispatchItemRegister')
+                DispatchItemRegister = get_model('dispatch', 'DispatchItemRegister')
                 if DispatchItemRegister:
                     if DispatchItemRegister.objects.using(using).filter(
                             item_app_label=self._meta.app_label,

@@ -19,11 +19,11 @@ class BaseControllerTests(TestCase):
         self.incoming_transaction = None
         self.using_source = 'default'
         self.using_destination = 'dispatch_destination'
-        self.user_container_app_label = 'bhp_dispatch'
+        self.user_container_app_label = 'dispatch'
         self.user_container_model_name = 'testcontainer'
         self.user_container_identifier_attrname = 'test_container_identifier'
         self.user_container_identifier = 'TEST_IDENTIFIER'
-        self.dispatch_item_app_label = 'bhp_dispatch'  # usually something like 'mochudi_subject'
+        self.dispatch_item_app_label = 'dispatch'  # usually something like 'mochudi_subject'
         DispatchContainerRegister.objects.all().delete()
         DispatchItemRegister.objects.all().delete()
 

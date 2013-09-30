@@ -9,7 +9,7 @@ from .base_scheduled_entry import BaseScheduledEntry
 class ScheduledEntry(BaseScheduledEntry):
 
     def set_bucket_model_cls(self):
-        self._bucket_model_cls = get_model('bhp_entry', 'ScheduledEntryBucket')
+        self._bucket_model_cls = get_model('entry', 'ScheduledEntryBucket')
         if not self._bucket_model_cls:
             raise TypeError('Unable to get model bhp_entry.ScheduledEntryBucket.')
 

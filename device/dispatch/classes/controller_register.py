@@ -9,7 +9,7 @@ class ControllerRegister(object):
     def register(self, controller, retry=False):
         from base_controller import BaseController
         if not isinstance(controller, BaseController):
-            raise TypeError('Controller must be an instance of bhp_dispatch.classes.Base.')
+            raise TypeError('Controller must be an instance of dispatch.classes.Base.')
         if str(controller) in self._register:
             if not retry:
                 raise AlreadyRegisteredController('{0} has already been registered.'.format(str(controller)))

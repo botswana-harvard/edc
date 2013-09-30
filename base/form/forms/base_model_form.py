@@ -62,7 +62,7 @@ class BaseModelForm(forms.ModelForm):
         """Calls crypto clean methods, OTHER/Specify and some functionality for bhp_dispatch."""
         cleaned_data = self.cleaned_data
         # check if dispatched
-        if 'bhp_dispatch' in settings.INSTALLED_APPS:
+        if 'edc.device.dispatch' in settings.INSTALLED_APPS:
             if 'is_dispatched' in dir(self._meta.model()):
                 if self._meta.model().is_dispatched:
                     raise forms.ValidationError('Cannot update. Form is currently dispatched')

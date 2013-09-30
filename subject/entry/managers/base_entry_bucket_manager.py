@@ -14,7 +14,7 @@ class BaseEntryBucketManager(models.Manager):
 
     def set_entry(self):
         """Finds occurrence for this visit_definition in the Entry model and if not found, update_status() has nothing to do."""
-        model = get_model('bhp_entry', 'Entry')
+        model = get_model('entry', 'Entry')
         if model.objects.filter(visit_definition=self.visit_definition, content_type_map=self.content_type_map):
             self.entry = model.objects.get(visit_definition=self.visit_definition, content_type_map=self.content_type_map)
         else:

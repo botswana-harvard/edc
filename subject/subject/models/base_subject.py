@@ -6,7 +6,7 @@ from django.db.models import get_model
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
-if 'bhp_dispatch' in settings.INSTALLED_APPS:
+if 'edc.device.bhp_dispatch' in settings.INSTALLED_APPS:
     from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
 else:
     from edc.device.sync.models import BaseSyncUuidModel

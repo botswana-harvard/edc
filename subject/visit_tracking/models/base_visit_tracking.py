@@ -211,7 +211,7 @@ class BaseVisitTracking (BaseConsentedUuidModel):
         return visit_reason_choices
 
     def post_save_check_in_progress(self):
-        ScheduledEntryBucket = models.get_model('bhp_entry', 'ScheduledEntryBucket')
+        ScheduledEntryBucket = models.get_model('entry', 'ScheduledEntryBucket')
         dirty = False
         if self.reason in self.get_visit_reason_no_follow_up_choices():
             self.get_appointment().appt_status = 'done'

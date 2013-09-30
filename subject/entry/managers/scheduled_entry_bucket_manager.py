@@ -28,7 +28,7 @@ class ScheduledEntryBucketManager(BaseEntryBucketManager):
             app_label=app_label,
             model=model
             )
-        model = get_model('bhp_entry', 'Entry')
+        model = get_model('entry', 'Entry')
         entry = model.objects.get(
             content_map_type=content_map_type,
             visit_definition=visit_definition

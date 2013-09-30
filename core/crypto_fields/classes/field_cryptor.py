@@ -86,7 +86,7 @@ class FieldCryptor(object):
         hashed_value = None
         if hash_secret:
             # get and update or create the crypt model with this hash, cipher pair
-            Crypt = get_model('crypto', 'crypt')
+            Crypt = get_model('crypto_fields', 'crypt')
             hashed_value = self.get_hash(hash_secret)
             secret = self._get_secret_from_hash_secret(hash_secret, hashed_value)
             found = last_secret.get(hashed_value) is not None
@@ -161,7 +161,7 @@ class FieldCryptor(object):
         If not found, returns None"""
         secret = last_secret.get(hashed_value)
         if not secret:
-            Crypt = get_model('crypto', 'crypt')
+            Crypt = get_model('crypto_fields', 'crypt')
             if Crypt.objects.filter(hash=hashed_value).exists():
                 crypt = Crypt.objects.values('secret').get(hash=hashed_value)
                 secret = crypt.get('secret')

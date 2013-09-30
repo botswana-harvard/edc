@@ -138,7 +138,7 @@ class AppointmentHelper(object):
                 # visit reason implies no data will be collected, so set appointment to Done
                 appointment.appt_status = 'done'
             else:
-                ScheduledEntryBucket = get_model('bhp_entry', 'ScheduledEntryBucket')
+                ScheduledEntryBucket = get_model('entry', 'ScheduledEntryBucket')
                 # set to in progress, if not already set
                 if appointment.appt_status in ['done', 'incomplete']:
                     # test if Done or Incomplete
@@ -151,7 +151,7 @@ class AppointmentHelper(object):
                     appointment.appt_status = 'in_progress'
                     # only one appointment can be "in_progress", so look for any others in progress and change
                     # to Done or Incomplete, depending on ScheduledEntryBucket (if any NEW => incomplete)
-                    ScheduledEntryBucket = get_model('bhp_entry', 'ScheduledEntryBucket')
+                    ScheduledEntryBucket = get_model('entry', 'ScheduledEntryBucket')
                     for appt in appointment.__class__.objects.filter(registered_subject=appointment.registered_subject, appt_status='in_progress').exclude(pk=appointment.pk):
                         if ScheduledEntryBucket.objects.filter(appointment=appt, entry_status='NEW').exists():
                             # there are NEW forms

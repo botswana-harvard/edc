@@ -11,7 +11,7 @@ class BaseVisitTrackingForm(BaseConsentedModelForm):
 
     def clean(self):
         cleaned_data = self.cleaned_data
-        if 'bhp_dispatch' in dir(settings):
+        if 'edc.device.dispatch' in settings.INSTALLED_APPS:
             if cleaned_data.get('appointment', None):
                 appointment = cleaned_data.get('appointment')
                 dispatch_item = appointment.get_dispatched_item()

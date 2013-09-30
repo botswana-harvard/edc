@@ -66,7 +66,7 @@ class BaseAppointmentModelAdmin(BaseModelAdmin):
         #scheduled_entry.add_or_update_for_visit(visit_model_instance=obj)
         # if requisition_model has been defined, assume scheduled labs otherwise pass
         if hasattr(self, 'requisition_model'):
-            ScheduledLabEntryBucket = get_model('bhp_lab_entry', 'scheduledlabentrybucket')
+            ScheduledLabEntryBucket = get_model('lab_entry', 'scheduledlabentrybucket')
             ScheduledLabEntryBucket.objects.add_for_visit(
                 visit_model_instance=obj,
                 requisition_model=self.requisition_model,

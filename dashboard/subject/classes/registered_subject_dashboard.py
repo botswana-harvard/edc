@@ -263,7 +263,7 @@ class RegisteredSubjectDashboard(Dashboard):
         return self._site_lab_tracker
 
     def set_scheduled_entry_meta(self):
-        ScheduledEntryBucket = models.get_model('bhp_entry', 'ScheduledEntryBucket')
+        ScheduledEntryBucket = models.get_model('entry', 'ScheduledEntryBucket')
         self._scheduled_entry_bucket_meta = ScheduledEntryBucket._meta
 
     def get_scheduled_entry_meta(self):
@@ -715,7 +715,7 @@ class RegisteredSubjectDashboard(Dashboard):
         return self._additional_lab_bucket
 
     def set_additional_entry_bucket(self):
-        AdditionalEntryBucket = models.get_model('bhp_entry', 'AdditionalEntryBucket')
+        AdditionalEntryBucket = models.get_model('entry', 'AdditionalEntryBucket')
         self._additional_entry_bucket = AdditionalEntryBucket.objects.filter(registered_subject=self.get_registered_subject())
 
     def get_additional_entry_bucket(self):
