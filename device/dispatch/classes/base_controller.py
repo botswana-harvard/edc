@@ -9,7 +9,7 @@ from django.db.models import ForeignKey, OneToOneField, get_app, get_models
 from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q, Count, Max
-from edc.lab.base.model.models import BaseLabListModel, BaseLabListUuidModel
+from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
 from edc.base.model.models import BaseListModel
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc.core.bhp_variables.models import StudySite
