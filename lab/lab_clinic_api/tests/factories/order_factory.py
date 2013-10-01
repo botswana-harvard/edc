@@ -1,5 +1,5 @@
 import factory
-from edc.lab.lab_order.tests.factories import BaseOrderFactory
+from lis.specimen.lab_order.tests.factories import BaseOrderFactory
 from ...models import Order
 from .aliquot_factory import AliquotFactory
 from .panel_factory import PanelFactory

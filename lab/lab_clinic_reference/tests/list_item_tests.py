@@ -6,14 +6,12 @@ Created on Nov 7, 2012
 Run this test using machine$ python lab_clinic_reference/tests.py from command line
 '''
 from operator import attrgetter
-from django.utils import unittest
-from .models import GradingListItem
-from edc.lab.lab_reference.utils import get_upper_range_days, get_lower_range_days
+from django.test import TestCase
+from lis.core.lab_reference.utils import get_upper_range_days, get_lower_range_days
+from ..models import GradingListItem
 
 
-class ListItemTestCase(unittest.TestCase):
-    # def __init__(self):
-        # pass
+class ListItemTests(TestCase):
 
     def test_age_range_overlaps(self):
         # build a query ad group by the same parameters used to retrieve grading list items in
@@ -170,7 +168,6 @@ class ListItemTestCase(unittest.TestCase):
                         return True
         return False
 
-
     def related_items(self, list_items_sample):
         items = list(GradingListItem.objects.filter(grading_list_id=list_items_sample.grading_list_id,
                                                 test_code_id=list_items_sample.test_code_id,
@@ -230,8 +227,3 @@ class ListItemTestCase(unittest.TestCase):
         ', low_quantifier:' + str(previous_ls.age_low_quantifier) + ', high_quantifier:' + str(previous_ls.age_high_quantifier) + \
         ' and (' + str(ls) + '), ' + str(ls.age_low) + ' - ' + str(ls.age_high) + ', Unit:' + str(ls.age_high_unit) + \
         ', Grade:' + str(ls.grade) + ', low_quantifier:' + str(ls.age_low_quantifier) + ', high_quantifier:' + str(ls.age_high_quantifier)
-
-if __name__ == '__main__':
-    loader = unittest.TestLoader()
-    suite = loader.loadTestsFromTestCase(ListItemTestCase)
-    unittest.TextTestRunner(verbosity=2).run(suite)

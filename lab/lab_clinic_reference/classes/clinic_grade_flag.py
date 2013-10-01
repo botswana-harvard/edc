@@ -1,4 +1,4 @@
-from edc.lab.lab_grading.classes import GradeFlag
+from lis.core.lab_grading.classes import GradeFlag
 
 
 class ClinicGradeFlag(GradeFlag):

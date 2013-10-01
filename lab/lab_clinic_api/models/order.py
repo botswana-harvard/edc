@@ -1,8 +1,9 @@
 import logging
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.lab.lab_order.models import BaseOrder
-from edc.lab.lab_import_dmis.classes.dmis_tools import DmisTools
+from lis.specimen.lab_order.models import BaseOrder
+from lis.exim.lab_import_dmis.classes.dmis_tools import DmisTools
+from edc.lab.lab_requisition.classes import site_requisitions
 from ..managers import OrderManager
 from .aliquot import Aliquot
 from .panel import Panel
@@ -113,9 +114,9 @@ class Order(BaseOrder):
         .. note:: The receiver on the LIS tracks the EDC specimen identifier which is re-imported to the
                   EDC as an attribute of the receive record.
         """
-        from lab_requisition.classes import requisitions
+        # TODO: ???????????????
         requisition = None
-        requisition_cls = requisitions.get(self.aliquot.receive.registered_subject.subject_type)
+        requisition_cls = site_requisitions.get(self.aliquot.receive.registered_subject.subject_type)
         if requisition_cls:
             if requisition_cls.objects.filter(specimen_identifier=self.aliquot.receive.requisition_identifier).exists():
                 requisition = requisition_cls.objects.get(specimen_identifier=self.aliquot.receive.requisition_identifier)

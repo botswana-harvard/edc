@@ -1,14 +1,10 @@
 from django.test import TestCase
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
-from .factories import AliquotFactory, AliquotConditionFactory, AliquotTypeFactory, ReceiveFactory, OrderFactory, ResultFactory, ResultItemFactory
+from .factories import AliquotFactory, AliquotConditionFactory, ReceiveFactory, OrderFactory, ResultFactory, ResultItemFactory
 
 
 class TestModelMethods(TestCase):
-
-#     def test_aliquot(self):
-#         site_lab_tracker.autodiscover()
-#         aliquot = AliquotFactory()
 
     def test_order(self):
         site_lab_tracker.autodiscover()

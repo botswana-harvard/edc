@@ -1,8 +1,10 @@
 from django.db import models
-from edc.lab.base.model.models import BaseLabUuidModel
+from edc.base.model.models import BaseUuidModel
+
+# TODO: is this used??
 
 
-class Lab(BaseLabUuidModel):
+class Lab(BaseUuidModel):
 
     subject_identifier = models.CharField(
         max_length=50,

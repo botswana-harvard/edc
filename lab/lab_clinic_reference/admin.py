@@ -1,5 +1,4 @@
 from django.contrib import admin
-#from bhp_export_data.actions import export_as_csv_action
 from edc.base.admin.admin import BaseModelAdmin
 from .actions import toggle_active, toggle_scale, toggle_lln, toggle_uln, toggle_serum
 from .models import GradingList, GradingListItem, ReferenceRangeList, ReferenceRangeListItem

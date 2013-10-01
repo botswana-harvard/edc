@@ -1,9 +1,9 @@
 from django.db import models
-from edc.lab.base.model.models import BaseLabUuidModel
-from edc.lab.lab_panel.models import Panel
+from edc.base.model.models import BaseUuidModel
+from ..models import Panel
 
 
-class PanelMapping(BaseLabUuidModel):
+class PanelMapping(BaseUuidModel):
 
     panel_text = models.CharField(
         max_length=50,

@@ -11,6 +11,8 @@ class AlreadyRegistered(Exception):
 class NotRegistered(Exception):
     pass
 
+# TODO: this is not currently used.
+
 
 class SiteRequisitions(object):
     """Registers requisition models from modules with a requisitions module (requisitions.py)."""
@@ -18,12 +20,8 @@ class SiteRequisitions(object):
         self._registry = {}
 
     def register(self, subject_type, requisition):
-        """
-        """
         if subject_type in self._registry.iterkeys():
             raise AlreadyRegistered('The requisition for {0} is already registered' % subject_type)
-        #if not issubclass(requisition, BaseBaseRequisition):
-        #    raise ImproperlyConfigured('Model {0} must be a subclass of Requisition. Cannot registered to requisitions'.format(requisition))
         self._registry.update({subject_type: requisition})
 
     def all(self):

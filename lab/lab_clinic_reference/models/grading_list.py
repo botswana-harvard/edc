@@ -1,4 +1,4 @@
-from edc.lab.lab_reference.models import BaseReferenceList
+from lis.core.lab_reference.models import BaseReferenceList
 
 
 class GradingList(BaseReferenceList):

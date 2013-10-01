@@ -1,4 +1,4 @@
-from edc.lab.lab_import.models import BaseImportHistoryModel
+from lis.exim.lab_import.models import BaseImportHistoryModel
 
 
 class ImportHistoryModel(BaseImportHistoryModel):

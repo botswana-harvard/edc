@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db.models import get_model
-from bhp_lab_tracker.classes import site_lab_tracker
+from lis.specimen.lab_result_item.classes import ResultItemFlag
+from edc.subject.lab_tracker.classes import site_lab_tracker
 
 site_lab_tracker.autodiscover()
 
@@ -11,7 +12,6 @@ class Command(BaseCommand):
     help = 'Recalculate grading and reference range flags for result items.'
 
     def handle(self, *args, **options):
-        from lab_result_item.classes import ResultItemFlag
         Result = get_model('lab_clinic_api', 'result')
         ResultItem = get_model('lab_clinic_api', 'resultitem')
         tot = Result.objects.all().count()

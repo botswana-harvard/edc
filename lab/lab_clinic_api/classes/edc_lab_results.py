@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
-from edc.lab.lab_result_item.classes import ResultItemFlag
-from edc.lab.lab_import_lis.classes import Lis
-from edc.lab.lab_import_dmis.classes import Dmis
+from lis.specimen.lab_result_item.classes import ResultItemFlag
+from lis.exim.lab_import_lis.classes import Lis
+from lis.exim.lab_import_dmis.classes import Dmis
 from ..models import Result, Order, ResultItem
 
 

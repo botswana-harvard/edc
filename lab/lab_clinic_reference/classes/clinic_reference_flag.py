@@ -1,4 +1,4 @@
-from edc.lab.lab_reference.classes import ReferenceFlag
+from lis.core.lab_reference.classes import ReferenceFlag
 
 
 class ClinicReferenceFlag(ReferenceFlag):

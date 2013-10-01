@@ -1,6 +1,6 @@
 import logging
 from django.conf import settings
-from edc.lab.lab_test_code.models import TestCodeReferenceList, TestCodeReferenceListItem
+from lis.specimen.lab_test_code.models import TestCodeReferenceList, TestCodeReferenceListItem
 from ..models import ReferenceRangeList, ReferenceRangeListItem
 from .base_import import BaseImport
 

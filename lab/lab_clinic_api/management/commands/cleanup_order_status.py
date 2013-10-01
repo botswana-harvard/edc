@@ -1,7 +1,7 @@
 import logging
 import re
 from django.core.management.base import BaseCommand
-from edc.lab.lab_import_dmis.classes import  DmisTools
+from lis.exim.lab_import_dmis.classes import  DmisTools
 from ...models import Order, Result
 
 logger = logging.getLogger(__name__)

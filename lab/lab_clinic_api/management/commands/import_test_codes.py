@@ -1,8 +1,8 @@
 import logging
 from django.core.management.base import BaseCommand
-from lab_test_code.models import TestCode as LisTestCode
-from lab_clinic_api.models import TestCode
-from lab_import_lis.classes import ConvertLisAttr
+from lis.specimen.lab_test_code.models import TestCode as LisTestCode
+from ...models import TestCode
+from ...classes import ConvertLisAttr
 
 logger = logging.getLogger(__name__)
 

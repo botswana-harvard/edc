@@ -1,5 +1,5 @@
 from django.db import models
-from edc.lab.lab_aliquot.models import BaseAliquot
+from lis.specimen.lab_aliquot.models import BaseAliquot
 from .receive import Receive
 from .aliquot_type import AliquotType
 from .aliquot_condition import AliquotCondition

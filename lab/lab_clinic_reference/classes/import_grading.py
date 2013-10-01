@@ -1,6 +1,6 @@
 import logging
 from django.conf import settings
-from edc.lab.lab_grading.models import GradingList as LisGradingList, GradingListItem as LisGradingListItem
+from lis.core.lab_grading.models import GradingList as LisGradingList, GradingListItem as LisGradingListItem
 from ..models import GradingList, GradingListItem
 from .base_import import BaseImport
 

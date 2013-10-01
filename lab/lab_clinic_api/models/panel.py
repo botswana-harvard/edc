@@ -1,5 +1,5 @@
 from django.db import models
-from edc.lab.lab_panel.models import BasePanel
+from lis.specimen.lab_panel.models import BasePanel
 from ..choices import PANEL_TYPE
 from .test_code import TestCode
 from .aliquot_type import AliquotType

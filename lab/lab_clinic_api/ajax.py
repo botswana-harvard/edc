@@ -23,8 +23,8 @@ def updating(request):
 def update_result_status(request, subject_identifier, output=True):
     dajax = Dajax()
     if subject_identifier:
-        edc.lab_results = EdcLabResults()
-        rendered = edc.lab_results.render(subject_identifier, True)
+        edc_lab_results = EdcLabResults()
+        rendered = edc_lab_results.render(subject_identifier, True)
         dajax.assign('#x_results', 'innerHTML', rendered)
     if not output:
         return None

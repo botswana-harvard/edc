@@ -1,4 +1,4 @@
-from edc.lab.lab_reference.models import BaseReferenceListItem
+from lis.core.lab_reference.models import BaseReferenceListItem
 
 
 def toggle_active(modeladmin, request, queryset):

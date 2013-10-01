@@ -1,4 +1,4 @@
-from edc.lab.lab_test_code.models import BaseTestCodeGroup
+from lis.specimen.lab_test_code.models import BaseTestCodeGroup
 from ..managers import TestCodeGroupManager
 
 

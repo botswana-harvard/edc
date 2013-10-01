@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.lab.lab_result.models import BaseResult
+from lis.specimen.lab_result.models import BaseResult
 from .order import Order
 from .review import Review
 

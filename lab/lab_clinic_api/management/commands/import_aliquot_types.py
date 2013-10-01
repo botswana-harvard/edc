@@ -1,6 +1,6 @@
 import logging
 from django.core.management.base import BaseCommand
-from edc.lab.lab_aliquot_list.models import AliquotType as LisAliquotType
+from lis.specimen.lab_aliquot_list.models import AliquotType as LisAliquotType
 from ...models import AliquotType
 
 logger = logging.getLogger(__name__)

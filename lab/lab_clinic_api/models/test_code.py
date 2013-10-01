@@ -1,5 +1,5 @@
 from django.db import models
-from edc.lab.lab_test_code.models import BaseTestCode
+from lis.specimen.lab_test_code.models import BaseTestCode
 from ..managers import TestCodeManager
 from .test_code_group import TestCodeGroup
 

@@ -1,5 +1,5 @@
 import factory
-from edc.lab.lab_result_item.tests.factories import BaseResultItemFactory
+from lis.specimen.lab_result_item.tests.factories import BaseResultItemFactory
 from ...models import ResultItem
 from .result_factory import ResultFactory
 from .test_code_factory import TestCodeFactory

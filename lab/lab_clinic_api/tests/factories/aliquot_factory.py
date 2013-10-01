@@ -1,7 +1,7 @@
 import factory
-from edc.lab.lab_aliquot_list.tests.factories import BaseAliquotTypeFactory, BaseAliquotConditionFactory
-from edc.lab.lab_aliquot_list.models import AliquotType
-from edc.lab.lab_aliquot.tests.factories import BaseAliquotFactory
+from lis.specimen.lab_aliquot_list.tests.factories import BaseAliquotTypeFactory, BaseAliquotConditionFactory
+from lis.specimen.lab_aliquot_list.models import AliquotType
+from lis.specimen.lab_aliquot.tests.factories import BaseAliquotFactory
 from ...models import Aliquot, AliquotCondition
 from .receive_factory import ReceiveFactory
 

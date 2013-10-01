@@ -1,8 +1,8 @@
 import logging
 from django.core.management.base import BaseCommand
-from lab_panel.models import Panel as LisPanel
-from lab_clinic_api.models import Panel
-from lab_import_lis.classes import ConvertLisAttr
+from lis.exim.lab_import_lis.classes import ConvertLisAttr
+from lis.specimen.lab_panel.models import Panel as LisPanel
+from ...models import Panel as EdcPanel
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         convert_lis_attr = ConvertLisAttr()
         self.db = 'lab_api'
-        local_panel_names = [panel.name for panel in Panel.objects.all().order_by('name')]
+        local_panel_names = [panel.name for panel in EdcPanel.objects.all().order_by('name')]
         count = LisPanel.objects.using(self.db).filter(name__in=local_panel_names).count()
         for lis_panel in LisPanel.objects.using(self.db).filter(name__in=local_panel_names).order_by('name'):
             panel, created = convert_lis_attr.panel(lis_panel)
@@ -37,5 +37,5 @@ class Command(BaseCommand):
 #        if diff_set:
 #            print 'Warning: found {0} in lis but not local.'.format(', '.join(diff_set))
         print 'Done updating {new_count} / {count} panels on Lis connection {db}.'.format(count=count,
-                                                                                               new_count=Panel.objects.all().count(),
+                                                                                               new_count=EdcPanel.objects.all().count(),
                                                                                                db=self.db)
