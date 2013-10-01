@@ -41,13 +41,13 @@ class MySeleniumTests(LiveServerTestCase):
         password_input = self.selenium.find_element_by_name("password")
         password_input.send_keys('pass')
         self.selenium.find_element_by_xpath('//input[@value="Log in"]').click()
-        self.selenium.get('%s%s' % (self.live_server_url, '/admin/bhp_base_model'))
+        self.selenium.get('%s%s' % (self.live_server_url, '/admin/testing'))
         self.logged_in = True
 
     def test_test_model(self):
         self.selenium.find_element_by_xpath('//input[@value="Administration"]').click()
         self.selenium.find_element_by_xpath('//input[@value="Site Admin"]').click()
-        self.selenium.find_element_by_xpath('//a[@href="/admin/bhp_base_model/testmodel/add/"]').click()
+        self.selenium.find_element_by_xpath('//a[@href="/admin/testing/testmodel/add/"]').click()
         fld = self.selenium.find_element_by_name("name")
         fld.send_keys('TEST')
         fld = self.selenium.find_element_by_name("test_foreign_key")

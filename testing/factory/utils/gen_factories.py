@@ -2,9 +2,9 @@ from __future__ import print_function
 from django.db import models
 from django.conf import settings
 from django.contrib import admin
-from bhp_common.utils import convert_from_camel
-from bhp_crypto.fields import EncryptedTextField, EncryptedIntegerField, EncryptedDecimalField, EncryptedCharField, EncryptedAesCharField, EncryptedFirstnameField, EncryptedLastnameField, EncryptedOtherCharField, EncryptedIdentityField
-from bhp_visit_tracking.models import BaseVisitTracking
+from edc.core.bhp_common.utils import convert_from_camel
+from edc.core.crypto_fields.fields import EncryptedTextField, EncryptedIntegerField, EncryptedDecimalField, EncryptedCharField, EncryptedAesCharField, EncryptedFirstnameField, EncryptedLastnameField, EncryptedOtherCharField, EncryptedIdentityField
+from edc.subject.visit_tracking.models import BaseVisitTracking
 
 
 admin.autodiscover()

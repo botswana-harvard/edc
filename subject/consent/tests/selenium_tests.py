@@ -45,7 +45,7 @@ class SeleniumTests(LiveServerTestCase, BaseMethods):
         password_input = self.selenium.find_element_by_name("password")
         password_input.send_keys('pass')
         self.selenium.find_element_by_xpath('//input[@value="Log in"]').click()
-        self.selenium.get('%s%s' % (self.live_server_url, '/admin/bhp_base_model'))
+        self.selenium.get('%s%s' % (self.live_server_url, '/admin/testing'))
         self.logged_in = True
 
     def test_test_model(self):

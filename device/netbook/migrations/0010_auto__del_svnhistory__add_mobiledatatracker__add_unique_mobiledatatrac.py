@@ -57,46 +57,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Removing index on 'Netbook', fields ['user_created']
-        db.delete_index('bhp_netbook_netbook', ['user_created'])
-
-        # Removing index on 'Netbook', fields ['hostname_modified']
-        db.delete_index('bhp_netbook_netbook', ['hostname_modified'])
-
-        # Removing index on 'Netbook', fields ['user_modified']
-        db.delete_index('bhp_netbook_netbook', ['user_modified'])
-
-        # Removing index on 'Netbook', fields ['hostname_created']
-        db.delete_index('bhp_netbook_netbook', ['hostname_created'])
-
-        # Removing index on 'NetbookUser', fields ['user_created']
-        db.delete_index('bhp_netbook_netbookuser', ['user_created'])
-
-        # Removing index on 'NetbookUser', fields ['hostname_created']
-        db.delete_index('bhp_netbook_netbookuser', ['hostname_created'])
-
-        # Removing index on 'NetbookUser', fields ['user_modified']
-        db.delete_index('bhp_netbook_netbookuser', ['user_modified'])
-
-        # Removing index on 'NetbookUser', fields ['hostname_modified']
-        db.delete_index('bhp_netbook_netbookuser', ['hostname_modified'])
-
-        # Removing unique constraint on 'MobileDataTracker', fields ['app_label', 'model_name', 'identifier']
-        db.delete_unique('bhp_netbook_mobiledatatracker', ['app_label', 'model_name', 'identifier'])
-
-        # Adding model 'SvnHistory'
-        db.create_table(u'netbook_svnhistory', (
-            ('last_revision_date', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
-            ('last_revision_number', self.gf('django.db.models.fields.IntegerField')(null=True)),
-            ('repo', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('netbook', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['netbook.Netbook'])),
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-        ))
-        db.send_create_signal('netbook', ['SvnHistory'])
-
-        # Deleting model 'MobileDataTracker'
-        db.delete_table('bhp_netbook_mobiledatatracker')
-
+        pass
 
     models = {
         u'auth.group': {
