@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.contrib import messages
-from edc.lab.lab_barcode.exceptions import PrinterException
-from edc.lab.lab_export.classes import ExportDmis
+from lis.core.lab_barcode.exceptions import PrinterException
+from lis.exim.lab_export.classes import ExportDmis
 
 
 def flag_as_received(modeladmin, request, queryset, **kwargs):

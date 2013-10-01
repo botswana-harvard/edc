@@ -1,6 +1,6 @@
 from django.template.loader import render_to_string
 from lis.specimen.lab_result_item.classes import ResultItemFlag
-from lis.exim.lab_import_lis.classes import Lis
+from lis.exim.lab_import_lis.classes import LisDataImporter
 from lis.exim.lab_import_dmis.classes import Dmis
 from ..models import Result, Order, ResultItem
 
@@ -13,8 +13,8 @@ class EdcLabResults(object):
         """ Updates the local lab data with that from the Lis. """
         dmis = Dmis('lab_api')
         dmis.import_from_dmis(subject_identifier=subject_identifier)
-        lis = Lis('lab_api')
-        last_updated = lis.update_from_lis(subject_identifier=subject_identifier)
+        lis_data_importer = LisDataImporter('lab_api')
+        last_updated = lis_data_importer.update_from_lis(subject_identifier=subject_identifier)
         return last_updated
 
     def render(self, subject_identifier, update=False):
