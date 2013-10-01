@@ -1,4 +1,4 @@
-from edc.lab.lab_aliquot_list.models import BaseAliquotType
+from lis.apps.lab_aliquot_list.models import BaseAliquotType
 from ..managers import AliquotTypeManager
 
 

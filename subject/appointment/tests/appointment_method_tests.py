@@ -1,19 +1,19 @@
 from datetime import datetime
 from django.core.exceptions import ValidationError
-from edc.subject.visit_schedule.models import VisitDefinition
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.subject.appointment.tests.factories import ConfigurationFactory
-from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
+from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from edc.subject.visit_schedule.models import VisitDefinition
+from edc.subject.lab_tracker.classes import site_lab_tracker
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.consent.tests.factories import ConsentCatalogueFactory
+from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 from edc.testing.models import TestConsent, TestVisit, TestScheduledModel
 from edc.subject.entry.models import ScheduledEntryBucket
 from edc.subject.entry.tests.factories import EntryFactory
 from ..choices import APPT_STATUS
 from ..models import Appointment
+from .factories import ConfigurationFactory
 from .base_appointment_tests import BaseAppointmentTests
 
 

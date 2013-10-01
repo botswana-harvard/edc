@@ -7,8 +7,8 @@ from tastypie.models import ApiKey
 from django.db.models import Model
 from django.conf import settings
 from django.db.models import signals
-from edc.lab.lab_base_model.models import BaseLabListModel, BaseLabModel
-from edc.lab.lab_base_model.models import BaseLabUuidModel
+from edc.lab.base.model.models import BaseLabListModel, BaseLabModel
+from edc.lab.base.model.models import BaseLabUuidModel
 from edc.core.bhp_common.utils import td_to_string
 from edc.base.model.models import BaseModel
 from edc.device.sync.models import BaseSyncUuidModel

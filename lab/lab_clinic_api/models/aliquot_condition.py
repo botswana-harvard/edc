@@ -1,5 +1,5 @@
-from ..managers import AliquotConditionManager
 from edc.base.model.models import BaseListModel
+from ..managers import AliquotConditionManager
 
 
 class AliquotCondition(BaseListModel):

@@ -1,5 +1,5 @@
 from django.db import models
-from edc.lab.lab_base_model.models import BaseLabUuidModel
+from edc.lab.base.model.models import BaseLabUuidModel
 
 
 class Lab(BaseLabUuidModel):
