@@ -2,7 +2,7 @@ import copy
 import re
 import inspect
 from django.core.urlresolvers import reverse
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from edc.core.bhp_common.utils import convert_from_camel
@@ -57,7 +57,7 @@ class Dashboard(object):
         Called in the urls.py of the local xxxx_dashboard app. For example::
 
             from django.contrib import admin
-            from django.conf.urls.defaults import patterns, url
+            from django.conf.urls import patterns, url
             from dom_dashboard.classes import InfantDashboard, MaternalDashboard
 
             urlpattern_string_kwargs = {}

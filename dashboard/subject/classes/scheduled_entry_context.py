@@ -152,17 +152,20 @@ class ScheduledEntryContext(object):
     def get_scheduled_entry_url(self):
         """Returns the URL for the scheduled entry."""
         if self.get_appointment().appt_status == 'in_progress':
-            return reverse('admin:{app_label}_{model_name}_change'.format(app_label='bhp_entry', model_name='scheduledentrybucket'), args=(self.get_scheduled_entry().pk, ))
+            return reverse('admin:{app_label}_{model_name}_change'.format(app_label=self.get_scheduled_entry()._meta.app_label, model_name=self.get_scheduled_entry()._meta.object_name.lower()), args=(self.get_scheduled_entry().pk, ))
         return ''
 
     def get_databrowse_url(self):
         """Returns the URL to display this model instance using databrowse."""
         if self.get_model_inst():
+            # TODO: url should be reversed from a name
+            #return reverse('databrowse', kwargs={'app_label': self.get_app_label(), 'model_name': self.get_model_name(), 'pk': self.get_model_pk()})
             return '/databrowse/{app_label}/{model_name}/objects/{pk}/'.format(app_label=self.get_app_label(), model_name=self.get_model_name(), pk=self.get_model_pk())
         return ''
 
     def get_audit_trail_url(self):
         """returns the URL to display the audit trail for this model instance."""
         if self.get_model_inst():
+            # TODO: url should be reversed from a name
             return '/audit_trail/{app_label}/{model_name}/{subject_identifier}/'.format(app_label=self.get_app_label(), model_name=self.get_model_name(), subject_identifier=self.get_model_inst().get_subject_identifier())
         return ''

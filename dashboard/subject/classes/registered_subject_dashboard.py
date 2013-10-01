@@ -14,6 +14,7 @@ from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.rule_groups.classes import rule_groups
 from edc.subject.visit_schedule.classes import MembershipFormHelper
 from edc.subject.entry.classes import ScheduledEntry, AdditionalEntry
+from edc.subject.entry.models import ScheduledEntryBucket, AdditionalEntryBucket
 from edc.subject.visit_schedule.exceptions import MembershipFormError
 from edc.subject.appointment.models import Appointment
 from edc.subject.visit_schedule.models import MembershipForm
@@ -263,7 +264,6 @@ class RegisteredSubjectDashboard(Dashboard):
         return self._site_lab_tracker
 
     def set_scheduled_entry_meta(self):
-        ScheduledEntryBucket = models.get_model('entry', 'ScheduledEntryBucket')
         self._scheduled_entry_bucket_meta = ScheduledEntryBucket._meta
 
     def get_scheduled_entry_meta(self):
@@ -715,7 +715,6 @@ class RegisteredSubjectDashboard(Dashboard):
         return self._additional_lab_bucket
 
     def set_additional_entry_bucket(self):
-        AdditionalEntryBucket = models.get_model('entry', 'AdditionalEntryBucket')
         self._additional_entry_bucket = AdditionalEntryBucket.objects.filter(registered_subject=self.get_registered_subject())
 
     def get_additional_entry_bucket(self):
@@ -946,7 +945,6 @@ class RegisteredSubjectDashboard(Dashboard):
 
     def render_action_item(self, action_item_cls=None, template=None, **kwargs):
         """Renders to string the action_items for the current registered subject."""
-        
         source_registered_subject = kwargs.get('registered_subject', self.get_registered_subject())
         action_item_cls = action_item_cls or ActionItem
         if isinstance(action_item_cls, models.Model):

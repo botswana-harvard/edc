@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from .classes import site_mappers
 
 site_mappers.autodiscover()

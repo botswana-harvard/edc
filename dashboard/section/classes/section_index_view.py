@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns as url_patterns, url
+from django.conf.urls import patterns as url_patterns, url
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required

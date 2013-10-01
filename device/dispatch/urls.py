@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 
 urlpatterns = patterns('',
     url(r'^return/(?P<producer>[a-z0-9\-\_\.]+)/', 'return_items'),

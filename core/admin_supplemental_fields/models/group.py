@@ -15,4 +15,5 @@ class Group(BaseUuidModel):
     objects = models.Manager()
 
     class Meta:
-        app_label = 'bhp_supplemental_fields'
+        app_label = 'admin_supplemental_fields'
+        db_table = 'bhp_supplemental_fields_group'
