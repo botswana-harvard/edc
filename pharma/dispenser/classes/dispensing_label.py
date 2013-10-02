@@ -1,6 +1,6 @@
 
-from lab_barcode.classes import ModelLabel
-from lab_barcode.models import ZplTemplate
+from lis.core.lab_barcode.classes import ModelLabel
+from lis.core.lab_barcode.models import ZplTemplate
 
 
 class DispensingLabel(ModelLabel):

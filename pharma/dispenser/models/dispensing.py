@@ -1,10 +1,10 @@
 from datetime import date
 from django.db import models
 from django.core.exceptions import ValidationError
-from bhp_base_model.models import BaseUuidModel
-from ph_dispenser.classes import DispensingIdentifier
-from ph_dispenser.choices import PACKING_UNITS
+from edc.base.model.models import BaseUuidModel
 from edc.subject.registration.models import RegisteredSubject
+from ..classes import DispensingIdentifier
+from ..choices import PACKING_UNITS
 
 
 class Dispensing(BaseUuidModel):
@@ -38,4 +38,5 @@ class Dispensing(BaseUuidModel):
         return self.identifier
 
     class Meta:
-        app_label = 'ph_dispenser'
+        app_label = "dispenser"
+        db_table = "ph_dispenser_dispensing"
