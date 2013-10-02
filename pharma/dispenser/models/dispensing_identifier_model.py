@@ -7,5 +7,6 @@ class DispensingIdentifierModel(BaseIdentifierModel):
     objects = models.Manager()
 
     class Meta:
-        app_label = "ph_dispenser"
+        app_label = "dispenser"
+        db_table = "ph_dispenser_dispensing_identifier_model"
         ordering = ['-created']
