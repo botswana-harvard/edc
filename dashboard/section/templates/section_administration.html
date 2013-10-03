@@ -18,7 +18,7 @@
 {% if 'edc.device.sync' in installed_apps and edc.device.dispatch not in installed_apps %}
 <H5>Device Synchronization</H5>
 <ul>
-<li><A href="/bhp_sync/">Synchronize devices with Community Server (Return)</A></li>
+<li><A href="/dispatch/{{app_name}}/sync/">Synchronize devices with Community Server (Return)</A></li>
 </ul>
 {% endif %}
 
