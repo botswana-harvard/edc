@@ -1,7 +1,7 @@
 from edc.base.model.models import BaseListModel
 
 
-class Code (BaseListModel):
+class DiagnosisCode (BaseListModel):
     pass
 
     class Meta:

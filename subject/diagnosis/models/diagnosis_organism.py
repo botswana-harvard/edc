@@ -1,7 +1,7 @@
 from edc.base.model.models import BaseListModel
 
 
-class Organism (BaseListModel):
+class DiagnosisOrganism (BaseListModel):
 
     class Meta:
         app_label = 'diagnosis'

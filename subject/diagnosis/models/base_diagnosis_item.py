@@ -1,14 +1,14 @@
 from django.db import models
 from ..choices import STATUS, METHOD
-from .code import Code
-from .site import Site
-from .organism import Organism
+from .diagnosis_code import DiagnosisCode
+from .diagnosis_site import DiagnosisSite
+from .diagnosis_organism import DiagnosisOrganism
 from .base_base_diagnosis_item import BaseBaseDiagnosisItem
 
 
 class BaseDiagnosisItem(BaseBaseDiagnosisItem):
 
-    code = models.ForeignKey(Code)
+    code = models.ForeignKey(DiagnosisCode)
 
     code_specify = models.CharField(
         verbose_name='Specify',
@@ -22,9 +22,9 @@ class BaseDiagnosisItem(BaseBaseDiagnosisItem):
         choices=METHOD,
         )
 
-    organism = models.ForeignKey(Organism)
+    organism = models.ForeignKey(DiagnosisOrganism)
 
-    site = models.ForeignKey(Site)
+    site = models.ForeignKey(DiagnosisSite)
 
     status = models.CharField(
         max_length=10,
