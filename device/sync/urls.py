@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url, include
 from .api import OutgoingTransactionMiddleManResource, OutgoingTransactionServerResource, MiddleManTransactionResource
+from .views import index, view_transaction, consume_transactions
 
 outgoing_transaction_middle_man_resource = OutgoingTransactionMiddleManResource()
 outgoing_transaction_server_resource = OutgoingTransactionServerResource()
@@ -13,8 +14,8 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('',
     # fetch unsent transactions from a producer (GET)
-    url(r'^consume/(?P<producer>[a-z0-9\-\_\.]+)/', 'consume_transactions',),
-    url(r'^view/(?P<model_name>incomingtransaction|outgoingtransaction|middlemantransaction)/(?P<pk>[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12})/', 'view_transaction', name='view_transaction_url',),
-    url(r'^consumed/(?P<selected_producer>[a-z0-9\-\_\.]+)/', 'index',),
-    url(r'^$', 'index',),
+    url(r'^consume/(?P<producer>[a-z0-9\-\_\.]+)/', consume_transactions,),
+    url(r'^view/(?P<model_name>incomingtransaction|outgoingtransaction|middlemantransaction)/(?P<pk>[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12})/', view_transaction, name='view_transaction_url',),
+    url(r'^consumed/(?P<selected_producer>[a-z0-9\-\_\.]+)/', index,),
+    url(r'^$', index,),
     )
