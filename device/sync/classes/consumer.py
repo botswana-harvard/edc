@@ -2,7 +2,7 @@ import logging
 from datetime import datetime, timedelta
 from django.db.models import get_model
 from django.core.serializers.base import DeserializationError
-from ..classes import DeserializeFromTransaction
+from .deserialize_from_transaction import DeserializeFromTransaction
 from ..exceptions import TransactionConsumerError
 
 
