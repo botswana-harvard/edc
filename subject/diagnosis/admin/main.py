@@ -1,20 +1,20 @@
 from django.contrib import admin
 from edc.base.admin.admin import BaseModelAdmin
-from ..models import Code
-from ..models import Organism
-from ..models import Site
+from ..models import DiagnosisCode
+from ..models import DiagnosisOrganism
+from ..models import DiagnosisSite
 
 
 class CodeAdmin(BaseModelAdmin):
     pass
-admin.site.register(Code, CodeAdmin)
+admin.site.register(DiagnosisCode, CodeAdmin)
 
 
 class OrganismAdmin(BaseModelAdmin):
     pass
-admin.site.register(Organism, OrganismAdmin)
+admin.site.register(DiagnosisOrganism, OrganismAdmin)
 
 
 class SiteAdmin(BaseModelAdmin):
     pass
-admin.site.register(Site, SiteAdmin)
+admin.site.register(DiagnosisSite, SiteAdmin)
