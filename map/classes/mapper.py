@@ -35,6 +35,7 @@ class Mapper(object):
         self._target_gps_lon_field_attr = None
         self._target_gps_lat_field_attr = None
         self._map_area_field_attr = None
+        self._map_code = None
 
         # item_model_cls
         if 'map_area' in kwargs:
@@ -55,6 +56,8 @@ class Mapper(object):
             self.set_landmarks(kwargs('landmarks'))
         if 'item_label' in kwargs:
             self.set_item_label(kwargs('item_label'))
+        if 'map_code' in kwargs:
+            self.set_map_code(kwargs('map_code'))
 
     def __repr__(self):
         try:
@@ -90,6 +93,12 @@ class Mapper(object):
 
     def get_map_area(self):
         return self._get_attr('map_area')
+    
+    def set_map_code(self, attr=None):
+        self._set_attr('map_code', attr)
+    
+    def get_map_code(self):
+        return self._get_attr('map_code')
 
     def set_radius(self, attr=None):
         self._set_attr('radius', attr)
