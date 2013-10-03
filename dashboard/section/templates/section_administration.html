@@ -27,7 +27,7 @@
 <ul>
 <li><A name="dispatch-to-producer" href="/admin/mochudi_household/">Dispatch data to netbook</A>
 <li><A href="/bhp_sync/">Return data from devices to Community Server</A>
-  {% if 'bhp_map' in installed_apps %}
+  {% if 'edc.map' in installed_apps %}
     <li><A href="{% url 'map_index_url' %}">Dispatch data to devices by Map</A>
   {% endif %}
 </ul>
