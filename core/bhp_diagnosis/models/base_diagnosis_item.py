@@ -1,9 +1,9 @@
 from django.db import models
-from bhp_diagnosis.choices import STATUS, METHOD
-from code import Code
-from site import Site
-from organism import Organism
-from base_base_diagnosis_item import BaseBaseDiagnosisItem
+from ..choices import STATUS, METHOD
+from .code import Code
+from .site import Site
+from .organism import Organism
+from .base_base_diagnosis_item import BaseBaseDiagnosisItem
 
 
 class BaseDiagnosisItem(BaseBaseDiagnosisItem):
