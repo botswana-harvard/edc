@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from ..classes import Mapper, site_mappers
@@ -22,6 +23,7 @@ def map_index(request, **kwargs):
             raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_name))
         m = site_mappers.get_registry(mapper_name)()
         cart_size = 0
+        print settings.KEY_PATH
         identifiers = []
         icon = request.session.get('icon', None)
         if 'identifiers' in request.session:
