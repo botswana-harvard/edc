@@ -16,6 +16,8 @@ def consume_transactions(request, **kwargs):
     if not 'ALLOW_MODEL_SERIALIZATION' in dir(settings):
         messages.add_message(request, messages.ERROR, 'ALLOW_MODEL_SERIALIZATION global boolean not found in settings.')
     producer = None
+    app_name = kwargs.get('app_name', None)#If we have subclassed sync.html, then we need app_name to tell this view
+    #To redirect to the application sync template instead of sync.html
     middle_man = None
     remote_is_middleman = False
     if 'MIDDLE_MAN' in dir(settings) and settings.MIDDLE_MAN:
@@ -177,4 +179,6 @@ def consume_transactions(request, **kwargs):
                                         producer.sync_status = 'OK'
                                         producer.sync_datetime = datetime.today()
                     producer.save()
+        if app_name:
+            return redirect('/dispatch/{0}/sync/{1}/'.format(app_name,producer.name))
         return redirect('/bhp_sync/consumed/{0}/'.format(producer.name))
