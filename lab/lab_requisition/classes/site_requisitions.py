@@ -11,7 +11,7 @@ class AlreadyRegistered(Exception):
 class NotRegistered(Exception):
     pass
 
-# TODO: this is not currently used.
+# TODO: is this used??.
 
 
 class SiteRequisitions(object):
