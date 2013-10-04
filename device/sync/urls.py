@@ -13,7 +13,8 @@ urlpatterns = patterns('',
     )
 
 urlpatterns += patterns('',
-    # fetch unsent transactions from a producer (GET)
+    # The order is important, referred to from sync.urls and {app_name}_dispatch.urls
+    url(r'^consume/(?P<producer>[a-z0-9\-\_\.]+)/(?P<app_name>[a-zA-Z\-\_\.]+)/', consume_transactions,),
     url(r'^consume/(?P<producer>[a-z0-9\-\_\.]+)/', consume_transactions,),
     url(r'^view/(?P<model_name>incomingtransaction|outgoingtransaction|middlemantransaction)/(?P<pk>[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12})/', view_transaction, name='view_transaction_url',),
     url(r'^consumed/(?P<selected_producer>[a-z0-9\-\_\.]+)/', index,),
