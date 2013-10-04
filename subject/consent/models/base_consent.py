@@ -115,7 +115,7 @@ class BaseConsent(BaseSubject):
         choices=YES_NO,
         validators=[eligible_if_yes, ],
         null=True,
-        blank=True,
+        blank=False,
         #default='Yes',
         help_text="If no, INELIGIBLE",
         )
@@ -125,7 +125,7 @@ class BaseConsent(BaseSubject):
         choices=YES_NO,
         validators=[eligible_if_yes, ],
         null=True,
-        blank=True,
+        blank=False,
         #default='Yes',
         help_text="If no, INELIGIBLE",
         )
@@ -136,7 +136,7 @@ class BaseConsent(BaseSubject):
         choices=YES_NO,
         validators=[eligible_if_yes, ],
         null=True,
-        blank=True,
+        blank=False,
         #default='Yes',
         help_text="If no, INELIGIBLE",
         )
@@ -147,7 +147,7 @@ class BaseConsent(BaseSubject):
         choices=YES_NO,
         validators=[eligible_if_yes, ],
         null=True,
-        blank=True,
+        blank=False,
         #default='Yes',
         help_text="If no, INELIGIBLE",
         )
