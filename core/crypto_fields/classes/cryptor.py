@@ -422,7 +422,7 @@ class Cryptor(BaseCryptor):
         logger.info('Testing keys...')
         for algorithm, mode_dict in self._get_keypaths().iteritems():
             for mode in mode_dict.iterkeys():
-                #logger.warning( 'Testing {algorithm} {mode}...'.format(algorithm=algorithm, mode=mode)
+                #logger.warning('Testing {algorithm} {mode}...'.format(algorithm=algorithm, mode=mode))
                 encrypted_text = _encrypt(self, plaintext, algorithm, mode)
                 decrypted_text = _decrypt(self, encrypted_text, algorithm, mode)
                 if encrypted_text == decrypted_text and decrypted_text is not None:

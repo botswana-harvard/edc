@@ -7,7 +7,7 @@ from .base_section_index_view import BaseSectionIndexView
 
 class SectionIndexView(BaseSectionIndexView):
 
-    app_name = 'bhp_section'
+    app_name = 'section'
 
     def get_default_sections(self):
         return []
