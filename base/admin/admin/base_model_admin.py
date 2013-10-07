@@ -363,6 +363,7 @@ class BaseModelAdmin (admin.ModelAdmin):
         return kwargs
 
     def get_model_help_text(self, app_label=None, module_name=None):
+        # TODO: and this does what?
         mht = {}
         for model_help_text in ModelHelpText.objects.filter(app_label=app_label, module_name=module_name.lower()):
             mht.update({model_help_text.field_name: model_help_text})
