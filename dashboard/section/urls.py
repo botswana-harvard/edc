@@ -1,5 +1,6 @@
-from .classes import section_index_view, site_sections
+from .classes import SectionIndexView, site_sections
 
+section_index_view = SectionIndexView()
 section_index_view.setup()
 urlpatterns = []
 for site_section in site_sections.all().itervalues():
