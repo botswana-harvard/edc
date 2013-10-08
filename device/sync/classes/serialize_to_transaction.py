@@ -6,7 +6,16 @@ from .transaction_producer import TransactionProducer
 
 
 class SerializeToTransaction(object):
-
+    
+    def serialize_to_file(self, model_instances, file_path, use_natural_keys):
+        try:
+            json_txt = serializers.serialize("json", model_instances, ensure_ascii=True, use_natural_keys=use_natural_keys)
+            file_path.write(json_txt)
+            #data_string = json.dump(json_txt, file_path, ensure_ascii=True)
+        except:
+            return False
+        return True
+        
     def serialize(self, sender, instance, **kwargs):
 
         """ Serializes the model instance to an encrypted json object and saves the json object to the OutgoingTransaction model.
