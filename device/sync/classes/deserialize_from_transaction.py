@@ -9,6 +9,14 @@ from .transaction_producer import TransactionProducer
 
 
 class DeserializeFromTransaction(object):
+    
+    def deserialize_json_file(self, file_pointer):
+        try:
+            json_txt = file_pointer.read()
+            decoded = json.loads(json_txt)
+        except:
+            return None
+        return decoded
 
     def decrypt_transanction(self, incoming_transaction):
             model_dict = FieldCryptor('aes', 'local').decrypt(incoming_transaction.tx)
