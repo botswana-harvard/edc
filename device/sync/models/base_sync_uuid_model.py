@@ -6,7 +6,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from edc.base.model.models import BaseUuidModel
 from ..classes import TransactionProducer
-from ..__init__ import MODULE_APP_LABEL
 
 logger = logging.getLogger(__name__)
 
@@ -56,10 +55,10 @@ class BaseSyncUuidModel(BaseUuidModel):
             del kwargs['transaction_producer']
 
         if self.is_serialized() and not self._meta.proxy:
-            outgoing_transaction = get_model(MODULE_APP_LABEL, 'outgoingtransaction')
+            OutgoingTransaction = get_model('sync', 'outgoingtransaction')
             json_obj = serializers.serialize("json", self.__class__.objects.filter(pk=self.pk), use_natural_keys=True)
             using = kwargs.get('using', 'default')
-            outgoing_transaction.objects.using(using).create(
+            OutgoingTransaction.objects.using(using).create(
                 tx_name=self._meta.object_name,
                 #app_label=self._meta.app_label,
                 tx_pk=self.pk,
