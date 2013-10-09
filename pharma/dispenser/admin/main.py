@@ -1,7 +1,7 @@
 from django.contrib import admin
 from edc.base.admin.admin import BaseModelAdmin
-from .actions import print_dispensing_label
-from .models import Dispensing
+from ..actions import print_dispensing_label
+from ..models import Dispensing
 
 
 class DispensingAdmin(BaseModelAdmin):
