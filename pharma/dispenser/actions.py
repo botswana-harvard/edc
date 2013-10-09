@@ -1,6 +1,6 @@
 from django.contrib import messages
-from lab_barcode.exceptions import PrinterException
-from ph_dispenser.classes import DispensingLabel
+from lis.core.lab_barcode.exceptions import PrinterException
+from .classes import DispensingLabel
 
 
 def print_dispensing_label(modeladmin, request, dispensings):

@@ -18,15 +18,15 @@
 {% if 'edc.device.sync' in installed_apps and edc.device.dispatch not in installed_apps %}
 <H5>Device Synchronization</H5>
 <ul>
-<li><A href="/bhp_sync/">Synchronize devices with Community Server (Return)</A></li>
+<li><A href="/dispatch/{{app_name}}/sync/">Synchronize devices with Community Server (Return)</A></li>
+<li><A href="/bhp_sync/usb_dump/{{app_name}}/">Dump transactions to USB device</A></li>
 </ul>
 {% endif %}
 
 {%  if 'edc.device.sync' in installed_apps and 'edc.device.dispatch' in installed_apps %}
-<H5>Device Dispatch and Return</H5>
+<H5>Device Dispatch</H5>
 <ul>
-<li><A name="dispatch-to-producer" href="/admin/mochudi_household/">Dispatch data to netbook</A>
-<li><A href="/bhp_sync/">Return data from devices to Community Server</A>
+<li><A href="/admin/bcpp_household/plot/">Dispatch data to netbooks</A>
   {% if 'edc.map' in installed_apps %}
     <li><A href="{% url 'map_index_url' %}">Dispatch data to devices by Map</A>
   {% endif %}

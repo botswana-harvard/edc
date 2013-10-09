@@ -1,7 +1,7 @@
 from django.db import models
-from bhp_common.choices import YES_NO
-from bhp_diagnosis.choices import GRADE
-from bhp_consent.models import BaseConsentedUuidModel
+from edc.subject.consent.models import BaseConsentedUuidModel
+from edc.choices import YES_NO
+from ..choices import GRADE
 
 
 class BaseBaseDiagnosisItem(BaseConsentedUuidModel):

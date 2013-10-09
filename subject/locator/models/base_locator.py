@@ -34,7 +34,7 @@ class BaseLocator(BaseConsentedUuidModel):
     home_visit_permission = models.CharField(
         max_length=25,
         choices=YES_NO,
-        verbose_name="Has the participant given her permission for study staff to make home visits for follow-up purposes before and during the study?",
+        verbose_name="Has the participant given her permission for study staff to make home visits for follow-up purposes during the study?",
         )
     physical_address = EncryptedTextField(
         max_length=500,
@@ -46,7 +46,7 @@ class BaseLocator(BaseConsentedUuidModel):
     may_follow_up = models.CharField(
         max_length=25,
         choices=YES_NO,
-        verbose_name="3. Has the participant given her permission for study staff to call her for follow-up purposes before and during the study?",
+        verbose_name="3. Has the participant given her permission for study staff to call her for follow-up purposes during the study?",
         )
     subject_cell = EncryptedCharField(
         max_length=8,
@@ -83,7 +83,7 @@ class BaseLocator(BaseConsentedUuidModel):
     may_call_work = models.CharField(
         max_length=25,
         choices=YES_NO_DOESNT_WORK,
-        verbose_name="Has the participant given her permission for study staff to contact her at work for follow up purposes before and during the study?",
+        verbose_name="Has the participant given her permission for study staff to contact her at work for follow up purposes during the study?",
         help_text=" if 'No' go to section B, otherwise continue"
         )
     subject_work_place = EncryptedTextField(
@@ -104,7 +104,7 @@ class BaseLocator(BaseConsentedUuidModel):
     may_contact_someone = models.CharField(
         max_length=25,
         choices=YES_NO,
-        verbose_name="Has the participant given her permission for study staff to contact anyone else for follow-up purposes before and during the study?",
+        verbose_name="Has the participant given her permission for study staff to contact anyone else for follow-up purposes during the study?",
         help_text="For example a partner, spouse, family member, neighbour ...",
         )
     contact_name = EncryptedCharField(
