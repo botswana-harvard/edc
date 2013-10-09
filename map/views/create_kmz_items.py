@@ -53,7 +53,6 @@ def handle_uploaded_file(f, community):
         file_extension = f.content_type.split("/")[1]
         filename = "{0}.{1}".format(community, file_extension)
         abs_filename = "{0}{1}".format(settings.MEDIA_ROOT, '/' + filename)
-        print abs_filename
         with open(abs_filename, 'wb+') as destination:
             for chunk in f.chunks():
                 destination.write(chunk)
@@ -74,26 +73,27 @@ def create_kmz_items(request, **kwargs):
 
         if request.FILES['file']:
             filename = handle_uploaded_file(request.FILES['file'], mapper_name)
-            #print filename
             file_path = str(settings.MEDIA_ROOT) + '/' + filename[0]
-            #print file_path
             outstr = build_table(create_set_handler_parse_file(file_path).mapping)
             data_list = outstr.split('\n')
             data_list.pop(0)
+            print data_list[0]
             count = 0
+            print len(data_list)
             for item_gps_point in data_list:
                 points = item_gps_point.split(',')
-                points.pop(-1)
-                if len(points) == 4:
+                if len(points) == 5:
                     lat = float(points[2])
                     lon = float(points[1])
                     print lat, lon
+                    print m.map_area_field_attr, m.target_gps_lat_field_attr, m.target_gps_lon_field_attr
                     h = m.get_item_model_cls()(**{m.target_gps_lat_field_attr: lat, m.target_gps_lon_field_attr: lon, m.map_area_field_attr: mapper_name})
                     h.save()
                 else:
                     pass
                 count += 1
             message = 'The file ' + filename[0] + ' was uploaded successfully \n and {0} items where created'.format(count - 2)
+            print count
         else:
             message = 'No file was uploaded'
 
