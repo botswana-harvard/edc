@@ -12,7 +12,7 @@ def checkout_cart(request, **kwargs):
         2. Continue more items to the cart.
         3. Removed some of the items from the cart
 
-    Uses template :template:`bhp_map/templates/view_cart.html`
+    Uses template :template:`/templates/view_cart.html`
     """
     mapper_name = kwargs.get('mapper_name', '')
     if not site_mappers.get_registry(mapper_name):
