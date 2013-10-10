@@ -11,7 +11,7 @@ def set_section(request, **kwargs):
     example of selected criteria; ward: makgophana, section: SECTION A
     **Template:**
 
-    :template:`bhp_map/templates/assign_section.html`
+    :template:`/templates/assign_section.html`
     """
     template = 'assign_section.html'
     mapper_name = kwargs.get('mapper_name', '')
