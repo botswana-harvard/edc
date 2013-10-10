@@ -270,6 +270,12 @@ YES_NO_REFUSED = (
     ('REF', _('Refused to answer')),
 )
 
+YES_NO_DWTA = (
+    ('Yes', _('Yes')),
+    ('No', _('No')),
+    ('DWTA', _('Don\'t want to answer')),
+)
+
 YES_NO_NA_SPECIFY = (
     ('Yes', 'Yes, (Specify below)'),
     ('No', 'No'),

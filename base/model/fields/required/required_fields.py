@@ -11,14 +11,14 @@ class MyUUIDField (UUIDField):
     """
     description = _("Custom Uuid field")
 
-    def contribute_to_class(self, cls, name):
-        if self.primary_key == True:
-            assert not cls._meta.has_auto_field, "A model can't have more than one AutoField: %s %s %s; have %s" % (self, cls, name, cls._meta.auto_field)
-            super(MyUUIDField, self).contribute_to_class(cls, name)
-            cls._meta.has_auto_field = True
-            cls._meta.auto_field = self
-        else:
-            super(MyUUIDField, self).contribute_to_class(cls, name)
+#     def contribute_to_class(self, cls, name):
+#         if self.primary_key == True:
+#             assert not cls._meta.has_auto_field, "A model can't have more than one AutoField: %s %s %s; have %s" % (self, cls, name, cls._meta.auto_field)
+#             super(MyUUIDField, self).contribute_to_class(cls, name)
+#             cls._meta.has_auto_field = True
+#             cls._meta.auto_field = self
+#         else:
+#             super(MyUUIDField, self).contribute_to_class(cls, name)
 
 
 class HostnameCreationField (CharField):

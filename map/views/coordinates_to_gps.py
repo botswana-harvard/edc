@@ -22,13 +22,11 @@ def coordinates_to_gps(request, **kwargs):
         if settings.DEVICE_ID == '99':
             raise MapperError('You are in the server, You can\'t dispatch the whole server data to a GPS receiver.')
         else:
-            FNAME = '/users/django/source/bhp066/bhp_map/static/gpx/Current.gpx'
-            f = open(FNAME, 'r')
+            f = open(settings.GPX_FNAME, 'r')
             line = f.readline()
             lines = f.read()
             f.close()
-            GPS_FILE_PATH = '/Volumes/GARMIN/GPX/Current.gpx'
-            wf = open('/Volumes/GARMIN/GPX/Current.gpx', 'a')
+            wf = open(settings.GPS_FILE_PATH, 'a')
             wf.write(line)
             # This values need to come from the edc
             items = m.get_item_model_cls().objects.all()
