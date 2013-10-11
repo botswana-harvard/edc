@@ -14,7 +14,7 @@ def add_to_cart(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' does is not registered.'.format(mapper_name))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         additional_item_identifiers = request.GET.get('identifiers', [])
         message = ""
         is_error = False
@@ -35,20 +35,20 @@ def add_to_cart(request, **kwargs):
                 request.session['identifiers'] = additional_item_identifiers
             item_identifiers = request.session['identifiers']
             cart_size = len(request.session['identifiers'])
-            cart = m.session_to_string(request.session['identifiers']),
+            cart = mapper.session_to_string(request.session['identifiers']),
         else:
             message = "No items were selected"
             is_error = True
-        item_instances = m.get_item_model_cls().objects.filter(**{'{0}__in'.format(m.get_identifier_field_attr()): item_identifiers})
+        item_instances = mapper.get_item_model_cls().objects.filter(**{'{0}__in'.format(mapper.get_identifier_field_attr()): item_identifiers})
         icon = request.session['icon']
-        payload = m.prepare_map_points(item_instances,
+        payload = mapper.prepare_map_points(item_instances,
             icon,
             request.session['identifiers'],
             'egg-circle'
             )
         return render_to_response(
                 template, {
-                    'identifier_field_attr': m.get_identifier_field_attr(),
+                    'identifier_field_attr': mapper.get_identifier_field_attr(),
                     'mapper_name': mapper_name,
                     'payload': payload,
                     'identifiers': item_identifiers,
@@ -56,10 +56,10 @@ def add_to_cart(request, **kwargs):
                     'cart_size': cart_size,
                     'message': message,
                     'option': 'save',
-                    'icons': m.get_icons(),
+                    'icons': mapper.get_icons(),
                     'is_error': is_error,
                     'show_map': 0,
-                    'item_label': m.get_item_label(),
+                    'item_label': mapper.get_item_label(),
                 },
                 context_instance=RequestContext(request)
             )

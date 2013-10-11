@@ -14,7 +14,7 @@ def update_cart(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' does is not registered.'.format(mapper_name))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         update_error = 0
         items = []
         payload = []
@@ -29,15 +29,15 @@ def update_cart(request, **kwargs):
                 if 'identifiers' in request.session:
                     a = request.session['identifiers']
                     request.session['identifiers'] = [x for x in a if x not in deleted_ids]
-                    message = "{0} was/were removed".format(m.session_to_string(deleted_ids, False))
+                    message = "{0} was/were removed".format(mapper.session_to_string(deleted_ids, False))
         identifiers = request.session['identifiers']
         cart_size = len(request.session['identifiers'])
         icon = request.session.get('icon', None)
         option = request.POST.get('option', 'save')
         if option == 'preview':
-            items = m.get_item_model_cls().objects.filter(**{'{0}__in'.format(m.get_identifier_field_attr()): identifiers})
+            items = mapper.get_item_model_cls().objects.filter(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers})
             icon = request.session['icon']
-            payload = m.prepare_map_points(items,
+            payload = mapper.prepare_map_points(items,
                 icon,
                 request.session['identifiers'],
                 'egg-circle'
