@@ -1,0 +1,540 @@
+<?xml version="1.0"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wptx1="http://www.garmin.com/xmlschemas/WaypointExtension/v1" xmlns:gpxtrx="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns:trp="http://www.garmin.com/xmlschemas/TripExtensions/v1" xmlns:adv="http://www.garmin.com/xmlschemas/AdventuresExtensions/v1" xmlns:prs="http://www.garmin.com/xmlschemas/PressureExtension/v1" xmlns:tmd="http://www.garmin.com/xmlschemas/TripMetaDataExtensions/v1" xmlns:vptm="http://www.garmin.com/xmlschemas/ViaPointTransportationModeExtensions/v1" xmlns:ctx="http://www.garmin.com/xmlschemas/CreationTimeExtension/v1" creator="Garmin Desktop App" version="1.1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/WaypointExtension/v1 http://www8.garmin.com/xmlschemas/WaypointExtensionv1.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www8.garmin.com/xmlschemas/GpxExtensionsv3.xsd http://www.garmin.com/xmlschemas/ActivityExtension/v1 http://www8.garmin.com/xmlschemas/ActivityExtensionv1.xsd http://www.garmin.com/xmlschemas/AdventuresExtensions/v1 http://www8.garmin.com/xmlschemas/AdventuresExtensionv1.xsd http://www.garmin.com/xmlschemas/PressureExtension/v1 http://www.garmin.com/xmlschemas/PressureExtensionv1.xsd http://www.garmin.com/xmlschemas/TripExtensions/v1 http://www.garmin.com/xmlschemas/TripExtensionsv1.xsd http://www.garmin.com/xmlschemas/TripMetaDataExtensions/v1 http://www.garmin.com/xmlschemas/TripMetaDataExtensionsv1.xsd http://www.garmin.com/xmlschemas/ViaPointTransportationModeExtensions/v1 http://www.garmin.com/xmlschemas/ViaPointTransportationModeExtensionsv1.xsd http://www.garmin.com/xmlschemas/CreationTimeExtensions/v1 http://www.garmin.com/xmlschemas/CreationTimeExtensionsv1.xsd">
+
+  <metadata>
+    <link href="http://www.garmin.com">
+      <text>Garmin International</text>
+    </link>
+    <time>2013-09-24T09:42:30Z</time>
+    <bounds maxlat="50.901701040565968" maxlon="121.640268014743924" minlat="-24.684564024209976" minlon="-94.799018008634448"/>
+  </metadata>
+
+  <wpt lat="-24.683211017400026" lon="25.953835034742951">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401089-07</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.683561967685819" lon="25.953825982287526">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401090-08</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.683570014312863" lon="25.954119013622403">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401091-09</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.684034958481789" lon="25.954132005572319">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401092-10</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.684216007590294" lon="25.954354964196682">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401093-00</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.684385992586613" lon="25.955213019624352">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401094-01</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.684468973428011" lon="25.954339038580656">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401095-02</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.684564024209976" lon="25.956526966765523">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401096-03</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.684118023142219" lon="25.95686299726367">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401097-04</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.68371401540935" lon="25.956780016422272">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401098-05</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.683272037655115" lon="25.956872971728444">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401099-06</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.683062992990017" lon="25.956608019769192">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401100-07</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.683076990768313" lon="25.956090018153191">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401101-08</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.683128958567977" lon="25.955464979633689">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401102-09</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.683024017140269" lon="25.954824015498161">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401103-10</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.682930978015065" lon="25.954169975593686">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401104-00</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.684098996222019" lon="25.956210969015956">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401105-01</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.683666992932558" lon="25.956350024789572">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401106-02</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.684130009263754" lon="25.954657969996333">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401107-03</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.684201003983617" lon="25.955236991867423">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401108-04</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.684322960674763" lon="25.955744013190269">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401109-05</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="-24.68440099619329" lon="25.956246005371213">
+    <ele>0</ele>
+    <time>2013-09-24T09:13:14Z</time>
+    <name>0401110-06</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Unknown so far</gpxx:StreetAddress>
+          <gpxx:City>gaborone</gpxx:City>
+          <gpxx:Country>Botswana</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:13:14Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="25.061784032732248" lon="121.640268014743924">
+    <ele>38.100000000000001</ele>
+    <time>2013-09-24T09:42:25Z</time>
+    <name>Garmin Asia</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>No 68, Jangshu 2nd Road</gpxx:StreetAddress>
+          <gpxx:City>Shijr, Taipei County</gpxx:City>
+          <gpxx:Country>Taiwan</gpxx:Country>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:42:25Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="50.901701040565968" lon="-1.489350032061338">
+    <ele>35.93</ele>
+    <time>2013-09-24T09:42:25Z</time>
+    <name>Garmin Europe</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>Liberty House Hounsdown Busine</gpxx:StreetAddress>
+          <gpxx:City>Southampton</gpxx:City>
+          <gpxx:Country>UK</gpxx:Country>
+          <gpxx:PostalCode>SO40 9LR</gpxx:PostalCode>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:42:25Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+  <wpt lat="38.855549991130829" lon="-94.799018008634448">
+    <ele>325.050000000000011</ele>
+    <time>2013-09-24T09:42:25Z</time>
+    <name>Garmin USA</name>
+    <sym>Flag, Blue</sym>
+    <type>user</type>
+    <extensions>
+      <gpxx:WaypointExtension>
+        <gpxx:DisplayMode>SymbolAndName</gpxx:DisplayMode>
+        <gpxx:Address>
+          <gpxx:StreetAddress>1200 E 151st St</gpxx:StreetAddress>
+          <gpxx:City>Olathe</gpxx:City>
+          <gpxx:State>KS</gpxx:State>
+          <gpxx:Country>USA</gpxx:Country>
+          <gpxx:PostalCode>66062-3426</gpxx:PostalCode>
+        </gpxx:Address>
+      </gpxx:WaypointExtension>
+      <ctx:CreationTimeExtension>
+        <ctx:CreationTime>2013-09-24T09:42:25Z</ctx:CreationTime>
+      </ctx:CreationTimeExtension>
+    </extensions>
+  </wpt>
+
+</gpx>

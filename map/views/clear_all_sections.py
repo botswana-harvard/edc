@@ -12,15 +12,15 @@ def clear_all_sections(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' does is not registered.'.format(mapper_name))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,
-                    'item_label': m.get_item_label(),
-                    'section_label': m.get_section_label(),
-                    'region_label': '{0}s'.format(m.get_region_label()),
-                    'regions': m.get_regions(),
-                    'region_field_attr': m.get_region_field_attr(),
+                    'item_label': mapper.get_item_label(),
+                    'section_label': mapper.get_section_label(),
+                    'region_label': '{0}s'.format(mapper.get_region_label()),
+                    'regions': mapper.get_regions(),
+                    'region_field_attr': mapper.get_region_field_attr(),
                  },
                 context_instance=RequestContext(request)
             )
