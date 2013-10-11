@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from .classes import site_mappers
 from .views import *
 
-site_mappers.autodiscover()
+#site_mappers.autodiscover()
 
 urlpatterns = patterns('',
     # item_map_url
