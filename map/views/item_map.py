@@ -17,7 +17,7 @@ def item_map(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_name))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         longitude = kwargs.get('lon', None)
         latitude = kwargs.get('lat', None)
         map = None
@@ -26,23 +26,23 @@ def item_map(request, **kwargs):
         if not latitude:
             raise MapperError('Attribute latitude may not be None. Got {0}'.format(kwargs))
         identifier = kwargs.get('identifier', None)
-        item = m.get_item_model_cls().objects.filter(Q(**{m.get_identifier_field_attr(): identifier}))
-        item_map = getattr(item[0], m.map_field_attr) 
+        item = mapper.get_item_model_cls().objects.filter(Q(**{mapper.get_identifier_field_attr(): identifier}))
+        item_map = getattr(item[0], mapper.map_field_attr) 
         folder = settings.MEDIA_ROOT
         landmark_list = []
-        landmarks = m.get_landmarks()
+        landmarks = mapper.get_landmarks()
         letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
                     "O", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
         
         for place, lon, lat in landmarks:
             landmark_list.append([place, lon, lat])
-        lat = getattr(item[0], m.target_gps_lat_field_attr)
-        lon = getattr(item[0], m.target_gps_lon_field_attr)
+        lat = getattr(item[0], mapper.target_gps_lat_field_attr)
+        lon = getattr(item[0], mapper.target_gps_lon_field_attr)
         lmarks = []
         if not map:
             map = request.GET.get('map')
         for mark in landmark_list:
-            dist = m.gps_distance_between_points(lat, lon, mark[1], mark[2])
+            dist = mapper.gps_distance_between_points(lat, lon, mark[1], mark[2])
             lmarks.append([dist, mark[0]])
         lmark = sorted(lmarks,key=itemgetter(0))
         markers_l = {}

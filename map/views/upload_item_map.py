@@ -30,10 +30,10 @@ def upload_item_map(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_item_label))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         filename = handle_uploaded_file(request.FILES['file'], identifier)
         if filename:
-            items = m.get_item_model_cls().objects.filter(**{m.identifier_field_attr: identifier})
+            items = mapper.get_item_model_cls().objects.filter(**{mapper.identifier_field_attr: identifier})
             for item in items:
                 item.uploaded_map = filename
                 item.save()

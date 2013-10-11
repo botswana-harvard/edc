@@ -18,15 +18,15 @@ def draw_site_polygon(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_item_label))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         action_script_url_name = 'map_add_cart_url'
         has_items = False
         identifiers = request.session.get('identifiers', [])
-        selected_section = request.POST.get(m.get_section_field_attr())
+        selected_section = request.POST.get(mapper.get_section_field_attr())
         cart_size = len(identifiers)
         cso_icon_dict = []
         section_color_code_list = []
-        selected_region = request.POST.get(m.get_region_field_attr())
+        selected_region = request.POST.get(mapper.get_region_field_attr())
         request.session['icon'] = request.POST.get('marker_icon')
         if selected_section == 'All':
             pass
@@ -40,9 +40,9 @@ def draw_site_polygon(request, **kwargs):
                 #print icon_label
                 cso_icon_dict.append([icon_label, other_identifier_label])
         if selected_section == "All":
-            section_color_codes = m.make_dictionary(m.get_other_icons(), m.get_sections())
+            section_color_codes = mapper.make_dictionary(mapper.get_other_icons(), mapper.get_sections())
         else:
-            section_color_codes = m.make_dictionary(m.get_icons(), m.get_sections())
+            section_color_codes = mapper.make_dictionary(mapper.get_icons(), mapper.get_sections())
         for key_color, sec_value in section_color_codes.iteritems():
             section_color_code_list.append([key_color[:-1], sec_value])
         
@@ -51,25 +51,25 @@ def draw_site_polygon(request, **kwargs):
         
         gps_coordinates = []
         landmark_list = []
-        landmarks = m.get_landmarks()
+        landmarks = mapper.get_landmarks()
         for place, lat, lon in landmarks:
             landmark_list.append([place, lat, lon])
         return render_to_response(
             template, {
-                'region_field_attr': m.get_region_field_attr(),
-                'section_field_attr': m.get_section_field_attr(),
+                'region_field_attr': mapper.get_region_field_attr(),
+                'section_field_attr': mapper.get_section_field_attr(),
                 'mapper_name': mapper_name,
                 'payload': payload,
                 'gps_coordinates': gps_coordinates,
                 'action_script_url_name': action_script_url_name,
-                'identifier_field_attr': m.get_identifier_field_attr(),
+                'identifier_field_attr': mapper.get_identifier_field_attr(),
                 'has_items': has_items,
                 'mapper_item_label': mapper_item_label,
-                'gps_center_lat': m.get_gps_center_lat(),
-                'gps_center_lon': m.get_gps_center_lon(),
+                'gps_center_lat': mapper.get_gps_center_lat(),
+                'gps_center_lon': mapper.get_gps_center_lon(),
                 'selected_region': selected_region,
                 'selected_icon': request.session['icon'],
-                'icons': m.get_icons(),
+                'icons': mapper.get_icons(),
                 'option': 'plot',
                 'show_map': 1,
                 'payload_empty': payload_empty,
