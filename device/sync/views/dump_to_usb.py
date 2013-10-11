@@ -30,6 +30,7 @@ def dump_to_usb(request, **kwargs):
     f.close()
     for ot in outgoing:
         ot.is_consumed_middleman = True
+        ot.consumer = usb_path
         ot.save()
     if not success:
         messages.add_message(request, messages.ERROR, 'Serialization to path \'{0}\' failed'.format(usb_path))
