@@ -18,10 +18,11 @@ def coordinates_to_gps(request, **kwargs):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_item_label))
     else:
         mapper = site_mappers.get_registry(mapper_name)()
-
         if settings.DEVICE_ID == '99':
             raise MapperError('You are in the server, You can\'t dispatch the whole server data to a GPS receiver.')
         else:
+            print settings.GPX_FNAME
+            print settings.GPS_FILE_PATH
             f = open(settings.GPX_FNAME, 'r')
             line = f.readline()
             lines = f.read()

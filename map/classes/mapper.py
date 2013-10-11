@@ -379,9 +379,9 @@ class Mapper(object):
         payload = []
         icon_number = 0
         if selected_section == "All":
-            section_color_code_dict = self.make_dictionary(self.get_sections(), self.get_other_icons())
+            section_color_code_dict = self.make_dictionary(self.get_regions(), self.get_icons())
         else:
-            section_color_code_dict = self.make_dictionary(self.get_sections(), self.get_icons())
+            section_color_code_dict = self.make_dictionary(self.get_sections(), self.get_other_icons())
         letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
                     "O", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
         for item in items:
@@ -414,6 +414,7 @@ class Mapper(object):
                                 icon_number += 1
                             if icon_number == 25:
                                 icon_number = 0
+            print section_color_code_dict
             payload.append([item.gps_target_lon, item.gps_target_lat, identifier_label, icon, other_identifier_label])
         return payload
 

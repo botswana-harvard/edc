@@ -26,7 +26,11 @@ def item_map(request, **kwargs):
         if not latitude:
             raise MapperError('Attribute latitude may not be None. Got {0}'.format(kwargs))
         identifier = kwargs.get('identifier', None)
-        item = mapper.get_item_model_cls().objects.filter(Q(**{mapper.get_identifier_field_attr(): identifier}))
+        print mapper.get_item_model_cls(), mapper.get_identifier_field_attr(), identifier
+        item = mapper.get_item_model_cls().objects.filter(**{mapper.get_identifier_field_attr(): identifier})
+        
+        print item
+        
         item_map = getattr(item[0], mapper.map_field_attr) 
         folder = settings.MEDIA_ROOT
         landmark_list = []
