@@ -16,7 +16,7 @@ def map_section(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_name))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         cart_size = 0
         identifiers = []
         icon = request.session.get('icon', None)
@@ -26,15 +26,15 @@ def map_section(request, **kwargs):
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,
-                    'regions': m.get_regions(),
-                    'icons': m.get_icons(),
-                    'item_region_field': m.get_region_field_attr(),
-                    'region_label': m.get_region_label(),
+                    'regions': mapper.get_regions(),
+                    'icons': mapper.get_icons(),
+                    'item_region_field': mapper.get_region_field_attr(),
+                    'region_label': mapper.get_region_label(),
                     'session_icon': icon,
                     'cart_size': cart_size,
                     'identifiers': identifiers,
-                    'region_field_attr': m.get_region_field_attr(),
-                    'section_field_attr': m.get_section_field_attr(),
+                    'region_field_attr': mapper.get_region_field_attr(),
+                    'section_field_attr': mapper.get_section_field_attr(),
                     'show_map': 1,
                     'has_items': True,
                     'option': 'plot'

@@ -68,7 +68,7 @@ def create_kmz_items(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_item_label))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         template = 'sucess_upload.html'
 
         if request.FILES['file']:
@@ -86,8 +86,8 @@ def create_kmz_items(request, **kwargs):
                     lat = float(points[2])
                     lon = float(points[1])
                     print lat, lon
-                    print m.map_area_field_attr, m.target_gps_lat_field_attr, m.target_gps_lon_field_attr
-                    h = m.get_item_model_cls()(**{m.target_gps_lat_field_attr: lat, m.target_gps_lon_field_attr: lon, m.map_area_field_attr: mapper_name})
+                    print mapper.map_area_field_attr, mapper.target_gps_lat_field_attr, mapper.target_gps_lon_field_attr
+                    h = mapper.get_item_model_cls()(**{mapper.target_gps_lat_field_attr: lat, mapper.target_gps_lon_field_attr: lon, mapper.map_area_field_attr: mapper_name})
                     h.save()
                 else:
                     pass
