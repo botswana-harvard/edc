@@ -39,7 +39,8 @@ def item_map(request, **kwargs):
         lat = getattr(item[0], m.target_gps_lat_field_attr)
         lon = getattr(item[0], m.target_gps_lon_field_attr)
         lmarks = []
-        map = request.GET.get('map')
+        if not map:
+            map = request.GET.get('map')
         for mark in landmark_list:
             dist = m.gps_distance_between_points(lat, lon, mark[1], mark[2])
             lmarks.append([dist, mark[0]])
