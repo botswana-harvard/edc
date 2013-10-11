@@ -16,13 +16,7 @@ var x = 0;
 	landpoints.push(["{{ place }}", {{ lat }}, {{ lon }}, x+1]);
 {% endfor %}
 
-
-
-
-
-
-
-var point = new google.maps.LatLng({{ latitude }}, {{ longitude }});
+var point = new google.maps.LatLng({{ lat }}, {{ lon }});
 
 //function called Initialize the map when loading the browser
 function initialize() {
@@ -120,24 +114,34 @@ function setLandMarks(map, locations) {
 {% block bodyclass %} {{block.super}}" onload="initialize() {% endblock %}
 
 {% block content %}
-<form enctype="multipart/form-data" method="post" action="{% url "upload_item_map_url" mapper_name %}">
-{% csrf_token %}
-<input type="hidden" value="{{ identifier }}" name="identifier" />
+
 <table>
 	<tr valign="top">
 		<td>
-			<ul>
-				<li>Adjust the map, take a screenshot and save the image to your desktop</li>
-				<li>Click on the Browse button to upload the screenshot.
-				<li>Hit the submit button</li>
-			</ul>
-		<p><input type="file" name="file" /></p>
-		<p><input type="submit" value="save screenshot" name="submit" /></p>
-		</td>
-		<td>
-			<div id="map" style="width: 1024px; height: 800px"></div>
+			{% if item_map %}
+				{% if not map %}
+					<img src="{{ MEDIA_URL }}{{ item_map }}" alt="item map" width="800" height="450">
+				{% else %}
+					<div id="map" style="width: 800px; height: 450px"></div>
+				{% endif %}
+			{% else %}
+			<div id="map" style="width: 800px; height: 450px"></div>
+			{% endif %}
 		</td>
 	</tr>
+	{% if not map %}
+	<tr>
+		<td>
+			Key <A href="{% url 'item_map_url' mapper_name identifier lon lat %}/?map=1">(google online map)</A>
+		</td>
+	</tr>
+	<tr>
+		<td>label</td>
+		<td>Landmark</td>
+	</tr>
+	{% for key, value in markers_l.items %}
+		<tr><td width:400px; >{{ key }}</td><td width:10px; >{{ value }}</td></tr>
+	{% endfor %}
+	{% endif %}
 </table>
-</form>
 {% endblock%}
