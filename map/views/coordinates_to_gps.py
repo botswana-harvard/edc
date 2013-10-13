@@ -1,3 +1,4 @@
+import os
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -20,9 +21,7 @@ def coordinates_to_gps(request, **kwargs):
         mapper = site_mappers.get_registry(mapper_name)()
         if settings.DEVICE_ID == '99':
             raise MapperError('You are in the server, You can\'t dispatch the whole server data to a GPS receiver.')
-        else:
-            print settings.GPX_FNAME
-            print settings.GPS_FILE_PATH
+        else:   
             f = open(settings.GPX_FNAME, 'r')
             line = f.readline()
             lines = f.read()
