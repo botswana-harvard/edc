@@ -21,7 +21,10 @@ def coordinates_to_gps(request, **kwargs):
         mapper = site_mappers.get_registry(mapper_name)()
         if settings.DEVICE_ID == '99':
             raise MapperError('You are in the server, You can\'t dispatch the whole server data to a GPS receiver.')
-        else:   
+        else:
+            
+            if os.path.exists(settings.GPS_FILE_PATH):
+                os.remove(settings.GPS_FILE_PATH)    
             f = open(settings.GPX_FNAME, 'r')
             line = f.readline()
             lines = f.read()
