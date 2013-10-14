@@ -22,14 +22,14 @@ def coordinates_to_gps(request, **kwargs):
         if settings.DEVICE_ID == '99':
             raise MapperError('You are in the server, You can\'t dispatch the whole server data to a GPS receiver.')
         else:
-            
-            if os.path.exists(settings.GPS_FILE_PATH):
-                os.remove(settings.GPS_FILE_PATH)    
-            f = open(settings.GPX_FNAME, 'r')
+            #TODO: if path does not exist fail gracefully
+            if os.path.exists(settings.GPS_FILE_NAME):
+                os.remove(settings.GPS_FILE_NAME)    
+            f = open(settings.GPX_TEMPLATE, 'r')
             line = f.readline()
             lines = f.read()
             f.close()
-            wf = open(settings.GPS_FILE_PATH, 'a')
+            wf = open(settings.GPS_FILE_NAME, 'a')
             wf.write(line)
             # This values need to come from the edc
             items = mapper.get_item_model_cls().objects.all()
@@ -43,10 +43,11 @@ def coordinates_to_gps(request, **kwargs):
                 wf.write(str_from_edc)
             wf.write(lines)
             wf.close()
+            #TODO: unmount the gps
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,
-                    'file_to_gps': settings.GPS_FILE_PATH
+                    'file_to_gps': settings.GPS_FILE_NAME
                 },
                 context_instance=RequestContext(request)
             )
