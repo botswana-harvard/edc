@@ -11,7 +11,7 @@ def empty_cart(request, message, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_name))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         try:
             del request.session['identifiers']
             del request.session['icon']
@@ -20,12 +20,12 @@ def empty_cart(request, message, **kwargs):
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,
-                    'regions': m.get_regions(),
-                    'sections': m.get_sections(),
-                    'icons': m.get_icons(),
+                    'regions': mapper.get_regions(),
+                    'sections': mapper.get_sections(),
+                    'icons': mapper.get_icons(),
                     'message': message,
-                    'item_label': m.get_item_model_cls()._meta.object_name,
-                    'region_label': m.get_region_label(),
+                    'item_label': mapper.get_item_model_cls()._meta.object_name,
+                    'region_label': mapper.get_region_label(),
                 },
                 context_instance=RequestContext(request)
             )

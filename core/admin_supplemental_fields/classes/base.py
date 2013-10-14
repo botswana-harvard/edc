@@ -85,7 +85,7 @@ class Base(object):
         return exclude_fields
 
     def _stored_choice(self, exclude_fields, obj):
-        if obj:
+        if not obj:
             raise AttributeError('Attribute \'obj\' cannot be None.')
         # you are editing, lookup the choice that was used to create obj.
         # Instances are only logged if exclude fields is not null

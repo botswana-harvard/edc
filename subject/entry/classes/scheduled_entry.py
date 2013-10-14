@@ -11,7 +11,7 @@ class ScheduledEntry(BaseScheduledEntry):
     def set_bucket_model_cls(self):
         self._bucket_model_cls = get_model('entry', 'ScheduledEntryBucket')
         if not self._bucket_model_cls:
-            raise TypeError('Unable to get model bhp_entry.ScheduledEntryBucket.')
+            raise TypeError('Unable to get model entry.ScheduledEntryBucket.')
 
     def set_filter_fieldname(self, filter_field_name=None):
         """Returns the field name for the foreignkey that points to the visit model."""

@@ -229,6 +229,17 @@ SEXUAL_DEBUT = (
     ('>=18', '18 or above'),
 )
 
+TIME_OF_WEEK = (
+    ('weekdays', 'Weekdays'),
+    ('weekend', 'Weekends'),
+    )
+
+TIME_OF_DAY = (
+    ('morning', 'Morning'),
+    ('afternoon', 'Afternoon'),
+    ('evening', 'Evening'),
+    )
+
 TIME_UNITS = (
     ('TODAY', 'Today'),
     ('DAYS', 'Days'),

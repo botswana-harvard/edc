@@ -14,7 +14,7 @@ def get_polygon_array(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' does is not registered.'.format(mapper_name))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         polygon_array = request.GET.get('polygon')
         if polygon_array:
             polygon_array = polygon_array.split("),(")
@@ -29,7 +29,7 @@ def get_polygon_array(request, **kwargs):
                 template, {
                     'mapper_name': mapper_name,
                     'point_tuple': point_tuple,
-                    'map_area': m.get_map_area()
+                    'map_area': mapper.get_map_area()
                     },
                 context_instance=RequestContext(request)
             )

@@ -13,15 +13,15 @@ def map_index(request, **kwargs):
     template = 'map_index.html'
     mapper_name = kwargs.get('mapper_name', '')
     mapper_names = []
-    m = None
+    mapper = None
     if not mapper_name:
         mapper_names = [mname for mname in site_mappers.get_registry()]
     else:
-        m = site_mappers.get_registry(mapper_name)
-    if m:
-        if not issubclass(m, Mapper):
+        mapper = site_mappers.get_registry(mapper_name)
+    if mapper:
+        if not issubclass(mapper, Mapper):
             raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_name))
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         cart_size = 0
         identifiers = []
         icon = request.session.get('icon', None)
@@ -31,14 +31,14 @@ def map_index(request, **kwargs):
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,
-                    'item_label': m.get_item_label(),
-                    'region_field_attr': m.get_region_field_attr(),
-                    'region_label': m.get_region_label(),
-                    'section_field_attr': m.get_section_field_attr(),
-                    'section_label': m.get_section_label(),
-                    'regions': m.get_regions(),
-                    'sections': m.get_sections(),
-                    'icons': m.get_icons(),
+                    'item_label': mapper.get_item_label(),
+                    'region_field_attr': mapper.get_region_field_attr(),
+                    'region_label': mapper.get_region_label(),
+                    'section_field_attr': mapper.get_section_field_attr(),
+                    'section_label': mapper.get_section_label(),
+                    'regions': mapper.get_regions(),
+                    'sections': mapper.get_sections(),
+                    'icons': mapper.get_icons(),
                     'session_icon': icon,
                     'cart_size': cart_size,
                     'identifiers': identifiers

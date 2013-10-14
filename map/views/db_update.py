@@ -14,26 +14,26 @@ def db_update(request, **kwargs):
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' does is not registered.'.format(mapper_name))
     else:
-        m = site_mappers.get_registry(mapper_name)()
+        mapper = site_mappers.get_registry(mapper_name)()
         template = "db_update.html"
         identifier = request.POST.get('identifier')
         gps_s = request.POST.get('gps_s')
         longitude = request.POST.get('lon')
         gps_e = request.POST.get('gps_e')
         latitude = request.POST.get('lat')
-        items = m.get_item_model_cls().objects.filter(**{m.identifier_field_attr: identifier})
+        items = mapper.get_item_model_cls().objects.filter(**{mapper.identifier_field_attr: identifier})
         lon = get_longitude(gps_s, longitude)
         lat = get_latitude(gps_e, latitude)
         for item in items:
-            setattr(item, m.gps_e_field_attr, gps_e)
-            setattr(item, m.gps_latitude_field_attr, latitude)
-            setattr(item, m.gps_s_field_attr, gps_s)
-            setattr(item, m.gps_longitude_field_attr, longitude)
-            distance = calc_dist(lat, lon, m.gps_center_lat, m.gps_center_lon)
-            if distance <= m.gps_radius:
+            setattr(item, mapper.gps_e_field_attr, gps_e)
+            setattr(item, mapper.gps_latitude_field_attr, latitude)
+            setattr(item, mapper.gps_s_field_attr, gps_s)
+            setattr(item, mapper.gps_longitude_field_attr, longitude)
+            distance = calc_dist(lat, lon, mapper.gps_center_lat, mapper.gps_center_lon)
+            if distance <= mapper.gps_radius:
                 item.save()
             else:
-                return HttpResponse("The coordinates you entered are outside {0}, check if you have made errors.".format(m.map_area))
+                return HttpResponse("The coordinates you entered are outside {0}, check if you have made errors.".format(mapper.map_area))
         return render_to_response(
                     template,
                 context_instance=RequestContext(request)
