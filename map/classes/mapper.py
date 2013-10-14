@@ -18,6 +18,7 @@ class Mapper(object):
         self._item_model_cls = None
         self._item_label = None
         self._regions = None
+        self._map_field_attr = None
         self._sections = None
         self._icons = None
         self._other_icons = None
@@ -105,7 +106,13 @@ class Mapper(object):
 
     def get_radius(self):
         return self._get_attr('radius')
+    
+    def set_map_field_attr(self, attr=None):
+        self._set_attr('map_field_attr', attr)
 
+    def get_map_field_attr(self):
+        return self._get_attr('map_field_attr')    
+    
     def set_gps_center_lat(self, attr=None):
         self._set_attr('gps_center_lat', attr)
 
@@ -372,9 +379,9 @@ class Mapper(object):
         payload = []
         icon_number = 0
         if selected_section == "All":
-            section_color_code_dict = self.make_dictionary(self.get_sections(), self.get_other_icons())
+            section_color_code_dict = self.make_dictionary(self.get_regions(), self.get_icons())
         else:
-            section_color_code_dict = self.make_dictionary(self.get_sections(), self.get_icons())
+            section_color_code_dict = self.make_dictionary(self.get_sections(), self.get_other_icons())
         letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
                     "O", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
         for item in items:
@@ -407,6 +414,7 @@ class Mapper(object):
                                 icon_number += 1
                             if icon_number == 25:
                                 icon_number = 0
+            print section_color_code_dict
             payload.append([item.gps_target_lon, item.gps_target_lat, identifier_label, icon, other_identifier_label])
         return payload
 
@@ -480,7 +488,8 @@ class Mapper(object):
         """Verifies that given lat, lon occur within the community area and raises an exception if not.
 
         Wrapper for :func:`gps_validator`"""
-        if not self.gps_distance_between_points(lat, lon):
+        radius = self.get_radius()
+        if self.gps_distance_between_points(lat, lon) > radius:
             raise exception_cls('The location (GPS {0} {1}) does not fall within this community.'.format(lat, lon))
         return True
 

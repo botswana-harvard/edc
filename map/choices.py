@@ -1,4 +1,4 @@
-ICONS = (
+OTHER_ICONS = (
     "blue_Marker",
     "brown_Marker",
     "darkgreen_Marker",
@@ -11,7 +11,7 @@ ICONS = (
     "yellow_Marker"
 )
 
-OTHER_ICONS = (
+ICONS = (
             "black_",
             "dark_yellow_",
             "drk_blue_",

@@ -1,8 +1,9 @@
 import copy
 from django.db.models import get_model, Model
 from django.utils.encoding import smart_str
+from django.conf import settings
 
-from base_rule import BaseRule
+from .base_rule import BaseRule
 
 
 class BaseRuleGroup(type):
@@ -10,6 +11,7 @@ class BaseRuleGroup(type):
     def __new__(cls, name, bases, attrs):
         """Add the Meta attributes to each rule if rule attr does not exist."""
         rules = []
+        app_label = None
         parents = [b for b in bases if isinstance(b, BaseRuleGroup)]
         if not parents:
             # If this isn't a subclass of ModelBucketBase, don't do anything special.
@@ -48,10 +50,14 @@ class BaseRuleGroup(type):
                                     raise AttributeError('Rule Meta Attribute \'filter_model\' must be a tuple of (ModelClass, fieldname) or ((app_label, model_name), fieldname).')
                                 rule.set_filter_model_cls(meta.filter_model[0])
                                 rule.set_filter_fieldname(meta.filter_model[1])
+                    app_label = rule.app_label
                     rules.append(rule)
                     attrs.update({rule_name: rule})
         attrs.update({'rules': tuple(rules)})
-        attrs.update({'app_label': attrs.get('__module__').split('.')[0]})
+#         if app_label not in settings.INSTALLED_APPS:
+#             raise AttributeError('Rule group app_label not found in INSTALLED_APPS. Got {0}'.format(app_label))
+#         attrs.update({'app_label': attrs.get('__module__').split('.')[0]})
+        attrs.update({'app_label': app_label})
         return super(BaseRuleGroup, cls).__new__(cls, name, bases, attrs)
 
 
