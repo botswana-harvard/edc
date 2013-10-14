@@ -47,10 +47,10 @@ class BaseIdentifierModel(BaseSyncUuidModel):
         return str(self.sequence_number).rjust(self.padding, '0')
 
     objects = IdentifierManager()
-    
+
     def natural_key(self):
         return (self.identifier, self.device_id, )
-    
+
     def __unicode__(self):
         return self.identifier
 
