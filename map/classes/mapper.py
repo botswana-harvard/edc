@@ -488,7 +488,8 @@ class Mapper(object):
         """Verifies that given lat, lon occur within the community area and raises an exception if not.
 
         Wrapper for :func:`gps_validator`"""
-        if not self.gps_distance_between_points(lat, lon):
+        radius = self.get_radius()
+        if self.gps_distance_between_points(lat, lon) > radius:
             raise exception_cls('The location (GPS {0} {1}) does not fall within this community.'.format(lat, lon))
         return True
 
