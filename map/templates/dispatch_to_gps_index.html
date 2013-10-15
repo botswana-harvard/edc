@@ -12,6 +12,9 @@
         </div>
     {% else %}
 	    <H5>Dispatch to GPS Receiver</H5>
+	    {% if message %}
+			<h3><b><font color="red">{{ message }}!</font></b></h3>
+		{% endif %}
 	    <div id="section_navbar">
 	    	<li><A href="{% url "coordinates_to_gps_url" mapper_name %}">Dispatch</A></li>
 	    </div>
