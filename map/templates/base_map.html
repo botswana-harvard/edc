@@ -17,7 +17,7 @@ var pointArray = new Array();
 var landpoints = new Array();
 var x = 0;
 {% for lon, lat, label, icon, cso in payload %}       	
-    	pointArray.push(["{{ label }}", {{ lat }}, {{ lon }}, "{{ MEDIA_URL }}img/{{ icon }}.png", x+1, "{{ cso }}"]);
+    	pointArray.push(["{{ label }}", {{ lat }}, {{ lon }}, "{{ icon }}", x+1, "{{ cso }}"]);
 {% endfor %}
 
 {% for place, lat, lon in landmarks %}

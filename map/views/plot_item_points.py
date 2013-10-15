@@ -57,12 +57,11 @@ def plot_item_points(request, **kwargs):
                 icon_label = icon[icon_name_length - 1]
                 cso_icon_dict.append([icon_label, other_identifier_label])
         if selected_sub_section == "All":
-            section_color_codes = mapper.make_dictionary(mapper.get_other_icons(), mapper.get_regions())
+            section_color_codes = {'Teal':'A', 'Yellow': 'B', 'Orange': 'C', 'Pink': 'D'}
         else:
             section_color_codes = mapper.make_dictionary(mapper.get_icons(), mapper.get_regions())
         for key_color, sec_value in section_color_codes.iteritems():
-            section_color_code_list.append([key_color[:-1], sec_value])
-        print section_color_code_list
+            section_color_code_list.append([key_color, sec_value])
         if payload:
             has_items = True
         landmark_list = []

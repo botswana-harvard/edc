@@ -401,11 +401,7 @@ class Mapper(object):
                     icon = "blu-circle"
                     for key_sec, icon_value in section_color_code_dict.iteritems():
                         if item.section == key_sec:
-                            if icon_number <= 100:
-                                icon = icon_value + str(icon_number)
-                                icon_number += 1
-                        if icon_number == 100:
-                            icon_number = 0
+                            icon = icon_value
                 else:
                     for key_sec, icon_value in section_color_code_dict.iteritems():
                         if item.section == key_sec:
@@ -414,7 +410,6 @@ class Mapper(object):
                                 icon_number += 1
                             if icon_number == 25:
                                 icon_number = 0
-            print section_color_code_dict
             payload.append([item.gps_target_lon, item.gps_target_lat, identifier_label, icon, other_identifier_label])
         return payload
 
