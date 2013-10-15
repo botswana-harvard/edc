@@ -1,6 +1,7 @@
 import sys
 import json
 import socket
+from django.db import connection
 from django.core import serializers
 from django.db.models import ForeignKey
 from django.db.utils import IntegrityError
@@ -26,7 +27,16 @@ class DeserializeFromTransaction(object):
         # may bypass this check for for testing ...
         check_hostname = kwargs.get('check_hostname', True)
         is_success = False
-        for obj in serializers.deserialize("json", FieldCryptor('aes', 'local').decrypt(incoming_transaction.tx)):
+        tr = FieldCryptor('aes', 'local').decrypt(incoming_transaction.tx)
+        #temp = json.loads(tr)
+#         temp[0].get('fields')['time_of_day'] = 'Morning'
+#         temp[0].get('fields')['time_of_week'] = 'Monday'
+#         val = temp[0].get('fields').get('availability_datetime', None)
+        #if str(temp[0].get('model')) == 'bcpp_subject.subjectconsent':
+            #cdt = temp[0].get('fields').get('consent_datetime')
+            #print str(cdt)+'.123'
+            #tr = tr.replace(' "consent_datetime": "'+str(cdt)+'",',' "consent_datetime": "'+str(cdt)+'.000",')
+        for obj in serializers.deserialize("json", tr):
             # if you get an error deserializing a datetime, confirm dev version of json.py
             if incoming_transaction.action == 'I' or incoming_transaction.action == 'U':
                 # check if tx originanted from me
@@ -155,6 +165,7 @@ class DeserializeFromTransaction(object):
                             print '    {0}'.format(error)
                             raise
                     except:
+                        #print connection.queries
                         print "        [b] Unexpected error:", sys.exc_info()
                         raise
                     if is_success:
