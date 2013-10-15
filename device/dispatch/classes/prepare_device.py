@@ -4,7 +4,7 @@ import sqlite3
 import subprocess
 from datetime import datetime
 from tastypie.models import ApiKey
-from django.db.models import Model
+from django.db.models import Model, get_model, get_models
 from django.conf import settings
 from django.db.models import signals
 from lis.base.model.models import BaseLabListModel, BaseLabModel, BaseLabUuidModel
@@ -110,23 +110,24 @@ class PrepareDevice(BasePrepareDevice):
         if not step > 8:
             self.timer()
             logger.info("8. Updating appointment configuration...")
-            self.update_model(("bhp_appointment", "Configuration"), [BaseSyncUuidModel])
+            self.update_model(("appointment", "Configuration"), [BaseSyncUuidModel])
         if not step > 9:
             self.timer()
             logger.info("9. Updating the Crypt table...")
-            #self.update_model(('bhp_crypto', 'crypt'))
+            self.update_model(('crypto_fields', 'crypt'))
             logger.info('   Warning, skipping. use mysqldump for the Crypt table, bhp_crypto_crypt')
         if not step > 10:
             self.timer()
             logger.info("10. Updating the visit definitions...")
-            self.update_app_models('bhp_visit', [BaseUuidModel])
+            self.update_app_models('visit_schedule', [BaseUuidModel])
         if not step > 11:
             self.timer()
             logger.info("11. Updating subject identifiers...")
-            self.update_app_models('bhp_identifier', [BaseModel])
+            self.update_app_models('identifier', [BaseModel])
         if not step > 12:
             self.timer()
             logger.info("12. Updating registered subjects...")
+            self.update_model(('registration', 'registeredsubject'))
             logger.info('   Warning, skipping. use mysqldump for the RegisteredSubject table, registration_registeredsubject')
         if not step > 13:
             self.timer()
@@ -136,7 +137,7 @@ class PrepareDevice(BasePrepareDevice):
         if not step > 14:
             self.timer()
             logger.info("14. Updating consent Attached Models...")
-            #self.update_model(('consent', 'AttachedModel'), [BaseSyncUuidModel])
+            self.update_model(('consent', 'AttachedModel'), [BaseSyncUuidModel])
             signals.post_save.connect(add_models_to_catalogue, weak=False, dispatch_uid="add_models_to_catalogue")
         if not step > 15:
             self.timer()
@@ -177,15 +178,15 @@ class PrepareDevice(BasePrepareDevice):
         if not step > 24:
             self.timer()
             logger.info("24. Updating un-scheduled lab entry buckets from bhp_lab_entry...")
-            self.update_model(('bhp_lab_entry', 'UnscheduledLabEntryBucket'))
+            self.update_model(('lab_entry', 'UnscheduledLabEntryBucket'))
         if not step > 25:
             self.timer()
             logger.info("25. Updating lab entry from bhp_lab_entry...")
-            self.update_model(('bhp_lab_entry', 'LabEntry'), [BaseUuidModel])
+            self.update_model(('lab_entry', 'LabEntry'), [BaseUuidModel])
         if not step > 26:
             self.timer()
             logger.info("26. Updating bhp_entry.models.entry...")
-            self.update_model(('bhp_entry', 'entry'), [BaseUuidModel])
+            self.update_model(('entry', 'entry'), [BaseUuidModel])
         if not step > 27:
             self.timer()
             logger.info("27. Updating api keys...")
@@ -196,7 +197,144 @@ class PrepareDevice(BasePrepareDevice):
             self.post_prepare()
         logger.info("Done")
         self.timer(done=True)
-
+    
+    def validate_base(self, **kwargs):
+        """Checks to ensure that all required common EDC data for creating a base database is present"""
+        if self.has_outgoing_transactions():
+            raise self.exception("Destination has outgoing transactions. Please sync and try again.")
+        step = int(kwargs.get('step', 0))
+        logger.info('Starting at step {0}'.format(step))
+#       if not step > 1:
+#          self.timer()
+#            logger.info("1. Running pre procedures")
+#            self.pre_prepare()
+        if not step > 1:
+            ContentType = get_model('contenttypes','ContentType')
+            in_destination = ContentType.objects.using(self.get_using_destination()).all().count()
+            in_source = ContentType.objects.using(self.get_using_source()).all().count()
+            logger.info("1. checking content_type. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 2:
+            for model in get_models('auth'):
+                in_destination = model.objects.using(self.get_using_destination()).all().count()
+                in_source = model.objects.using(self.get_using_source()).all().count()
+                logger.info("2. checking {1}. {2} objects in destination, {3} objects in source.".format(in_destination, in_source, model.__name__))
+        if not step > 3:
+            ApiKeys = get_model('tastypie','apikeys')
+            in_destination = ApiKeys.objects.using(self.get_using_destination()).all().count()
+            in_source = ApiKeys.objects.using(self.get_using_source()).all().count()
+            logger.info("3. checking ApiKeys. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 4:
+            for model in self.return_all_list_models():
+                in_destination = model.objects.using(self.get_using_destination()).all().count()
+                in_source = model.objects.using(self.get_using_source()).all().count()
+                logger.info("4. checking {1}. {2} objects in destination, {3} objects in source.".format(in_destination, in_source, model.__name__))
+        if not step > 5:
+            for model in get_models('bhp_variables'):
+                in_destination = model.objects.using(self.get_using_destination()).all().count()
+                in_source = model.objects.using(self.get_using_source()).all().count()
+                logger.info("5. checking {1}. {2} objects in destination, {3} objects in source.".format(in_destination, in_source, model.__name__))
+        if not step > 6:
+            for model in get_models('bhp_content_type_map'):
+                in_destination = model.objects.using(self.get_using_destination()).all().count()
+                in_source = model.objects.using(self.get_using_source()).all().count()
+                logger.info("6. checking {1}. {2} objects in destination, {3} objects in source.".format(in_destination, in_source, model.__name__))
+        if not step > 7:
+            configutations = get_model('appointment','Configuration')
+            in_destination = configutations.objects.using(self.get_using_destination()).all().count()
+            in_source = configutations.objects.using(self.get_using_source()).all().count()
+            logger.info("7. checking appointment configutations. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 8:
+            crypt = get_model('crypto_fields','crypt')
+            in_destination = crypt.objects.using(self.get_using_destination()).all().count()
+            in_source = crypt.objects.using(self.get_using_source()).all().count()
+            logger.info("8. checking crypt. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 9:
+            for model in get_models('visit_schedule'):
+                in_destination = model.objects.using(self.get_using_destination()).all().count()
+                in_source = model.objects.using(self.get_using_source()).all().count()
+                logger.info("9. checking {1}. {2} objects in destination, {3} objects in source.".format(in_destination, in_source, model.__name__))
+        if not step > 10:
+            for model in get_models('identifier'):
+                in_destination = model.objects.using(self.get_using_destination()).all().count()
+                in_source = model.objects.using(self.get_using_source()).all().count()
+                logger.info("10. checking {1}. {2} objects in destination, {3} objects in source.".format(in_destination, in_source, model.__name__))
+        if not step > 11:
+            registeredsubject = get_model('registration','registeredsubject')
+            in_destination = registeredsubject.objects.using(self.get_using_destination()).all().count()
+            in_source = registeredsubject.objects.using(self.get_using_source()).all().count()
+            logger.info("11. checking registeredsubject. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 12:
+            consent = get_model('consent','ConsentCatalogue')
+            in_destination = consent.objects.using(self.get_using_destination()).all().count()
+            in_source = consent.objects.using(self.get_using_source()).all().count()
+            logger.info("12. checking ConsentCatalogue. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 13:
+            AttachedModel = get_model('consent','AttachedModel')
+            in_destination = AttachedModel.objects.using(self.get_using_destination()).all().count()
+            in_source = AttachedModel.objects.using(self.get_using_source()).all().count()
+            logger.info("13. checking AttachedModel. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 14:
+            TestCodeGroup = get_model('lab_test_code','TestCodeGroup')
+            in_destination = TestCodeGroup.objects.using(self.get_using_destination()).all().count()
+            in_source = TestCodeGroup.objects.using(self.get_using_source()).all().count()
+            logger.info("14. checking TestCodeGroup. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 15:
+            TestCode = get_model('lab_test_code','TestCode')
+            in_destination = TestCode.objects.using(self.get_using_destination()).all().count()
+            in_source = TestCode.objects.using(self.get_using_source()).all().count()
+            logger.info("15. checking TestCode. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 16:
+            AliquotType = get_model('lab_aliquot_list','AliquotType')
+            in_destination = AliquotType.objects.using(self.get_using_destination()).all().count()
+            in_source = AliquotType.objects.using(self.get_using_source()).all().count()
+            logger.info("17. checking AliquotType. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 18:
+            for model in get_models('lab_panel'):
+                in_destination = model.objects.using(self.get_using_destination()).all().count()
+                in_source = model.objects.using(self.get_using_source()).all().count()
+                logger.info("18. checking {1}. {2} objects in destination, {3} objects in source.".format(in_destination, in_source, model.__name__))
+        if not step > 19:
+            AliquotType = get_model('lab_clinic_api','AliquotType')
+            in_destination = AliquotType.objects.using(self.get_using_destination()).all().count()
+            in_source = AliquotType.objects.using(self.get_using_source()).all().count()
+            logger.info("19. checking AliquotType. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 20:
+            TestCodeGroup = get_model('lab_clinic_api','TestCodeGroup')
+            in_destination = TestCodeGroup.objects.using(self.get_using_destination()).all().count()
+            in_source = TestCodeGroup.objects.using(self.get_using_source()).all().count()
+            logger.info("20. checking TestCodeGroup. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 21:
+            TestCode = get_model('lab_clinic_api','TestCode')
+            in_destination = TestCode.objects.using(self.get_using_destination()).all().count()
+            in_source = TestCode.objects.using(self.get_using_source()).all().count()
+            logger.info("21. checking TestCodeGroup. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 22:
+            Panel = get_model('lab_clinic_api','Panel')
+            in_destination = Panel.objects.using(self.get_using_destination()).all().count()
+            in_source = Panel.objects.using(self.get_using_source()).all().count()
+            logger.info("22. checking Panel. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 23:
+            Review = get_model('lab_clinic_api','Review')
+            in_destination = Review.objects.using(self.get_using_destination()).all().count()
+            in_source = Review.objects.using(self.get_using_source()).all().count()
+            logger.info("23. checking Review. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 24:
+            UnscheduledLabEntryBucket = get_model('lab_entry','UnscheduledLabEntryBucket')
+            in_destination = UnscheduledLabEntryBucket.objects.using(self.get_using_destination()).all().count()
+            in_source = UnscheduledLabEntryBucket.objects.using(self.get_using_source()).all().count()
+            logger.info("24. checking UnscheduledLabEntryBucket. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 25:
+            LabEntry = get_model('lab_entry','LabEntry')
+            in_destination = LabEntry.objects.using(self.get_using_destination()).all().count()
+            in_source = LabEntry.objects.using(self.get_using_source()).all().count()
+            logger.info("25. checking LabEntry. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        if not step > 26:
+            entry = get_model('entry','entry')
+            in_destination = entry.objects.using(self.get_using_destination()).all().count()
+            in_source = entry.objects.using(self.get_using_source()).all().count()
+            logger.info("26. checking LabEntry. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
+        logger.info("Done")
+        
     def backup_database(self, **kwargs):
         """Takes a backup of the netbook before preparing a netbook for dispatch"""
         #Check if were on the server or netbook

@@ -84,6 +84,13 @@ class BasePrepareDevice(BaseController):
         print '    found {0} list models'.format(len(list_models))
         for list_model in list_models:
             self.model_to_json(list_model)
+            
+    def return_all_list_models(self):
+        list_models = []
+        for model in get_models():
+            if issubclass(model, BaseListModel):
+                list_models.append(model)
+        return list_models
 
     def reset_model(self, model_cls):
         """Deletes all instances of the given model and its audit log entries."""
