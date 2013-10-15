@@ -1,6 +1,6 @@
 import logging
 from django.core.management.base import BaseCommand, CommandError
-from apps.bcpp_dispatch.classes import PrepareDevice
+from edc.device.dispatch.classes import PrepareDevice
 
 
 logger = logging.getLogger(__name__)

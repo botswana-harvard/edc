@@ -2,7 +2,7 @@ import itertools
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from edc.base.model.models import BaseModel
-from edc.subject.appointment_helper.models import BaseAppointmentMixin
+
 
 
 class MembershipFormHelper(object):
@@ -44,6 +44,7 @@ class MembershipFormHelper(object):
         return self._keyed
 
     def _add_keyed(self, group, obj):
+        from edc.subject.appointment_helper.models import BaseAppointmentMixin
         if not group:
             group = 'no_group'
         if not isinstance(group, basestring):
@@ -59,6 +60,7 @@ class MembershipFormHelper(object):
         self._unkeyed = {}
 
     def _add_unkeyed(self, group, cls):
+        from edc.subject.appointment_helper.models import BaseAppointmentMixin
         if not group:
             group = 'no_group'
         if not isinstance(group, basestring):
