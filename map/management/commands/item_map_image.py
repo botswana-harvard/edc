@@ -54,8 +54,8 @@ class Command(BaseCommand):
                 file_name = folder + '/' + name + '.jpg'
                 print name
                 urlretrieve(url_str, file_name)
-                item.uploaded_map = name + '.jpg'
-                item.save()
+#                 item.uploaded_map = name + '.jpg'
+#                 item.save()
                 print str((count/float(len(items)))*100) + ' percent done! only ' + str(len(items) - count) + ' more pictures to download'
                 sleep(5)
 

@@ -25,7 +25,6 @@ def plot_item_points(request, **kwargs):
         identifiers = request.session.get('identifiers', [])
         selected_sub_section = request.POST.get(mapper.get_section_field_attr())
         cart_size = len(identifiers)
-        cso_icon_dict = []
         section_color_code_list = []
         selected_region = request.POST.get(mapper.get_region_field_attr())
         request.session['icon'] = request.POST.get('marker_icon')
@@ -49,20 +48,14 @@ def plot_item_points(request, **kwargs):
         payload = mapper.prepare_map_points(items,
             icon,
             identifiers,
-            'egg-circle',
-            'red-circle', selected_sub_section)
-        if selected_sub_section != "ALL":
-            for lon, lat, identifier_label, icon, other_identifier_label in payload:
-                icon_name_length = len(icon)
-                icon_label = icon[icon_name_length - 1]
-                cso_icon_dict.append([icon_label, other_identifier_label])
+            'egg-circle.png',
+            'red-circle', selected_region, selected_sub_section)
         if selected_sub_section == "All":
-            section_color_codes = mapper.make_dictionary(mapper.get_other_icons(), mapper.get_regions())
+            section_color_codes = {'Teal':'A', 'Yellow': 'B', 'Orange': 'C', 'Pink': 'D'}
         else:
-            section_color_codes = mapper.make_dictionary(mapper.get_icons(), mapper.get_regions())
+            section_color_codes = mapper.make_dictionary(mapper.get_sections(), mapper.get_other_icons())
         for key_color, sec_value in section_color_codes.iteritems():
-            section_color_code_list.append([key_color[:-1], sec_value])
-        print section_color_code_list
+            section_color_code_list.append([key_color, sec_value])
         if payload:
             has_items = True
         landmark_list = []
@@ -89,7 +82,6 @@ def plot_item_points(request, **kwargs):
                 'identifiers': identifiers,
                 'landmarks': landmark_list,
                 'cart_size': cart_size,
-                'cso_icon_dict': cso_icon_dict,
                 'section_color_code_list': section_color_code_list,
                 'selected_sub_section': selected_sub_section
                 },

@@ -32,16 +32,10 @@
 				</tr>
 				<tr>
 					<td>
-						<H2>Key</H2>
 						{% if selected_region == "All" %}
+						<H2>Key</H2>
 							{% for color, sectx in section_color_code_list %}       	
 							    	<b>{{color}}</b> : {{sectx}},
-							{% endfor %}
-						{% else %}
-							<p>The following are corresponding numbers on icons and cso's of corresponding items</p>
-							<p>There is no </p>
-							{% for icon, cso in cso_icon_dict %}       	
-							    	<b>{{icon}}</b> : {{cso}},
 							{% endfor %}
 						{% endif %}
 						
