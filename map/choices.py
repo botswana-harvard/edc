@@ -12,14 +12,8 @@ OTHER_ICONS = (
 )
 
 ICONS = (
-            "black_",
-            "dark_yellow_",
-            "drk_blue_",
-            "green_",
-            "grey_",
-            "light_blue_",
-            "pink_",
-            "purple_",
-            "white_",
-            "yellow_"
-)
+            'http://thydzik.com/thydzikGoogleMap/markerlink.php?color=55D7D7',
+            'http://thydzik.com/thydzikGoogleMap/markerlink.php?color=FCF356',
+            'http://thydzik.com/thydzikGoogleMap/markerlink.php?color=EF9D3F',
+            'http://thydzik.com/thydzikGoogleMap/markerlink.php?color=E14E9D'
+        )

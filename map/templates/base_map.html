@@ -16,8 +16,17 @@ var map, marker, locationByID = {}, currentObject, geocoder;
 var pointArray = new Array();
 var landpoints = new Array();
 var x = 0;
-{% for lon, lat, label, icon, cso in payload %}       	
-    	pointArray.push(["{{ label }}", {{ lat }}, {{ lon }}, "{{ MEDIA_URL }}img/{{ icon }}.png", x+1, "{{ cso }}"]);
+{% for lon, lat, label, icon, cso in payload %}
+		var icon = "{{ icon }}";
+		if (icon != "http://thydzik.com/thydzikGoogleMap/markerlink.php?color=55D7D7" && icon != 'http://thydzik.com/thydzikGoogleMap/markerlink.php?color=FCF356' && icon != 'http://thydzik.com/thydzikGoogleMap/markerlink.php?color=EF9D3F' && icon != 'http://thydzik.com/thydzikGoogleMap/markerlink.php?color=E14E9D')
+			{
+				pointArray.push(["{{ label }}", {{ lat }}, {{ lon }}, "{{ STATIC_URL }}img/{{ icon }}", x+1, "{{ cso }}"]);
+			}
+		else
+			{
+			pointArray.push(["{{ label }}", {{ lat }}, {{ lon }}, "{{ icon }}", x+1, "{{ cso }}"]);
+			}
+    	
 {% endfor %}
 
 {% for place, lat, lon in landmarks %}

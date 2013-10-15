@@ -237,9 +237,9 @@ class Mapper(object):
             raise MapperError('Attribute \'other_icons\' may not be None (see _other_icons) .')
 
     def get_other_icons(self):
-        if not self._icons:
-            self.set_icons()
-        return self._icons
+        if not self._other_icons:
+            self.set_other_icons()
+        return self._other_icons
 
     def set_item_model_cls(self, cls=None):
         if cls:
@@ -373,7 +373,7 @@ class Mapper(object):
                 val = val + identifier + delim
         return val
 
-    def prepare_map_points(self, items, selected_icon, cart, cart_icon, dipatched_icon='red-circle', selected_section="All"):
+    def prepare_map_points(self, items, selected_icon, cart, cart_icon, dipatched_icon='red-circle.png', selected_section="All", selected_sub_section='ALL'):
         """Returns a list of item identifiers from the given queryset excluding those items that have been dispatched.
         """
         payload = []
@@ -396,26 +396,20 @@ class Mapper(object):
                 icon = cart_icon
                 identifier_label = "{0} in shopping cart waiting to be dispatched".format(identifier_label)
             else:
-                icon = "blu-circle"
+                icon = "blu-circle.png"
                 if selected_section == "All":
-                    icon = "blu-circle"
                     for key_sec, icon_value in section_color_code_dict.iteritems():
-                        if item.section == key_sec:
-                            if icon_number <= 100:
-                                icon = icon_value + str(icon_number)
-                                icon_number += 1
-                        if icon_number == 100:
-                            icon_number = 0
+                        if getattr(item, self.region_field_attr) == key_sec:
+                            icon = icon_value 
                 else:
                     for key_sec, icon_value in section_color_code_dict.iteritems():
-                        if item.section == key_sec:
+                        if getattr(item, self.section_field_attr) == key_sec:
                             if icon_number <= 25:
-                                icon = icon_value + letters[icon_number]
+                                icon = icon_value + letters[icon_number] + '.png'
                                 icon_number += 1
                             if icon_number == 25:
                                 icon_number = 0
-            print section_color_code_dict
-            payload.append([item.gps_target_lon, item.gps_target_lat, identifier_label, icon, other_identifier_label])
+            payload.append([getattr(item, self.target_gps_lon_field_attr), getattr(item, self.target_gps_lat_field_attr), identifier_label, icon, other_identifier_label])
         return payload
 
     def gps_distance_between_points(self, lat, lon, center_lat=None, center_lon=None, radius=None):
