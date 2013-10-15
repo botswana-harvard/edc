@@ -409,7 +409,7 @@ class Mapper(object):
                                 icon_number += 1
                             if icon_number == 25:
                                 icon_number = 0
-            payload.append([item.gps_target_lon, item.gps_target_lat, identifier_label, icon, other_identifier_label])
+            payload.append([getattr(item, self.target_gps_lon_field_attr), getattr(item, self.target_gps_lat_field_attr), identifier_label, icon, other_identifier_label])
         return payload
 
     def gps_distance_between_points(self, lat, lon, center_lat=None, center_lon=None, radius=None):
