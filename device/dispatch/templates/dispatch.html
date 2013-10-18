@@ -19,7 +19,7 @@
         <tr><TD><A href="{{ dispatch_url }}{{ qs }}/">{{ qs }}</A></TD><td>{% if qs|is_dispatched %}<A href="/admin/bhp_dispatch/dispatchitem/?q={{ qs }}">dispatched</A>{% endif %}</td></TR>
     {% endfor %}
 </table>
-<form action="/dispatch/" method="post">
+<form action="/dispatch/bcpp/" method="post">
     {{ form.non_field_errors }}
     <div class="fieldWrapper">
         {{ form.producer.errors }}

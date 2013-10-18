@@ -258,7 +258,7 @@ class DispatchController(BaseDispatchController):
             if consent_instances:
                 self.dispatch_user_items_as_json(consent_instances, container)
 
-    def dispatch_membership_forms(self, registered_subject, container, **kwargs):
+    def dispatch_membership_forms(self, registered_subject, container, fk_to_skip=None, **kwargs):
         """Gets all instances of visible membership forms for this registered_subject and dispatches.
 
         Keywords:
@@ -278,7 +278,7 @@ class DispatchController(BaseDispatchController):
             except FieldError:
                 instances = membershipform_model.objects.filter(registered_subject=registered_subject)
             if instances:
-                self.dispatch_user_items_as_json(instances, container)
+                self.dispatch_user_items_as_json(instances, container, fk_to_skip=fk_to_skip, additional_base_model_class=membershipform_model)
 
     def dispatch_from_view(self, queryset, **kwargs):
         """Confirms no items in queryset are dispatched then follows by trying to dispatch each one.

@@ -18,6 +18,9 @@ def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs)
         dispatch_form_cls = DispatchForm
     msg = None
     producer = request.GET.get('producer', None)
+    app_name = kwargs.get('app_name', None)
+    if not app_name:
+        raise AttributeError('keyword argument app_name cannot be None. This is in edc/device/dispatch/views/dispatch.py')
     has_outgoing_transactions = False
     user_container = ''
     dispatch_url = ''
@@ -68,4 +71,5 @@ def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs)
         'user_container_model_name': user_container_model_name,
         'user_container_admin_url': user_container_admin_url,
         'title': 'Dispatch to Producer',
+        'app_name': app_name,
         })

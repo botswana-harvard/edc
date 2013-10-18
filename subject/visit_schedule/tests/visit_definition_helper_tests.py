@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
-from edc.subject.entry.tests.factories import EntryFactory
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.testing.models import TestSubjectVisit, TestSubjectVisitTwo, TestSubjectVisitThree
@@ -10,7 +9,7 @@ from .factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinit
 class VisitDefinitionHelperTests(TestCase):
 
     def test_copy(self):
-
+        from edc.subject.entry.tests.factories import EntryFactory
         content_type_map_helper = ContentTypeMapHelper()
         content_type_map_helper.populate()
         content_type_map_helper.sync()
