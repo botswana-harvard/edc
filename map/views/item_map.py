@@ -26,11 +26,7 @@ def item_map(request, **kwargs):
         if not latitude:
             raise MapperError('Attribute latitude may not be None. Got {0}'.format(kwargs))
         identifier = kwargs.get('identifier', None)
-        print mapper.get_item_model_cls(), mapper.get_identifier_field_attr(), identifier
         item = mapper.get_item_model_cls().objects.filter(**{mapper.get_identifier_field_attr(): identifier})
-        
-        print item
-        
         item_map = getattr(item[0], mapper.map_field_attr) 
         folder = settings.MEDIA_ROOT
         landmark_list = []
@@ -45,6 +41,7 @@ def item_map(request, **kwargs):
         lmarks = []
         if not map:
             map = request.GET.get('map')
+            item_map = 'all.jpg'
         for mark in landmark_list:
             dist = mapper.gps_distance_between_points(lat, lon, mark[1], mark[2])
             lmarks.append([dist, mark[0]])
