@@ -1,56 +1,55 @@
-from django.test import TestCase
-from django.core.exceptions import ImproperlyConfigured
+from django.test.client import Client
+from django.test import SimpleTestCase
+from django.core.urlresolvers import reverse, NoReverseMatch
 
-from edc.dashboard.section.classes.base_section_index_view import BaseSectionIndexView
-from edc.dashboard.section.classes import site_sections, BaseSectionView
+from edc.testing.models import TestModel
+from edc.dashboard.search.classes import BaseSearchByWord
+
+from ..classes import site_sections, BaseSectionView
+
+
+class TestModelSearchByWord(BaseSearchByWord):
+    search_model = TestModel
+    order_by = 'created'
+    template = 'search_plot_result_include.html'
 
 
 class SectionOneView(BaseSectionView):
     section_name = 'one'
     section_display_name = 'Thing One'
-    section_display_index = 110
-site_sections.register(SectionOneView)
+    section_display_index = 990
+    search_cls = TestModelSearchByWord
+    add_model = TestModel
 
 
-class SectionTwoView(BaseSectionView):
-    section_name = 'two'
-    section_display_name = 'Thing Two'
-    section_display_index = 110
-site_sections.register(SectionTwoView)
+class SectionMethodTests(SimpleTestCase):
 
+    def test_section_knows_section_name(self):
+        section_one_view = SectionOneView()
+        self.assertEquals('one', section_one_view.get_section_name())
 
-class SectionThreeView(BaseSectionView):
-    section_name = 'three'
-    section_display_name = 'Thing Three'
-    section_display_index = 100
+    def test_section_knows_search_cls(self):
+        section_one_view = SectionOneView()
+        self.assertEquals(TestModelSearchByWord, section_one_view.get_search_cls())
 
+    def test_section_knows_add_model(self):
+        section_one_view = SectionOneView()
+        self.assertEquals(TestModel, section_one_view.get_add_model_cls())
 
-class SectionMethodTests(TestCase):
+    def test_urlpatterns(self):
+        section_one_view = SectionOneView()
+        self.assertIn('section_search_url', [p.name for p in section_one_view.urlpatterns()])
+        self.assertIn('section_url', [p.name for p in section_one_view.urlpatterns()])
 
-    def test_controller(self):
+    def test_url_reverse(self):
+        section_one_view = SectionOneView()
+        site_sections.register(SectionOneView)
+        self.assertTrue(isinstance(reverse('section_url', kwargs={'section_name': section_one_view.get_section_name()}), basestring))
+        self.assertRaises(NoReverseMatch, reverse, 'section_url', kwargs={'section_name': ''})
+        self.assertTrue(isinstance(reverse('section_search_url', kwargs={'section_name': section_one_view.get_section_name(), 'search_term': '123'}), basestring))
+        self.assertTrue(isinstance(reverse('section_search_url', kwargs={'section_name': section_one_view.get_section_name(), 'search_term': None}), basestring))
+        site_sections.unregister(SectionOneView)
 
-        self.assertEqual(site_sections.get_section_names(), ['one', 'two'])
-        self.assertEqual(site_sections.get_section_display_names(), ['Thing One', 'Thing Two'])
-        self.assertEqual(site_sections.get_section_list(), site_sections.get_section_tuples())
-        self.assertEqual(sorted([tpl.section_name for tpl in site_sections.get_section_tuples()]), sorted(site_sections.get_section_names()))
-        self.assertEqual(sorted([tpl.display_name for tpl in site_sections.get_section_tuples()]), sorted(site_sections.get_section_display_names()))
-        self.assertRaises(ImproperlyConfigured, site_sections.get_section_display_indexes)
-        site_sections.unregister('two')
-        site_sections.register(SectionThreeView)
-        self.assertEqual(site_sections.get_section_display_indexes(), [100, 110])
-        self.assertEqual(site_sections.get_section_names(), ['one', 'three'])
-        self.assertEqual(site_sections.get_section_display_names(), ['Thing One', 'Thing Three'])
-        self.assertEqual(site_sections.get_indexed_section_display_names(), ['Thing Three', 'Thing One'])
-        self.assertEqual(site_sections.get_section_list(), site_sections.get_section_tuples())
-        self.assertEqual(sorted([tpl.section_name for tpl in site_sections.get_section_tuples()]), sorted(site_sections.get_section_names()))
-        self.assertEqual(sorted([tpl.display_name for tpl in site_sections.get_section_tuples()]), sorted(site_sections.get_section_display_names()))
-
-        site_sections.autodiscover()
-        self.assertTrue(site_sections.is_autodiscovered)
-
-        section_index_view = BaseSectionIndexView()
-        self.assertEqual(section_index_view.get_section_display_name_list(), ['Thing One', 'Thing Three'])
-        self.assertEqual(section_index_view.get_indexed_section_display_name_list(), ['Thing Three', 'Thing One'])
-        self.assertFalse(section_index_view.is_setup)
-        section_index_view.setup()
-        self.assertTrue(section_index_view.is_setup)
+    def test_search(self):
+        section_one_view = SectionOneView()
+#        section_one_view.get_search_result(request)
