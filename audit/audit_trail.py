@@ -1,14 +1,18 @@
 """ https://github.com/LaundroMat/django-AuditTrail/blob/master/audit.py """
-
 import copy
 import re
+
+from django_extensions.db.fields import UUIDField
+
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
+
 from edc.device.sync.models import BaseSyncUuidModel
 from edc.device.sync.classes import SerializeToTransaction
-from edc.base.model.fields import MyUUIDField
 from edc.core.crypto_fields.fields import BaseEncryptedField
+from edc.base.model.fields import UUIDAutoField
+
 from .__init__ import GLOBAL_TRACK_FIELDS
 
 value_error_re = re.compile("^.+'(.+)'$")
@@ -60,16 +64,9 @@ class AuditTrail(object):
                     # instance is the current (non-audit) model.
                     kwargs = {}
                     for field in sender._meta.fields:
-                        #kwargs[field.attname] = getattr(instance, field.attname)
                         if isinstance(field, BaseEncryptedField):
                             # slip hash in to silence encryption
                             value = getattr(instance, field.name)
-
-                            #try:
-                            #    value = str(value)
-                            #except:
-                            #    raise TypeError('Expected basestring. Got {0}'.format(value))
-
                             if not field.field_cryptor.is_encrypted(value):
                                 kwargs[field.name] = field.field_cryptor.get_hash_with_prefix(value)
                             else:
@@ -190,8 +187,6 @@ def create_audit_model(cls, **kwargs):
     attrs = {
         '__module__': cls.__module__,
         'Meta': Meta,
-        # erikvw '_audit_id': models.AutoField(primary_key=True),
-        '_audit_id': MyUUIDField(primary_key=True),
         '_audit_timestamp': models.DateTimeField(auto_now_add=True, db_index=True),
         '_audit__str__': cls.__str__.im_func,
         '__str__': lambda self: '%s as of %s' % (self._audit__str__(), self._audit_timestamp),
@@ -203,12 +198,19 @@ def create_audit_model(cls, **kwargs):
 
     # Copy the fields from the existing model to the audit model
     for field in cls._meta.fields:
-        #if field.attname in attrs:
         if field.name in attrs:
             raise ImproperlyConfigured("%s cannot use %s as it is needed by AuditTrail." % (cls.__name__, field.attname))
-        if isinstance(field, models.AutoField):
-            # Audit models have a separate AutoField
-            attrs[field.name] = models.IntegerField(db_index=True, editable=False)
+        if isinstance(field, (models.AutoField, UUIDAutoField)):
+            # Audit models have a separate AutoField called _audit_id
+            # id is demoted to a normal field (or whatever the auto field is named)
+            if isinstance(field, UUIDAutoField):
+                attrs[field.name] = UUIDField(auto=False, editable=False)
+                new_field = UUIDAutoField(primary_key=True)
+            else:
+                attrs[field.name] = models.IntegerField(db_index=True, editable=False)
+                new_field = models.AutoField(primary_key=True)
+            new_field.name = '_audit_{0}'.format(field.name)
+            attrs[new_field.name] = new_field
         # begin erikvw added this as OneToOneField was not handled, causes an IntegrityError
         elif isinstance(field, models.OneToOneField):
             rel = copy.copy(field.rel)
@@ -219,6 +221,8 @@ def create_audit_model(cls, **kwargs):
         #elif isinstance(field, BaseEncryptedField):
         #    attrs[field.name] = models.CharField(max_length=field.get_max_length(), null=True, editable=False)
         else:
+            if field.primary_key == True:
+                raise ImproperlyConfigured("%s should not be a primary key! Unhandled by AuditTrail" % (cls.__name__, field.attname))
             attrs[field.name] = copy.copy(field)
             # If 'unique' is in there, we need to remove it, otherwise the index
             # is created and multiple audit entries for one item fail.

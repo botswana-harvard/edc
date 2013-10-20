@@ -1,6 +1,8 @@
+from django_extensions.db.fields import UUIDField
+
 from django.db import models
+
 from edc.base.model.models import BaseUuidModel
-from edc.base.model.fields import MyUUIDField
 from ..choices import AUDITCODES
 
 
@@ -18,9 +20,7 @@ class AuditComment (BaseUuidModel):
         max_length=50,
         )
 
-    audit_id = MyUUIDField(
-        db_index=True,
-        editable=True)
+    audit_id = UUIDField()
 
     audit_code = models.CharField(
         max_length=25,
