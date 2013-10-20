@@ -121,7 +121,7 @@ function setLandMarks(map, locations) {
 			<tr valign="top"><td><img src="{{ MEDIA_URL }}{{ item_map }}" alt="item map" width="800" height="450"></td></tr>
 			<tr>
 			<td>
-				Key <A href="{% url 'item_map_url' mapper_name identifier lon lat %}/?map=1">(google online map)</A> 
+				Key <A href="{% url 'item_map_url' mapper_name identifier lon lat %}/?map=1">(All plots)</A> 
 			</td>
 		</tr>
 		<tr>
@@ -131,9 +131,8 @@ function setLandMarks(map, locations) {
 		{% for key, value in markers_l.items %}
 			<tr><td width:400px; >{{ key }}</td><td width:10px; >{{ value }}</td></tr>
 		{% endfor %}
-		
 		{% else %}
-			<tr valign="top"><td><div id="map" style="width: 800px; height: 450px"></div></td></tr>
+			<tr valign="top"><td><img src="{{ MEDIA_URL }}{{ item_map }}" alt="item map" width="800" height="450"></td></tr>
 		{% endif %}
 	{% else %}
 	<tr valign="top"><td><div id="map" style="width: 800px; height: 450px"></div></td></tr>
