@@ -1,5 +1,5 @@
 from .controller import site_sections
-from edc.dashboard.search.classes import site_search
+# from edc.dashboard.search.classes import site_search
 
 
 class BaseSectionIndexView(object):
@@ -23,7 +23,7 @@ class BaseSectionIndexView(object):
         if not self.is_setup:
             site_sections.autodiscover()
             self.set_indexed_section_tuples()
-            site_search.autodiscover(self.get_section_name_list())
+#             site_search.autodiscover(self.get_section_name_list())
             self.is_setup = True
 
     def set_indexed_section_tuples(self):
