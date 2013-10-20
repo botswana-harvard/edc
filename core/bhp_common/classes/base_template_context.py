@@ -20,7 +20,7 @@ class BaseContext(dict):
         self._context.update(**defaults)
         #section_name, for example 'clinic', 'lab', 'admin', 'surveys' comes as a parameter from the Url
         if kwargs.get('section_name') is None:
-            raise TypeError('BaseSearch requires keyword/value for key \'section_name\'. None given.')
+            raise TypeError('BaseSearcher requires keyword/value for key \'section_name\'. None given.')
         else:
             self._context['section_name'] = kwargs.get('section_name')
 
