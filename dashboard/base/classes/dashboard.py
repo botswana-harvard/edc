@@ -122,9 +122,6 @@ class Dashboard(object):
 
     def _add_to_context(self):
         self.context.add(template=self.get_template(),
-            #section=self.get_section(),
-            #section_name=self.get_section_name(),
-            #search_type=self.get_search_type(),
             dashboard_type=self.get_dashboard_type(),
             dashboard_id=self.get_dashboard_id(),
             dashboard_model=self.get_dashboard_model_name(),  # yes, we use the name not the model class for the context

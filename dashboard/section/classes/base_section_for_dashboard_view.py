@@ -10,17 +10,15 @@ class BaseSectionForDashboardView(BaseSectionView):
     dashboard_url_name = None
 
     def __init__(self):
-        super(BaseSectionForDashboardView, self).__init__()
         self._dashboard_url_name = None
+        self.set_dashboard_url_name()
+        super(BaseSectionForDashboardView, self).__init__()
 
-    def set_dashboard_url_name(self, value=None):
+    def set_dashboard_url_name(self):
         """Sets the _dashboard_url_name for this section."""
-        if self.dashboard_url_name:  # try for class attribute first
-            self._dashboard_url_name = self.dashboard_url_name
-        else:
-            self._section_name = value
+        self._dashboard_url_name = self.dashboard_url_name
         if not self._dashboard_url_name:
-            raise TypeError('Attribute _dashboard_url_name may not be None for {0}'.format(self))
+            raise TypeError('Attribute dashboard_url_name may not be None for {0}'.format(self))
 
     def get_dashboard_url_name(self):
         """Returns the _dashboard_url_name for this section."""

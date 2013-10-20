@@ -1,10 +1,12 @@
-import re
 from django.db import models
 from django.db.models import Q
+
 from edc.core.crypto_fields.fields import BaseEncryptedField
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.consent.models import BaseConsent
+
 from ..exceptions import SearchError
+
 from .base_searcher import BaseSearcher
 
 
@@ -15,9 +17,9 @@ class BaseSearchByWord(BaseSearcher):
         self.search_helptext = 'Search by search term.'
         self.search_result_order_by = '-modified'
 
-    def contribute_to_context(self, context, post=None):
+    def contribute_to_context(self, context):
+        context = super(BaseSearchByWord, self).contribute_to_context(context)
         context.update({
-            'search_form': self.get_search_form(post),
             'search_filter_keywords': self.get_filter_keyword_list()})
         return context
 
