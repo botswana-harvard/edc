@@ -190,7 +190,6 @@ class BaseSectionView(object):
         self.set_searcher(kwargs.get('search_name'), [request.POST, kwargs])
         if self.get_searcher():
                 page = 1
-                #self.get_searcher().contribute_to_context(default_context)
                 search_result = self.get_searcher().get_search_result(request, **kwargs)
                 default_context.update({
                     'search_result': self._paginate(search_result, page),
