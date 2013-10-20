@@ -5,7 +5,7 @@ from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.subject.appointment.models import Appointment
-from edc.subject.appointment.tests.factories import ConfigurationFactory, AppointmentFactory
+from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.subject.visit_schedule.models import VisitDefinition
 from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
 from edc.testing.models import TestSubjectVisit
@@ -64,6 +64,7 @@ class OffStudyMethodsTests(TestCase):
         VisitDefinitionFactory(code='1800', visit_tracking_content_type_map=visit_tracking_content_type_map)
 
     def create_appointments(self, now, appts):
+        from edc.subject.appointment.tests.factories import AppointmentFactory
         for visit_code, dte in appts.iteritems():
             appointment = AppointmentFactory(registered_subject=self.registered_subject, appt_datetime=dte, visit_definition=VisitDefinition.objects.get(code=visit_code))
             # appt_datetime may be change by get_best_apptdatetime, so update dict

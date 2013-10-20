@@ -193,7 +193,10 @@ class RegisteredSubject(BaseSubject):
 
     def dispatch_container_lookup(self, using=None):
         return None
-
+    
+    def is_dispatchable_model(self):
+        return True
+    
     def bypass_for_edit_dispatched_as_item(self):
         # requery myself
         obj = self.__class__.objects.get(pk=self.pk)

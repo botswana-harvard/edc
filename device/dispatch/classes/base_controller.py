@@ -149,9 +149,9 @@ class BaseController(BaseProducer):
                         options[n] = dct
         return options
 
-    def model_to_json(self, model_cls, additional_base_model_class=None):
+    def model_to_json(self, model_cls, additional_base_model_class=None, fk_to_skip=None):
         """Sends all instances of the model class to :func:`_to_json`."""
-        self._to_json(model_cls.objects.all(), additional_base_model_class)
+        self._to_json(model_cls.objects.all(), additional_base_model_class, fk_to_skip=fk_to_skip)
 
     def is_allowed_base_model_cls(self, cls, additional_base_model_class=None):
         """Returns True or raises an exception if the class is a subclass of a base model class allowed for serialization."""
