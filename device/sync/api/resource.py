@@ -35,6 +35,18 @@ api_key = ApiKey.objects.get(user=User.objects.get(username='django'))
 api_key.key='1af87bd7d0c7763e7b11590c9398740f0de7678b'
 api_key.save()
 names = ['onep','ckgathi','chazha','django','erikvw','jtshikedi','rmabutho','ankhutelang']
+
+if you get <<ValueError: astimezone() cannot be applied to a naive datetime>> when trying to create ApiKeys,
+replace 
+def now: 
+    return timezone.localtime.(timezone.now())
+with
+def now():
+        d = timezone.now()
+        if d.tzinfo:
+           return timezone.localtime(timezone.now())
+        return d
+at python2.7/site-packages/tastypie/utils/timezone.py.
 """
 
 class OutgoingTransactionMiddleManResource(ModelResource):

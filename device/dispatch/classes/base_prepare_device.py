@@ -207,14 +207,14 @@ class BasePrepareDevice(BaseController):
             model_cls = get_model(app_name, model_name)
             self.reset_model(model_cls)
 
-    def update_model(self, model_or_app_model_tuple, additional_base_model_class=None):
+    def update_model(self, model_or_app_model_tuple, additional_base_model_class=None, fk_to_skip=None):
         try:
             app, model = model_or_app_model_tuple
             model_cls = get_model(app, model)
         except:
             model_cls = model_or_app_model_tuple
         #additional_base_model_class = model_cls
-        self.model_to_json(model_cls, additional_base_model_class)
+        self.model_to_json(model_cls, additional_base_model_class, fk_to_skip=fk_to_skip)
 
     def reset_app_models(self, app_name):
         print '    deleting for app {0}...'.format(app_name)
