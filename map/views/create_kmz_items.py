@@ -92,7 +92,6 @@ def create_kmz_items(request, **kwargs):
                     pass
                 count += 1
             message = 'The file ' + filename[0] + ' was uploaded successfully \n and {0} items where created'.format(count - 2)
-            print count
         else:
             message = 'No file was uploaded'
         return render_to_response(
