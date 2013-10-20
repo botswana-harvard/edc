@@ -22,8 +22,6 @@ def plot_item_points(request, **kwargs):
         mapper = site_mappers.get_registry(mapper_name)()
         action_script_url = 'map_add_cart_url'
         has_items = False
-        print mapper_name
-        print mapper.get_item_model_cls()
         identifiers = request.session.get('identifiers', [])
         selected_sub_section = request.POST.get(mapper.get_section_field_attr())
         cart_size = len(identifiers)
