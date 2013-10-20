@@ -70,6 +70,31 @@ tr.alt {
 }
 
 
+#keyword_row
+{
+    list-style-type:none;
+    padding:1px;
+    float: left;
+    overflow:auto;
+    margin: 1px;    
+}
+#keyword_row li
+{
+    background: #EDF3FE;
+    height: auto;
+    line-height: auto;
+    float: left;
+    width: auto;
+    display: block;
+    border: 0.1em solid #dcdce9;
+    color: black;
+    text-decoration: none;
+    text-align: center;
+    margin: 2px;
+    overflow:auto;
+    padding:1px;
+}
+
 /* SECTION NAVBAR */
 #section_navbar ul
 {
@@ -150,9 +175,9 @@ margin: 0 0.15em;
 }
 
 .gps_search_form input[type=text] {
-width: 30px;
-margin-left: 2px;
-margin-right: 1px;
+    width: 30px;
+    margin-left: 2px;
+    margin-right: 1px;
 }
 
 #search_tile {
@@ -167,8 +192,20 @@ margin-right: 1px;
 }
 
 .search_form {
-width: 50px;
+    width: auto;
 }
+
+#keyword_row_tile {
+    float:left;
+    width:auto;
+    background:#FFFFEC;
+    border: 1px solid #EEEEAA;
+    padding: 2px;
+    height:auto;
+    margin:1px;
+    border-radius:5px;
+}
+
 
 #search_result_tile {
     float:left;

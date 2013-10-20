@@ -43,16 +43,16 @@ class Controller(object):
         self.set_registry(section_view_cls)
 
     def set_registry(self, section_view_cls):
-        if not issubclass(section_view_cls, BaseSectionView):
+        if not isinstance(section_view_cls(), BaseSectionView):
             raise AlreadyRegistered('Expected an instance of BaseSectionView. Got {0}.'.format(section_view_cls))
-        if not section_view_cls.section_name:
-            raise AttributeError('Attribute section_name cannot be None for class {0}'.format(section_view_cls))
-        if section_view_cls.section_name in self._registry:
-            raise AlreadyRegistered('A section view class of type {1} is already registered ({0})'.format(section_view_cls, section_view_cls.section_name))
-        self._registry[section_view_cls().get_section_name()] = section_view_cls
+#         if not section_view_cls().get_section_name():
+#             raise AttributeError('Attribute section_name cannot be None for class {0}'.format(section_view_cls))
+        if section_view_cls().get_section_name() in self._registry:
+            raise AlreadyRegistered('A section view class of type {1} is already registered ({0})'.format(section_view_cls, section_view_cls().get_section_name()))
+        self._registry[section_view_cls().get_section_name()] = section_view_cls()
 
     def get(self, section_name):
-        """Returns a dictionary value, s section_view_cls, for the given section name."""
+        """Returns a dictionary value, s section_view_inst, for the given section name."""
         if not section_name in self._registry:
             raise TypeError('Invalid section name. Got {0}. Expected any of {1}'.format(section_name, self.get_section_names()))
         return self._registry.get(section_name)
@@ -128,8 +128,7 @@ class Controller(object):
     def set_section_tuples(self):
         """Sets to a list of named tuples with section information of the format (section_name, display_name, display_index)."""
         self._section_tuples = []
-        for cls in self.get_registry().itervalues():
-            inst = cls()
+        for inst in self.get_registry().itervalues():
             tpl = SectionNamedTpl(section_name=inst.get_section_name(), display_name=inst.get_section_display_name(), display_index=inst.get_section_display_index())
             if tpl not in self._section_tuples:
                 self._section_tuples.append(tpl)
@@ -144,6 +143,10 @@ class Controller(object):
     def get_section_list(self):
         """Wrapper for :func:`get_section_tuples`."""
         return self.get_section_tuples()
+
+    def update_section_lists(self):
+        for inst in self.get_registry().itervalues():
+            inst.set_section_list(self.get_registry().keys())
 
     def unregister(self, section_name):
         if section_name in self.get_registry():

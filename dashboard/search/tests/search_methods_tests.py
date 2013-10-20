@@ -4,7 +4,7 @@ from django.db.models.query import QuerySet
 from edc.dashboard.section.classes import BaseSectionView, site_sections
 from edc.testing.models import TestConsent
 from edc.testing.tests.factories import TestConsentFactory
-from ..classes import BaseSearchByWord, site_search
+from ..classes import BaseSearchByWord
 from ..exceptions import SearchModelError, SearchAttributeError
 
 
@@ -12,17 +12,16 @@ class SearchMethodsTests(TestCase):
 
     def test_section_name(self):
 
+        class TestSearchByWord(BaseSearchByWord):
+            search_model = TestConsent
+
         class SectionSubjectView(BaseSectionView):
             section_name = 'subject'
             section_display_name = 'Test Subjects'
             section_display_index = 20
             section_template = 'section_subject.html'
+            search = [TestSearchByWord]
         site_sections.register(SectionSubjectView)
-
-        class TestSearchByWord(BaseSearchByWord):
-            section = SectionSubjectView
-            search_model = TestConsent
-        site_search.register(TestSearchByWord)
 
         test_search = TestSearchByWord()
 
