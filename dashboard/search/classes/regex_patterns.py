@@ -1,6 +1,6 @@
 import re
 
-patterns = {
+regex_patterns = {
     'word': re.compile('^[a-z_]*=[A-Za-z]*$'),
     'number': re.compile('^[a-z_]*=[0-9]*$'),
     'gender': re.compile('^[MF]{1}$'),

@@ -1,5 +1,7 @@
 from django.db import models
+
 from edc.audit.audit_trail import AuditTrail
+
 from .base_sync_uuid_model import BaseSyncUuidModel
 
 
