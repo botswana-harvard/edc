@@ -613,7 +613,9 @@ class RegisteredSubjectDashboard(Dashboard):
         May come from url or from the overridden :func:`set_membership_form_category`
 
         Must be a valid membership form category."""
-        self._membership_form_category = value or self.set_membership_form_category()
+        self._membership_form_category = value
+        if not self._membership_form_category:
+            self.set_membership_form_category()
         if not self._membership_form_category:
             raise ImproperlyConfigured(
                 'Attribute \'_membership_form_category\' may not be None. Must be one of {0}. '
