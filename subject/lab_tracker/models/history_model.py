@@ -7,7 +7,8 @@ class HistoryModel(BaseHistoryModel):
     objects = models.Manager()
 
     class Meta:
-        app_label = 'bhp_lab_tracker'
+        app_label = 'lab_tracker'
+        db_table = 'bhp_lab_tracker_historymodel'
         unique_together = (('source_model_name',
                             'source_app_label',
                             'source_identifier',
