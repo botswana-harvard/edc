@@ -39,7 +39,7 @@ def item_map(request, **kwargs):
         lat = getattr(item[0], mapper.target_gps_lat_field_attr)
         lon = getattr(item[0], mapper.target_gps_lon_field_attr)
         lmarks = []
-        if not map:
+        if request.GET.get('map'):
             map = request.GET.get('map')
             item_map = 'all.jpg'
         for mark in landmark_list:
