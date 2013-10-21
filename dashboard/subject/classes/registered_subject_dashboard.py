@@ -987,7 +987,7 @@ class RegisteredSubjectDashboard(Dashboard):
 
     def get_subject_hiv_template(self):
         return 'subject_hiv_status.html'
-
+bhp_lab_tracker
     def render_subject_hiv_status(self):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""
         if self.get_subject_hiv_status():
