@@ -8,4 +8,5 @@ class HistoryModelError(BaseHistoryModel):
     objects = models.Manager()
 
     class Meta:
-        app_label = 'bhp_lab_tracker'
+        app_label = 'lab_tracker'
+        db_table = 'bhp_lab_tracker_historymodelerror'
