@@ -10,6 +10,7 @@ from ..exceptions import DashboardModelError
 class DashboardMethodTests(TestCase):
 
     def test_p1(self):
+        """test init"""
         test_consent = TestConsentFactory()
         registered_subject = test_consent.registered_subject
         print registered_subject.first_name
@@ -20,17 +21,28 @@ class DashboardMethodTests(TestCase):
         self.assertRaises(TypeError, Dashboard, 'subject', '--', RegisteredSubject)
         self.assertRaises(TypeError, Dashboard, 'subject', registered_subject.pk, RegisteredSubject)
 
-        print 'assert OK if registered_subject is the dashboard model and is specified as model class'
+    def test_with_registered_subject(self):
+        """assert OK if registered_subject is the dashboard model and is specified as model class"""
+        test_consent = TestConsentFactory()
+        registered_subject = test_consent.registered_subject
         dashboard = Dashboard('subject', registered_subject.pk, RegisteredSubject, dashboard_type_list=['subject'])
         self.assertEquals(dashboard.get_dashboard_type(), 'subject')
         self.assertEquals(dashboard.get_dashboard_models(), {'registered_subject': RegisteredSubject})
-        print 'assert correctly updates instead of adds to dictionary of added twice'
+
+    def test_dict_update(self):
+        """assert correctly updates instead of adds to dictionary if added twice"""
+        test_consent = TestConsentFactory()
+        registered_subject = test_consent.registered_subject
+        dashboard = Dashboard('subject', registered_subject.pk, RegisteredSubject, dashboard_type_list=['subject'])
         dashboard.add_dashboard_model({'registered_subject': RegisteredSubject})
         self.assertEquals(dashboard.get_dashboard_model(), RegisteredSubject)
         self.assertEquals(dashboard.get_dashboard_id(), registered_subject.pk)
         self.assertEquals(dashboard.get_dashboard_model_name(), 'registered_subject')
 
-        print 'assert OK if registered_subject is the dashboard model and is specified as a model_name instead of class'
+    def test_with_registered_subject2(self):
+        """"assert OK if registered_subject is the dashboard model and is specified as a model_name instead of class"""
+        test_consent = TestConsentFactory()
+        registered_subject = test_consent.registered_subject
         dashboard = Dashboard('subject', registered_subject.pk, 'registered_subject', dashboard_type_list=['subject'])
         self.assertEquals(dashboard.get_dashboard_type(), 'subject')
         self.assertRaises(TypeError, dashboard.get_dashboard_model, RegisteredSubject)
@@ -39,9 +51,8 @@ class DashboardMethodTests(TestCase):
         self.assertEquals(dashboard.get_dashboard_id(), registered_subject.pk)
         self.assertEquals(dashboard.get_dashboard_model_name(), 'registered_subject')
 
-        print 'assert raises TypeErrors if incomplete parameter list'
-        #registered_subject = RegisteredSubjectFactory()
-        #print registered_subject.first_name
+    def test_param_list(self):
+        """assert raises TypeErrors if incomplete parameter list"""
         test_consent = TestConsentFactory()
         self.assertRaises(TypeError, Dashboard)
         self.assertRaises(TypeError, Dashboard, None, None, None)
@@ -50,12 +61,22 @@ class DashboardMethodTests(TestCase):
         self.assertRaises(TypeError, Dashboard, 'subject', '--', RegisteredSubject)
         self.assertRaises(TypeError, Dashboard, 'subject', test_consent.pk, TestConsent)
 
-        print 'assert raises exception if dashboard model is not in dictionary'
+    def test_dashboard_model(self):
+        """assert raises exception if dashboard model is not in dictionary"""
+        test_consent = TestConsentFactory()
         self.assertRaises(DashboardModelError, Dashboard, 'subject', test_consent.pk, TestConsent, dashboard_type_list=['subject'])
-        print 'assert OK if dashboard model is added to dictionary using the dashboard instance'
+
+    def test_dashboard_model2(self):
+        """assert OK if dashboard model is added to dictionary using the dashboard instance"""
+        test_consent = TestConsentFactory()
+        registered_subject = test_consent.registered_subject
+        dashboard = Dashboard('subject', registered_subject.pk, 'registered_subject', dashboard_type_list=['subject'])
         dashboard.add_dashboard_model({'test_consent': TestConsent})
         self.assertIn('test_consent', dashboard.get_dashboard_models())
-        print 'assert OK if dashboard model is specified (and added) at init instead of on the dashboard instance'
+
+    def test_dashboard_1(self):
+        """assert OK if dashboard model is specified (and added) at init instead of on the dashboard instance"""
+        test_consent = TestConsentFactory()
 
         class D1(Dashboard):
             dashboard_url_name = 'subject_dashboard_url'
@@ -72,7 +93,9 @@ class DashboardMethodTests(TestCase):
         self.assertEquals(dashboard.get_dashboard_id(), test_consent.pk)
         self.assertEquals(dashboard.get_dashboard_model_name(), 'test_consent')
 
-        print 'assert can add a model to the dashboard model list'
+    def test_dashboard_2(self):
+        """assert can add a model to the dashboard model list"""
+        test_consent = TestConsentFactory()
         dashboard = Dashboard(
             'subject',
             test_consent.pk,
@@ -89,7 +112,12 @@ class DashboardMethodTests(TestCase):
         self.assertEquals(dashboard.get_dashboard_model_name(), 'test_consent')
         self.assertTrue(isinstance(dashboard.get_dashboard_model_instance(), TestConsent))
 
-        print 'assert can convert a dashboard_model_list item from a function'
+    def test_dashboard_3(self):
+        """assert can convert a dashboard_model_list item from a function"""
+        test_consent = TestConsentFactory()
+
+        class D1(Dashboard):
+            dashboard_url_name = 'subject_dashboard_url'
 
         def get_visit_model():
             return TestVisit
@@ -109,11 +137,16 @@ class DashboardMethodTests(TestCase):
         self.assertEquals(dashboard.get_dashboard_model_name(), 'test_consent')
         self.assertTrue(isinstance(dashboard.get_dashboard_model_instance(), TestConsent))
 
-        print 'assert can convert a dashboard_model_list item from a method'
+    def test_dashboard_4(self):
+        """assert can convert a dashboard_model_list item from a method"""
+        test_consent = TestConsentFactory()
 
         class Obj(object):
             def get_visit_model(self):
                 return TestVisit
+
+        class D1(Dashboard):
+            dashboard_url_name = 'subject_dashboard_url'
 
         dashboard = D1(
             'subject',
@@ -130,7 +163,16 @@ class DashboardMethodTests(TestCase):
         self.assertEquals(dashboard.get_dashboard_model_name(), 'test_consent')
         self.assertTrue(isinstance(dashboard.get_dashboard_model_instance(), TestConsent))
 
-        print 'assert method verify_dashboard_model'
+    def test_dashboard_5(self):
+        """assert method verify_dashboard_model"""
+        test_consent = TestConsentFactory()
+
+        class D1(Dashboard):
+            dashboard_url_name = 'subject_dashboard_url'
+
+        class Obj(object):
+            def get_visit_model(self):
+                return TestVisit
 
         class Obj2(object):
             def get_visit_model(self):
@@ -152,6 +194,17 @@ class DashboardMethodTests(TestCase):
             dashboard_type_list=['subject'],
             dashboard_models={'test_consent': TestConsent, 'test_visit': Obj2().get_visit_model})
 
+    def test_context(self):
+        """get_context"""
+        test_consent = TestConsentFactory()
+
+        class Obj(object):
+            def get_visit_model(self):
+                return TestVisit
+
+        class D1(Dashboard):
+            dashboard_url_name = 'subject_dashboard_url'
+
         dashboard = D1(
             'subject',
             test_consent.pk,
@@ -159,7 +212,6 @@ class DashboardMethodTests(TestCase):
             dashboard_type_list=['subject'],
             dashboard_models={'test_consent': TestConsent, 'test_visit': Obj().get_visit_model})
 
-        print 'get_context'
         dashboard.get_context()
         self.assertEqual(dashboard.context.get().get('dashboard_type'), 'subject')
         self.assertEqual(dashboard.context.get().get('dashboard_id'), test_consent.pk)
