@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django_extensions.db.models import TimeStampedModel
-from ..fields import HostnameCreationField, HostnameModificationField
+from ..fields import HostnameCreationField, HostnameModificationField, RevisionField
 
 
 class BaseModel(TimeStampedModel):
@@ -17,6 +17,8 @@ class BaseModel(TimeStampedModel):
 
     hostname_modified = HostnameModificationField(
         db_index=True)
+
+    revision = RevisionField()
 
     def get_absolute_url(self):
         if self.id:

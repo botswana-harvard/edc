@@ -1,4 +1,7 @@
 import socket
+from git import Repo, GitCmdObjectDB
+
+from django.conf import settings
 from django_extensions.db.fields import UUIDField
 from django.db.models import CharField
 from django.utils.translation import ugettext as _
@@ -23,6 +26,30 @@ class UUIDAutoField (UUIDField):
 #         super(UUIDAutoField, self).contribute_to_class(cls, name)
 #         cls._meta.has_auto_field = True
 #         cls._meta.auto_field = self
+
+
+class RevisionField (CharField):
+    """Updates the value to the current git branch and commit."""
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('editable', False)
+        kwargs.setdefault('blank', True)
+        kwargs.setdefault('null', True)
+        kwargs.setdefault('max_length', 50)
+        kwargs.setdefault('verbose_name', 'Revision')
+        CharField.__init__(self, *args, **kwargs)
+
+    def pre_save(self, model, add):
+        value = self.get_revision()
+        setattr(model, self.attname, value)
+        return value
+
+    def get_source_folder(self):
+        if not 'SOURCE_DIR' in dir(settings):
+            raise AttributeError('Missing settings attribute: \'SOURCE_DIR\'')
+
+    def get_revision(self):
+        repo = Repo(self.get_source_folder(), odbt=GitCmdObjectDB)
+        return '{0}:{1}'.format(unicode(repo.active_branch), unicode(repo.active_branch.commit))
 
 
 class HostnameCreationField (CharField):
