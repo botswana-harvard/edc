@@ -33,8 +33,8 @@ class Controller(object):
 
     .. code-block:: python
 
-        from bhp_lab_tracker.classes import site_lab_tracker
-        from bhp_lab_tracker.classes import HivLabTracker
+        from edc.subject.lab_tracker.classes import site_lab_tracker
+        from edc.subject.lab_tracker.classes import HivLabTracker
         from models import HivTestReview, HivResult
 
 

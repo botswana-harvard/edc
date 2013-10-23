@@ -26,5 +26,5 @@ class ClinicGradeFlag(GradeFlag):
     def get_lab_tracker_group_name(self):
         """Returns a group name to use when filtering on values in the lab_tracker class.
 
-        See :mod:bhp_lab_tracker"""
+        See :mod:edc.subject.lab_tracker"""
         return 'HIV'

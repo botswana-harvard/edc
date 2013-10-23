@@ -184,7 +184,7 @@ class DispatchController(BaseDispatchController):
     def dispatch_lab_tracker_history(self, registered_subject, group_name=None):
         """Dispatches all lab tracker history models for this subject.
 
-        ..seealso:: module :mod:`bhp_lab_tracker`.
+        ..seealso:: module :mod:`edc.subject.lab_tracker`.
         """
         if registered_subject:
             if registered_subject.subject_identifier:

@@ -38,5 +38,5 @@ class SubjectConfiguration(BaseSyncUuidModel):
             appointment.raw_save()
 
     class Meta:
-        app_label = 'bhp_subject_config'
+        app_label = 'subject_config'
         db_table = 'bhp_subject_config_subjectconfiguration'
