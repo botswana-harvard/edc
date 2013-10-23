@@ -17,7 +17,7 @@ nullhandler = logger.addHandler(NullHandler())
 class Command(BaseCommand):
 
     args = ()
-    help = 'Update bhp_lab_tracker history model.'
+    help = 'Update lab_tracker history model.'
 
     def handle(self, *args, **options):
         """Update the history model for all registered subjects."""

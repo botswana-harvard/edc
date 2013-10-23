@@ -20,7 +20,7 @@ class Migration(SchemaMigration):
             ('subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=36)),
             ('default_appt_type', self.gf('django.db.models.fields.CharField')(default='clinic', max_length=10)),
         ))
-        db.send_create_signal('bhp_subject_config', ['SubjectConfiguration'])
+        db.send_create_signal('subject_config', ['SubjectConfiguration'])
 
 
     def backwards(self, orm):
@@ -29,8 +29,8 @@ class Migration(SchemaMigration):
 
 
     models = {
-        'bhp_subject_config.subjectconfiguration': {
-            'Meta': {'object_name': 'SubjectConfiguration'},
+        'subject_config.subjectconfiguration': {
+            'Meta': {'object_name': 'SubjectConfiguration', 'db_table': "'bhp_subject_config_subjectconfiguration'"},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'default_appt_type': ('django.db.models.fields.CharField', [], {'default': "'clinic'", 'max_length': '10'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
@@ -43,4 +43,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['bhp_subject_config']
+    complete_apps = ['subject_config']

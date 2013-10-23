@@ -12,8 +12,8 @@ class HivLabTracker(LabTracker):
 
     .. code-block:: python
 
-        from bhp_lab_tracker.classes import lab_tracker
-        from bhp_lab_tracker.classes import HivLabTracker
+        from edc.subject.lab_tracker.classes import lab_tracker
+        from edc.subject.lab_tracker import HivLabTracker
         from models import MaternalEligibilityPost, MaternalEligibilityAnte
 
 

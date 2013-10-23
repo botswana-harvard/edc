@@ -44,7 +44,7 @@ class RegisteredSubjectDashboard(Dashboard):
         Keyword Args:
             * dashboard_type_list: a list of allowed values for dashboard_type, e.g. ['maternal']. Hard coded in the child class.
             * dashboard_models: a dictionary of allowed dashboard models. Defaults are added for the visit model, Appointment, and RegisteredSubject. Users probably will add the consent model as well in the child class
-            * dashboard_category: actually is the membership_form.category which is used to filter membership forms to display for this dashboard.
+            * membership_form_category: actually is the membership_form.category which is used to filter membership forms to display for this dashboard.
             * visit_model: the visit model class.
             * registered_subject: an instance of registered_subject for the current subject.
             * show: either \'forms\' or \'appointments\'.
@@ -104,7 +104,6 @@ class RegisteredSubjectDashboard(Dashboard):
                     dashboard_type=kwargs.get('dashboard_type'),
                     dashboard_id=kwargs.get('dashboard_id'),
                     dashboard_model=kwargs.get('dashboard_model'),
-                    dashboard_category=kwargs.get('dashboard_category'),
                     registered_subject=kwargs.get('registered_subject'),
                     show=kwargs.get('show'),
                     dashboard_type_list=['infant'],
@@ -121,7 +120,7 @@ class RegisteredSubjectDashboard(Dashboard):
     view = None
     dashboard_url_name = 'subject_dashboard_url'
 
-    def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None, dashboard_category=None, visit_model=None, registered_subject=None, show=None, **kwargs):
+    def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None, membership_form_category=None, visit_model=None, registered_subject=None, show=None, **kwargs):
         dashboard_models = dashboard_models or {}
         dashboard_models.update({'appointment': Appointment})
         self._visit_model = None
@@ -138,7 +137,7 @@ class RegisteredSubjectDashboard(Dashboard):
         self._appointment_row_template = None
         self._appointment_zero = None
         self._appointments = None
-        self._categories = None
+        self._membership_form_categories = None
         self._consent = None
         self._extra_url_context = None
         self._language = None
@@ -167,9 +166,9 @@ class RegisteredSubjectDashboard(Dashboard):
         self.exclude_others_if_keyed_model_name = ''
         self.is_dispatched, self.dispatch_producer = False, None
         self.selected_visit = None
-
+        self.set_membership_form_categories()
         self._set_registered_subject(registered_subject)
-        self._set_membership_form_category(dashboard_category)
+        self._set_membership_form_category(membership_form_category)
         self.set_show(show)
 
     def add_to_context(self):
@@ -608,51 +607,43 @@ class RegisteredSubjectDashboard(Dashboard):
         Users may override if the category name is not coming from the URL."""
         pass
 
-    def _set_membership_form_category(self, value=None):
-        """Sets the membership_form_category for this registered subject dashboard need to filter the QuerySet of Membership forms to display on the dashboard.
+    def _set_membership_form_category(self, value):
+        """Sets the membership_form_category for this registered subject dashboard needed to filter the QuerySet of Membership forms to display on the dashboard.
 
-        .. note:: The category name no longer defaults to the registered subject \'subject type\'."""
+        May come from url or from the overridden :func:`set_membership_form_category`
+
+        Must be a valid membership form category."""
         self._membership_form_category = value
         if not self._membership_form_category:
             self.set_membership_form_category()
-        #if not self._membership_form_category:
-        #    self._membership_form_category = value or self.get_subject_type()
-        # check if this category exists in the MembershipForm model
         if not self._membership_form_category:
-            raise ImproperlyConfigured('Attribute \'_membership_form_category\' may not be None. Must be one of {0}. '
-                                 'The category should either come from the URL or from overridden dashboard method \'set_membership_form_category\'. See {1}.'.format(self.get_categories(), self))
-        self.check_category(self._membership_form_category)
+            raise ImproperlyConfigured(
+                'Attribute \'_membership_form_category\' may not be None. Must be one of {0}. '
+                'The category should either come from the URL or from overridden dashboard method \'set_membership_form_category\'. '
+                'See {1}.'.format(self.get_membership_form_categories(), self))
+        if self._membership_form_category not in self.get_membership_form_categories():
+            raise ImproperlyConfigured('Invalid membership_form category. Attribute \'_membership_form_category\'=\'{0}\' not found in '
+                                       'MembershipForms. Must be one of {1}. See {2}.'.format(self._membership_form_category, self.get_membership_form_categories(), self))
 
     def get_membership_form_category(self):
-        if not self._membership_form_category:
-            self._set_membership_form_category()
         return self._membership_form_category
 
-    def check_category(self, category):
-        """Checks for given category if any instances of MembershipForm exist.
-
-        Dashboard needs these to display keyed and unkeyed models listed in the MembershipForms model."""
-        if category not in self.get_categories():
-            raise ImproperlyConfigured('Invalid membership_form category. Attribute \'_membership_form_category\'=\'{0}\' not found in MembershipForms. Must be one of {1}. See {2}.'.format(category, self.get_categories(), self))
-
-    def set_categories(self, value=None):
+    def set_membership_form_categories(self):
         """Sets to a list of valid categories.
 
         .. note:: the list of categories is based on those that appear in the MembershipForm category field.
                   The MembershipForm field \'category\' may be a string of category names delimited by a comma."""
-        self._categories = []
+        self._membership_form_categories = []
         categories = MembershipForm.objects.values('category').order_by('category').distinct()
         # turn into a list, split and strip
         for c in categories:
-            self._categories.extend([x.strip() for x in c['category'].split(',')])
-        self._categories = list(set(self._categories))
-        if not self._categories:
-            raise MembershipFormError('Attribute _categories may not be None. Have any membership forms been defined?. See module \'bhp_visit\'. See {0}'.format(self))
+            self._membership_form_categories.extend([x.strip() for x in c['category'].split(',')])
+        self._membership_form_categories = list(set(self._membership_form_categories))
+        if not self._membership_form_categories:
+            raise MembershipFormError('Attribute _categories may not be None. Have any membership forms been defined?. See module \'edc.subject.visit_schedule\'. See {0}'.format(self))
 
-    def get_categories(self):
-        if not self._categories:
-            self.set_categories()
-        return self._categories
+    def get_membership_form_categories(self):
+        return self._membership_form_categories
 
     def _add_or_update_entry_buckets(self):
         """ Adds missing bucket entries and flags added and existing entries as keyed or not keyed (only)."""
@@ -1002,7 +993,7 @@ class RegisteredSubjectDashboard(Dashboard):
     def render_subject_hiv_status(self):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""
         if self.get_subject_hiv_status():
-            change_list_url = reverse('admin:bhp_lab_tracker_historymodel_changelist')
+            change_list_url = reverse('admin:lab_tracker_historymodel_changelist')
             return render_to_string(self.get_subject_hiv_template(), {
                 'subject_hiv_status': self.get_subject_hiv_status(),
                 'subject_identifier': self.get_subject_identifier(),
