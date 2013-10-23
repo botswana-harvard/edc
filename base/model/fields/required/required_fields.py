@@ -51,6 +51,17 @@ class RevisionField (CharField):
         repo = Repo(self.get_source_folder(), odbt=GitCmdObjectDB)
         return '{0}:{1}'.format(unicode(repo.active_branch), unicode(repo.active_branch.commit))
 
+    def get_internal_type(self):
+        return "CharField"
+
+    def south_field_triple(self):
+        "Returns a suitable description of this field for South."
+        # We'll just introspect ourselves, since we inherit.
+        from south.modelsinspector import introspector
+        field_class = "django.db.models.fields.CharField"
+        args, kwargs = introspector(self)
+        return (field_class, args, kwargs)
+
 
 class HostnameCreationField (CharField):
     """
