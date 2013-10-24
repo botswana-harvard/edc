@@ -55,7 +55,7 @@ class DeserializeFromTransaction(object):
                             # force insert even if it is an update
                             # to trigger an integrity error if it is an update
                             obj.save(using=using)
-                            obj.object.deserialize_post()
+                            obj.object._deserialize_post(incoming_transaction)
                             print '    OK - normal save on {0}'.format(using)
                             is_success = True
                         except:
@@ -65,10 +65,12 @@ class DeserializeFromTransaction(object):
                             if 'deserialize_on_duplicate' in dir(obj.object) and obj.object.deserialize_on_duplicate():
                                 # obj.object.deserialize_on_duplicate()
                                 obj.save(using=using)
+                                obj.object._deserialize_post(incoming_transaction)
                                 print '    OK update succeeded after deserialize_on_duplicate on using={0}'.format(using)
                                 is_success = True
                             else:
                                 obj.save(using=using)
+                                obj.object._deserialize_post(incoming_transaction)
                                 print '    OK update succeeded as is on using={0}'.format(using)
                                 is_success = True
                     except IntegrityError as error:
@@ -97,6 +99,7 @@ class DeserializeFromTransaction(object):
                                     setattr(obj.object, field.name, obj.object.deserialize_get_missing_fk(field.name))
                                 try:
                                     obj.save(using=using)
+                                    obj.object._deserialize_post(incoming_transaction)
                                     print '   OK saved after integrity error on using={0}'.format(using)
                                     is_success = True
                                 except:
@@ -136,6 +139,7 @@ class DeserializeFromTransaction(object):
                                             # then use deserialize_on_duplicate to evaluate
                                             print '    try save again'
                                             obj.save(using=using)
+                                            obj.object._deserialize_post(incoming_transaction)
                                             is_success = True
                                             # change all pk to the new pk for is_consumed=False.
                                             print '    OK saved, now replace_pk_in_tx on using={0}'.format(using)
