@@ -48,7 +48,8 @@ class BaseBaseRequisition (BaseUuidModel):
         help_text='Use three digit code e.g 041, 056, 062, etc'
         )
 
-    site = models.ForeignKey(StudySite)
+    site = models.ForeignKey(StudySite,
+        null=True,)
 
     clinician_initials = InitialsField(
         default='--',

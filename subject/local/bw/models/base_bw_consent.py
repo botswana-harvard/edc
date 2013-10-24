@@ -11,7 +11,7 @@ class BaseBwConsent(BaseConsent):
     identity = EncryptedOmangField(
         verbose_name=_("Identity number (OMANG, etc)"),
         unique=True,
-        help_text=_("Use Omang, Passport number, driver's license number or Omang receipt number")
+        help_text=("Use Omang, Passport number, driver's license number or Omang receipt number")
         )
 
     identity_type = IdentityTypeField()

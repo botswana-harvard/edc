@@ -41,6 +41,7 @@ class BaseConsent(BaseSubject):
 
     study_site = models.ForeignKey(StudySite,
         verbose_name='Site',
+        null=True,
         help_text="This refers to the site or 'clinic area' where the subject is being consented."
         )
 
@@ -51,20 +52,20 @@ class BaseConsent(BaseSubject):
         )
 
     guardian_name = EncryptedLastnameField(
-        verbose_name=_("Guardian\'s Last and first name (minors only)"),
+        verbose_name=("Guardian\'s Last and first name (minors only)"),
         validators=[
             RegexValidator('^[A-Z]{1,50}\, [A-Z]{1,50}$', 'Invalid format. Format is \'LASTNAME, FIRSTNAME\'. All uppercase separated by a comma'),
             ],
         blank=True,
         null=True,
-        help_text=_('Required only if subject is a minor. Format is \'LASTNAME, FIRSTNAME\'. All uppercase separated by a comma'),
+        help_text=('Required only if subject is a minor. Format is \'LASTNAME, FIRSTNAME\'. All uppercase separated by a comma'),
         )
 
     may_store_samples = models.CharField(
         verbose_name=_("Sample storage"),
         max_length=3,
         choices=YES_NO,
-        help_text=_("Does the subject agree to have samples stored after the study has ended")
+        help_text=("Does the subject agree to have samples stored after the study has ended")
         )
 
     is_incarcerated = models.CharField(
