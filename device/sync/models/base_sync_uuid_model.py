@@ -28,6 +28,25 @@ class BaseSyncUuidModel(BaseUuidModel):
 
     def deserialize_prep(self):
         """Users may override to manipulate the incoming object before calling save()"""
+        pass
+    
+    def _deserialize_post(self, incomming_transaction):
+        """Default behaviour for all subclasses of this class is to serialize to outgoing transaction."""
+        from ..models import OutgoingTransaction
+        if not OutgoingTransaction.objects.filter(pk=incomming_transaction.id).exists():
+                                                OutgoingTransaction.objects.create(
+                                                    pk=incomming_transaction.id,
+                                                    tx_name=incomming_transaction.tx_name,
+                                                    tx_pk=incomming_transaction.tx_pk,
+                                                    tx=incomming_transaction.tx,
+                                                    timestamp=incomming_transaction.timestamp,
+                                                    producer=incomming_transaction.producer,
+                                                    action=incomming_transaction.action)
+        self.deserialize_post()
+    
+    def deserialize_post(self):
+        """Users may override to do app specific tasks after deserialization."""
+        pass
 
     def deserialize_on_duplicate(self):
         """Users may override this to determine how to handle a duplicate error on deserialization.

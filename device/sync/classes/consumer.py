@@ -38,7 +38,7 @@ class Consumer(object):
             print '    tx_pk=\'{0}\''.format(incoming_transaction.tx_pk)
             action = 'failed'
             try:
-                self._disconnect_signals(incoming_transaction.tx_name.lower(), consuming=True)
+                self._disconnect_signals(incoming_transaction.tx_name.lower())
                 if deserialize_from_transaction.deserialize(incoming_transaction, using, check_hostname=check_hostname):
                     action = 'saved'
                 self._reconnect_signals()
@@ -48,8 +48,8 @@ class Consumer(object):
                 print '    {0} {1}'.format(action, e)
                 pass  # raise DeserializationError(e)
 
-    def _disconnect_signals(self, obj, consuming=None):
-        self.signal_manager.disconnect(obj, consuming)
+    def _disconnect_signals(self, obj):
+        self.signal_manager.disconnect(obj)
         self.disconnect_signals()
 
     def disconnect_signals(self):
