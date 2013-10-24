@@ -484,7 +484,7 @@ class Mapper(object):
         Wrapper for :func:`gps_validator`"""
         radius = self.get_radius()
         if self.gps_distance_between_points(lat, lon) > radius:
-            raise exception_cls('The location (GPS {0} {1}) does not fall within this community.'.format(lat, lon))
+            raise exception_cls('The location (GPS {0} {1}) does not fall within community {0}.'.format(lat, lon))
         return True
 
     def verify_gps_to_target(self, lat, lon, center_lat, center_lon, radius, exception_cls):
@@ -492,7 +492,7 @@ class Mapper(object):
 
         Wrapper for :func:`gps_validator`"""
         verify = True
-        if 'VERIFY_GPS' in dir(settings):
+        if 'VERIFY_GPS' in dir(settings.CURRENT_COMMUNITY):
             verify = settings.VERIFY_GPS
         if verify:
             dist = self.gps_distance_between_points(lat, lon, center_lat, center_lon, radius)
