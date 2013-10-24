@@ -1,9 +1,13 @@
 import logging
+
 from datetime import datetime, timedelta
-from django.db.models import get_model
+
 from django.core.serializers.base import DeserializationError
-from .deserialize_from_transaction import DeserializeFromTransaction
+from django.db.models import get_model
+
 from ..exceptions import TransactionConsumerError
+
+from .deserialize_from_transaction import DeserializeFromTransaction
 
 
 logger = logging.getLogger(__name__)
@@ -23,6 +27,7 @@ class Consumer(object):
 
     def consume(self, using=None, lock_name=None, **kwargs):
         """Consumes ALL incoming transactions on \'using\' in order by ('producer', 'timestamp')."""
+        self.pre_sync(using, lock_name, **kwargs)
         if not using:
             using = None
         IncomingTransaction = get_model('sync', 'IncomingTransaction')
@@ -44,6 +49,13 @@ class Consumer(object):
                 self._reconnect_signals()
                 print '    {0} {1}'.format(action, e)
                 pass  # raise DeserializationError(e)
+        self.post_sync(using, lock_name, **kwargs)
+
+    def pre_sync(self, using=None, lock_name=None, **kwargs):
+        pass
+
+    def post_sync(self, using=None, lock_name=None, **kwargs):
+        pass
 
     def _disconnect_signals(self, obj):
         self.signal_manager.disconnect(obj)
@@ -61,7 +73,7 @@ class Consumer(object):
     def reconnect_signals(self):
         """Reconnects app specific signals if overriden."""
         pass
-    
+
     def get_consume_feedback(self):
         from ..models import IncomingTransaction
         today = datetime.now()
@@ -70,9 +82,9 @@ class Consumer(object):
         not_consumed_today = IncomingTransaction.objects.filter(created__range=(today - margin, today + margin), is_consumed=False)
         not_consumed_not_ignored_today = not_consumed_today.filter(is_ignored=True)
         message = '\'{0}\' transactions where CONSUMED today, \n \'{1}\' transactions FAILED to consume today, \n \'{2}\' of those that failed to consume have been set as IGNORED.'.format(
-                    consumed_today.count(),not_consumed_today.count(),not_consumed_not_ignored_today.count())
+                    consumed_today.count(), not_consumed_today.count(), not_consumed_not_ignored_today.count())
         return message
-        
+
     def fetch_outgoing(self, using_source, using_destination=None):
         """Fetches all OutgoingTransactions not consumed from a source and saves them locally (default).
 
