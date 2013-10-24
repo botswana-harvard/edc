@@ -29,9 +29,10 @@ class SignalManager(object):
             ]
         self.signal_register.sort()
 
-    def disconnect(self, obj):
+    def disconnect(self, obj, consuming=None):
         signals.m2m_changed.disconnect(serialize_m2m_on_save, weak=False, dispatch_uid="serialize_m2m_on_save")
-        signals.post_save.disconnect(serialize_on_save, weak=False, dispatch_uid="serialize_on_save")
+        if not consuming:
+            signals.post_save.disconnect(serialize_on_save, weak=False, dispatch_uid="serialize_on_save")
         signals.post_save.disconnect(tracker_on_post_save, weak=False, dispatch_uid="tracker_on_post_save")
         signals.post_delete.disconnect(tracker_on_post_delete, weak=False, dispatch_uid="tracker_on_post_delete")
         signals.post_save.disconnect(base_visit_tracking_add_or_update_entry_buckets_on_post_save, weak=False, dispatch_uid="base_visit_tracking_add_or_update_entry_buckets_on_post_save")
