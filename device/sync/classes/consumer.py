@@ -2,9 +2,11 @@ import logging
 
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.core.serializers.base import DeserializationError
 from django.db.models import get_model
 
+from edc.device.device.classes import Device
 from ..exceptions import TransactionConsumerError
 
 from .deserialize_from_transaction import DeserializeFromTransaction
@@ -24,12 +26,18 @@ class Consumer(object):
     def __init__(self):
         from edc.device.dispatch.classes import SignalManager
         self.signal_manager = SignalManager()
+        self._device = Device()
+
+    def get_device(self):
+        return self._device
 
     def consume(self, using=None, lock_name=None, **kwargs):
         """Consumes ALL incoming transactions on \'using\' in order by ('producer', 'timestamp')."""
         self.pre_sync(using, lock_name, **kwargs)
         if not using:
             using = None
+        if self.get_device().is_server():
+            raise TypeError('Cannot consume in a device thats not a server. Got settings DEVICE_ID==\'{0}\' instead of 99'.format(settings.DEVICE_ID))
         IncomingTransaction = get_model('sync', 'IncomingTransaction')
         check_hostname = kwargs.get('check_hostname', True)
         deserialize_from_transaction = DeserializeFromTransaction()
@@ -40,7 +48,7 @@ class Consumer(object):
             print '    tx_pk=\'{0}\''.format(incoming_transaction.tx_pk)
             action = 'failed'
             try:
-                self._disconnect_signals(incoming_transaction.tx_name.lower())
+                self._disconnect_signals(incoming_transaction.tx_name.lower(), consuming=True)
                 if deserialize_from_transaction.deserialize(incoming_transaction, using, check_hostname=check_hostname):
                     action = 'saved'
                 self._reconnect_signals()
@@ -57,8 +65,8 @@ class Consumer(object):
     def post_sync(self, using=None, lock_name=None, **kwargs):
         pass
 
-    def _disconnect_signals(self, obj):
-        self.signal_manager.disconnect(obj)
+    def _disconnect_signals(self, obj, consuming=None):
+        self.signal_manager.disconnect(obj, consuming)
         self.disconnect_signals()
 
     def disconnect_signals(self):
