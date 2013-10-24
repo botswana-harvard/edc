@@ -1,5 +1,7 @@
 from datetime import date, datetime
 from django.db import models
+from django.utils.translation import ugettext as _
+
 from edc.subject.consent.models import BaseConsentedUuidModel
 from edc.base.model.validators import datetime_not_before_study_start, datetime_not_future
 from edc.choices.common import YES_NO, YES_NO_DOESNT_WORK
@@ -20,13 +22,13 @@ class BaseLocator(BaseConsentedUuidModel):
         default=datetime.today(),
         )
     date_signed = models.DateField(
-        verbose_name="1. Date Locator Form signed ",
+        verbose_name="Date Locator Form signed ",
         default=date.today(),
         help_text="",
         )
     mail_address = EncryptedTextField(
         max_length=500,
-        verbose_name="Mailing address ",
+        verbose_name=_("Mailing address "),
         help_text="",
         null=True,
         blank=True
@@ -38,7 +40,7 @@ class BaseLocator(BaseConsentedUuidModel):
         )
     physical_address = EncryptedTextField(
         max_length=500,
-        verbose_name="Physical address with detailed description",
+        verbose_name=_("Physical address with detailed description"),
         blank=True,
         null=True,
         help_text="",
@@ -46,11 +48,11 @@ class BaseLocator(BaseConsentedUuidModel):
     may_follow_up = models.CharField(
         max_length=25,
         choices=YES_NO,
-        verbose_name="3. Has the participant given her permission for study staff to call her for follow-up purposes during the study?",
+        verbose_name="Has the participant given her permission for study staff to call her for follow-up purposes during the study?",
         )
     subject_cell = EncryptedCharField(
         max_length=8,
-        verbose_name="Cell number",
+        verbose_name=_("Cell number"),
         validators=[BWCellNumber, ],
         blank=True,
         null=True,
@@ -58,7 +60,7 @@ class BaseLocator(BaseConsentedUuidModel):
         )
     subject_cell_alt = EncryptedCharField(
         max_length=8,
-        verbose_name="Cell number (alternate)",
+        verbose_name=_("Cell number (alternate)"),
         validators=[BWCellNumber, ],
         help_text="",
         blank=True,
@@ -66,7 +68,7 @@ class BaseLocator(BaseConsentedUuidModel):
         )
     subject_phone = EncryptedCharField(
         max_length=8,
-        verbose_name="Telephone",
+        verbose_name=_("Telephone"),
         validators=[BWTelephoneNumber, ],
         help_text="",
         blank=True,
@@ -74,7 +76,7 @@ class BaseLocator(BaseConsentedUuidModel):
         )
     subject_phone_alt = EncryptedCharField(
         max_length=8,
-        verbose_name="Telephone (alternate)",
+        verbose_name=_("Telephone (alternate)"),
         help_text="",
         validators=[BWTelephoneNumber, ],
         blank=True,
@@ -88,14 +90,14 @@ class BaseLocator(BaseConsentedUuidModel):
         )
     subject_work_place = EncryptedTextField(
         max_length=500,
-        verbose_name="Name and location of work place",
+        verbose_name=_("Name and location of work place"),
         help_text="",
         blank=True,
         null=True,
         )
     subject_work_phone = EncryptedCharField(
         max_length=8,
-        verbose_name="Work telephone number ",
+        verbose_name=_("Work telephone number "),
         help_text="",
         validators=[BWTelephoneNumber, ],
         blank=True,
@@ -109,28 +111,28 @@ class BaseLocator(BaseConsentedUuidModel):
         )
     contact_name = EncryptedCharField(
         max_length=35,
-        verbose_name="Full names of the contact person",
+        verbose_name=_("Full names of the contact person"),
         blank=True,
         null=True,
         help_text="",
         )
     contact_rel = EncryptedCharField(
         max_length=35,
-        verbose_name="Relationship to participant",
+        verbose_name=_("Relationship to participant"),
         blank=True,
         null=True,
         help_text="",
         )
     contact_physical_address = EncryptedTextField(
         max_length=500,
-        verbose_name="Full physical address ",
+        verbose_name=_("Full physical address "),
         blank=True,
         null=True,
         help_text="",
         )
     contact_cell = EncryptedCharField(
         max_length=8,
-        verbose_name="Cell number",
+        verbose_name=_("Cell number"),
         validators=[BWCellNumber, ],
         help_text="",
         blank=True,
@@ -138,7 +140,7 @@ class BaseLocator(BaseConsentedUuidModel):
         )
     contact_phone = EncryptedCharField(
         max_length=8,
-        verbose_name="Telephone number",
+        verbose_name=_("Telephone number"),
         validators=[BWTelephoneNumber, ],
         help_text="",
         blank=True,

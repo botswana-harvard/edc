@@ -29,6 +29,7 @@ class SupplementalFields(Base):
         if len(str(p)) > 5:
             raise AttributeError('Probability \'p\' many not have more than 3 decimal places. Got {0}.'.format(p))
         self._p = p
+        self._group = kwargs.get('group')
 
     def _choice(self, exclude_fields):
         if random.choice(self._get_p_as_sequence()):  # either 0 or 1
