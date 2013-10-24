@@ -13,6 +13,8 @@ from ..managers import BaseLocatorManager
 
 class BaseLocator(BaseConsentedUuidModel):
 
+    #TODO: may we SMS you?
+
     registered_subject = models.OneToOneField(RegisteredSubject, null=True)
 
     report_datetime = models.DateTimeField("Today's date",
