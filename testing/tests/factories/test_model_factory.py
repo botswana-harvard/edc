@@ -1,11 +1,15 @@
 import factory
+
 from edc.base.model.tests.factories import BaseUuidModelFactory
+
 from ...models import TestModel
-from .test_foreign_key_factory import TestForeignKeyFactory
 
 
 class TestModelFactory(BaseUuidModelFactory):
     FACTORY_FOR = TestModel
 
-    name = factory.Sequence(lambda n: 'NAME{0}'.format(n))
-    test_foreign_key = factory.SubFactory(TestForeignKeyFactory)
+    f1 = factory.Sequence(lambda n: 'F1{0}'.format(n))
+    f2 = factory.Sequence(lambda n: 'F2{0}'.format(n))
+    f3 = factory.Sequence(lambda n: 'F3{0}'.format(n))
+    f4 = factory.Sequence(lambda n: 'F4{0}'.format(n))
+    f5 = factory.Sequence(lambda n: 'F5{0}'.format(n))
