@@ -11,7 +11,7 @@ class Device(object):
     Must be a number."""
 
     SERVER_DEVICE_ID_LIST = [91, 92, 93, 94, 95, 96, 97, 99]  # reserved device ids
-    MIDDEL_MAN_DEVICE_ID = [98]
+    MIDDLEMAN_DEVICE_ID_LIST = [98]
 
     def __init__(self, device_id=None, settings_attr=None):
         self._settings_attr = settings_attr or 'DEVICE_ID'
@@ -57,7 +57,7 @@ class Device(object):
 
     def set_is_middleman(self):
         self._is_middleman = False
-        if int(self._device_id) in self.MIDDLE_DEVICE_ID_LIST:
+        if int(self._device_id) in self.MIDDLEMAN_DEVICE_ID_LIST:
             self._is_middleman = True
 
     def is_server(self):
