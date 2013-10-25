@@ -1,14 +1,16 @@
 import csv
 import datetime
 
+from collections import OrderedDict
+
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpResponse
 
 
 class ExportAsCsv(object):
 
-    def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None, header=True, track_history=False):
-        self._field_names = None
+    def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None, header=True, track_history=False, show_all_fields=True):
+        self._field_names = []
         self._modeladmin = modeladmin
         self._model = None
         self._file_obj = None
@@ -16,9 +18,9 @@ class ExportAsCsv(object):
         self._track_history = track_history
         self._queryset = queryset
         self.set_model(model)
-        self.set_field_names_from_model()  # set initial field name list
+        if show_all_fields:
+            self.set_field_names_from_model()  # set initial field name list
         self._include_header = header  # writer to include a header row
-        # adjustments
         self.append_field_names(fields)  # a list of names
         self.append_field_names(extra_fields)  # Extra fields is a list of dictionaries of [{'label': 'django_style__query_string'}, {}...].
         self.delete_field_names(exclude)  # a list of names
@@ -34,29 +36,41 @@ class ExportAsCsv(object):
     def write_to_file(self):
         """Writes the export file and returns the file object."""
         writer = csv.writer(self.get_file_obj())
+        self.reorder_field_names()
+        self.set_header_row()
         for obj in self.get_queryset():
             self.append_m2m_to_header_row(obj)
             if self.get_include_header():
                 writer.writerow(self.get_header_row())
-            writer.writerow(self.get_row())
+            writer.writerow(self.get_row(obj))
             self.update_export_history(obj)
         return self.get_file_obj()
 
     def get_row(self, obj):
         """Returns a one row for the writer."""
         row = []
-        for field in self.get_field_names():
-            if field in self.get_queryset().model.__dict__:
-                # is a field_attr for the queryset.model, append field object value to row
-                row.append(unicode(getattr(obj, field)).encode("utf-8", "replace"))
-            else:
-                # is not a field attribute for this model, must be a django-style query_string
-                # split on LOOKUP_SEP
-                query_list = field.split(LOOKUP_SEP)
-                # recurse to last field object to get value
-                item = self.recurse_getattr(obj, query_list)
-                # append to row
-                row.append(unicode(item).encode("utf-8", "replace"))
+        value = None
+        for field_name in self.get_field_name_names():
+            try:
+                # is field_name on instance?
+                value = unicode(getattr(obj, field_name)).encode("utf-8", "replace")
+            except AttributeError:
+                pass
+            if not value:
+                if self.get_extra_field(field_name):
+                    query_string = self.get_extra_field(field_name)
+                    try:
+                        # is field name pointing to a django_style__query_string?
+                        # is not a field attribute for this model, must be a django-style query_string
+                        # split on LOOKUP_SEP
+                        query_list = query_string.split(LOOKUP_SEP)
+                        # recurse to last field object to get value
+                        item = self.recurse_getattr(obj, query_list)
+                        # append to row
+                        value = unicode(item).encode("utf-8", "replace")
+                    except AttributeError:
+                        pass
+            row.append(value or field_name)
         for m2m in obj._meta.many_to_many:
             values = self.get_m2m_value_delimiter().join([item.name.encode("utf-8", "replace") for item in getattr(obj, m2m.name).all()])
             row.append(values)
@@ -84,13 +98,36 @@ class ExportAsCsv(object):
         """Returns the queryset to be exported."""
         self._queryset
 
+    def set_field_names(self, value):
+        """Sets the field names list."""
+        self._field_names = list(OrderedDict.fromkeys(value))
+
+    def update_field_names(self, value):
+        """Updates the field_names list by either appending or extending."""
+        if not self._field_names:
+            self._field_names = []
+        if isinstance(value, list):
+            self._field_names.extend(value)
+        else:
+            self._field_names.append(value)
+        self._field_names = list(OrderedDict.fromkeys(self._field_names))  # remove dups, preserve order
+
     def get_field_names(self):
         return self._field_names
 
+    def get_extra_fields(self):
+        """Returns a dictionary of {<field_label>, <django_style__query_string>, ...}."""
+        return self._extra_fields or {}
+
+    def get_extra_field(self, key):
+        return self.get_extra_fields().get(key, None)
+
+    def update_extra_fields(self, dct):
+        self.get_extra_fields().update(dct)
+
     def set_field_names_from_model(self):
         """Sets field names by inspecting the model class for its field names."""
-        self._field_names = [field.name for field in self.get_model()._meta.fields]
-        self.set_header_row()
+        self.update_field_names([field.name for field in self.get_model()._meta.fields])
 
     def append_field_names(self, fields):
         """Appends field names to the list given a dictionary or list."""
@@ -110,11 +147,10 @@ class ExportAsCsv(object):
                 if isinstance(append_fields, dict):
                     # TODO: these are field names or references to field names (e.g subject_visit__appointment__appt_datetime)
                     # do these need to be verified?
-                    self.get_field_names().extend([fld for fld in append_fields.itervalues() if fld not in self._field_names])
-                    self.get_header_row().extend([fld for fld in append_fields.itervalues() if fld not in self._field_names])
+                    self.update_field_names([fldname for fldname in append_fields.itervalues() if fldname not in self.get_field_names()])
+                    self.update_extra_fields(append_fields)
                 else:
-                    self.get_field_names().extend([fld for fld in append_fields if fld not in self._field_names])
-                    self.get_header_row().extend([fld for fld in append_fields if fld not in self._field_names])
+                    self.update_field_names([fldname for fldname in append_fields if fldname not in self.get_field_names()])
 
     def delete_field_names(self, fields):
         """Extra fields is a list of dictionaries of [{'label': 'query_string'}, {}...]."""
@@ -131,17 +167,40 @@ class ExportAsCsv(object):
                 except ValueError:
                     pass
 
+    def reorder_field_names(self):
+        """Reorder the field names so that subject_identifier is first and required fields are last."""
+        # move subject_identifier to the top of the list
+        name = None
+        try:
+            name = self.get_field_names().pop(self.get_field_names().index('subject_identifier'))
+            self.get_field_names().insert(0, name)
+        except ValueError:
+            pass
+        try:
+            name = self.get_field_names().pop(self.get_field_names().index('report_datetime'))
+            self.get_field_names().insert(1, name)
+        except ValueError:
+            pass
+        # move required fields to the end of the list
+        required_fields = []
+        for name in ['hostname_created', 'hostname_modified', 'created', 'modified', 'user_created', 'user_modified', 'revision']:
+            try:
+                required_fields.append(self.get_field_names().pop(self.get_field_names().index(name)))
+            except ValueError:
+                pass
+        self.get_field_names().extend(required_fields)
+
     def set_header_row(self):
         """Sets the header row to whatever :func:`get_field_names` returns."""
         self._header_row = self.get_field_names()
 
     def get_header_row(self):
         """Returns the header row."""
-        return self._header_row
+        return self._header_row or []
 
     def append_to_header_row(self, value):
         """Appends a name to the header row names list."""
-        self.get_header_row.append(value)
+        self.get_header_row().append(value)
 
     def append_m2m_to_header_row(self, obj):
         """Appends m2m field names which are not included in _meta.fields."""
