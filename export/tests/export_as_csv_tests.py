@@ -10,6 +10,7 @@ from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
+from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 from edc.testing.models import TestModel, TestScheduledModel
 from edc.testing.tests.factories import TestModelFactory, TestScheduledModelFactory, TestVisitFactory, TestConsentFactory
@@ -44,6 +45,7 @@ class ExportAsCsvTests(TestCase):
         visit_definition = VisitDefinitionFactory(code='T0', title='T0', grouping='subject', visit_tracking_content_type_map=visit_tracking_content_type_map)
         visit_definition.schedule_group.add(schedule_group)
         subject_consent = TestConsentFactory()
+        print subject_consent.subject_identifier
         self.registered_subject = RegisteredSubject.objects.get(subject_identifier=subject_consent.subject_identifier)
         appointment = Appointment.objects.get(registered_subject=self.registered_subject)
         self.test_visit = TestVisitFactory(appointment=appointment)
