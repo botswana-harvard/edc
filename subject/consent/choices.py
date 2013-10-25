@@ -9,3 +9,9 @@ CONSENT_TYPES = (
     ('study', 'study'),
     ('sub-study', 'sub-study'),
     )
+
+YES_NO_DECLINED = (
+    ('Yes', 'Yes'),
+    ('No', 'No'),
+    ('Declined', 'Declined copy'),
+    )

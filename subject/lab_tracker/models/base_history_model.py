@@ -1,5 +1,6 @@
-from django.db import models
 from django.core.urlresolvers import reverse
+from django.db import models
+
 from edc.base.model.models import BaseUuidModel
 from edc.subject.registration.models import RegisteredSubject
 
@@ -18,7 +19,6 @@ class BaseHistoryModel(BaseUuidModel):
     source_app_label = models.CharField(max_length=50, null=True, blank=False)
     source_identifier = models.CharField(max_length=50, null=True)
     history_datetime = models.DateTimeField(null=True)
-    #registered_subject = models.ForeignKey(RegisteredSubject, null=True)
 
     def __unicode__(self):
         return '{0}-{1}-{2}-{3}-{4}-{5}'.format(self.subject_type, self.subject_identifier, self.test_code, self.value, self.value_datetime, self.pk)

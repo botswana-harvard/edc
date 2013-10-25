@@ -1,16 +1,19 @@
 import sys
 import json
 import socket
-from django.db import connection
+
 from django.core import serializers
+from django.db import connection
 from django.db.models import ForeignKey
 from django.db.utils import IntegrityError
+
 from edc.core.crypto_fields.classes import FieldCryptor
+
 from .transaction_producer import TransactionProducer
 
 
 class DeserializeFromTransaction(object):
-    
+
     def deserialize_json_file(self, file_pointer):
         try:
             json_txt = file_pointer.read()
@@ -28,14 +31,6 @@ class DeserializeFromTransaction(object):
         check_hostname = kwargs.get('check_hostname', True)
         is_success = False
         tr = FieldCryptor('aes', 'local').decrypt(incoming_transaction.tx)
-        #temp = json.loads(tr)
-        #temp[0].get('fields')['time_of_day'] = 'Morning'
-        #temp[0].get('fields')['time_of_week'] = 'Monday'
-        #val = temp[0].get('fields').get('availability_datetime', None)
-        #if str(temp[0].get('model')) == 'bcpp_household.household':
-#             cdt = temp[0].get('fields').get('consent_datetime')
-#             print str(cdt)+'.123'
-        #   tr = tr.replace(' "status": null,','')
         for obj in serializers.deserialize("json", tr):
             # if you get an error deserializing a datetime, confirm dev version of json.py
             if incoming_transaction.action == 'I' or incoming_transaction.action == 'U':
