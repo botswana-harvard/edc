@@ -106,7 +106,12 @@ class BaseSubject (BaseSyncUuidModel):
         if not ret:
             options = self._get_registered_subject_options()
             RegisteredSubject = get_model('registration', 'registeredsubject')
-            registered_subject, created = RegisteredSubject.objects.using(using).get_or_create(subject_identifier=self.subject_identifier, defaults=options)
+            if not RegisteredSubject.objects.using(using).filter(subject_identifier=self.subject_identifier):
+                registered_subject = RegisteredSubject.objects.using(using).create(subject_identifier=self.subject_identifier, **options)
+                created = True
+            else:
+                registered_subject = RegisteredSubject.objects.using(using).get(subject_identifier=self.subject_identifier)
+                created = False
             if not created:
                 self._update_registered_subject(using, registered_subject)
             ret = registered_subject
