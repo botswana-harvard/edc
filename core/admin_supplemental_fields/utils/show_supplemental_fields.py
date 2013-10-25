@@ -2,6 +2,7 @@ from django.contrib import admin
 
 
 def show_supplemental_fields(self):
+    """Print out admin classes that use suplemental fields."""
     index = 0
     for value in admin.site._registry.itervalues():
         if 'supplemental_fields' in dir(value):

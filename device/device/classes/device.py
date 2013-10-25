@@ -10,11 +10,18 @@ class Device(object):
     Tries settings.py (with DEVICE_ID settings attribute).
     Must be a number."""
 
+    SERVER_DEVICE_ID_LIST = [91, 92, 93, 94, 95, 96, 97, 99]  # reserved device ids
+    MIDDLEMAN_DEVICE_ID_LIST = [98]
+
     def __init__(self, device_id=None, settings_attr=None):
         self._settings_attr = settings_attr or 'DEVICE_ID'
         self._device_id = None
         self._length = None
+        self._is_server = None
+        self._is_middleman = None
         self.set_device_id(device_id)
+        self.set_is_server()
+        self.set_is_middleman()
 
     @property
     def device_id(self):
@@ -42,3 +49,19 @@ class Device(object):
         else:
             raise ImproperlyConfigured('Device id may not be None.')
         return self._device_id
+
+    def set_is_server(self):
+        self._is_server = False
+        if int(self._device_id) in self.SERVER_DEVICE_ID_LIST:
+            self._is_server = True
+
+    def set_is_middleman(self):
+        self._is_middleman = False
+        if int(self._device_id) in self.MIDDLEMAN_DEVICE_ID_LIST:
+            self._is_middleman = True
+
+    def is_server(self):
+        return self._is_server
+
+    def is_middleman(self):
+        return self._is_middleman

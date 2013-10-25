@@ -17,6 +17,7 @@ from edc.subject.subject.models import BaseSubject
 
 from ..exceptions import ConsentError
 from ..classes import ConsentedSubjectIdentifier
+from ..choices import YES_NO_DECLINED
 from .base_consent_history import BaseConsentHistory
 
 # allow a settings attribute to override the unique constraint on the
@@ -148,12 +149,11 @@ class BaseConsent(BaseSubject):
         verbose_name=("I have provided the client with a copy of their signed informed"
                       " consent"),
         max_length=3,
-        choices=YES_NO,
+        choices=YES_NO_DECLINED,
         validators=[eligible_if_yes, ],
         null=True,
         blank=False,
-        #default='Yes',
-        help_text="If no, INELIGIBLE",
+        help_text="If no, INELIGIBLE. If declined, return copy to the clinic with the consent",
         )
 
     language = models.CharField(
@@ -181,7 +181,7 @@ class BaseConsent(BaseSubject):
     def _save_new_consent(self, using=None, **kwargs):
         """ Creates or gets a subject identifier.
 
-        ..note:: registered subject is updated/created on bhp_subject signal.
+        ..note:: registered subject is updated/created on edc.subject signal.
 
         Also, calls user method :func:`save_new_consent`"""
         try:
@@ -198,7 +198,7 @@ class BaseConsent(BaseSubject):
                 self.subject_identifier = self._get_user_provided_subject_identifier()
                 if not self.subject_identifier:
                     self.subject_identifier = dummy
-            # try to get from registered_subject (was created using signal in bhp_subject)
+            # try to get from registered_subject (was created  using signal in edc.subject)
             if re_pk.match(self.subject_identifier):
                 if registered_subject:
                     if registered_subject.subject_identifier:

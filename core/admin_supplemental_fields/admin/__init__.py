@@ -1,1 +1,2 @@
 from .excluded_admin import ExcludedAdmin
+from supplemental_model_admin import SupplementalModelAdmin

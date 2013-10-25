@@ -36,10 +36,10 @@ class BaseVisitTrackingModelAdmin(BaseModelAdmin):
             'hostname_created']
         self.actions.append(export_as_csv_action("CSV Export: ...with visit and demographics",
             fields=[],
-            exclude=['id', ],
+            exclude=['id', self.visit_model_foreign_key],
             extra_fields=[
-                {'report_datetime': '%s__report_datetime' % self.visit_model_foreign_key},
                 {'subject_identifier': self.visit_model_foreign_key + '__appointment__registered_subject__subject_identifier'},
+                {'report_datetime': '%s__report_datetime' % self.visit_model_foreign_key},
                 {'gender': self.visit_model_foreign_key + '__appointment__registered_subject__gender'},
                 {'dob': self.visit_model_foreign_key + '__appointment__registered_subject__dob'},
                 {'visit_reason': self.visit_model_foreign_key + '__reason'},
@@ -47,33 +47,6 @@ class BaseVisitTrackingModelAdmin(BaseModelAdmin):
                 {'visit': self.visit_model_foreign_key + '__appointment__visit_definition__code'},
                 {'visit_instance': self.visit_model_foreign_key + '__appointment__visit_instance'}],
             ))
-
-#     def save_model(self, request, obj, form, change):
-#         if not self.visit_model:
-#             raise AttributeError('visit_model cannot be None. Specify in the ModelAdmin class. e.g. visit_model = '
-#                                  '\'maternal_visit\'')
-#         return super(BaseVisitTrackingModelAdmin, self).save_model(request, obj, form, change)
-
-#     def delete_view(self, request, object_id, extra_context=None):
-#         """ Tries to redirect if enough information is available in the admin model."""
-#         if not self.visit_model:
-#             raise AttributeError('visit_model cannot be None. Specify in the ModelAdmin class. '
-#                                  'e.g. visit_model = \'maternal_visit\'')
-#         if not self.dashboard_type:
-#             raise AttributeError('dashboard_type cannot be None. Specify in the ModelAdmin '
-#                                  'class. e.g. dashboard_type = \'subject\'')
-#             self.dashboard_type = 'subject'
-#         visit_fk_name = [fk for fk in [f for f in self.model._meta.fields if isinstance(f, ForeignKey)] if fk.rel.to._meta.module_name == self.visit_model._meta.module_name][0].name
-#         pk = self.model.objects.values(visit_fk_name).get(pk=object_id)
-#         visit_instance = self.visit_model.objects.get(pk=pk[visit_fk_name])
-#         subject_identifier = visit_instance.appointment.registered_subject.subject_identifier
-#         visit_code = visit_instance.appointment.visit_definition.code
-#         result = super(BaseVisitTrackingModelAdmin, self).delete_view(request, object_id, extra_context)
-#         result['Location'] = reverse('dashboard_visit_url', kwargs={'dashboard_type': self.dashboard_type,
-#                                                                      'subject_identifier': subject_identifier,
-#                                                                      'appointment': visit_instance.appointment.pk,
-#                                                                      'visit_code': unicode(visit_code)})
-#         return result
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         visit_model_helper = VisitModelHelper()
