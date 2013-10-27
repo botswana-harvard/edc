@@ -47,7 +47,7 @@ class RevisionField (CharField):
         return value
 
     def get_revision(self):
-        return site_revision
+        return site_revision.get_revision()
 
     def get_internal_type(self):
         return "CharField"
