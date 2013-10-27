@@ -1,10 +1,14 @@
 import logging
+
 from datetime import datetime
+
 from django.conf import settings
 from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
+
 from edc.base.model.models import BaseUuidModel
+
 from ..classes import TransactionProducer
 
 logger = logging.getLogger(__name__)
@@ -29,7 +33,7 @@ class BaseSyncUuidModel(BaseUuidModel):
     def deserialize_prep(self):
         """Users may override to manipulate the incoming object before calling save()"""
         pass
-    
+
     def _deserialize_post(self, incomming_transaction):
         """Default behaviour for all subclasses of this class is to serialize to outgoing transaction."""
         from ..models import OutgoingTransaction
@@ -43,7 +47,7 @@ class BaseSyncUuidModel(BaseUuidModel):
                                                     producer=incomming_transaction.producer,
                                                     action=incomming_transaction.action)
         self.deserialize_post()
-    
+
     def deserialize_post(self):
         """Users may override to do app specific tasks after deserialization."""
         pass

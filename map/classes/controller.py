@@ -1,8 +1,12 @@
 import copy
+
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
+
 from ..exceptions import MapperError
+
 from .mapper import Mapper
 
 
@@ -50,6 +54,9 @@ class Controller(object):
         lst.sort()
         return lst
 
+    def get_current_mapper(self):
+        return self.get_registry(settings.CURRENT_MAPPER)
+
     def get_mapper_as_tuple(self):
         """Returns a list of tuples from the registry dictionary in the format of choices used by models."""
         return [(l, l) for l in self.get_as_list()]
@@ -71,4 +78,6 @@ class Controller(object):
                     if module_has_submodule(mod, 'mappers'):
                         raise
             self.autodiscovered = True
+            if not self.get_registry(settings.CURRENT_MAPPER):
+                raise ImproperlyConfigured('Settings attribute CURRENT_MAPPER does not refer to a valid mapper. Got {0}'.format(settings.CURRENT_MAPPER))
 site_mappers = Controller()
