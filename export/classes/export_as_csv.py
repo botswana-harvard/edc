@@ -6,6 +6,8 @@ from collections import OrderedDict
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpResponse
 
+from ..models import ExportHistory
+
 
 class ExportAsCsv(object):
 
@@ -15,6 +17,8 @@ class ExportAsCsv(object):
         self._model = None
         self._file_obj = None
         self._header_row = None
+        self._header_from_m2m_complete = False
+        self._extra_fields = None
         self._track_history = track_history
         self._queryset = queryset
         self.set_model(model)
@@ -24,6 +28,11 @@ class ExportAsCsv(object):
         self.append_field_names(fields)  # a list of names
         self.append_field_names(extra_fields)  # Extra fields is a list of dictionaries of [{'label': 'django_style__query_string'}, {}...].
         self.delete_field_names(exclude)  # a list of names
+        self.set_export_filename()
+
+    def get_queryset(self):
+        """Returns the queryset to be exported."""
+        return self._queryset
 
     def set_file_obj(self):
         self._file_obj = HttpResponse(mimetype='text/csv')
@@ -35,6 +44,7 @@ class ExportAsCsv(object):
 
     def write_to_file(self):
         """Writes the export file and returns the file object."""
+        self.set_file_obj()
         writer = csv.writer(self.get_file_obj())
         self.reorder_field_names()
         self.set_header_row()
@@ -46,33 +56,52 @@ class ExportAsCsv(object):
             self.update_export_history(obj)
         return self.get_file_obj()
 
+    def get_row_value_from_attr(self, obj, field_name):
+        """Gets the row value from the model attr."""
+        value = None
+        value_error_placeholder = None
+        try:
+            value = getattr(obj, field_name)
+            if value:
+                value = unicode(value).encode("utf-8", "replace")
+        except AttributeError:
+            value_error_placeholder = field_name.split(LOOKUP_SEP)[-1]  # no harm in splitting even if usually nothing to split
+        return value, value_error_placeholder
+
+    def get_row_value_from_query_string(self, obj, field_name):
+        """Gets the row value by following the query string to related instances."""
+        value = None
+        value_error_placeholder = None
+        if self.get_extra_field(field_name) or self.get_field_name(field_name):
+            try:
+                query_string = self.get_extra_field(field_name) or self.get_field_name(field_name)
+                query_list = query_string.split(LOOKUP_SEP)
+                value, value_error_placeholder = self.recurse_getattr(obj, query_list)  # recurse to last relation to get value
+                if value:
+                    value = unicode(value).encode("utf-8", "replace")
+            except AttributeError:
+                value_error_placeholder = field_name.split(LOOKUP_SEP)[-1]
+        return value, value_error_placeholder
+
+    def get_row_values_from_m2m(self, obj):
+        """Look for m2m fields and get the values and return as a delimited string of values."""
+        values = None
+        for m2m in obj._meta.many_to_many:
+            values = self.get_m2m_value_delimiter().join([item.name.encode("utf-8", "replace") for item in getattr(obj, m2m.name).all()])
+        return values
+
     def get_row(self, obj):
         """Returns a one row for the writer."""
         row = []
         value = None
-        for field_name in self.get_field_name_names():
-            try:
-                # is field_name on instance?
-                value = unicode(getattr(obj, field_name)).encode("utf-8", "replace")
-            except AttributeError:
-                pass
-            if not value:
-                if self.get_extra_field(field_name):
-                    query_string = self.get_extra_field(field_name)
-                    try:
-                        # is field name pointing to a django_style__query_string?
-                        # is not a field attribute for this model, must be a django-style query_string
-                        # split on LOOKUP_SEP
-                        query_list = query_string.split(LOOKUP_SEP)
-                        # recurse to last field object to get value
-                        item = self.recurse_getattr(obj, query_list)
-                        # append to row
-                        value = unicode(item).encode("utf-8", "replace")
-                    except AttributeError:
-                        pass
-            row.append(value or field_name)
-        for m2m in obj._meta.many_to_many:
-            values = self.get_m2m_value_delimiter().join([item.name.encode("utf-8", "replace") for item in getattr(obj, m2m.name).all()])
+        value_error_placeholder = None  # if error getting value, just show the field name
+        for field_name in self.get_field_names():
+            value, value_error_placeholder = self.get_row_value_from_attr(obj, field_name)
+            if value_error_placeholder and LOOKUP_SEP in field_name:
+                value, value_error_placeholder = self.get_row_value_from_query_string(obj, field_name)
+            row.append(value_error_placeholder or value)
+        values = self.get_row_values_from_m2m(obj)
+        if values:
             row.append(values)
         return row
 
@@ -94,10 +123,6 @@ class ExportAsCsv(object):
     def get_model(self):
         return self._model
 
-    def get_queryset(self):
-        """Returns the queryset to be exported."""
-        self._queryset
-
     def set_field_names(self, value):
         """Sets the field names list."""
         self._field_names = list(OrderedDict.fromkeys(value))
@@ -114,6 +139,12 @@ class ExportAsCsv(object):
 
     def get_field_names(self):
         return self._field_names
+
+    def get_field_name(self, field_name):
+        """Returns the field name if it is in the list.
+
+        Like this so it is similar to the dictionary get for extra fields."""
+        return self._field_names[self._field_names.index(field_name)]
 
     def get_extra_fields(self):
         """Returns a dictionary of {<field_label>, <django_style__query_string>, ...}."""
@@ -143,14 +174,14 @@ class ExportAsCsv(object):
                         if not append_fields:
                             append_fields = []
                         append_fields.append(field)
-            if append_fields:
-                if isinstance(append_fields, dict):
-                    # TODO: these are field names or references to field names (e.g subject_visit__appointment__appt_datetime)
-                    # do these need to be verified?
-                    self.update_field_names([fldname for fldname in append_fields.itervalues() if fldname not in self.get_field_names()])
-                    self.update_extra_fields(append_fields)
-                else:
-                    self.update_field_names([fldname for fldname in append_fields if fldname not in self.get_field_names()])
+                if append_fields:
+                    if isinstance(append_fields, dict):
+                        # TODO: these are field names or references to field names (e.g subject_visit__appointment__appt_datetime)
+                        # do these need to be verified?
+                        self.update_field_names([fldname for fldname in append_fields.itervalues() if fldname not in self.get_field_names()])
+                        self.update_extra_fields(append_fields)
+                    else:
+                        self.update_field_names([fldname for fldname in append_fields if fldname not in self.get_field_names()])
 
     def delete_field_names(self, fields):
         """Extra fields is a list of dictionaries of [{'label': 'query_string'}, {}...]."""
@@ -192,7 +223,7 @@ class ExportAsCsv(object):
 
     def set_header_row(self):
         """Sets the header row to whatever :func:`get_field_names` returns."""
-        self._header_row = self.get_field_names()
+        self._header_row = [name.split(LOOKUP_SEP)[-1] for name in self.get_field_names()]
 
     def get_header_row(self):
         """Returns the header row."""
@@ -204,10 +235,10 @@ class ExportAsCsv(object):
 
     def append_m2m_to_header_row(self, obj):
         """Appends m2m field names which are not included in _meta.fields."""
-        if not self._header_complete:
+        if not self._header_from_m2m_complete:
             for m2m in obj._meta.many_to_many:
                 self.append_to_header_row(m2m.name)
-            self._header_complete = True
+            self._header_from_m2m_complete = True
 
     def get_field_delimiter(self):
         return ','
@@ -216,9 +247,12 @@ class ExportAsCsv(object):
         """Returns the delimiter for m2m values (for fields with a list of values)."""
         return ';'
 
+    def set_export_filename(self):
+        self._export_filename = '{0}.csv'.format(unicode(self.get_model()._meta).replace('.', '_'), datetime.datetime.now().strftime('%Y%m%d'))
+
     def get_export_filename(self):
         """Returns the filename."""
-        return '{0}.csv'.format(unicode(self.get_model()._meta).replace('.', '_'), datetime.datetime.now().strftime('%Y%m%d'))
+        return self._export_filename
 
     def recurse_getattr(self, obj, query_list):
         """ Recurse on result of getattr() with a given query string as a list.
@@ -231,10 +265,9 @@ class ExportAsCsv(object):
             try:
                 return self.recurse_getattr(getattr(obj, query_list[0]), query_list[1:])
             except:
-                # DoesNotExist
-                return '(none)'
-        return getattr(obj, query_list[0])
+                return None, query_list[-1]
+        return getattr(obj, query_list[0]), None
 
     def update_export_history(self, obj):
         if self._track_history:
-            self.get_model().export_history.update(obj)
+            ExportHistory.objects.update()
