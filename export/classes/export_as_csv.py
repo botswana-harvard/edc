@@ -1,7 +1,7 @@
 import csv
-import datetime
 
 from collections import OrderedDict
+from datetime import datetime
 
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpResponse
@@ -96,6 +96,8 @@ class ExportAsCsv(object):
         value = None
         value_error_placeholder = None  # if error getting value, just show the field name
         for field_name in self.get_field_names():
+            if isinstance(field_name, tuple):
+                field_name = field_name[1]
             value, value_error_placeholder = self.get_row_value_from_attr(obj, field_name)
             if value_error_placeholder and LOOKUP_SEP in field_name:
                 value, value_error_placeholder = self.get_row_value_from_query_string(obj, field_name)
@@ -143,15 +145,26 @@ class ExportAsCsv(object):
     def get_field_name(self, field_name):
         """Returns the field name if it is in the list.
 
-        Like this so it is similar to the dictionary get for extra fields."""
-        return self._field_names[self._field_names.index(field_name)]
+        Like this so it is similar to the dictionary get for extra fields and
+        can handle the tuple from extra fields."""
+        try:
+            # field name is in the list
+            return self._field_names[self._field_names.index(field_name)]
+        except ValueError:
+            # field name is in a tuple in the list
+            if field_name in [tpl[1] for tpl in self._field_names if isinstance(tpl, tuple)]:
+                return field_name
+        return None
 
     def get_extra_fields(self):
-        """Returns a dictionary of {<field_label>, <django_style__query_string>, ...}."""
-        return self._extra_fields or {}
+        """Returns an ordered dictionary of {<field_label>, <django_style__query_string>, ...}."""
+        return self._extra_fields or OrderedDict({})
 
-    def get_extra_field(self, key):
-        return self.get_extra_fields().get(key, None)
+    def get_extra_field(self, field_name):
+        for fld_name in self.get_extra_fields().itervalues():
+            if fld_name == field_name:
+                return field_name
+        return None
 
     def update_extra_fields(self, dct):
         self.get_extra_fields().update(dct)
@@ -163,28 +176,14 @@ class ExportAsCsv(object):
     def append_field_names(self, fields):
         """Appends field names to the list given a dictionary or list."""
         if fields:
-            if isinstance(fields, list):
-                append_fields = None
-                for field in fields:
-                    if isinstance(field, dict):
-                        if not append_fields:
-                            append_fields = {}
-                        append_fields.update(field)
-                    else:
-                        if not append_fields:
-                            append_fields = []
-                        append_fields.append(field)
-                if append_fields:
-                    if isinstance(append_fields, dict):
-                        # TODO: these are field names or references to field names (e.g subject_visit__appointment__appt_datetime)
-                        # do these need to be verified?
-                        self.update_field_names([fldname for fldname in append_fields.itervalues() if fldname not in self.get_field_names()])
-                        self.update_extra_fields(append_fields)
-                    else:
-                        self.update_field_names([fldname for fldname in append_fields if fldname not in self.get_field_names()])
+            if isinstance(fields, (OrderedDict, dict)):
+                # these are field names or references to field names (e.g subject_visit__appointment__appt_datetime)
+                self.update_field_names([(header_name, field_name) for header_name, field_name in fields.iteritems() if field_name not in self.get_field_names()])
+                self.update_extra_fields(fields)
+            else:
+                self.update_field_names([fldname for fldname in fields if fldname not in self.get_field_names()])
 
     def delete_field_names(self, fields):
-        """Extra fields is a list of dictionaries of [{'label': 'query_string'}, {}...]."""
         if fields:
             for field_name in fields:
                 # delete from field names
@@ -223,14 +222,20 @@ class ExportAsCsv(object):
 
     def set_header_row(self):
         """Sets the header row to whatever :func:`get_field_names` returns."""
-        self._header_row = [name.split(LOOKUP_SEP)[-1] for name in self.get_field_names()]
+        self._header_row = []
+        for header_name in self.get_field_names():
+            if isinstance(header_name, tuple):  # get header_name from (header_name, field_name) if from extra fields
+                header_name = header_name[0]
+            self._header_row.append(header_name.split(LOOKUP_SEP)[-1])
 
     def get_header_row(self):
         """Returns the header row."""
         return self._header_row or []
 
     def append_to_header_row(self, value):
-        """Appends a name to the header row names list."""
+        """Appends a name to the header row names list.
+
+        Used in the m2m case."""
         self.get_header_row().append(value)
 
     def append_m2m_to_header_row(self, obj):
@@ -248,7 +253,7 @@ class ExportAsCsv(object):
         return ';'
 
     def set_export_filename(self):
-        self._export_filename = '{0}.csv'.format(unicode(self.get_model()._meta).replace('.', '_'), datetime.datetime.now().strftime('%Y%m%d'))
+        self._export_filename = '{0}.csv'.format(unicode(self.get_model()._meta).replace('.', '_'), datetime.now().strftime('%Y%m%d'))
 
     def get_export_filename(self):
         """Returns the filename."""
@@ -268,6 +273,16 @@ class ExportAsCsv(object):
                 return None, query_list[-1]
         return getattr(obj, query_list[0]), None
 
+    def get_track_history(self):
+        return self._track_history
+
     def update_export_history(self, obj):
-        if self._track_history:
-            ExportHistory.objects.update()
+        if self.get_track_history():
+            ExportHistory.objects.create(
+                app_label=obj._meta.app_label,
+                object_name=obj._meta.object_name,
+                instance_pk=obj.pk,
+                change_type='NA',
+                sent=True,
+                sent_datetime=datetime.now()
+                )

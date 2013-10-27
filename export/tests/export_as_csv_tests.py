@@ -1,4 +1,5 @@
 from datetime import datetime
+from collections import OrderedDict
 
 from django.test import TestCase
 
@@ -67,13 +68,12 @@ class ExportAsCsvTests(TestCase):
         for i in range(0, 10):
             TestModelFactory()
         queryset = TestModel.objects.all()
-        extra_fields = [{'field 10': 'f10'}, {'field 20': 'f20'}]
+        extra_fields = OrderedDict({'field 10': 'f10', 'field 20': 'f20'})
         export_as_csv = ExportAsCsv(queryset, model=TestModel, extra_fields=extra_fields)
         export_as_csv.get_field_names().sort()
         extra_field_names = []
-        for dct in extra_fields:
-            for value in dct.itervalues():
-                extra_field_names.append(value)
+        for header, field in extra_fields.iteritems():
+            extra_field_names.append((header, field))
         field_names = [fld.name for fld in TestModel._meta.fields] + extra_field_names
         field_names.sort()
         self.assertEqual(export_as_csv.get_field_names(), field_names)
@@ -101,6 +101,20 @@ class ExportAsCsvTests(TestCase):
         field_names = [fld.name for fld in TestModel._meta.fields if fld.name not in names]
         field_names.sort()
         self.assertEqual(export_as_csv.get_field_names(), field_names)
+
+    def test_get_field_name(self):
+        """get a field name by name even if it is inside a tuple from extra fields."""
+        for i in range(0, 10):
+            TestModelFactory()
+        queryset = TestModel.objects.all()
+        names = ['f1', 'f2']
+        extra_fields = OrderedDict({'field 10': 'f10', 'field 20': 'f20'})
+        export_as_csv = ExportAsCsv(queryset, model=TestModel, exclude=names, extra_fields=extra_fields)
+        export_as_csv.get_field_names().sort()
+        field_names = [fld.name for fld in TestModel._meta.fields if fld.name not in names]
+        field_names.sort()
+        for field_name in export_as_csv.get_field_names():
+            self.assertEqual(export_as_csv.get_field_name(field_name), field_name)
 
     def test_field_names_are_ordered(self):
         for i in range(0, 10):
@@ -195,7 +209,7 @@ class ExportAsCsvTests(TestCase):
         TestScheduledModelFactory(test_visit=self.test_visit)
         queryset = TestScheduledModel.objects.all()
         fields = ['f1', 'hostname_created', 'report_datetime', 'report_datetime', 'f2', 'f3']
-        extra_fields = {'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'}
+        extra_fields = OrderedDict({'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'})
         export_as_csv = ExportAsCsv(queryset, model=TestScheduledModel, fields=fields, extra_fields=extra_fields, show_all_fields=False)
         export_as_csv.reorder_field_names()
         export_as_csv.set_header_row()
@@ -209,19 +223,29 @@ class ExportAsCsvTests(TestCase):
         queryset = TestScheduledModel.objects.all()
         self.assertEqual(queryset.count(), 1)
         fields = ['f1', 'hostname_created', 'report_datetime', 'report_datetime', 'f2', 'f3']
-        extra_fields = {'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'}
+        extra_fields = OrderedDict({'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'})
         export_as_csv = ExportAsCsv(queryset, model=TestScheduledModel, fields=fields, extra_fields=extra_fields, show_all_fields=False, track_history=True)
         self.assertEqual(export_as_csv.write_to_file(), export_as_csv.get_file_obj())
 
     def test_updates_history1(self):
-        """on export, history is export_history is updated"""
+        """on export, export_history is updated"""
         test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
         queryset = TestScheduledModel.objects.all()
         fields = ['f1', 'hostname_created', 'report_datetime', 'report_datetime', 'f2', 'f3']
-        extra_fields = {'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'}
+        extra_fields = OrderedDict({'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'})
         export_as_csv = ExportAsCsv(queryset, model=TestScheduledModel, fields=fields, extra_fields=extra_fields, show_all_fields=False, track_history=True)
         export_as_csv.write_to_file()
-        print ExportHistory.objects.all()
+        self.assertEqual(ExportHistory.objects.filter(instance_pk=test_scheduled_model.pk).count(), 1)
+
+    def test_doesnt_update_history(self):
+        """on export, export_history is updated"""
+        test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
+        queryset = TestScheduledModel.objects.all()
+        fields = ['f1', 'hostname_created', 'report_datetime', 'report_datetime', 'f2', 'f3']
+        extra_fields = OrderedDict({'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'})
+        export_as_csv = ExportAsCsv(queryset, model=TestScheduledModel, fields=fields, extra_fields=extra_fields, show_all_fields=False, track_history=False)
+        export_as_csv.write_to_file()
+        self.assertEqual(ExportHistory.objects.all().count(), 0)
 
     def test_model_manager_serializes1(self):
         """test manager serializes to export_transactions, count"""
