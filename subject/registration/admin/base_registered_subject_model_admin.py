@@ -1,10 +1,10 @@
-from edc.core.crypto_fields.admin import BaseCryptorModelAdmin
+from edc.base.admin.admin import BaseModelAdmin
 from edc.core.bhp_export_data.actions import export_as_csv_action
 from edc.subject.appointment.models import Appointment
 from ..models import RegisteredSubject
 
 
-class BaseRegisteredSubjectModelAdmin (BaseCryptorModelAdmin):
+class BaseRegisteredSubjectModelAdmin (BaseModelAdmin):
 
     """ModelAdmin subclass for models with a ForeignKey to 'registered_subject'
 
