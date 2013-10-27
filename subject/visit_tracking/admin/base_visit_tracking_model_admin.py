@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.db.models import ForeignKey
 from django.core.exceptions import ImproperlyConfigured
 
@@ -47,15 +49,15 @@ class BaseVisitTrackingModelAdmin(BaseModelAdmin):
             actions['export_as_csv_action'] = (  # This is a django SortedDict (function, name, short_description)
                 export_as_csv_action(
                     exclude=['id', self.visit_model_foreign_key],
-                    extra_fields=[
-                        {'subject_identifier': self.visit_model_foreign_key + '__appointment__registered_subject__subject_identifier'},
-                        {'report_datetime': '%s__report_datetime' % self.visit_model_foreign_key},
-                        {'gender': self.visit_model_foreign_key + '__appointment__registered_subject__gender'},
-                        {'dob': self.visit_model_foreign_key + '__appointment__registered_subject__dob'},
-                        {'visit_reason': self.visit_model_foreign_key + '__reason'},
-                        {'visit_status': self.visit_model_foreign_key + '__appointment__appt_status'},
-                        {'visit': self.visit_model_foreign_key + '__appointment__visit_definition__code'},
-                        {'visit_instance': self.visit_model_foreign_key + '__appointment__visit_instance'}],
+                    extra_fields=OrderedDict(
+                        {'subject_identifier': self.visit_model_foreign_key + '__appointment__registered_subject__subject_identifier',
+                         'visit_report_datetime': '%s__report_datetime' % self.visit_model_foreign_key,
+                         'gender': self.visit_model_foreign_key + '__appointment__registered_subject__gender',
+                         'dob': self.visit_model_foreign_key + '__appointment__registered_subject__dob',
+                         'visit_reason': self.visit_model_foreign_key + '__reason',
+                         'visit_status': self.visit_model_foreign_key + '__appointment__appt_status',
+                         'visit': self.visit_model_foreign_key + '__appointment__visit_definition__code',
+                         'visit_instance': self.visit_model_foreign_key + '__appointment__visit_instance'}),
                     ),
                     'export_as_csv_action',
                     "Export to CSV with visit and demographics")
