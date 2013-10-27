@@ -144,6 +144,7 @@ class BaseSubject (BaseSyncUuidModel):
             if k in options:
                 setattr(registered_subject, k, options.get(k))
         registered_subject.save(using=using)
+        return registered_subject
 
     def post_save_get_or_create_registered_subject(self, **kwargs):
         """Creates or \'gets and updates\' the registered subject instance for this subject.
@@ -155,17 +156,22 @@ class BaseSubject (BaseSyncUuidModel):
         ..note:: 'self' may not have an attribute registered_subject or the attribute may not be set.
         """
         using = kwargs.get('using', None)
+        updated = False
+        registered_subject = None
         # skip if self is an instance of RegisteredSubject
         if not self.is_registered_subject():
             if 'registered_subject' in dir(self):
                 if not self.registered_subject:
-                    self.registered_subject = self._get_or_created_registered_subject(using)
+                    registered_subject = self._get_or_created_registered_subject(using)
+                    self.registered_subject = registered_subject
+                    updated = True
                 else:
-                    self._update_registered_subject(using)
+                    registered_subject = self._update_registered_subject(using)
             else:
                 # self does not have a foreign key to RegisteredSubject but RegisteredSubject
                 # still needs to be created or updated
-                self._get_or_created_registered_subject(using)
+                registered_subject = self._get_or_created_registered_subject(using)
+        return registered_subject, updated
 
     def get_subject_type(self):
         """Returns a subject type.
