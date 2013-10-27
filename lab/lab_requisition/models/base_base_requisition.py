@@ -1,20 +1,25 @@
 from datetime import datetime
-from django.db import models
+
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+from django.db import models
+
 try:
     from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseUuidModel
 except ImportError:
     from edc.base.model.models import BaseUuidModel
+
 from edc.base.model.fields import InitialsField
 from edc.choices.common import YES_NO
+from edc.core.bhp_string.classes import BaseString
 from edc.core.bhp_variables.models import StudySite
 from edc.device.device.classes import Device
-from edc.core.bhp_string.classes import BaseString
-from edc.lab.lab_clinic_api.models import Panel
 from edc.lab.lab_clinic_api.models import AliquotType
+from edc.lab.lab_clinic_api.models import Panel
+
 from ..choices import PRIORITY, REASON_NOT_DRAWN, ITEM_TYPE
-from ..managers import BaseRequisitionManager
 from ..classes import RequisitionLabel
+from ..managers import BaseRequisitionManager
 
 
 class BaseBaseRequisition (BaseUuidModel):
@@ -186,13 +191,21 @@ class BaseBaseRequisition (BaseUuidModel):
 
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
 
+    def get_site_code(self):
+        site_code = ''
+        try:
+            site_code = self.site.site_code
+        except AttributeError:
+            raise ImproperlyConfigured('Site may not be None. Either include the field for user input or override method get_site_code() on the concrete model.')
+        return site_code
+
     def prepare_specimen_identifier(self, **kwargs):
         """ Adds protocol, site to the identifier"""
         self.protocol = settings.PROJECT_NUMBER
         opts = {}
         opts['prefix'] = settings.PROJECT_IDENTIFIER_PREFIX
         opts['requisition_identifier'] = self.requisition_identifier
-        opts['site'] = self.site.site_code
+        opts['site'] = self.get_site_code()
         return '{prefix}{site}{requisition_identifier}'.format(**opts)
 
     def prepare_requisition_identifier(self, **kwargs):

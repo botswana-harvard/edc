@@ -1,12 +1,16 @@
 #from vtown import geo                   # pip install geo-utils or download at https://pypi.python.org/pypi/geo-utils
 #from vtown.geo.polygon import Polygon   # pip install geo-utils or download at https://pypi.python.org/pypi/geo-utils
 import math
-from geopy import distance
-from geopy import Point
+
 from datetime import date, timedelta
+from geopy import Point
+from geopy import distance
+
 from django.conf import settings
 from django.utils.encoding import smart_str
+
 from edc.base.model.models import BaseUuidModel
+
 from ..exceptions import MapperError
 
 
@@ -492,7 +496,7 @@ class Mapper(object):
 
         Wrapper for :func:`gps_validator`"""
         verify = True
-        if 'VERIFY_GPS' in dir(settings.CURRENT_COMMUNITY):
+        if 'VERIFY_GPS' in dir(settings.CURRENT_MAPPER):
             verify = settings.VERIFY_GPS
         if verify:
             dist = self.gps_distance_between_points(lat, lon, center_lat, center_lon, radius)

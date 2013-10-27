@@ -171,6 +171,14 @@ class BaseConsent(BaseSubject):
     def __unicode__(self):
         return "{0} {1} {2}".format(self.mask_unset_subject_identifier(), mask_encrypted(self.first_name), self.initials)
 
+    def get_site_code(self):
+        site_code = ''
+        try:
+            site_code = self.study_site.site_code
+        except AttributeError:
+            raise ImproperlyConfigured('Site code may not be None. Either include the field for user input or override method get_site_code() on the concrete model.')
+        return site_code
+
     def save_new_consent(self, using=None, subject_identifier=None):
         """ Users may override this to compliment the default behavior for new instances.
 
@@ -207,7 +215,7 @@ class BaseConsent(BaseSubject):
                         self.subject_identifier = self.registered_subject.subject_identifier
             # create a subject identifier, if not already done
             if re_pk.match(self.subject_identifier):
-                consented_subject_identifier = ConsentedSubjectIdentifier(site_code=self.study_site.site_code, using=using)
+                consented_subject_identifier = ConsentedSubjectIdentifier(site_code=self.get_site_code(), using=using)
                 self.subject_identifier = consented_subject_identifier.get_identifier(using=using)
         if not self.subject_identifier:
             self.subject_identifier = dummy
