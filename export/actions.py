@@ -22,8 +22,8 @@ def export_as_csv_action(description="Export selected objects to CSV",
     list of dictionaries [{'label': 'query_string'}, {}, ...]
 
     """
-    def export_as_csv(modeladmin, request, queryset):
-        exporter = ExportAsCsv(queryset,
+    def export(modeladmin, request, queryset):
+        export_as_csv = ExportAsCsv(queryset,
                                modeladmin=modeladmin,
                                fields=fields,
                                exclude=exclude,
@@ -31,8 +31,8 @@ def export_as_csv_action(description="Export selected objects to CSV",
                                header=header,
                                track_history=track_history,
                                show_all_fields=show_all_fields)
-        return exporter.write_to_file()
+        return export_as_csv.write_to_file()
 
-    export_as_csv.short_description = description
+    export.short_description = description
 
-    return export_as_csv
+    return export
