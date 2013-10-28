@@ -10,13 +10,14 @@ from ..models import ExportHistory
 
 
 class ExportAsCsv(object):
-
+    # TODO: maybe instead of separate lists for row values and column names, make this use an OrderedDict
     def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None, header=True, track_history=False, show_all_fields=True):
         self._field_names = []
         self._modeladmin = modeladmin
         self._model = None
         self._file_obj = None
-        self._header_row = None
+        self._header_row = []
+        self._header_row_is_set = None
         self._header_from_m2m_complete = False
         self._extra_fields = None
         self._track_history = track_history
@@ -43,18 +44,43 @@ class ExportAsCsv(object):
         return self._file_obj
 
     def write_to_file(self):
-        """Writes the export file and returns the file object."""
+        """Writes the export file and returns the file object.
+
+        The header row column names are collected on the first pass of the for loop."""
         self.set_file_obj()
         writer = csv.writer(self.get_file_obj())
         self.reorder_field_names()
-        self.set_header_row()
-        for obj in self.get_queryset():
-            self.append_m2m_to_header_row(obj)
-            if self.get_include_header():
+        for index, obj in enumerate(self.get_queryset()):
+            row = self.get_row(obj)
+            if self.get_include_header() and index == 0:
                 writer.writerow(self.get_header_row())
-            writer.writerow(self.get_row(obj))
+            writer.writerow(row)
             self.update_export_history(obj)
         return self.get_file_obj()
+
+    def get_row(self, obj):
+        """Returns a one row for the writer."""
+        row = []
+        header_name = None
+        value = None
+        value_error_placeholder = None  # if error getting value, just show the field name
+        for field_name in self.get_field_names():
+            header_name = field_name
+            if isinstance(field_name, tuple):
+                header_name = field_name[0]
+                field_name = field_name[1]
+            value, value_error_placeholder = self.get_row_value_from_attr(obj, field_name)
+            if value_error_placeholder and LOOKUP_SEP in field_name:
+                value, value_error_placeholder = self.get_row_value_from_query_string(obj, field_name)
+            row.append(value_error_placeholder or value)
+            self.append_to_header_row(header_name)
+        # add m2m fields -- they are not listed in field_names
+        header_and_values = self.get_row_values_from_m2m(obj)
+        if header_and_values:
+            row.extend([tpl[1] for tpl in header_and_values])
+            self.append_to_header_row([tpl[0] for tpl in header_and_values])
+        self.header_row_is_set(True)
+        return row
 
     def get_row_value_from_attr(self, obj, field_name):
         """Gets the row value from the model attr."""
@@ -85,27 +111,15 @@ class ExportAsCsv(object):
 
     def get_row_values_from_m2m(self, obj):
         """Look for m2m fields and get the values and return as a delimited string of values."""
-        values = None
+        header_and_values = []
         for m2m in obj._meta.many_to_many:
-            values = self.get_m2m_value_delimiter().join([item.name.encode("utf-8", "replace") for item in getattr(obj, m2m.name).all()])
-        return values
+            header_and_values.append((m2m.name, self.get_m2m_value_delimiter().join([item.name.encode("utf-8", "replace") for item in getattr(obj, m2m.name).all()])))
+        return header_and_values
 
-    def get_row(self, obj):
-        """Returns a one row for the writer."""
-        row = []
-        value = None
-        value_error_placeholder = None  # if error getting value, just show the field name
-        for field_name in self.get_field_names():
-            if isinstance(field_name, tuple):
-                field_name = field_name[1]
-            value, value_error_placeholder = self.get_row_value_from_attr(obj, field_name)
-            if value_error_placeholder and LOOKUP_SEP in field_name:
-                value, value_error_placeholder = self.get_row_value_from_query_string(obj, field_name)
-            row.append(value_error_placeholder or value)
-        values = self.get_row_values_from_m2m(obj)
-        if values:
-            row.append(values)
-        return row
+    def header_row_is_set(self, row_is_set=None):
+        if row_is_set:
+            self._header_row_is_set = True
+        return self._header_row_is_set
 
     def get_include_header(self):
         return self._include_header
@@ -202,8 +216,11 @@ class ExportAsCsv(object):
         # move subject_identifier to the top of the list
         name = None
         try:
-            name = self.get_field_names().pop(self.get_field_names().index('subject_identifier'))
-            self.get_field_names().insert(0, name)
+            # find subject_identifier if it exists
+            subject_identifier_field = [fld for fld in self.get_field_names() if fld.split(LOOKUP_SEP)[-1] == 'subject_identifier']
+            if subject_identifier_field:
+                name = self.get_field_names().pop(self.get_field_names().index(subject_identifier[0]))
+                self.get_field_names().insert(0, name)
         except ValueError:
             pass
         try:
@@ -220,7 +237,7 @@ class ExportAsCsv(object):
                 pass
         self.get_field_names().extend(required_fields)
 
-    def set_header_row(self):
+    def set_header_row(self, obj):
         """Sets the header row to whatever :func:`get_field_names` returns."""
         self._header_row = []
         for header_name in self.get_field_names():
@@ -230,20 +247,15 @@ class ExportAsCsv(object):
 
     def get_header_row(self):
         """Returns the header row."""
-        return self._header_row or []
+        return self._header_row
 
     def append_to_header_row(self, value):
-        """Appends a name to the header row names list.
-
-        Used in the m2m case."""
-        self.get_header_row().append(value)
-
-    def append_m2m_to_header_row(self, obj):
-        """Appends m2m field names which are not included in _meta.fields."""
-        if not self._header_from_m2m_complete:
-            for m2m in obj._meta.many_to_many:
-                self.append_to_header_row(m2m.name)
-            self._header_from_m2m_complete = True
+        """Appends or extends the header row names list."""
+        if not self.header_row_is_set():
+            if isinstance(value, list):
+                self.get_header_row().extend(value)
+            else:
+                self.get_header_row().append(value)
 
     def get_field_delimiter(self):
         return ','
