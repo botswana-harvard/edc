@@ -4,6 +4,30 @@ from django.db import models
 
 class BaseInspector(BaseUuidModel):
 
+    subject_identifier = models.CharField(
+        max_length=25,
+        verbose_name='Subject Identifier'
+        )
+
+    requisition_datetime = models.DateTimeField(
+        verbose_name='Requisition Date'
+        )
+
+    requisition_identifier = models.CharField(
+        max_length=50,
+        verbose_name='Requisition Identifier'
+        )
+
+    specimen_identifier = models.CharField(
+        max_length=50,
+        verbose_name='Specimen Identifier'
+        )
+
+    device_id = models.CharField(
+        max_length=15,
+        verbose_name='Device Id'
+        )
+
     item_identifier = models.CharField(
         max_length=25,
         null=True,

@@ -59,6 +59,7 @@ class DobField(DateTimeField):
     """field for date of birth"""
 
     description = _("Custom field for date of birth")
+    # TODO: there should be a dob with and without time, validator should be installed, but is this class ever used?
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('verbose_name', _('Date of Birth'))
@@ -199,7 +200,7 @@ class WeightField(DecimalField):
 
 
 class OmangField(CharField):
-
+# FIXME: get rid of this if it is not encrypted!!
     """See EncryptedIdentityField!
         field for omang. If getting an ID that may alos be something other than an Omang,
         use IdentityField along with IdentityTypeField

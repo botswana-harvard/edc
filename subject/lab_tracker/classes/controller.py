@@ -262,10 +262,6 @@ class Controller(object):
 
     def confirm_autodiscovered(self):
         return True
-#         """Confirms that autodiscover() was called at least once."""
-#         if not self.get_autodiscovered():
-#             raise ImproperlyConfigured('Call lab_tracker.autodiscover() before accessing values. Perhaps place this in the urls.py')
-
 
 # A global to contain all lab_tracker instances from modules
 site_lab_tracker = Controller()

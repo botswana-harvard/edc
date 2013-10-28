@@ -33,3 +33,12 @@ class DeviceTests(SimpleTestCase):
     def test_device7(self):
         """ accepts a numeric string """
         self.assertEquals(Device(device_id='5', settings_attr='ERIK_IS_A_DEVICE').device_id, '5')
+
+    def test_knows_is_server(self):
+        for i in range(91, 100):
+            device = Device(device_id='99', settings_attr='ERIK_IS_A_DEVICE')
+            self.assertTrue(device.is_server())
+
+    def test_knows_is_not_server(self):
+        device = Device(device_id='90', settings_attr='ERIK_IS_A_DEVICE')
+        self.assertFalse(device.is_server())
