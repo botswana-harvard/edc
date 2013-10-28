@@ -1,6 +1,6 @@
 import copy
 import random
-from ..models import Excluded
+from ..models import ExcludedHistory
 
 
 class SupplementalFields(object):
@@ -22,31 +22,30 @@ class SupplementalFields(object):
                 ...
     """
 
-    def __init__(self, supplemental_fields, p=None, group=None):
-        #TODO: handle group
+    def __init__(self, supplemental_fields, p=None, group=None, grouping_field=None):
         self._original_model_admin_fields = None
         self._supplemental_fields = None
         self._model_inst = None
+        self._model = None
+        self._group = None
+        self._grouping_field = grouping_field
         self._fields_verified = False
         self._set_probability(p)
+        self._set_group(group)
         self._set_supplemental_fields(supplemental_fields)
 
-    def _set_model_inst(self, model_inst):
-        # supplemental_fields must be nullable and editable
-        self._check_supplemental_field_attrs(model_inst)
-        self._model_inst = model_inst
-
-    def _get_model_inst(self):
-        return self._model_inst
-
-    def choose_fields(self, model_admin_fields, model_inst):
+    def choose_fields(self, model_admin_fields, model, model_inst):
         """Chooses and returns tuples of fields and exclude_fields called from ModelAdmin get_form().
 
+        model_inst may be None if calling get_form on Add.
+
         This is called from get_form()."""
+        self._set_model(model)
+        self._check_supplemental_field_attrs(model)
         self._set_model_inst(model_inst)
         # save the original ModelAdmin field list with this instance before it is altered
         self._set_original_model_admin_fields(model_admin_fields)
-        # any field listed in supplimental_fields must be in original admin fields
+        # any field listed in supplemental_fields must be in original admin fields
         # TODO: this should be checked when the ModelAdmin is instantiated
         self._check_supplemental_in_original()
         # get the list of field names to add to the exclude list
@@ -55,6 +54,12 @@ class SupplementalFields(object):
         # exclude field names from the original model_admin fields list if exclude fields is not None
         new_model_admin_fields = tuple([fld_name for fld_name in list(self._get_original_model_admin_fields()) if fld_name not in exclude_fields])
         return new_model_admin_fields, exclude_fields
+
+    def _set_model_inst(self, model_inst):
+        self._model_inst = model_inst
+
+    def _get_model_inst(self):
+        return self._model_inst
 
     def _set_supplemental_fields(self, supplemental_fields):
         if not supplemental_fields:
@@ -97,6 +102,24 @@ class SupplementalFields(object):
             exclude_fields = self._choose_fields_to_exclude()
         return exclude_fields
 
+    def _set_group(self, value):
+        self._group = value
+
+    def _get_group(self):
+        return self._group
+
+    def _set_grouping_field(self, value):
+        self._grouping_field = value
+
+    def _get_grouping_field(self):
+        return self._group
+
+    def _set_model(self, value):
+        self._model = value
+
+    def _get_model(self):
+        return self._model
+
     def _set_probability(self, probability):
         if not isinstance(probability, float):
             raise AttributeError('Probability \'p\' must be a float. Got {0}.'.format(probability))
@@ -134,16 +157,24 @@ class SupplementalFields(object):
         # you are editing, lookup the choice that was used to create obj.
         # Instances are only logged if exclude fields is not null
         # Instances are logged in :func:`base_model_admin.save_model`
-        if Excluded.objects.filter(app_label=model_inst._meta.app_label, object_name=model_inst._meta.object_name, model_pk=model_inst.pk).exists():
+        if ExcludedHistory.objects.filter(app_label=model_inst._meta.app_label, object_name=model_inst._meta.object_name, model_pk=model_inst.pk).exists():
             exclude_fields = self._get_supplemental_fields()
         return exclude_fields
 
-    def _check_supplemental_field_attrs(self, model_inst):
+    def _retrieve_fields_by_grouping_field(self):
+        """Retrieve by grouping field value and model name."""
+        if ExcludedHistory.objects.filter(
+                app_label=self._get_model()._meta.app_label,
+                object_name=self._get_model()._meta.object_name,
+                grouping_field=self._get_grouping_field()).exists():
+            exclude_fields = self._get_supplemental_fields()
+
+    def _check_supplemental_field_attrs(self, model):
         """Checks supplemental fields are nullable and editable."""
-        for fld in model_inst._meta.fields:
+        for fld in model._meta.fields:
             if fld.name in self._get_supplemental_fields():
                 if not fld.null:
-                    raise AttributeError('Supplemental fields must allow nulls, field \'{1}\' does not. See model {0}.'.format(model_inst._meta.object_name, fld.name))
+                    raise AttributeError('Supplemental fields must allow nulls, field \'{1}\' does not. See model {0}.'.format(model._meta.object_name, fld.name))
                 if not fld.editable:
-                    raise AttributeError('Supplemental fields must be \'editable\', field \'{1}\' is not. See model {0}'.format(model_inst._meta.object_name, fld.name))
+                    raise AttributeError('Supplemental fields must be \'editable\', field \'{1}\' is not. See model {0}'.format(model._meta.object_name, fld.name))
         return True
