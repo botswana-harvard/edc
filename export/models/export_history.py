@@ -13,10 +13,10 @@ class ExportHistory(BaseSyncUuidModel):
 
     object_name = models.CharField(max_length=50)
 
-    instance_pk = models.CharField(max_length=32)
+    instance_pk = models.CharField(max_length=36)
 
     change_type = models.CharField(
-        max_length=1,
+        max_length=2,
         choices=(('I', 'Insert'), ('U', 'Update'), ('D', 'Delete'), ('NA', 'Not applicable')),
         help_text=''
         )
