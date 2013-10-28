@@ -1,8 +1,10 @@
 from django.contrib import admin
+
+from edc.apps.admin_supplemental_fields.classes import SupplementalFields
 from edc.base.admin.admin import BaseModelAdmin
-from edc.core.admin_supplemental_fields.classes import SupplementalFields
-from ..models import TestModel, TestM2m, TestForeignKey
+
 from ..forms import TestModelForm
+from ..models import TestModel, TestM2m, TestForeignKey
 
 
 class TestModelAdmin(BaseModelAdmin):
