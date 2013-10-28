@@ -1,14 +1,17 @@
 import numpy
+
 from django.db import models
 from django.test import SimpleTestCase
+
 from edc.testing.models import TestModel
+
 from ..classes import SupplementalFields
 
 
 class TestSupplementalFields(SimpleTestCase):
 
     def test_init(self):
-        # only accepts a list or tuple for fields
+        """only accepts a list or tuple for fields"""
         fields = 1
         self.assertRaises(AttributeError, SupplementalFields, fields, 0.1)
         fields = 'field'
@@ -19,6 +22,7 @@ class TestSupplementalFields(SimpleTestCase):
         self.assertTrue(isinstance(SupplementalFields(fields, 0.1), SupplementalFields))
 
     def test_set_supplemental_fields(self):
+        """set """
         fields = ('field1', 'field2', 'field3')
         supplemental_fields = SupplementalFields(fields, 0.1)
         self.assertEqual(fields, supplemental_fields._get_supplemental_fields())
@@ -29,6 +33,7 @@ class TestSupplementalFields(SimpleTestCase):
         self.assertRaises(AttributeError, supplemental_fields._set_supplemental_fields, [])
 
     def test_get_supplemental_fields(self):
+        """get"""
         fields = ('field1', 'field2', 'field3')
         supplemental_fields = SupplementalFields(fields, 0.1)
         self.assertEqual(supplemental_fields._get_supplemental_fields(), fields)
@@ -92,7 +97,7 @@ class TestSupplementalFields(SimpleTestCase):
         supplemental_fields = SupplementalFields(supplemental_field_tuple, 0.231)
         good_model = GoodModel()
         fields = [fld.name for fld in GoodModel._meta.fields]
-        supplemental_fields.choose_fields(fields, good_model)
+        supplemental_fields.choose_fields(fields, GoodModel, good_model)
 
     def test_check_supplemental_in_original(self):
         fields = ('field1', 'field2', 'field7')
@@ -187,29 +192,37 @@ class TestSupplementalFields(SimpleTestCase):
         self.assertIn(supplemental_field_tuple, choice)
         self.assertIn([], choice)
 
-#     def test_p1(self):
-#         sf = SupplementalFields(('f3', 'f4'), p=0.1)
-#         seq = sf._get_probability_as_sequence()
-#         self.assertEqual(len(seq), 1000)
-#         self.assertEqual(seq.count(0), 100)
-#         self.assertEqual(seq.count(1), 900)
-#  
-#         sf = SupplementalFields(('f3', 'f4'), p=0.5)
-#         seq = sf._get_probability_as_sequence()
-#         self.assertEqual(len(seq), 1000)
-#         self.assertEqual(seq.count(0), 500)
-#         self.assertEqual(seq.count(1), 500)
-#  
-#         sf = SupplementalFields(('f3', 'f4'), p=0.135)
-#         seq = sf._get_probability_as_sequence()
-#         self.assertEqual(len(seq), 1000)
-#         self.assertEqual(seq.count(0), 135)
-#         self.assertEqual(seq.count(1), 865)
-#  
-#         self.assertRaises(AttributeError, SupplementalFields, "X", p=0.1)
-#         self.assertRaises(AttributeError, SupplementalFields, ('f3', 'f4'), p=1)
-#         self.assertRaises(AttributeError, SupplementalFields, ('f3', 'f4'), p=0.1355)
-#  
+    def test_p1(self):
+        sf = SupplementalFields(('f3', 'f4'), p=0.1)
+        seq = sf._get_probability_as_sequence()
+        self.assertEqual(len(seq), 1000)
+        self.assertEqual(seq.count(0), 100)
+        self.assertEqual(seq.count(1), 900)
+
+    def test_p2(self):
+        sf = SupplementalFields(('f3', 'f4'), p=0.5)
+        seq = sf._get_probability_as_sequence()
+        self.assertEqual(len(seq), 1000)
+        self.assertEqual(seq.count(0), 500)
+        self.assertEqual(seq.count(1), 500)
+
+    def test_p3(self):
+        sf = SupplementalFields(('f3', 'f4'), p=0.135)
+        seq = sf._get_probability_as_sequence()
+        self.assertEqual(len(seq), 1000)
+        self.assertEqual(seq.count(0), 135)
+        self.assertEqual(seq.count(1), 865)
+
+    def test_p4(self):
+        self.assertRaises(AttributeError, SupplementalFields, "X", p=0.1)
+        self.assertRaises(AttributeError, SupplementalFields, ('f3', 'f4'), p=1)
+        self.assertRaises(AttributeError, SupplementalFields, ('f3', 'f4'), p=0.1355)
+
+    def test_5(self):
+        """test that ModelAdmin fields is correctly reset after use."""
+        pass
+
+#     def test_p5(self):
 #         P = 0
 #         INC = 1
 #         EXC = 2
