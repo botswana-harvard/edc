@@ -1,16 +1,19 @@
 import sys
 import json
 import socket
-from django.db import connection
+
 from django.core import serializers
+from django.db import connection
 from django.db.models import ForeignKey
 from django.db.utils import IntegrityError
+
 from edc.core.crypto_fields.classes import FieldCryptor
+
 from .transaction_producer import TransactionProducer
 
 
 class DeserializeFromTransaction(object):
-    
+
     def deserialize_json_file(self, file_pointer):
         try:
             json_txt = file_pointer.read()
@@ -28,14 +31,6 @@ class DeserializeFromTransaction(object):
         check_hostname = kwargs.get('check_hostname', True)
         is_success = False
         tr = FieldCryptor('aes', 'local').decrypt(incoming_transaction.tx)
-        #temp = json.loads(tr)
-        #temp[0].get('fields')['time_of_day'] = 'Morning'
-        #temp[0].get('fields')['time_of_week'] = 'Monday'
-        #val = temp[0].get('fields').get('availability_datetime', None)
-        #if str(temp[0].get('model')) == 'bcpp_household.household':
-#             cdt = temp[0].get('fields').get('consent_datetime')
-#             print str(cdt)+'.123'
-        #   tr = tr.replace(' "status": null,','')
         for obj in serializers.deserialize("json", tr):
             # if you get an error deserializing a datetime, confirm dev version of json.py
             if incoming_transaction.action == 'I' or incoming_transaction.action == 'U':
@@ -60,7 +55,7 @@ class DeserializeFromTransaction(object):
                             # force insert even if it is an update
                             # to trigger an integrity error if it is an update
                             obj.save(using=using)
-                            obj.object.deserialize_post()
+                            obj.object._deserialize_post(incoming_transaction)
                             print '    OK - normal save on {0}'.format(using)
                             is_success = True
                         except:
@@ -70,10 +65,12 @@ class DeserializeFromTransaction(object):
                             if 'deserialize_on_duplicate' in dir(obj.object) and obj.object.deserialize_on_duplicate():
                                 # obj.object.deserialize_on_duplicate()
                                 obj.save(using=using)
+                                obj.object._deserialize_post(incoming_transaction)
                                 print '    OK update succeeded after deserialize_on_duplicate on using={0}'.format(using)
                                 is_success = True
                             else:
                                 obj.save(using=using)
+                                obj.object._deserialize_post(incoming_transaction)
                                 print '    OK update succeeded as is on using={0}'.format(using)
                                 is_success = True
                     except IntegrityError as error:
@@ -102,6 +99,7 @@ class DeserializeFromTransaction(object):
                                     setattr(obj.object, field.name, obj.object.deserialize_get_missing_fk(field.name))
                                 try:
                                     obj.save(using=using)
+                                    obj.object._deserialize_post(incoming_transaction)
                                     print '   OK saved after integrity error on using={0}'.format(using)
                                     is_success = True
                                 except:
@@ -141,6 +139,7 @@ class DeserializeFromTransaction(object):
                                             # then use deserialize_on_duplicate to evaluate
                                             print '    try save again'
                                             obj.save(using=using)
+                                            obj.object._deserialize_post(incoming_transaction)
                                             is_success = True
                                             # change all pk to the new pk for is_consumed=False.
                                             print '    OK saved, now replace_pk_in_tx on using={0}'.format(using)

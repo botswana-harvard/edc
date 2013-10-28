@@ -1,17 +1,19 @@
 from datetime import datetime
-from django.db.models import get_model
+
 from django.core import serializers
+from django.db.models import get_model
+
 from edc.core.crypto_fields.classes import FieldCryptor
+
 from .transaction_producer import TransactionProducer
 
 
 class SerializeToTransaction(object):
-    
+
     def serialize_to_file(self, model_instances, file_path, use_natural_keys):
         try:
             json_txt = serializers.serialize("json", model_instances, ensure_ascii=True, use_natural_keys=use_natural_keys)
             file_path.write(json_txt)
-            #data_string = json.dump(json_txt, file_path, ensure_ascii=True)
         except:
             return False
         return True
@@ -20,9 +22,9 @@ class SerializeToTransaction(object):
 
         """ Serializes the model instance to an encrypted json object and saves the json object to the OutgoingTransaction model.
 
-            Transaction producer name is based on the hostname (created or modified) field.
+        Transaction producer name is based on the hostname (created or modified) field.
 
-            Call this using the post_save and m2m_changed signal.
+        Call this using the post_save and m2m_changed signal.
         """
         if not kwargs.get('raw', False):  # raw=True if you are saving a json object, maybe??
             using = kwargs.get('using', None)

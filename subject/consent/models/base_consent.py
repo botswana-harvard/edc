@@ -17,6 +17,7 @@ from edc.subject.subject.models import BaseSubject
 
 from ..exceptions import ConsentError
 from ..classes import ConsentedSubjectIdentifier
+from ..choices import YES_NO_DECLINED
 from .base_consent_history import BaseConsentHistory
 
 # allow a settings attribute to override the unique constraint on the
@@ -148,12 +149,11 @@ class BaseConsent(BaseSubject):
         verbose_name=("I have provided the client with a copy of their signed informed"
                       " consent"),
         max_length=3,
-        choices=YES_NO,
+        choices=YES_NO_DECLINED,
         validators=[eligible_if_yes, ],
         null=True,
         blank=False,
-        #default='Yes',
-        help_text="If no, INELIGIBLE",
+        help_text="If no, INELIGIBLE. If declined, return copy to the clinic with the consent",
         )
 
     language = models.CharField(
@@ -171,6 +171,14 @@ class BaseConsent(BaseSubject):
     def __unicode__(self):
         return "{0} {1} {2}".format(self.mask_unset_subject_identifier(), mask_encrypted(self.first_name), self.initials)
 
+    def get_site_code(self):
+        site_code = ''
+        try:
+            site_code = self.study_site.site_code
+        except AttributeError:
+            raise ImproperlyConfigured('Site code may not be None. Either include the field for user input or override method get_site_code() on the concrete model.')
+        return site_code
+
     def save_new_consent(self, using=None, subject_identifier=None):
         """ Users may override this to compliment the default behavior for new instances.
 
@@ -181,7 +189,7 @@ class BaseConsent(BaseSubject):
     def _save_new_consent(self, using=None, **kwargs):
         """ Creates or gets a subject identifier.
 
-        ..note:: registered subject is updated/created on bhp_subject signal.
+        ..note:: registered subject is updated/created on edc.subject signal.
 
         Also, calls user method :func:`save_new_consent`"""
         try:
@@ -198,7 +206,7 @@ class BaseConsent(BaseSubject):
                 self.subject_identifier = self._get_user_provided_subject_identifier()
                 if not self.subject_identifier:
                     self.subject_identifier = dummy
-            # try to get from registered_subject (was created using signal in bhp_subject)
+            # try to get from registered_subject (was created  using signal in edc.subject)
             if re_pk.match(self.subject_identifier):
                 if registered_subject:
                     if registered_subject.subject_identifier:
@@ -207,7 +215,7 @@ class BaseConsent(BaseSubject):
                         self.subject_identifier = self.registered_subject.subject_identifier
             # create a subject identifier, if not already done
             if re_pk.match(self.subject_identifier):
-                consented_subject_identifier = ConsentedSubjectIdentifier(site_code=self.study_site.site_code, using=using)
+                consented_subject_identifier = ConsentedSubjectIdentifier(site_code=self.get_site_code(), using=using)
                 self.subject_identifier = consented_subject_identifier.get_identifier(using=using)
         if not self.subject_identifier:
             self.subject_identifier = dummy

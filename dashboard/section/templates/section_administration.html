@@ -19,7 +19,7 @@
 <H5>Device Synchronization</H5>
 <ul>
 <li><A href="/dispatch/{{app_name}}/sync/">Synchronize devices with Community Server (Return)</A></li>
-<li><A href="/bhp_sync/usb_dump/{{app_name}}/">Dump transactions to USB device</A></li>
+<li><A href="/bhp_sync/usb_dump/{{app_name}}/">Dump transactions to USB device</A> (Insert the USB device first)</li>
 </ul>
 {% endif %}
 
@@ -60,6 +60,15 @@
 <ul>
 <li><A href="/admin/ph_dispenser/">Dispensings</A>
 </ul>
+{% endif %}
+
+{% if 'edc.export' in installed_apps and edc.device.dispatch not in installed_apps %}
+    <h5>Export Data</h5>
+    <ul>
+        <li><A href="{% url 'admin:export_exporthistory_changelist' %}">Export History</A>
+        <li><A href="{% url 'admin:export_exporttransaction_changelist' %}">Export Transactions</A>
+        <li><A href="{% url 'admin:export_exporttest_changelist' %}">Export Test Model</A>
+    </ul>
 {% endif %}
 
 {% endblock %}
