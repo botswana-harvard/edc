@@ -39,3 +39,5 @@ class ServerTests(BaseSyncDeviceTests):
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response,'/dispatch/bcpp/sync/'+producer+'/')
         
+    def test_consume_from_usb(self):
+        pass
