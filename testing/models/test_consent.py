@@ -1,10 +1,14 @@
 from django.db import models
+
 from edc.base.model.fields import IdentityTypeField
 from edc.core.crypto_fields.fields import EncryptedIdentityField
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.consent.models import BaseConsent
-from edc.subject.consent.managers import BaseConsentManager
 from edc.subject.appointment_helper.models import BaseAppointmentMixin
+from edc.subject.consent.managers import BaseConsentManager
+from edc.subject.consent.mixins import ReviewAndScoredUnderstandingFieldsMixin
+from edc.subject.consent.mixins.bw import IdentityFieldsMixin
+from edc.subject.consent.models import BaseConsent
+from edc.subject.registration.models import RegisteredSubject
+
 from .test_consent_history import TestConsentHistory
 
 
@@ -51,6 +55,15 @@ class BaseTestConsent(BaseConsent):
 
     class Meta:
         abstract = True
+
+# add Mixin fields to abstract class
+for field in IdentityFieldsMixin._meta.fields:
+    if field.name not in [fld.name for fld in BaseTestConsent._meta.fields]:
+        field.contribute_to_class(BaseTestConsent, field.name)
+
+for field in ReviewAndScoredUnderstandingFieldsMixin._meta.fields:
+    if field.name not in [fld.name for fld in BaseTestConsent._meta.fields]:
+        field.contribute_to_class(BaseTestConsent, field.name)
 
 
 class TestConsent(BaseTestConsent):

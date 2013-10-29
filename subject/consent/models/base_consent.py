@@ -11,15 +11,13 @@ from edc.core.crypto_fields.utils import mask_encrypted
 from edc.core.bhp_variables.models import StudySite
 from edc.core.bhp_common.utils import formatted_age
 from edc.base.model.validators import datetime_not_future, datetime_not_before_study_start, eligible_if_no
-from edc.base.model.validators import eligible_if_yes
 from edc.choices.common import YES_NO
 from edc.subject.subject.models import BaseSubject
 
 from ..exceptions import ConsentError
 from ..classes import ConsentedSubjectIdentifier
-from ..choices import YES_NO_DECLINED
-from .base_consent_history import BaseConsentHistory
 
+from .base_consent_history import BaseConsentHistory
 # allow a settings attribute to override the unique constraint on the
 # subject identifier
 try:
@@ -112,48 +110,6 @@ class BaseConsent(BaseSubject):
         editable=False,
         default=1,
         help_text='Version of subject\'s most recent consent.'
-        )
-
-    consent_reviewed = models.CharField(
-        verbose_name="I have reviewed the consent with the client",
-        max_length=3,
-        choices=YES_NO,
-        validators=[eligible_if_yes, ],
-        null=True,
-        blank=False,
-        #default='Yes',
-        help_text="If no, INELIGIBLE",
-        )
-    study_questions = models.CharField(
-        verbose_name="I have answered all questions the client had about the study",
-        max_length=3,
-        choices=YES_NO,
-        validators=[eligible_if_yes, ],
-        null=True,
-        blank=False,
-        #default='Yes',
-        help_text="If no, INELIGIBLE",
-        )
-    assessment_score = models.CharField(
-        verbose_name=("The client has completed the assessment of understanding with a"
-                      " passing score"),
-        max_length=3,
-        choices=YES_NO,
-        validators=[eligible_if_yes, ],
-        null=True,
-        blank=False,
-        #default='Yes',
-        help_text="If no, INELIGIBLE",
-        )
-    consent_copy = models.CharField(
-        verbose_name=("I have provided the client with a copy of their signed informed"
-                      " consent"),
-        max_length=3,
-        choices=YES_NO_DECLINED,
-        validators=[eligible_if_yes, ],
-        null=True,
-        blank=False,
-        help_text="If no, INELIGIBLE. If declined, return copy to the clinic with the consent",
         )
 
     language = models.CharField(
