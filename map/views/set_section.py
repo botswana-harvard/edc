@@ -29,7 +29,7 @@ def set_section(request, **kwargs):
         request.session['icon'] = request.POST.get('marker_icon')
         if mapper.item_model_cls.objects.filter(**{mapper.get_region_field_attr(): None}).exists():
             has_items = True
-            items = mapper.item_model_cls.objects.filter(**{mapper.get_region_field_attr(): None})
+            items = mapper.item_model_cls.objects.filter(**{mapper.get_region_field_attr(): None, mapper.item_selected_field: 1})
 
         icon = str(request.session['icon'])
         payload = mapper.prepare_map_points(items,
