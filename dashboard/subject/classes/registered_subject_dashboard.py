@@ -1,34 +1,38 @@
 import re
+
 from textwrap import wrap
+
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import TextField, Count
-from django.core.urlresolvers import reverse
-from django.core.exceptions import ImproperlyConfigured
 from django.template.loader import render_to_string
 from django.utils import translation
-from edc.lab.lab_clinic_api.classes import EdcLabResults
-from edc.lab.lab_requisition.models import BaseBaseRequisition
-from edc.lab.lab_packing.models import BasePackingList
+
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.subject.rule_groups.classes import rule_groups
-from edc.subject.visit_schedule.classes import MembershipFormHelper
+from edc.core.bhp_data_manager.models import ActionItem
+from edc.core.crypto_fields.fields import EncryptedTextField
+from edc.dashboard.base.classes import Dashboard
+from edc.lab.lab_clinic_api.classes import EdcLabResults
+from edc.lab.lab_packing.models import BasePackingList
+from edc.lab.lab_requisition.models import BaseBaseRequisition
+from edc.subject.appointment.models import Appointment
+from edc.subject.consent.models import BaseConsent
 from edc.subject.entry.classes import ScheduledEntry, AdditionalEntry
 from edc.subject.entry.models import ScheduledEntryBucket, AdditionalEntryBucket
-from edc.subject.visit_schedule.exceptions import MembershipFormError
-from edc.subject.appointment.models import Appointment
-from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.lab_entry.models import ScheduledLabEntryBucket, AdditionalLabEntryBucket
-from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.subject_summary.models import Link
-from edc.subject.locator.models import BaseLocator
-from edc.core.bhp_data_manager.models import ActionItem
-from edc.subject.subject_config.models import SubjectConfiguration
-from edc.subject.consent.models import BaseConsent
-from edc.dashboard.base.classes import Dashboard
 from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.core.crypto_fields.fields import EncryptedTextField
+from edc.subject.locator.models import BaseLocator
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.rule_groups.classes import rule_groups
+from edc.subject.subject_config.models import SubjectConfiguration
+from edc.subject.subject_summary.models import Link
+from edc.subject.visit_schedule.classes import MembershipFormHelper
+from edc.subject.visit_schedule.exceptions import MembershipFormError
+from edc.subject.visit_schedule.models import MembershipForm
+from edc.subject.visit_tracking.models import BaseVisitTracking
+
 from .scheduled_entry_context import ScheduledEntryContext
 
 

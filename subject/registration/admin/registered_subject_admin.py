@@ -1,10 +1,10 @@
 from django.contrib import admin
-from edc.core.crypto_fields.admin import BaseCryptorModelAdmin
+from edc.base.admin.admin import BaseModelAdmin
 from ..models import RegisteredSubject
 from ..forms import RegisteredSubjectForm
 
 
-class RegisteredSubjectAdmin (BaseCryptorModelAdmin):
+class RegisteredSubjectAdmin (BaseModelAdmin):
 
     form = RegisteredSubjectForm
     date_hierarchy = 'registration_datetime'
