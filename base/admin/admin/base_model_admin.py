@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.core.urlresolvers import NoReverseMatch
 from django.http import HttpResponseRedirect
 from edc.subject.rule_groups.classes import rule_groups
-from edc.core.admin_supplemental_fields.models import Excluded
+from edc.apps.admin_supplemental_fields.models import ExcludedHistory
 from edc.core.bhp_data_manager.models import ModelHelpText
 from edc.subject.entry.classes import ScheduledEntry
 from edc.base.admin.exceptions import NextUrlError
@@ -43,12 +43,12 @@ class BaseModelAdmin (admin.ModelAdmin):
         if self.get_excluded_supplemental_fields(obj):
             if self.form._meta.exclude:
                 # record which instances were selected for excluded fields, (see also the post_delete signal).
-                if Excluded.objects.filter(app_label=obj._meta.app_label, object_name=obj._meta.object_name, model_pk=obj.pk):
-                    excluded = Excluded.objects.get(app_label=obj._meta.app_label, object_name=obj._meta.object_name, model_pk=obj.pk)
+                if ExcludedHistory.objects.filter(app_label=obj._meta.app_label, object_name=obj._meta.object_name, model_pk=obj.pk):
+                    excluded = ExcludedHistory.objects.get(app_label=obj._meta.app_label, object_name=obj._meta.object_name, model_pk=obj.pk)
                     excluded.excluded = self.get_excluded_supplemental_fields(obj)
                     excluded.save()
                 else:
-                    Excluded.objects.create(app_label=obj._meta.app_label, object_name=obj._meta.object_name, model_pk=obj.pk, excluded=self.get_excluded_supplemental_fields(obj))
+                    ExcludedHistory.objects.create(app_label=obj._meta.app_label, object_name=obj._meta.object_name, model_pk=obj.pk, excluded=self.get_excluded_supplemental_fields(obj))
             self.form._meta.exclude = None
             self._excluded_supplemental_fields = None
 
@@ -251,7 +251,7 @@ class BaseModelAdmin (admin.ModelAdmin):
         return self._excluded_supplemental_fields
 
     def has_excluded_supplemental_fields(self, object_id):
-        return Excluded.objects.filter(model_pk=object_id).exists()
+        return ExcludedHistory.objects.filter(model_pk=object_id).exists()
 
     def get_form(self, request, obj=None, **kwargs):
         """Overrides to check if conditional and supplemental fields have been defined in the admin class.
