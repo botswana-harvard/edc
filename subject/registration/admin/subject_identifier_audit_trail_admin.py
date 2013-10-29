@@ -1,9 +1,11 @@
 from django.contrib import admin
-from edc.core.crypto_fields.admin import BaseCryptorModelAdmin
+
+from edc.base.admin.admin import BaseModelAdmin
+
 from ..models import SubjectIdentifierAuditTrail
 
 
-class SubjectIdentifierAuditTrailAdmin(BaseCryptorModelAdmin):
+class SubjectIdentifierAuditTrailAdmin(BaseModelAdmin):
 
     list_display = (
         'subject_identifier',

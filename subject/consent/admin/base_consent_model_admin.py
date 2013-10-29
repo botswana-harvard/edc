@@ -1,9 +1,9 @@
 from django.contrib import admin
-from edc.core.crypto_fields.admin import BaseCryptorModelAdmin
+from edc.base.admin.admin import BaseModelAdmin
 from ..actions import flag_as_verified_against_paper, unflag_as_verified_against_paper
 
 
-class BaseConsentModelAdmin(BaseCryptorModelAdmin):
+class BaseConsentModelAdmin(BaseModelAdmin):
     """Serves as the ModelAdmin for all consent models."""
     def __init__(self, *args, **kwargs):
 
