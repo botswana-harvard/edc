@@ -30,20 +30,20 @@ def plot_item_points(request, **kwargs):
         request.session['icon'] = request.POST.get('marker_icon')
         if selected_region == 'All':
             if selected_sub_section == 'All':
-                items = mapper.get_item_model_cls().objects.all()
+                items = mapper.get_item_model_cls().objects.filter(Q(**{mapper.item_selected_field: 1}))
             else:
                 items = mapper.get_item_model_cls().objects.filter(
-                    Q(**{mapper.get_section_field_attr(): selected_sub_section}) |
-                    Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers}))
+                    Q(**{mapper.get_section_field_attr(): selected_sub_section, mapper.item_selected_field: 1}) |
+                    Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.item_selected_field: 1}))
         else:
             if selected_sub_section == 'All':
                 items = mapper.get_item_model_cls().objects.filter(
-                Q(**{mapper.get_region_field_attr(): selected_region}) | 
-                Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers}))
+                Q(**{mapper.get_region_field_attr(): selected_region, mapper.item_selected_field: 1}) | 
+                Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.item_selected_field: 1}))
             else:
                 items = mapper.get_item_model_cls().objects.filter(
-                Q(**{mapper.get_region_field_attr(): selected_region, mapper.get_section_field_attr(): selected_sub_section}) | 
-                Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.get_section_field_attr(): selected_sub_section}))
+                Q(**{mapper.get_region_field_attr(): selected_region, mapper.get_section_field_attr(): selected_sub_section, mapper.item_selected_field: 1}) | 
+                Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.get_section_field_attr(): selected_sub_section, mapper.item_selected_field: 1}))
         icon = str(request.session['icon'])
         payload = mapper.prepare_map_points(items,
             icon,
