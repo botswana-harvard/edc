@@ -1,14 +1,79 @@
-import numpy
+from datetime import datetime
+from uuid import uuid4
 
+from django.contrib import admin
+from django.contrib.auth.models import User
 from django.db import models
 from django.test import SimpleTestCase
+from django.test.client import RequestFactory
 
-from edc.testing.models import TestModel
+from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
+from edc.core.bhp_content_type_map.models import ContentTypeMap
+from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from edc.subject.appointment.models import Appointment
+from edc.subject.appointment.tests.factories import ConfigurationFactory
+from edc.subject.consent.tests.factories import ConsentCatalogueFactory
+from edc.subject.lab_tracker.classes import site_lab_tracker
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+from edc.subject.visit_tracking.admin import BaseVisitTrackingModelAdmin
+from edc.testing.forms import TestScheduledModelForm
+from edc.testing.models import TestScheduledModel, TestVisit, TestConsentWithMixin
+from edc.testing.tests.factories import TestScheduledModelFactory, TestVisitFactory, TestSimpleVisitFactory, TestConsentWithMixinFactory
 
+from ..admin import SupplementalModelAdminMixin
 from ..classes import SupplementalFields
+from ..models import ExcludedHistory
+
+
+class TestScheduledModelAdmin(SupplementalModelAdminMixin, BaseVisitTrackingModelAdmin):
+    visit_model = TestVisit
+    form = TestScheduledModelForm
+    supplemental_fields = SupplementalFields(('f2', 'f3', 'f4'), p=0.9, group='TEST', grouping_field='test_visit')
+    fields = ('report_datetime', 'f1', 'f2', 'f3', 'f4')
+
+    def has_add_permission(self, request):
+        return True
+
+    def has_change_permission(self, request, obj):
+        return True
+
+admin.site.register(TestScheduledModel, TestScheduledModelAdmin)
 
 
 class TestSupplementalFields(SimpleTestCase):
+
+    app_label = 'testing'
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username='erik', email='erik@doghouse.com', password='bad_dog')
+        site_lab_tracker.autodiscover()
+        study_specific = StudySpecificFactory()
+        StudySiteFactory()
+        ConfigurationFactory()
+        content_type_map_helper = ContentTypeMapHelper()
+        content_type_map_helper.populate()
+        content_type_map_helper.sync()
+        content_type_map = ContentTypeMap.objects.get(content_type__model='TestConsentWithMixin'.lower())
+        ConsentCatalogueFactory(
+            name=self.app_label,
+            consent_type='study',
+            content_type_map=content_type_map,
+            version=1,
+            start_datetime=study_specific.study_start_datetime,
+            end_datetime=datetime(datetime.today().year + 5, 1, 1),
+            add_for_app=self.app_label)
+        membership_form = MembershipFormFactory(content_type_map=content_type_map)
+        schedule_group = ScheduleGroupFactory(membership_form=membership_form, group_name='test', grouping_key='TEST')
+        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model='testvisit')
+        visit_definition = VisitDefinitionFactory(code='T0', title='T0', grouping='subject', visit_tracking_content_type_map=visit_tracking_content_type_map)
+        visit_definition.schedule_group.add(schedule_group)
+        subject_consent = TestConsentWithMixinFactory()
+        self.registered_subject = RegisteredSubject.objects.get(subject_identifier=subject_consent.subject_identifier)
+        self.consent = TestConsentWithMixin.objects.get(registered_subject=self.registered_subject)
+        appointment = Appointment.objects.get(registered_subject=self.registered_subject)
+        self.test_visit = TestVisitFactory(appointment=appointment)
 
     def test_init(self):
         """only accepts a list or tuple for fields"""
@@ -21,68 +86,175 @@ class TestSupplementalFields(SimpleTestCase):
         fields = ('field1', 'field2', 'field3')
         self.assertTrue(isinstance(SupplementalFields(fields, 0.1), SupplementalFields))
 
-    def test_set_supplemental_fields(self):
-        """set """
-        fields = ('field1', 'field2', 'field3')
-        supplemental_fields = SupplementalFields(fields, 0.1)
-        self.assertEqual(fields, supplemental_fields._get_supplemental_fields())
-        self.assertIsNone(supplemental_fields._set_supplemental_fields(fields))
-        self.assertRaises(AttributeError, supplemental_fields._set_supplemental_fields, 1)
-        self.assertRaises(AttributeError, supplemental_fields._set_supplemental_fields, 'field1')
-        self.assertRaises(AttributeError, supplemental_fields._set_supplemental_fields, None)
-        self.assertRaises(AttributeError, supplemental_fields._set_supplemental_fields, [])
+    def test_init2(self):
+        fields = ['field1', 'field2', 'field3']
+        probability = 0.9
+        group = 'GROUP'
+        grouping_field = 'test_visit'
+        supplemental_fields = SupplementalFields(fields, p=probability, group=group, grouping_field=grouping_field)
+        self.assertEqual(fields, supplemental_fields.get_supplemental_fields())
+        self.assertEqual(probability, supplemental_fields.get_probability())
+        self.assertEqual(group, supplemental_fields.get_group())
+        self.assertEqual(grouping_field, supplemental_fields.get_grouping_field())
 
-    def test_get_supplemental_fields(self):
-        """get"""
-        fields = ('field1', 'field2', 'field3')
-        supplemental_fields = SupplementalFields(fields, 0.1)
-        self.assertEqual(supplemental_fields._get_supplemental_fields(), fields)
+    def test_update_history_before_save1(self):
+        """creates a history record if using a grouping field on ADD."""
+        for adm in admin.site._registry.itervalues():
+            if isinstance(adm, TestScheduledModelAdmin):
+                self.assertEqual(ExcludedHistory.objects.all().count(), 0)
+                fake_visit_pk = unicode(uuid4())
+                request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': fake_visit_pk})
+                request.user = self.user
+                adm.supplemental_fields.set_probablility(0.0)  # so it will exclude the supplemental fields
+                adm.add_view(request)
+                self.assertEqual(adm.get_grouping_field(), 'test_visit')
+                self.assertEqual(adm.get_grouping_pk(), fake_visit_pk)
+                self.assertEqual(adm.get_exclude_fields(), ('f2', 'f3', 'f4'))
+                self.assertEqual(ExcludedHistory.objects.all().count(), 1)
 
-    def test_set_model_inst(self):
-        fields = ('field1', 'field2', 'field3')
-        supplemental_fields = SupplementalFields(fields, 0.231)
+    def test_update_history_before_save2(self):
+        """does not creates a history record if using a grouping field on ADD if no exclude fields."""
+        for adm in admin.site._registry.itervalues():
+            if isinstance(adm, TestScheduledModelAdmin):
+                self.assertEqual(ExcludedHistory.objects.all().count(), 0)
+                fake_visit_pk = unicode(uuid4())
+                request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': fake_visit_pk})
+                request.user = self.user
+                adm.supplemental_fields.set_probability_to_include(1.0)  # so the fields will be included
+                adm.add_view(request)
+                self.assertEqual(adm.get_grouping_field(), 'test_visit')
+                self.assertEqual(adm.get_grouping_pk(), fake_visit_pk)
+                self.assertEqual(adm.get_exclude_fields(), [])
+                self.assertEqual(ExcludedHistory.objects.all().count(), 0)
 
-        class GoodModel(models.Model):
-            field1 = models.IntegerField(null=True, blank=False)
-            field2 = models.IntegerField(null=True, editable=True)
-            field3 = models.IntegerField(null=True)
-            field4 = models.IntegerField(null=True)
-            field5 = models.IntegerField(null=True)
+    def test_update_history_after_save1(self):
+        """Creates a history record if using a grouping field on CHANGE if no exclude fields."""
+        for adm in admin.site._registry.itervalues():
+            if isinstance(adm, TestScheduledModelAdmin):
+                test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
 
-        model_inst = GoodModel()
-        self.assertIsNone(supplemental_fields._set_model_inst(model_inst))
-        self.assertEqual(supplemental_fields._model_inst, model_inst)
+                self.assertEqual(ExcludedHistory.objects.all().count(), 0)
 
-    def test_get_model_inst(self):
-        fields = ('field1', 'field2', 'field3')
-        supplemental_fields = SupplementalFields(fields, 0.231)
+                request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': self.test_visit.pk})
+                request.user = self.user
 
-        class GoodModel(models.Model):
-            field1 = models.IntegerField(null=True, blank=False)
-            field2 = models.IntegerField(null=True, editable=True)
-            field3 = models.IntegerField(null=True)
-            field4 = models.IntegerField(null=True)
-            field5 = models.IntegerField(null=True)
+                # set p=1.0 so the questions will NOT be excluded from the form
+                adm.supplemental_fields.set_probability_to_include(1.0)
 
-        model_inst = GoodModel()
-        supplemental_fields._set_model_inst(model_inst)
-        self.assertEqual(supplemental_fields._get_model_inst(), model_inst)
+                # call change view to fake a change through admin
+                adm.change_view(request, test_scheduled_model.pk)
 
-    def test_set_probability(self):
-        # only accepts a float greater than 0 and less than one
-        fields = ('field1', 'field2', 'field3')
-        self.assertRaises(AttributeError, SupplementalFields, fields, [])
-        self.assertRaises(AttributeError, SupplementalFields, fields, ())
-        self.assertRaises(AttributeError, SupplementalFields, fields, '0.1')
-        self.assertRaises(AttributeError, SupplementalFields, fields, 2)
-        self.assertRaises(AttributeError, SupplementalFields, fields, -0.1)
-        self.assertRaises(AttributeError, SupplementalFields, fields, 0.12345)
-        self.assertTrue(isinstance(SupplementalFields(fields, 0.231), SupplementalFields))
+                self.assertEqual(adm.get_grouping_field(), 'test_visit')
+                self.assertEqual(adm.get_grouping_pk(), self.test_visit.pk)
+                self.assertEqual(adm.get_exclude_fields(), [])
 
-    def test_get_probability(self):
-        fields = ('field1', 'field2', 'field3')
-        supplemental_fields = SupplementalFields(fields, 0.231)
-        self.assertEqual(supplemental_fields._get_probability(), 0.231)
+                # modeladmin has not called save_model to update the model_pk in history
+                self.assertEqual(ExcludedHistory.objects.filter(model_pk=test_scheduled_model.pk).count(), 0)
+
+                # but history is created for the "group" via this model linked by the grouping pk.
+                self.assertEqual(ExcludedHistory.objects.filter(grouping_pk=adm.get_grouping_pk()).count(), 1)
+
+    def test_update_history_after_save2(self):
+        """creates a history record if using a grouping field on CHANGE."""
+        for adm in admin.site._registry.itervalues():
+            if isinstance(adm, TestScheduledModelAdmin):
+                self.assertEqual(ExcludedHistory.objects.all().count(), 0)
+
+                request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': self.test_visit.pk})
+                request.user = self.user
+
+                # set p=0 so that fields will be included on the form
+                adm.supplemental_fields.set_probability_to_include(0.0)
+
+                test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
+
+                adm.change_view(request, test_scheduled_model.pk)
+
+                self.assertEqual(adm.get_grouping_field(), 'test_visit')
+                self.assertEqual(adm.get_grouping_pk(), self.test_visit.pk)
+                self.assertEqual(adm.get_exclude_fields(), ('f2', 'f3', 'f4'))
+
+                self.assertEqual(ExcludedHistory.objects.all().count(), 1)
+
+    def test_uses_grouping_from_history1(self):
+        """selects the excluded fields a model of the same group has history"""
+        for adm in admin.site._registry.itervalues():
+            if isinstance(adm, TestScheduledModelAdmin):
+                self.assertEqual(ExcludedHistory.objects.all().count(), 0)
+
+                test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
+
+                # create a fake history for a model in the same group using the same grouping pk
+                ExcludedHistory.objects.create(excluded_fields='', group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model1')
+
+                request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': self.test_visit.pk})
+                request.user = self.user
+
+                # set p=0 so that it excludes the fields from the form
+                adm.supplemental_fields.set_probability_to_include(0.0)
+
+                # fake a change
+                adm.change_view(request, test_scheduled_model.pk)
+
+                # but since we retrieved from the history, should ignore p and not exclude any fields
+                self.assertEqual(adm.get_exclude_fields(), [])
+
+                self.assertEqual(ExcludedHistory.objects.filter(excluded_fields__isnull=True).count(), 2)
+
+    def test_uses_grouping_from_history2(self):
+        """selects the excluded fields for a model using the history of another model in the group"""
+        for adm in admin.site._registry.itervalues():
+            if isinstance(adm, TestScheduledModelAdmin):
+                self.assertEqual(ExcludedHistory.objects.all().count(), 0)
+
+                test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
+
+                # create more than one fake history for a model in the same group using the same grouping pk
+                ExcludedHistory.objects.create(excluded_fields=('f2', 'f3', 'f4'), group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model1')
+                ExcludedHistory.objects.create(excluded_fields=('f2', 'f3', 'f4'), group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model2')
+                ExcludedHistory.objects.create(excluded_fields=('f2', 'f3', 'f4'), group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model3')
+
+                request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': self.test_visit.pk})
+                request.user = self.user
+
+                # set p=0 so that it DOES NOT exclude the fields from the form
+                adm.supplemental_fields.set_probability_to_include(1.0)
+
+                # fake a change
+                adm.change_view(request, test_scheduled_model.pk)
+
+                # but since we retrieved from the history, should ignore p and exclude the supplemental fields
+                self.assertEqual(adm.get_exclude_fields(), ('f2', 'f3', 'f4'),)
+
+                self.assertEqual(ExcludedHistory.objects.filter(excluded_fields=('f2', 'f3', 'f4')).count(), 4)
+
+    def test_uses_grouping_from_history3(self):
+        """selects the excluded fields a model of the same group that has history"""
+        for adm in admin.site._registry.itervalues():
+            if isinstance(adm, TestScheduledModelAdmin):
+                self.assertEqual(ExcludedHistory.objects.all().count(), 0)
+
+                test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
+
+                # create more than one fake history for a model in the same group using the same grouping pk
+                ExcludedHistory.objects.create(grouping_field='TEST', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model1')
+                ExcludedHistory.objects.create(grouping_field='TEST', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model2')
+                ExcludedHistory.objects.create(grouping_field='TEST', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model3')
+
+                request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': self.test_visit.pk})
+                request.user = self.user
+
+                # set p=0 so that it excludes the fields from the form
+                adm.supplemental_fields.set_probability_to_include(0.0)
+
+                # fake a change
+                adm.change_view(request, test_scheduled_model.pk)
+
+                # but since we retrieved from the history, should ignore p and not exclude any fields
+                self.assertEqual(adm.get_exclude_fields(), [])
+
+                self.assertEqual(ExcludedHistory.objects.filter(excluded_fields__isnull='').count(), 4)
+                print [obj.excluded_fields for obj in ExcludedHistory.objects.all()]
 
     def test_choose_fields(self):
 

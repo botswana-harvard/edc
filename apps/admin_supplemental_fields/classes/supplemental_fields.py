@@ -32,7 +32,9 @@ class SupplementalFields(object):
         self._grouping_pk = None
         self._grouping_field = None
         self._fields_verified = False
-        self.set_probability(p)
+        self._probability_to_include = None
+        self._retrieved_exclude_fields_from_history = False
+        self.set_probability_to_include(p)
         self.set_group(group)
         self.set_grouping_field(grouping_field)
         self.set_supplemental_fields(supplemental_fields)
@@ -98,7 +100,7 @@ class SupplementalFields(object):
         Override this method to change how the choice is made between returning [] and supplemental_fields.
         """
         self._exclude_fields = self.retrieve_exclude_fields_from_history()
-        if not self._exclude_fields:
+        if not self.are_retrieved_from_history():
             if random.choice(self.get_probability_as_sequence()):  # either 0 or 1
                 self._exclude_fields = tuple(self.get_supplemental_fields())
 
@@ -129,17 +131,21 @@ class SupplementalFields(object):
     def get_model(self):
         return self._model
 
-    def set_probability(self, probability):
+    def set_probability_to_include(self, probability):
+        """Probability to include supplemental questions.
+
+        If p=1.0, the questions will always be included, excluded fields = [].
+        If p=0.0, the questions will never be included, excluded fields = supplemental_fields."""
         if not isinstance(probability, float):
             raise AttributeError('Probability \'p\' must be a float. Got {0}.'.format(probability))
         if probability < 0 or probability > 1:
             raise AttributeError('Probability \'p\' must be greater than 0 and less than 1. Got {0}.'.format(probability))
         if len(str(probability)) > 5:
             raise AttributeError('Probability \'p\' may not have more than 3 decimal places. Got {0}.'.format(probability))
-        self._probability = probability
+        self._probability_to_include = probability
 
-    def get_probability(self):
-        return self._probability
+    def get_probability_to_include(self):
+        return self._probability_to_include
 
     def get_probability_as_sequence(self):
         """Converts probability to a list of 0s and 1s where 1s will include the fields.
@@ -148,31 +154,40 @@ class SupplementalFields(object):
         If p=0.1, the list will be 900 1s and 100 0s. the fields will be excluded
         from the list approximately 900 out of 1000 times.
         """
-        return ([0] * int(1000 * self.get_probability())) + ([1] * int(1000 - (1000 * self.get_probability())))
+        return ([0] * int(1000 * self.get_probability_to_include())) + ([1] * int(1000 - (1000 * self.get_probability_to_include())))
+
+    def set_retrieved_exclude_fields_from_history(self, value):
+        self._retrieved_exclude_fields_from_history = value
+
+    def are_retrieved_from_history(self):
+        return self._retrieved_exclude_fields_from_history
 
     def retrieve_exclude_fields_from_history(self):
+        """Checks the history model and sets the exclude fields if retrieved."""
+        self.set_retrieved_exclude_fields_from_history(False)
         fields_to_exclude = []
-        # you are editing, lookup the choice that was used to create obj.
-        # Instances are only logged if exclude fields is not null
-        # Instances are logged in :func:`base_model_admin.save_model`
-        if self.get_model_inst():
-            if ExcludedHistory.objects.filter(
-                    app_label=self.get_model()._meta.app_label,
-                    object_name=self.get_model()._meta.object_name,
-                    model_pk=self.get_model_inst().pk).exists():
-                fields_to_exclude = self.get_supplemental_fields()
-        if not fields_to_exclude:
+        if self.get_grouping_field():
             fields_to_exclude = self.retrieve_exclude_fields_from_history_by_grouping()
+            self.set_retrieved_exclude_fields_from_history(True)
+        if not self.are_retrieved_from_history():
+            if self.get_model_inst():
+                if ExcludedHistory.objects.filter(
+                        app_label=self.get_model()._meta.app_label,
+                        object_name=self.get_model()._meta.object_name,
+                        model_pk=self.get_model_inst().pk
+                        ).exists():
+                    fields_to_exclude = self.get_supplemental_fields()
+                    self.set_retrieved_exclude_fields_from_history(True)
         return fields_to_exclude
 
     def retrieve_exclude_fields_from_history_by_grouping(self):
-        """Retrieve by grouping field value and model name."""
+        """Retrieve by fields to exclude using the history for this grouping field and grouping pk."""
         fields_to_exclude = []
         if ExcludedHistory.objects.filter(
-                app_label=self.get_model()._meta.app_label,
-                object_name=self.get_model()._meta.object_name,
+                group=self.get_group(),
                 grouping_field=self.get_grouping_field(),
-                grouping_pk=self.get_grouping_pk()).exists():
+                grouping_pk=self.get_grouping_pk()
+                ).exists():
             fields_to_exclude = self.get_supplemental_fields()
         return fields_to_exclude
 
