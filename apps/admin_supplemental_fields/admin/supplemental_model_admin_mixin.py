@@ -111,7 +111,7 @@ class SupplementalModelAdminMixin(object):
                 ExcludedHistory.objects.create(
                     app_label=self.model._meta.app_label,
                     object_name=self.model._meta.object_name,
-                    excluded_fields=self.get_exclude_fields() or '',
+                    excluded_fields=','.join(self.get_exclude_fields()),
                     group=self.get_group(),
                     grouping_field=self.get_grouping_field(),
                     grouping_pk=self.get_grouping_pk())
@@ -135,7 +135,7 @@ class SupplementalModelAdminMixin(object):
                     app_label=self.model._meta.app_label,
                     object_name=self.model._meta.object_name,
                     model_pk=obj.pk,
-                    excluded_fields=self.get_exclude_fields(),
+                    excluded_fields=','.join(self.get_exclude_fields()),
                     group=self.get_group(),
                     grouping_field=self.get_grouping_field(),
                     grouping_pk=self.get_grouping_pk())
