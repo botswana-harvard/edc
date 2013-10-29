@@ -35,7 +35,7 @@ def update_cart(request, **kwargs):
         icon = request.session.get('icon', None)
         option = request.POST.get('option', 'save')
         if option == 'preview':
-            items = mapper.get_item_model_cls().objects.filter(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers})
+            items = mapper.get_item_model_cls().objects.filter(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.item_selected_field: 1})
             icon = request.session['icon']
             payload = mapper.prepare_map_points(items,
                 icon,

@@ -23,6 +23,7 @@ class Mapper(object):
         self._item_label = None
         self._regions = None
         self._map_field_attr = None
+        self._item_selected_field = None
         self._sections = None
         self._icons = None
         self._other_icons = None
@@ -167,6 +168,13 @@ class Mapper(object):
 
     def set_region_field_attr(self, attr=None):
         self._set_attr('region_field_attr', attr)
+
+    def get_item_selected_field(self):
+        return self._get_attr('item_selected_field')
+
+    def set_item_selected_field(self, attr=None):
+        self._set_attr('item_selected_field', attr)
+
 
     def get_region_field_attr(self):
         return self._get_attr('region_field_attr')
