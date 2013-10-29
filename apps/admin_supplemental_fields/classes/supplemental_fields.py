@@ -46,12 +46,11 @@ class SupplementalFields(object):
 
         This is called from get_form()."""
         self.set_model(model)
-        self._check_supplemental_field_attrs()
+        self.check_supplemental_field_attrs()
         self.set_model_inst(object_id)
         # save the original ModelAdmin field list with this instance before it is altered
         self.set_original_model_admin_fields(model_admin_fields)
         # any field listed in supplemental_fields must be in original admin fields
-        # TODO: this should be checked when the ModelAdmin is instantiated
         self.check_supplemental_in_original()
         # get the list of field names to add to the exclude list
         # either choose or retrieve from history
@@ -162,13 +161,18 @@ class SupplementalFields(object):
     def are_retrieved_from_history(self):
         return self._retrieved_exclude_fields_from_history
 
+    def convert_to_tuple(self, fields):
+        fields = fields.strip()
+        if fields:
+            return tuple(fields.split(','))
+        return ''
+
     def retrieve_exclude_fields_from_history(self):
         """Checks the history model and sets the exclude fields if retrieved."""
         self.set_retrieved_exclude_fields_from_history(False)
-        fields_to_exclude = []
+        fields_to_exclude = ''
         if self.get_grouping_field():
             fields_to_exclude = self.retrieve_exclude_fields_from_history_by_grouping()
-            self.set_retrieved_exclude_fields_from_history(True)
         if not self.are_retrieved_from_history():
             if self.get_model_inst():
                 if ExcludedHistory.objects.filter(
@@ -176,22 +180,33 @@ class SupplementalFields(object):
                         object_name=self.get_model()._meta.object_name,
                         model_pk=self.get_model_inst().pk
                         ).exists():
-                    fields_to_exclude = self.get_supplemental_fields()
+                    fields_to_exclude = ExcludedHistory.objects.get(
+                        app_label=self.get_model()._meta.app_label,
+                        object_name=self.get_model()._meta.object_name,
+                        model_pk=self.get_model_inst().pk
+                        ).excluded_fields
+                    fields_to_exclude = self.convert_to_tuple(fields_to_exclude)
                     self.set_retrieved_exclude_fields_from_history(True)
         return fields_to_exclude
 
     def retrieve_exclude_fields_from_history_by_grouping(self):
         """Retrieve by fields to exclude using the history for this grouping field and grouping pk."""
-        fields_to_exclude = []
+        fields_to_exclude = ''
         if ExcludedHistory.objects.filter(
                 group=self.get_group(),
                 grouping_field=self.get_grouping_field(),
                 grouping_pk=self.get_grouping_pk()
                 ).exists():
-            fields_to_exclude = self.get_supplemental_fields()
+            fields_to_exclude = ExcludedHistory.objects.filter(
+                group=self.get_group(),
+                grouping_field=self.get_grouping_field(),
+                grouping_pk=self.get_grouping_pk()
+                ).order_by('created')[0].excluded_fields
+            fields_to_exclude = self.convert_to_tuple(fields_to_exclude)
+            self.set_retrieved_exclude_fields_from_history(True)
         return fields_to_exclude
 
-    def _check_supplemental_field_attrs(self):
+    def check_supplemental_field_attrs(self):
         """Checks supplemental fields are nullable and editable."""
         for fld in self.get_model()._meta.fields:
             if fld.name in self.get_supplemental_fields():

@@ -4,7 +4,7 @@ from uuid import uuid4
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.db import models
-from django.test import SimpleTestCase
+from django.test import TestCase
 from django.test.client import RequestFactory
 
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
@@ -19,7 +19,7 @@ from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, Sc
 from edc.subject.visit_tracking.admin import BaseVisitTrackingModelAdmin
 from edc.testing.forms import TestScheduledModelForm
 from edc.testing.models import TestScheduledModel, TestVisit, TestConsentWithMixin
-from edc.testing.tests.factories import TestScheduledModelFactory, TestVisitFactory, TestSimpleVisitFactory, TestConsentWithMixinFactory
+from edc.testing.tests.factories import TestScheduledModelFactory, TestVisitFactory, TestConsentWithMixinFactory
 
 from ..admin import SupplementalModelAdminMixin
 from ..classes import SupplementalFields
@@ -41,13 +41,13 @@ class TestScheduledModelAdmin(SupplementalModelAdminMixin, BaseVisitTrackingMode
 admin.site.register(TestScheduledModel, TestScheduledModelAdmin)
 
 
-class TestSupplementalFields(SimpleTestCase):
+class TestSupplementalFields(TestCase):
 
     app_label = 'testing'
 
     def setUp(self):
         self.factory = RequestFactory()
-        self.user = User.objects.create_user(username='erik', email='erik@doghouse.com', password='bad_dog')
+        self.user = User.objects.create_user(username='erikvw', email='erik@doghouse.com', password='bad_dog')
         site_lab_tracker.autodiscover()
         study_specific = StudySpecificFactory()
         StudySiteFactory()
@@ -91,9 +91,11 @@ class TestSupplementalFields(SimpleTestCase):
         probability = 0.9
         group = 'GROUP'
         grouping_field = 'test_visit'
+
         supplemental_fields = SupplementalFields(fields, p=probability, group=group, grouping_field=grouping_field)
+
         self.assertEqual(fields, supplemental_fields.get_supplemental_fields())
-        self.assertEqual(probability, supplemental_fields.get_probability())
+        self.assertEqual(probability, supplemental_fields.get_probability_to_include())
         self.assertEqual(group, supplemental_fields.get_group())
         self.assertEqual(grouping_field, supplemental_fields.get_grouping_field())
 
@@ -105,7 +107,7 @@ class TestSupplementalFields(SimpleTestCase):
                 fake_visit_pk = unicode(uuid4())
                 request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': fake_visit_pk})
                 request.user = self.user
-                adm.supplemental_fields.set_probablility(0.0)  # so it will exclude the supplemental fields
+                adm.supplemental_fields.set_probability_to_include(0.0)  # so it will exclude the supplemental fields
                 adm.add_view(request)
                 self.assertEqual(adm.get_grouping_field(), 'test_visit')
                 self.assertEqual(adm.get_grouping_pk(), fake_visit_pk)
@@ -124,8 +126,8 @@ class TestSupplementalFields(SimpleTestCase):
                 adm.add_view(request)
                 self.assertEqual(adm.get_grouping_field(), 'test_visit')
                 self.assertEqual(adm.get_grouping_pk(), fake_visit_pk)
-                self.assertEqual(adm.get_exclude_fields(), [])
-                self.assertEqual(ExcludedHistory.objects.all().count(), 0)
+                self.assertEqual(adm.get_exclude_fields(), '')
+                self.assertEqual(ExcludedHistory.objects.all().count(), 1)
 
     def test_update_history_after_save1(self):
         """Creates a history record if using a grouping field on CHANGE if no exclude fields."""
@@ -138,15 +140,15 @@ class TestSupplementalFields(SimpleTestCase):
                 request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': self.test_visit.pk})
                 request.user = self.user
 
-                # set p=1.0 so the questions will NOT be excluded from the form
-                adm.supplemental_fields.set_probability_to_include(1.0)
+                # set p=0.0 so the questions will be excluded from the form
+                adm.supplemental_fields.set_probability_to_include(0.0)
 
                 # call change view to fake a change through admin
                 adm.change_view(request, test_scheduled_model.pk)
 
                 self.assertEqual(adm.get_grouping_field(), 'test_visit')
                 self.assertEqual(adm.get_grouping_pk(), self.test_visit.pk)
-                self.assertEqual(adm.get_exclude_fields(), [])
+                self.assertEqual(adm.get_exclude_fields(), ('f2', 'f3', 'f4'))
 
                 # modeladmin has not called save_model to update the model_pk in history
                 self.assertEqual(ExcludedHistory.objects.filter(model_pk=test_scheduled_model.pk).count(), 0)
@@ -163,8 +165,8 @@ class TestSupplementalFields(SimpleTestCase):
                 request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': self.test_visit.pk})
                 request.user = self.user
 
-                # set p=0 so that fields will be included on the form
-                adm.supplemental_fields.set_probability_to_include(0.0)
+                # set p=1 so that fields will be included on the form
+                adm.supplemental_fields.set_probability_to_include(1.0)
 
                 test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
 
@@ -172,7 +174,7 @@ class TestSupplementalFields(SimpleTestCase):
 
                 self.assertEqual(adm.get_grouping_field(), 'test_visit')
                 self.assertEqual(adm.get_grouping_pk(), self.test_visit.pk)
-                self.assertEqual(adm.get_exclude_fields(), ('f2', 'f3', 'f4'))
+                self.assertEqual(adm.get_exclude_fields(), '')
 
                 self.assertEqual(ExcludedHistory.objects.all().count(), 1)
 
@@ -197,9 +199,9 @@ class TestSupplementalFields(SimpleTestCase):
                 adm.change_view(request, test_scheduled_model.pk)
 
                 # but since we retrieved from the history, should ignore p and not exclude any fields
-                self.assertEqual(adm.get_exclude_fields(), [])
+                self.assertEqual(adm.get_exclude_fields(), '')
 
-                self.assertEqual(ExcludedHistory.objects.filter(excluded_fields__isnull=True).count(), 2)
+                self.assertEqual(ExcludedHistory.objects.filter(excluded_fields='').count(), 2)
 
     def test_uses_grouping_from_history2(self):
         """selects the excluded fields for a model using the history of another model in the group"""
@@ -210,9 +212,9 @@ class TestSupplementalFields(SimpleTestCase):
                 test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
 
                 # create more than one fake history for a model in the same group using the same grouping pk
-                ExcludedHistory.objects.create(excluded_fields=('f2', 'f3', 'f4'), group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model1')
-                ExcludedHistory.objects.create(excluded_fields=('f2', 'f3', 'f4'), group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model2')
-                ExcludedHistory.objects.create(excluded_fields=('f2', 'f3', 'f4'), group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model3')
+                ExcludedHistory.objects.create(excluded_fields='f2,f3,f4', group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model1')
+                ExcludedHistory.objects.create(excluded_fields='f2,f3,f4', group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model2')
+                ExcludedHistory.objects.create(excluded_fields='f2,f3,f4', group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model3')
 
                 request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': self.test_visit.pk})
                 request.user = self.user
@@ -226,7 +228,7 @@ class TestSupplementalFields(SimpleTestCase):
                 # but since we retrieved from the history, should ignore p and exclude the supplemental fields
                 self.assertEqual(adm.get_exclude_fields(), ('f2', 'f3', 'f4'),)
 
-                self.assertEqual(ExcludedHistory.objects.filter(excluded_fields=('f2', 'f3', 'f4')).count(), 4)
+                self.assertEqual(ExcludedHistory.objects.filter(excluded_fields='f2,f3,f4').count(), 4)
 
     def test_uses_grouping_from_history3(self):
         """selects the excluded fields a model of the same group that has history"""
@@ -237,9 +239,9 @@ class TestSupplementalFields(SimpleTestCase):
                 test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
 
                 # create more than one fake history for a model in the same group using the same grouping pk
-                ExcludedHistory.objects.create(grouping_field='TEST', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model1')
-                ExcludedHistory.objects.create(grouping_field='TEST', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model2')
-                ExcludedHistory.objects.create(grouping_field='TEST', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model3')
+                ExcludedHistory.objects.create(group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model1')
+                ExcludedHistory.objects.create(group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model2')
+                ExcludedHistory.objects.create(group='TEST', grouping_field='test_visit', grouping_pk=self.test_visit.pk, app_label='testing', object_name='some_other_model3')
 
                 request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': self.test_visit.pk})
                 request.user = self.user
@@ -251,35 +253,51 @@ class TestSupplementalFields(SimpleTestCase):
                 adm.change_view(request, test_scheduled_model.pk)
 
                 # but since we retrieved from the history, should ignore p and not exclude any fields
-                self.assertEqual(adm.get_exclude_fields(), [])
+                self.assertEqual(adm.get_exclude_fields(), '')
 
-                self.assertEqual(ExcludedHistory.objects.filter(excluded_fields__isnull='').count(), 4)
-                print [obj.excluded_fields for obj in ExcludedHistory.objects.all()]
+                self.assertEqual(ExcludedHistory.objects.filter(excluded_fields='').count(), 4)
 
-    def test_choose_fields(self):
+    def test_uses_grouping_from_history4(self):
+        """selects the excluded fields a model of the same group that has history"""
+        for adm in admin.site._registry.itervalues():
+            if isinstance(adm, TestScheduledModelAdmin):
+                self.assertEqual(ExcludedHistory.objects.all().count(), 0)
 
-        class GoodModel(models.Model):
-            field1 = models.IntegerField(null=True, blank=False)
-            field2 = models.IntegerField(null=True, editable=True)
-            field3 = models.IntegerField(null=True)
-            field4 = models.IntegerField(null=True)
-            field5 = models.IntegerField(null=True)
+                test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
 
-        supplemental_field_tuple = ('field1', 'field2', 'field3')
-        supplemental_fields = SupplementalFields(supplemental_field_tuple, 0.231)
-        good_model = GoodModel()
-        fields = [fld.name for fld in GoodModel._meta.fields]
-        supplemental_fields.choose_fields(fields, GoodModel, good_model)
+                request = self.factory.get('/', data={'visit_attr': 'test_visit', 'test_visit': self.test_visit.pk})
+                request.user = self.user
+
+                # set p=0 so that it excludes the fields from the form
+                adm.supplemental_fields.set_probability_to_include(0.0)
+
+                # fake a change
+                adm.change_view(request, test_scheduled_model.pk)
+
+                # a history entry is made
+                self.assertEqual(ExcludedHistory.objects.filter(grouping_pk=self.test_visit.pk).count(), 1)
+                # but since we have not called save_model, the pk has not been updated
+                self.assertEqual(ExcludedHistory.objects.filter(model_pk=test_scheduled_model.pk).count(), 0)
+
+                form = adm.get_form(request, test_scheduled_model)
+
+                adm.save_model(request, test_scheduled_model, form, True)
+
+                # having claeed save_model, pk is now updated
+                self.assertEqual(ExcludedHistory.objects.filter(model_pk=test_scheduled_model.pk).count(), 1)
+
+                # and it was updated, not inserted, so still have one history
+                self.assertEqual(ExcludedHistory.objects.all().count(), 1)
 
     def test_check_supplemental_in_original(self):
         fields = ('field1', 'field2', 'field7')
         supplemental_fields = SupplementalFields(fields, 0.231)
-        supplemental_fields._set_original_model_admin_fields(('field1', 'field2', 'field3', 'field4', 'field5'))
-        self.assertRaises(AttributeError, supplemental_fields._check_supplemental_in_original)
+        supplemental_fields.set_original_model_admin_fields(('field1', 'field2', 'field3', 'field4', 'field5'))
+        self.assertRaises(AttributeError, supplemental_fields.check_supplemental_in_original)
         fields = ('field1', 'field2', 'field3')
         supplimental_fields = SupplementalFields(fields, 0.231)
-        supplimental_fields._set_original_model_admin_fields(('field1', 'field2', 'field3', 'field4', 'field5'))
-        self.assertTrue(supplimental_fields._check_supplemental_in_original())
+        supplimental_fields.set_original_model_admin_fields(('field1', 'field2', 'field3', 'field4', 'field5'))
+        self.assertTrue(supplimental_fields.check_supplemental_in_original())
 
     def test_check_supplemental_field_attrs(self):
         fields = ('field1', 'field2', 'field3')
@@ -292,7 +310,8 @@ class TestSupplementalFields(SimpleTestCase):
             field4 = models.IntegerField()
             field5 = models.IntegerField()
 
-        self.assertRaises(AttributeError, supplemental_fields._check_supplemental_field_attrs, BadModel1())
+        supplemental_fields.set_model(BadModel1)
+        self.assertRaises(AttributeError, supplemental_fields.check_supplemental_field_attrs)
 
         class BadModel2(models.Model):
             field1 = models.IntegerField()
@@ -301,7 +320,8 @@ class TestSupplementalFields(SimpleTestCase):
             field4 = models.IntegerField()
             field5 = models.IntegerField()
 
-        self.assertRaises(AttributeError, supplemental_fields._check_supplemental_field_attrs, BadModel2())
+        supplemental_fields.set_model(BadModel2)
+        self.assertRaises(AttributeError, supplemental_fields.check_supplemental_field_attrs)
 
         class BadModel3(models.Model):
             field1 = models.IntegerField(null=True, editable=False)
@@ -310,7 +330,8 @@ class TestSupplementalFields(SimpleTestCase):
             field4 = models.IntegerField()
             field5 = models.IntegerField()
 
-        self.assertRaises(AttributeError, supplemental_fields._check_supplemental_field_attrs, BadModel3())
+        supplemental_fields.set_model(BadModel3)
+        self.assertRaises(AttributeError, supplemental_fields.check_supplemental_field_attrs)
 
         class GoodModel(models.Model):
             field1 = models.IntegerField(null=True, blank=False)
@@ -319,68 +340,26 @@ class TestSupplementalFields(SimpleTestCase):
             field4 = models.IntegerField(null=True)
             field5 = models.IntegerField(null=True)
 
-        self.assertTrue(supplemental_fields._check_supplemental_field_attrs(GoodModel()))
-
-    def test_set_original_model_admin_fields(self):
-
-        class GoodModel(models.Model):
-            field1 = models.IntegerField(null=True)
-            field2 = models.IntegerField(null=True)
-            field3 = models.IntegerField(null=True)
-            field4 = models.IntegerField(null=True)
-            field5 = models.IntegerField(null=True)
-        # try with a tuple
-        fields = ('field1', 'field2', 'field3')
-        original_fields = [fld.name for fld in GoodModel._meta.fields]
-        supplemental_fields = SupplementalFields(fields, 0.231)
-        supplemental_fields._set_model_inst(GoodModel())
-        self.assertIsNone(supplemental_fields._set_original_model_admin_fields(original_fields))
-        self.assertEqual(original_fields, supplemental_fields._get_original_model_admin_fields())
-        # change var and confirm does not change instance attribute
-        original_fields = ('field1', 'field2', 'field3', 'field4', 'field5', 'erik')
-        self.assertNotEqual(original_fields, supplemental_fields._get_original_model_admin_fields())
-        # try with a list
-        original_fields = ['field1', 'field2', 'field3', 'field4', 'field5']
-        supplemental_fields = SupplementalFields(fields, 0.231)
-        supplemental_fields._set_original_model_admin_fields(original_fields)
-        self.assertEqual(original_fields, supplemental_fields._get_original_model_admin_fields())
-        # change var and confirm does not change instance attribute
-        original_fields.append('erik')
-        self.assertNotEqual(original_fields, supplemental_fields._get_original_model_admin_fields())
-
-    def test_choose_fields_to_exclude(self):
-        # p=1, should return an empty list
-        supplemental_field_tuple = ('field1', 'field2', 'field3')
-        supplemental_fields = SupplementalFields(supplemental_field_tuple, 1.0)
-        self.assertEqual(supplemental_fields._choose_fields_to_exclude(), [])
-        # p less than 1, should return either an empty list or the list of supplemental fields
-        supplemental_fields = SupplementalFields(supplemental_field_tuple, 0.1)
-        choice = []
-        for i in range(0, 50):
-            # call a number of times, should get both eventually
-            choice.append(supplemental_fields._choose_fields_to_exclude())
-        # we are not testing that the probability is correct, just that
-        # given a p<1, should get both possible return values
-        self.assertIn(supplemental_field_tuple, choice)
-        self.assertIn([], choice)
+        supplemental_fields.set_model(GoodModel)
+        self.assertTrue(supplemental_fields.check_supplemental_field_attrs())
 
     def test_p1(self):
         sf = SupplementalFields(('f3', 'f4'), p=0.1)
-        seq = sf._get_probability_as_sequence()
+        seq = sf.get_probability_as_sequence()
         self.assertEqual(len(seq), 1000)
         self.assertEqual(seq.count(0), 100)
         self.assertEqual(seq.count(1), 900)
 
     def test_p2(self):
         sf = SupplementalFields(('f3', 'f4'), p=0.5)
-        seq = sf._get_probability_as_sequence()
+        seq = sf.get_probability_as_sequence()
         self.assertEqual(len(seq), 1000)
         self.assertEqual(seq.count(0), 500)
         self.assertEqual(seq.count(1), 500)
 
     def test_p3(self):
         sf = SupplementalFields(('f3', 'f4'), p=0.135)
-        seq = sf._get_probability_as_sequence()
+        seq = sf.get_probability_as_sequence()
         self.assertEqual(len(seq), 1000)
         self.assertEqual(seq.count(0), 135)
         self.assertEqual(seq.count(1), 865)
