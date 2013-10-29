@@ -1,15 +1,18 @@
 import copy
 import re
 import inspect
-from django.core.urlresolvers import reverse
+
 from django.conf.urls import patterns, url
-from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from edc.core.bhp_common.utils import convert_from_camel
-from edc.dashboard.section.classes import site_sections
-from edc.core.bhp_context.classes import BaseContext
+from django.core.urlresolvers import reverse
+from django.db import models
+
 from edc.base.model.models import BaseModel
+from edc.core.bhp_common.utils import convert_from_camel
+from edc.core.bhp_context.classes import BaseContext
+from edc.dashboard.section.classes import site_sections
 from edc.subject.registration.models import RegisteredSubject
+
 from ..exceptions import DashboardModelError
 
 
@@ -70,6 +73,8 @@ class Dashboard(object):
             urlpattern_string_kwargs['d-ashboard_model'] = 'maternal_consent'
             urlpatterns += MaternalDashboard.get_urlpatterns('dom_dashboard.views', urlpattern_string_kwargs, visit_field_names=['maternal_visit', ])
         """
+
+        # FIXME: this is confusing
 
         if not self.dashboard_url_name:
             raise ImproperlyConfigured('class attribute \'dashboard_url_name\' may not be None')

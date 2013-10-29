@@ -11,6 +11,7 @@ class SupplementalModelAdminMixin(object):
         self._original_model_admin_fields = None
         self._group = None
         self._grouping_field = None
+        self._grouping_pk = None
         super(SupplementalModelAdminMixin, self).__init__(*args)
 
     def save_model(self, request, obj, form, change):
@@ -19,12 +20,33 @@ class SupplementalModelAdminMixin(object):
         self.form._meta.exclude = None
         self._exclude_fields = None
 
-    def contribute_to_extra_context(self, extra_context, object_id=None):
-        super(SupplementalModelAdminMixin, self).contribute_to_extra_context(extra_context)
-        #TODO: when is this ever False
+    def add_view(self, request, form_url='', extra_context=None):
+        if not extra_context:
+            extra_context = {}
+        extra_context['uses_supplemental_fields'] = True
+        self.set_visit_model_attr(request.GET.get('visit_attr'))
+        self.set_visit_model_pk(request.GET.get(self.get_visit_model_attr()))
+        if 'get_visit_model_attr' in dir(self):  # if parent class is BaseVisitTrackingModelAdmin
+            self._set_grouping_pk(self.get_visit_model_pk())
+        if not self._get_original_model_admin_fields():
+            self._set_original_model_admin_fields()
+        self.set_exclude_fields()
+        return super(SupplementalModelAdminMixin, self).add_view(request, form_url=form_url, extra_context=extra_context)
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        if not extra_context:
+            extra_context = {}
+        extra_context['uses_supplemental_fields'] = True
         if self.has_excluded_supplemental_fields(object_id):
             extra_context['has_excluded_supplemental_fields'] = True
-        return extra_context
+        self.set_visit_model_attr(request.GET.get('visit_attr'))
+        self.set_visit_model_pk(request.GET.get(self.get_visit_model_attr()))
+        if 'get_visit_model_attr' in dir(self):  # if parent class is BaseVisitTrackingModelAdmin
+            self._set_grouping_pk(self.get_visit_model_pk())
+        if not self._get_original_model_admin_fields():
+            self._set_original_model_admin_fields()
+        self.set_exclude_fields(object_id)
+        return super(SupplementalModelAdminMixin, self).change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
     def has_excluded_supplemental_fields(self, object_id):
         if object_id:
@@ -55,16 +77,13 @@ class SupplementalModelAdminMixin(object):
         if not request.method == 'POST':
             # set for._meta.exclude so the info is saved on ModelAdmin.save()'s call to update_excluded_model().
             # We must use the same excluded fields on Add and Change
-            if not self._get_original_model_admin_fields():
-                self._set_original_model_admin_fields()
-            self.set_exclude_fields(obj)
             if self.form._meta.exclude:
                 # TODO: i thought we were not allowing form._meta.exclude to be populated?
-                self.form._meta.exclude = tuple(set(list(self.form._meta.exclude) + list(self.get_exclude_fields(obj))))
+                self.form._meta.exclude = tuple(set(list(self.form._meta.exclude) + list(self.get_exclude_fields())))
             else:
-                self.form._meta.exclude = self.get_exclude_fields(obj)
+                self.form._meta.exclude = self.get_exclude_fields()
 
-    def set_exclude_fields(self, obj):
+    def set_exclude_fields(self, object_id=None):
         """Sets the ModelAdmin fields attribute to reflect the choice of excluding or not excluding the supplemental fields."""
         self._exclude_fields = None
         # we are using form._meta.exclude, so make sure it was not set in the form.Meta class definition
@@ -77,41 +96,59 @@ class SupplementalModelAdminMixin(object):
         # TODO: we are not using ModelAdmin.exclude but directly manipulating ModelAdmin.fields. Which is better?
         if not self.fields:
             raise AttributeError('The ModelAdmin.fields attribute must be explicitly set if class is used with \'supplemental_fields\'. See {0}.'.format(self.__class__))
-        self.fields, self._exclude_fields = self.supplemental_fields.choose_fields(self._get_original_model_admin_fields(), self.model, obj)
+        self.fields, self._exclude_fields = self.supplemental_fields.choose_fields(self._get_original_model_admin_fields(), self.model, object_id)
+        self.create_exclude_history()
 
-    def get_exclude_fields(self, obj=None):
+    def get_exclude_fields(self):
         return self._exclude_fields
+
+    def create_exclude_history(self):
+        """Creates a history for this model if it uses a grouping field.
+
+        If the supplemental class does not have a grouping field, history will not be created here."""
+        if self.get_exclude_fields() and self.get_grouping_pk():
+            if not ExcludedHistory.objects.filter(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, group=self.get_group(), grouping_pk=self.get_grouping_pk()):
+                ExcludedHistory.objects.create(
+                    app_label=self.model._meta.app_label,
+                    object_name=self.model._meta.object_name,
+                    excluded_fields=self.get_exclude_fields(),
+                    group=self.get_group(),
+                    grouping_field=self.get_grouping_field(),
+                    grouping_pk=self.get_grouping_pk())
 
     def update_exclude_history(self, obj):
         """Updates the admin_supplemental_fields Excluded history model to remember which fields were excluded on Add.
 
-        Also, resets form._meta.exclude.
-
         .. seealso:: post delete signal."""
-        if self.form._meta.exclude:
-            # record which instances were selected for excluded fields, (see also the post_delete signal).
-            if ExcludedHistory.objects.filter(app_label=obj._meta.app_label, object_name=obj._meta.object_name, model_pk=obj.pk):
-                excluded_history = ExcludedHistory.objects.get(app_label=obj._meta.app_label, object_name=obj._meta.object_name, model_pk=obj.pk)
-                excluded_history.excluded_fields = self.get_exclude_fields(obj)
-                excluded_history.save()
+        if self.get_exclude_fields():
+            if self.get_grouping_pk():
+                # update the existing history, for history that uses grouping field
+                if ExcludedHistory.objects.filter(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, group=self.get_group(), grouping_pk=self.get_grouping_pk()):
+                    excluded_history = ExcludedHistory.objects.get(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, group=self.get_group(), grouping_pk=self.get_grouping_pk())
+                    excluded_history.model_pk = obj.pk
+                    excluded_history.save()
+                else:
+                    raise TypeError('Expected an excluded history record.')
             else:
-                ExcludedHistory.objects.create(
-                    app_label=obj._meta.app_label,
-                    object_name=obj._meta.object_name,
-                    model_pk=obj.pk,
-                    excluded_fields=self.get_exclude_fields(obj),
-                    group=self._get_group(),
-                    grouping_field=self._get_grouping_field())
-        # clear in case the form instance, or this instancem, is used again
+                # create a new history, for one that is not using grouping field
+                if not ExcludedHistory.objects.filter(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, model_pk=self.obj.pk):
+                    ExcludedHistory.objects.create(
+                        app_label=self.model._meta.app_label,
+                        object_name=self.model._meta.object_name,
+                        model_pk=obj.pk,
+                        excluded_fields=self.get_exclude_fields(),
+                        group=self.get_group(),
+                        grouping_field=self.get_grouping_field(),
+                        grouping_pk=self.get_grouping_pk())
 
-    def _set_group(self, value):
-        self._group = value
+    def get_group(self):
+        return self.supplemental_fields.get_group()
 
-    def _get_group(self):
-        return self._group
+    def get_grouping_field(self):
+        return self.supplemental_fields.get_grouping_field()
 
-    def _set_grouping_field(self, value):
-        self._grouping_field = value
+    def _set_grouping_pk(self, value):
+        self._grouping_pk = value
 
-    def _get_grouping_field(self):
-        return self._grouping_field
+    def get_grouping_pk(self):
+        return self._grouping_pk

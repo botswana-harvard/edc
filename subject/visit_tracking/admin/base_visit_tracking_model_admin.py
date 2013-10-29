@@ -18,6 +18,8 @@ class BaseVisitTrackingModelAdmin(BaseModelAdmin):
     date_hierarchy = 'report_datetime'
 
     def __init__(self, *args, **kwargs):
+        self._visit_model_attr = None
+        self._visit_model_pk = None
         super(BaseVisitTrackingModelAdmin, self).__init__(*args, **kwargs)
         # get visit model from class attribute
         if not self.visit_model:
@@ -62,6 +64,34 @@ class BaseVisitTrackingModelAdmin(BaseModelAdmin):
                     'export_as_csv_action',
                     "Export to CSV with visit and demographics")
         return actions
+
+    def set_visit_model_attr(self, value):
+        self._visit_model_attr = value
+
+    def get_visit_model_attr(self):
+        return self._visit_model_attr
+
+    def set_visit_model_pk(self, value):
+        self._visit_model_pk = value
+
+    def get_visit_model_pk(self):
+        return self._visit_model_pk
+
+    def add_view(self, request, form_url='', extra_context=None):
+        """Sets the values for the visit model object name and the visit model pk.
+
+        To be used by supplemental fields, etc."""
+        self.set_visit_model_attr(request.GET.get('visit_attr'))
+        self.set_visit_model_pk(request.GET.get(self.get_visit_model_attr()))
+        return super(BaseVisitTrackingModelAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        """Sets the values for the visit model object name and the visit model pk.
+
+        To be used by supplemental fields, etc."""
+        self.set_visit_model_attr(request.GET.get('visit_attr'))
+        self.set_visit_model_pk(request.GET.get(self.get_visit_model_attr()))
+        return super(BaseVisitTrackingModelAdmin, self).change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         visit_model_helper = VisitModelHelper()
