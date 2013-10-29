@@ -1,14 +1,24 @@
 from django.contrib import admin
 
 
-def show_supplemental_fields(self):
+def show_supplemental_fields():
     """Print out admin classes that use supplemental_fields."""
-    index = 0
+    admin.autodiscover()
+    dct = {}
     for value in admin.site._registry.itervalues():
         if 'supplemental_fields' in dir(value):
-            index += 1
-            print str(index) + '. ' + value.model._meta.object_name
-            print '  group: ' + unicode(value.supplemental_fields._group)
-            print '  fields: ' + ', '.join(value.supplemental_fields._get_optional_fields())
-            print '  probability: ' + unicode(value.supplemental_fields._p)
-            print '  db_table: ' + value.model._meta.db_table
+            dct.update({value.supplemental_fields.get_group(): []})
+    for value in admin.site._registry.itervalues():
+        if 'supplemental_fields' in dir(value):
+            description = [value.model._meta.object_name,
+                           '  group: ' + unicode(value.supplemental_fields.get_group()),
+                           '  grouping: ' + unicode(value.supplemental_fields.get_grouping_field()),
+                           '  fields: ' + ', '.join(value.supplemental_fields.get_supplemental_fields()),
+                           '  probability: ' + unicode(value.supplemental_fields.get_probability()),
+                           '  db_table: ' + value.model._meta.db_table]
+            dct[value.supplemental_fields.get_group()].append({value.model._meta.object_name: description})
+    for description in dct.itervalues():
+        for dct in description:
+            for value in dct.itervalues():
+                for line in value:
+                    print line
