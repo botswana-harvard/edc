@@ -269,6 +269,12 @@ YES_NO = (
     ('No', _('No')),
 )
 
+YES_NO_DECLINED = (
+    ('Yes', 'Yes'),
+    ('No', 'No'),
+    ('Declined', 'Declined copy'),
+    )
+
 YES_NO_OPTIONAL = (
     ('Yes', 'Yes'),
     ('No', 'No'),
