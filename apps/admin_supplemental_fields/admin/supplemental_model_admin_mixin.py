@@ -1,5 +1,7 @@
 import copy
 
+from django.core.exceptions import ImproperlyConfigured
+
 from ..models import ExcludedHistory
 
 
@@ -9,8 +11,6 @@ class SupplementalModelAdminMixin(object):
     Put on LEFT of declaration"""
     def __init__(self, *args):
         self._original_model_admin_fields = None
-        self._group = None
-        self._grouping_field = None
         self._grouping_pk = None
         super(SupplementalModelAdminMixin, self).__init__(*args)
 
@@ -24,10 +24,8 @@ class SupplementalModelAdminMixin(object):
         if not extra_context:
             extra_context = {}
         extra_context['uses_supplemental_fields'] = True
-        self.set_visit_model_attr(request.GET.get('visit_attr'))
-        self.set_visit_model_pk(request.GET.get(self.get_visit_model_attr()))
-        if 'get_visit_model_attr' in dir(self):  # if parent class is BaseVisitTrackingModelAdmin
-            self._set_grouping_pk(self.get_visit_model_pk())
+        self.set_grouping_pk(request.GET.get(self.get_grouping_field()))
+        self.supplemental_fields.set_grouping_pk(self.get_grouping_pk())
         if not self._get_original_model_admin_fields():
             self._set_original_model_admin_fields()
         self.set_exclude_fields()
@@ -39,10 +37,8 @@ class SupplementalModelAdminMixin(object):
         extra_context['uses_supplemental_fields'] = True
         if self.has_excluded_supplemental_fields(object_id):
             extra_context['has_excluded_supplemental_fields'] = True
-        self.set_visit_model_attr(request.GET.get('visit_attr'))
-        self.set_visit_model_pk(request.GET.get(self.get_visit_model_attr()))
-        if 'get_visit_model_attr' in dir(self):  # if parent class is BaseVisitTrackingModelAdmin
-            self._set_grouping_pk(self.get_visit_model_pk())
+        self.set_grouping_pk(request.GET.get(self.get_grouping_field()))
+        self.supplemental_fields.set_grouping_pk(self.get_grouping_pk())
         if not self._get_original_model_admin_fields():
             self._set_original_model_admin_fields()
         self.set_exclude_fields(object_id)
@@ -87,6 +83,8 @@ class SupplementalModelAdminMixin(object):
         """Sets the ModelAdmin fields attribute to reflect the choice of excluding or not excluding the supplemental fields."""
         self._exclude_fields = None
         # we are using form._meta.exclude, so make sure it was not set in the form.Meta class definition
+        if 'Meta' not in dir(self.form):
+            raise ImproperlyConfigured('ModelAdmin classes that use SupplementalFields must declare a form. See {0}'.format(self.__class__))
         if 'exclude' in dir(self.form.Meta):
             raise AttributeError('The form.Meta attribute exclude cannot be used with \'supplemental_fields\'. See {0}.'.format(self.form))
         # always set to None first, note that form._meta.exclude seems to override ModelAdmin.exclude
@@ -105,13 +103,15 @@ class SupplementalModelAdminMixin(object):
     def create_exclude_history(self):
         """Creates a history for this model if it uses a grouping field.
 
+        Always create history if there is a grouping field defined, regardless of fields being excluded or not.
+
         If the supplemental class does not have a grouping field, history will not be created here."""
-        if self.get_exclude_fields() and self.get_grouping_pk():
+        if self.get_grouping_pk():
             if not ExcludedHistory.objects.filter(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, group=self.get_group(), grouping_pk=self.get_grouping_pk()):
                 ExcludedHistory.objects.create(
                     app_label=self.model._meta.app_label,
                     object_name=self.model._meta.object_name,
-                    excluded_fields=self.get_exclude_fields(),
+                    excluded_fields=','.join(self.get_exclude_fields()),
                     group=self.get_group(),
                     grouping_field=self.get_grouping_field(),
                     grouping_pk=self.get_grouping_pk())
@@ -120,26 +120,25 @@ class SupplementalModelAdminMixin(object):
         """Updates the admin_supplemental_fields Excluded history model to remember which fields were excluded on Add.
 
         .. seealso:: post delete signal."""
-        if self.get_exclude_fields():
-            if self.get_grouping_pk():
-                # update the existing history, for history that uses grouping field
-                if ExcludedHistory.objects.filter(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, group=self.get_group(), grouping_pk=self.get_grouping_pk()):
-                    excluded_history = ExcludedHistory.objects.get(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, group=self.get_group(), grouping_pk=self.get_grouping_pk())
-                    excluded_history.model_pk = obj.pk
-                    excluded_history.save()
-                else:
-                    raise TypeError('Expected an excluded history record.')
+        if self.get_grouping_pk():
+            # update the existing history, for history that uses grouping field
+            if ExcludedHistory.objects.filter(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, group=self.get_group(), grouping_pk=self.get_grouping_pk()):
+                excluded_history = ExcludedHistory.objects.get(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, group=self.get_group(), grouping_pk=self.get_grouping_pk())
+                excluded_history.model_pk = obj.pk
+                excluded_history.save()
             else:
-                # create a new history, for one that is not using grouping field
-                if not ExcludedHistory.objects.filter(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, model_pk=self.obj.pk):
-                    ExcludedHistory.objects.create(
-                        app_label=self.model._meta.app_label,
-                        object_name=self.model._meta.object_name,
-                        model_pk=obj.pk,
-                        excluded_fields=self.get_exclude_fields(),
-                        group=self.get_group(),
-                        grouping_field=self.get_grouping_field(),
-                        grouping_pk=self.get_grouping_pk())
+                raise TypeError('Expected an excluded history record.')
+        else:
+            # create a new history, for one that is not using grouping field
+            if not ExcludedHistory.objects.filter(app_label=self.model._meta.app_label, object_name=self.model._meta.object_name, model_pk=self.obj.pk):
+                ExcludedHistory.objects.create(
+                    app_label=self.model._meta.app_label,
+                    object_name=self.model._meta.object_name,
+                    model_pk=obj.pk,
+                    excluded_fields=','.join(self.get_exclude_fields()),
+                    group=self.get_group(),
+                    grouping_field=self.get_grouping_field(),
+                    grouping_pk=self.get_grouping_pk())
 
     def get_group(self):
         return self.supplemental_fields.get_group()
@@ -147,7 +146,7 @@ class SupplementalModelAdminMixin(object):
     def get_grouping_field(self):
         return self.supplemental_fields.get_grouping_field()
 
-    def _set_grouping_pk(self, value):
+    def set_grouping_pk(self, value):
         self._grouping_pk = value
 
     def get_grouping_pk(self):

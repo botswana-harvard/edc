@@ -1,12 +1,12 @@
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
 from edc.base.model.fields import IdentityTypeField
-from edc.subject.consent.models import BaseConsent
-from ..fields import EncryptedOmangField
+from edc.base.model.fields.local.bw import EncryptedOmangField
 
 
-class BaseBwConsent(BaseConsent):
-
-    """ because of the identity field, this is a Botswana model """
+class IdentityFieldsMixin(models.Model):
+    """Identity fields for Botswana"""
 
     identity = EncryptedOmangField(
         verbose_name=_("Identity number (OMANG, etc)"),
