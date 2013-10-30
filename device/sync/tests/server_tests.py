@@ -12,16 +12,13 @@ class ServerTests(BaseSyncDeviceTests):
 
         
     def test_server_settings(self):
-        if 'MIDDLE_MAN' in dir(settings):
-            settings.MIDDLE_MAN = False
-        self.assertTrue(settings.DEVICE_ID == '99')
+        self.assertTrue(self.device.get_device_id() == '99')
        
     def test_tastypie_synchronizing_link(self):
         producer = 'bcpp039-bhp066'
         app_name = 'bcpp'
         producer_instance = ProducerFactory(name=producer, settings_key=producer, url='http://localhost:8000/')
-        if 'MIDDLE_MAN' in dir(settings):
-            settings.MIDDLE_MAN = False
+        self.device.set_device_id(99)
         self.assertEqual(User.objects.all().count(),1)
         self.assertEqual(ApiKey.objects.all().count(),1)
         self.denies_anonymous_acess(producer, app_name)

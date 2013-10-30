@@ -208,6 +208,8 @@ class PrepareDevice(BasePrepareDevice):
 #          self.timer()
 #            logger.info("1. Running pre procedures")
 #            self.pre_prepare()
+        print 'SOURCE : '+self.get_using_source()
+        print 'DESTINATION : '+self.get_using_destination()
         if not step > 1:
             ContentType = get_model('contenttypes','ContentType')
             in_destination = ContentType.objects.using(self.get_using_destination()).all().count()

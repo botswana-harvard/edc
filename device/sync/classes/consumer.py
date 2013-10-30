@@ -36,8 +36,8 @@ class Consumer(object):
         self.pre_sync(using, lock_name, **kwargs)
         if not using:
             using = None
-        if self.get_device().is_server():
-            raise TypeError('Cannot consume in a device thats not a server. Got settings DEVICE_ID==\'{0}\' instead of 99'.format(settings.DEVICE_ID))
+        if not self.get_device().is_server():
+            raise TypeError('Cannot consume in a device thats not a server. Got settings DEVICE_ID==\'{0}\' instead of 99'.format(self.get_device()))
         IncomingTransaction = get_model('sync', 'IncomingTransaction')
         check_hostname = kwargs.get('check_hostname', True)
         deserialize_from_transaction = DeserializeFromTransaction()
@@ -76,7 +76,7 @@ class Consumer(object):
     def _reconnect_signals(self):
         self.signal_manager.reconnect()
         self.reconnect_signals()
-        self.signal_manager.reconnect()
+        #self.signal_manager.reconnect()
 
     def reconnect_signals(self):
         """Reconnects app specific signals if overriden."""

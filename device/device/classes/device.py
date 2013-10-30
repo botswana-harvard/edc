@@ -61,7 +61,11 @@ class Device(object):
             self._is_middleman = True
 
     def is_server(self):
+        if not self._is_server:
+            self.set_is_server()
         return self._is_server
 
     def is_middleman(self):
+        if not self._is_middleman:
+            self.set_is_middleman()
         return self._is_middleman
