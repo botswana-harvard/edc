@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 @receiver(post_save, weak=False, dispatch_uid="export_to_transaction_on_post_save")
 def export_to_transaction_on_post_save(sender, instance, raw, created, using, update_fields, **kwargs):
-    from ..managers import ExportHistoryManager
+    from ..managers import ExportHistoryManager  # causes import error if outside
     for manager in sender._meta.concrete_managers:
         if isinstance(manager[2], ExportHistoryManager):
             change_type = 'I'
@@ -15,7 +15,7 @@ def export_to_transaction_on_post_save(sender, instance, raw, created, using, up
 
 @receiver(pre_delete, weak=False, dispatch_uid="export_to_transaction_on_pre_delete")
 def export_to_transaction_on_pre_delete(sender, instance, using, **kwargs):
-    from ..managers import ExportHistoryManager
+    from ..managers import ExportHistoryManager  # causes import error if outside
     for manager in sender._meta.concrete_managers:
         if isinstance(manager[2], ExportHistoryManager):
             sender.export_history.serialize_to_export_transaction(instance, 'D', using=using)
