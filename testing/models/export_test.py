@@ -5,7 +5,7 @@ from django.db import models
 from edc.base.model.models import BaseUuidModel
 from edc.choices import YES_NO
 
-from ..managers import ExportHistoryManager
+from edc.export.managers import ExportHistoryManager
 
 
 class ExportTest(BaseUuidModel):
@@ -35,4 +35,4 @@ class ExportTest(BaseUuidModel):
         return False
 
     class Meta:
-        app_label = 'export'
+        app_label = 'testing'
