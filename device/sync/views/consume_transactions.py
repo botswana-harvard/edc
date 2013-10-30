@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from edc.device.sync.models import Producer, RequestLog, IncomingTransaction, MiddleManTransaction
 from edc.device.sync.classes import TransactionProducer
+from edc.device.device.classes import Device
 
 
 @login_required
@@ -20,7 +21,8 @@ def consume_transactions(request, **kwargs):
     #To redirect to the application sync template instead of sync.html
     middle_man = None
     remote_is_middleman = False
-    if 'MIDDLE_MAN' in dir(settings) and settings.MIDDLE_MAN:
+    #if 'MIDDLE_MAN' in dir(settings) and settings.MIDDLE_MAN:
+    if Device().is_middleman():
         middle_man = True
     else:
         middle_man = False

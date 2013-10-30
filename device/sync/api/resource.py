@@ -15,7 +15,7 @@ for user in User.objects.all():
 from django.contrib.auth.models import User
 from django.db import models
 from tastypie.models import create_api_key
-for user in User.objects.all():
+for user in User.objects.filter(username__in=names):
     if not ApiKey.objects.filter(user=user):
         ApiKey.objects.create(user=user)
 
@@ -34,7 +34,7 @@ api_key.save()
 api_key = ApiKey.objects.get(user=User.objects.get(username='django'))
 api_key.key='1af87bd7d0c7763e7b11590c9398740f0de7678b'
 api_key.save()
-names = ['onep','ckgathi','chazha','django','erikvw','jtshikedi','rmabutho','ankhutelang']
+names = ['onep','ckgathi','chick','django','erikvw','jtshikedi','rmabutho','ankhutelang', 'tbasuti', 'tmoruiemang', 'ambikiwa', 'ksebinang', 'kkeothepile', 'lmmesi', 'lramatokwane', 'nkeakantse', 'smbayi', 'tkgautlhe']
 
 if you get <<ValueError: astimezone() cannot be applied to a naive datetime>> when trying to create ApiKeys,
 replace 

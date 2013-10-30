@@ -11,13 +11,13 @@ class MiddleManTests(BaseSyncDeviceTests):
 
         
     def test_middleman_settings(self):
-        if 'MIDDLE_MAN' in dir(settings) and settings.MIDDLE_MAN:
-            settings.MIDDLE_MAN = False
+        #if not Device().is_middleman():
+        self.device.set_device_id(99)
         self.assertRaises(TypeError, lambda: MiddleManTransactionFactory())
 
     def test_requisition_inspector(self):
-        if 'MIDDLE_MAN' in dir(settings) and not settings.MIDDLE_MAN:
-            settings.MIDDLE_MAN = True
+        #if Device().is_middleman():
+        settings.DEVICE_ID = '98'
         wb_requisition = MiddleManTransactionFactory()#default middle man transaction is wb requisition.
         
         encrypted_transaction = 'enc1:::c4edcf6497a97d1dc2e98738710e7c2fae0768871016792b368dddd76c189481enc2:::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:::XRzo4QRQ/OAQu1rL6KfP+g=='
@@ -41,8 +41,8 @@ class MiddleManTests(BaseSyncDeviceTests):
         producer = 'bcpp039-bhp066'
         app_name = 'bcpp'
         producer_instance = ProducerFactory(name=producer, settings_key=producer, url='http://localhost:8000/')
-        if 'MIDDLE_MAN' in dir(settings) and not settings.MIDDLE_MAN:
-            settings.MIDDLE_MAN = True
+        #if Device().is_middleman():
+        self.device.set_device_id(98)
         self.assertEqual(User.objects.all().count(),1)
         self.assertEqual(ApiKey.objects.all().count(),1)
         self.denies_anonymous_acess(producer, app_name)
