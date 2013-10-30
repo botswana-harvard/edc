@@ -16,3 +16,4 @@ from .test_foreign_key import TestForeignKey
 from .test_m2m import TestM2m
 from .encrypted_test_model import EncryptedTestModel
 from .test_dispatch import TestDspItem, TestDspItemTwo, TestDspItemThree, TestDspList, TestDspItemM2M, TestDspItemBypass, TestDspContainer
+from .export_test import ExportTest
