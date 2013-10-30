@@ -26,11 +26,11 @@ def save_section(request, **kwargs):
             item_identifiers = item_identifiers.split(",")
         items = []
         if item_identifiers:
-            items = mapper.get_item_model_cls().objects.filter(**{'{0}__in'.format(mapper.identifier_field_attr): item_identifiers})
+            items = mapper.get_item_model_cls().objects.filter(**{'{0}__in'.format(mapper.identifier_field_attr): item_identifiers, mapper.item_selected_field: 1})
             for item in items:
                 setattr(item, mapper.region_field_attr, selected_region)
                 item.save()
-            items = mapper.get_item_model_cls().objects.filter(**{mapper.region_field_attr: selected_region, '{0}__isnull'.format(mapper.section_field_attr): True})
+            items = mapper.get_item_model_cls().objects.filter(**{mapper.region_field_attr: selected_region, '{0}__isnull'.format(mapper.section_field_attr): True, mapper.item_selected_field: 1})
         for item in items:
             lon = item.gps_target_lon
             lat = item.gps_target_lat
