@@ -14,7 +14,7 @@ def show_supplemental_fields():
                            '  group: ' + unicode(value.supplemental_fields.get_group()),
                            '  grouping: ' + unicode(value.supplemental_fields.get_grouping_field()),
                            '  fields: ' + ', '.join(value.supplemental_fields.get_supplemental_fields()),
-                           '  probability: ' + unicode(value.supplemental_fields.get_probability()),
+                           '  probability: ' + unicode(value.supplemental_fields.get_probability_to_include()),
                            '  db_table: ' + value.model._meta.db_table]
             dct[value.supplemental_fields.get_group()].append({value.model._meta.object_name: description})
     for description in dct.itervalues():
