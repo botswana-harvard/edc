@@ -1,16 +1,26 @@
 from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import get_model
 
 
 class Permissions(object):
 
-    def __init__(self, visit_definition_codes, group_name, permission_profile):
+    def __init__(self, group_name, permission_profile, app_label=None, models=None, visit_definition_codes=None, show_messages=False):
         """Add permissions to a group for the models in a visit_definition or list of visit_definitions."""
         # TODO: could add a "view" permission here in addition to django's add, change, delete
         #       maybe use it to manpulate the submit row on the change_form.
-        self.set_visit_definitions(visit_definition_codes)
+        self.show_messages = show_messages
         self.set_permission_profile(permission_profile)
         self.set_group(group_name)
-        self.set_content_types(visit_definition_codes)
+        if app_label and visit_definition_codes:
+            raise AttributeError('You must specify either a list of visit definition codes or the app_label with a list of models. List of models may be None.')
+        if visit_definition_codes:
+            self.set_visit_definitions(visit_definition_codes)
+            self.set_content_types_by_visit_definition(visit_definition_codes)
+        elif app_label:
+            self.set_content_types(app_label, models)
+        else:
+            raise AttributeError('You must specify either a list of visit definition codes or the app_label with a list of models. List of models may be None.')
 
     def update(self):
         """Updates permissions to the group based on the list of content_types and the profile.
@@ -19,13 +29,25 @@ class Permissions(object):
         for content_type in self.get_content_types():
             if 'add' in self.get_permission_profile():
                 if not self.get_group().permissions.filter(content_type=content_type, codename__icontains='add' + '_'):
-                    self.get_group().permissions.add(Permission.objects.get(content_type=content_type, codename__icontains='add' + '_'))
+                    try:
+                        self.get_group().permissions.add(Permission.objects.get(content_type=content_type, codename__icontains='add' + '_'))
+                    except Permission.DoesNotExist:
+                        raise TypeError('Permissions do not exist. Run syncdb')
+                    self.message(Permission.objects.get(content_type=content_type, codename__icontains='add' + '_'))
             if 'change' in self.get_permission_profile():
                 if not self.get_group().permissions.filter(content_type=content_type, codename__icontains='change' + '_'):
-                    self.get_group().permissions.add(Permission.objects.get(content_type=content_type, codename__icontains='change' + '_'))
+                    try:
+                        self.get_group().permissions.add(Permission.objects.get(content_type=content_type, codename__icontains='change' + '_'))
+                    except Permission.DoesNotExist:
+                        raise TypeError('Permissions do not exist. Run syncdb')
+                    self.message(Permission.objects.get(content_type=content_type, codename__icontains='change' + '_'))
             if 'delete' in self.get_permission_profile():
                 if not self.get_group().permissions.filter(content_type=content_type, codename__icontains='delete' + '_'):
-                    self.get_group().permissions.add(Permission.objects.get(content_type=content_type, codename__icontains='delete' + '_'))
+                    try:
+                        self.get_group().permissions.add(Permission.objects.get(content_type=content_type, codename__icontains='delete' + '_'))
+                    except Permission.DoesNotExist:
+                        raise TypeError('Permissions do not exist. Run syncdb')
+                    self.message(Permission.objects.get(content_type=content_type, codename__icontains='delete' + '_'))
 
     def replace(self):
         """Replaces permissions to the group by deleting all for this group then calling update."""
@@ -62,7 +84,7 @@ class Permissions(object):
     def get_visit_definitions(self):
         return self._visit_definitions
 
-    def set_content_types(self, codes):
+    def set_content_types_by_visit_definition(self, codes):
         """Sets to a complete and unique list of content types from each Entry in the visit definition."""
         from edc.subject.entry.models import Entry
 
@@ -72,5 +94,25 @@ class Permissions(object):
                 if entry.content_type_map.content_type not in self._content_types:
                     self._content_types.append(entry.content_type_map.content_type)
 
+    def set_content_types(self, app_label, models=None):
+        """Set the list of content_types using the app_label and a list of models for that app_label.
+
+        If models is None, will add all models for the app."""
+        self._content_types = []
+        if not models:
+            for content_type in ContentType.objects.filter(app_label=app_label):
+                self._content_types.append(content_type)
+        else:
+            for model in models:
+                if not get_model(app_label, model):
+                    raise AttributeError('Invalid model name {0}.{1}'.format(app_label, model))
+            models = [model.lower() for model in models]
+            for content_type in ContentType.objects.filter(app_label=app_label, model__in=models):
+                self._content_types.append(content_type)
+
     def get_content_types(self):
         return self._content_types
+
+    def message(self, msg):
+        if self.show_messages:
+            print unicode(msg)
