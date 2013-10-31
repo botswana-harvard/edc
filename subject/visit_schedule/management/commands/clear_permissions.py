@@ -9,3 +9,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         Permission.objects.all().delete()
+        print 'All permissions have been deleted. Run syncdb (without south).'
