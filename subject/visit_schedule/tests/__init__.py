@@ -1,2 +1,3 @@
-from factory_tests import FactoryTests
-from visit_definition_helper_tests import VisitDefinitionHelperTests
+from .factory_tests import FactoryTests
+from .visit_definition_helper_tests import VisitDefinitionHelperTests
+from .permission_tests import PermissionTests

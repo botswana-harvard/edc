@@ -12,7 +12,7 @@ class TestSupplementalAdmin(SupplementalModelAdminMixin, BaseModelAdmin):
 
     form = TestSupplementalForm
 
-    supplemental_fields = SupplementalFields(('f2', 'f3'), p=0.09, group='SH', grouping_field='f1')
+    supplemental_fields = SupplementalFields(('f2', 'f3'), p=0.09, group='TEST', grouping_field='f1')
 
     fields = ('f1', 'f2', 'f3', 'f4', 'f5')
 
