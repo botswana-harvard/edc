@@ -121,3 +121,21 @@ def decrypt_incomingtransaction(modeladmin, request, queryset):
         qs.tx = tx
         qs.save()
 decrypt_incomingtransaction.short_description = "Decrypt the incoming transaction"
+
+def set_incomingtransaction_audits_to_ignored(modeladmin, request, queryset):
+    """ set incoming audit transaction to ignore = True """
+    for qs in queryset:
+        if qs.tx_name.find('Audit') != -1:
+            qs.is_ignored = True
+            qs.error = None
+            qs.save()
+set_incomingtransaction_audits_to_ignored.short_description = "Set audit transactions ignore status (is_ignored=True)"
+
+def reset_incomingtransaction_audits(modeladmin, request, queryset):
+    """ set incoming audit transaction to ignore = False """
+    for qs in queryset:
+        if qs.tx_name.find('Audit') != -1:
+            qs.is_ignored = False
+            qs.error = None
+            qs.save()
+reset_incomingtransaction_audits.short_description = "Reset audit transactions ignore status (is_ignored=False)"

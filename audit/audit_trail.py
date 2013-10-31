@@ -191,7 +191,7 @@ def create_audit_model(cls, **kwargs):
         '_audit__str__': cls.__str__.im_func,
         '__str__': lambda self: '%s as of %s' % (self._audit__str__(), self._audit_timestamp),
         '_audit_track': _track_fields(track_fields=kwargs['track_fields'], unprocessed=True),
-        '_deserialize_post': BaseSyncUuidModel.deserialize_post,
+        '_deserialize_post': BaseSyncUuidModel()._deserialize_post,
     }
 
     if 'save_change_type' in kwargs and kwargs['save_change_type']:
