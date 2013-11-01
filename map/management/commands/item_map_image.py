@@ -30,40 +30,43 @@ class Command(BaseCommand):
             items = m.get_item_model_cls().objects.filter(**{m.map_area_field_attr: mapper_name})
             landmarks = m.get_landmarks()
             url_str = ''
-            all_str = 'http://maps.google.com/maps/api/staticmap?size=640x600&maptype=satellite&scale:2&format=png32&zoom=16&center=' + str(m.gps_center_lat) + ',' + str(m.gps_center_lon) + '&' + 'markers=color:red%7C'
-            all_str_mark = ''
             folder = settings.MEDIA_ROOT
             count = 0
             for item in items:
-                url_str = 'http://maps.google.com/maps/api/staticmap?size=640x600&maptype=satellite&scale:2&format=png32&zoom=18&center='
-                url_str += str(getattr(item, m.target_gps_lat_field_attr)) + ',' + str(getattr(item, m.target_gps_lon_field_attr)) + '&'
-                lmarks = []
-                for mark in landmarks:
-                    lat = getattr(item, m.target_gps_lat_field_attr)
-                    lon = getattr(item, m.target_gps_lon_field_attr)
-                    dist = m.gps_distance_between_points(lat, lon, mark[1], mark[2])
-                    lmarks.append([dist, landmarks[0], mark[1], mark[2]])
-                lmark = sorted(lmarks,key=itemgetter(0))
-                markers_l = m.make_dictionary(letters, lmark)
-                markers_str = ''
-                for key, value in markers_l.iteritems():
-                    if key:
-                        markers_str += 'markers=color:blue%7Clabel:' + key + '%7C' + str(value[2]) + ',' + str(value[3]) + '&'
-                url_str += markers_str
-                all_str_mark += str(getattr(item, m.target_gps_lat_field_attr)) + ',' + str(getattr(item, m.target_gps_lon_field_attr)) + '|'
-                url_str += 'markers=color:red%7C' + str(getattr(item, m.target_gps_lat_field_attr)) + ',' + str(getattr(item, m.target_gps_lon_field_attr)) + '&sensor=false'
-                name = getattr(item, m.get_identifier_field_attr())
+                zoom_level = 0
+                zoom = 18
+                while zoom_level < 3:
+                    url_str = 'http://maps.google.com/maps/api/staticmap?size=640x600&maptype=satellite&scale:2&format=png32&zoom=' + str(zoom) + '&center='
+                    url_str += str(getattr(item, m.target_gps_lat_field_attr)) + ',' + str(getattr(item, m.target_gps_lon_field_attr)) + '&'
+                    lmarks = []
+                    for mark in landmarks:
+                        lat = getattr(item, m.target_gps_lat_field_attr)
+                        lon = getattr(item, m.target_gps_lon_field_attr)
+                        dist = m.gps_distance_between_points(lat, lon, mark[1], mark[2])
+                        lmarks.append([dist, landmarks[0], mark[1], mark[2]])
+                    lmark = sorted(lmarks,key=itemgetter(0))
+                    markers_l = m.make_dictionary(letters, lmark)
+                    markers_str = ''
+                    for key, value in markers_l.iteritems():
+                        if key:
+                            markers_str += 'markers=color:blue%7Clabel:' + key + '%7C' + str(value[2]) + ',' + str(value[3]) + '&'
+                    url_str += markers_str
+                    url_str += 'markers=color:red%7C' + str(getattr(item, m.target_gps_lat_field_attr)) + ',' + str(getattr(item, m.target_gps_lon_field_attr)) + '&sensor=false'
+                    name = getattr(item, m.get_identifier_field_attr())
+                    if zoom == 18:
+                        file_name = folder + '/' + name + '_18.jpg'
+                    elif zoom == 17:
+                        file_name = folder + '/' + name + '_17.jpg'
+                    else:
+                        file_name = folder + '/' + name + '.jpg'
+                    urlretrieve(url_str, file_name)
+                    item.uploaded_map = name + '.jpg'
+                    item.save()
+                    sleep(5)
+                    print "The image at zoom level: " + str(zoom) + " of plot: " + str(name) + " is done"
+                    zoom -= 1
+                    zoom_level += 1
                 count += 1
-                file_name = folder + '/' + name + '.jpg'
-                urlretrieve(url_str, file_name)
-                item.uploaded_map = name + '.jpg'
-                item.save()
                 print str((count/float(len(items)))*100) + ' percent done! only ' + str(len(items) - count) + ' more pictures to download'
-                sleep(5)
-            all_str_mark += '&sensor=false'
-            all_str += all_str_mark
-            file_name = folder + '/all.jpg'
-            urlretrieve(all_str, file_name)
-            sleep(5)
 
 
