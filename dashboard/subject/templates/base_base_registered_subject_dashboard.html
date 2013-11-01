@@ -150,6 +150,9 @@
                     <A href="{% url appointment_meta|admin_urlname:'changelist' %}?q={{ subject_identifier }}&o=3.1">appointments</A>
                 {% endblock top_links %}
                 </td></tr>
+
+                {% block referral %}{% endblock referral %}   
+
                 {% block infants %}{% endblock infants %}   
 
                 {% block partner %}{% endblock partner %}                    
