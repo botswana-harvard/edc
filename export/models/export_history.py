@@ -53,3 +53,4 @@ class ExportHistory(BaseSyncUuidModel):
 
     class Meta:
         app_label = 'export'
+        ordering = ('-sent_datetime', )
