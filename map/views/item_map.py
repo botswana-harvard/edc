@@ -40,8 +40,17 @@ def item_map(request, **kwargs):
         lon = getattr(item[0], mapper.target_gps_lon_field_attr)
         lmarks = []
         if request.GET.get('map'):
-            map = request.GET.get('map')
-            item_map = 'all.jpg'
+            map = int(request.GET.get('map'))
+            print map
+            if map == 1:
+                item_map = getattr(item[0], mapper.map_field_attr)[:-4] + '_18.jpg'
+                print item_map
+            if map == 2:
+                item_map = getattr(item[0], mapper.map_field_attr)[:-4] + '_17.jpg'
+                print item_map
+            if map == 3:
+                item_map = getattr(item[0], mapper.map_field_attr)
+                print item_map
         for mark in landmark_list:
             dist = mapper.gps_distance_between_points(lat, lon, mark[1], mark[2])
             lmarks.append([dist, mark[0]])
@@ -49,7 +58,7 @@ def item_map(request, **kwargs):
         markers_l = {}
         count = 0
         for distanace, p_point in lmark:
-            if count < 3:
+            if count < 6:
                 markers_l[letters[count]]=p_point
                 count +=1
         return render_to_response(
