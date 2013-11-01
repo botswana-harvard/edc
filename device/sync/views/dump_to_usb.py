@@ -17,7 +17,7 @@ def dump_to_usb(request, **kwargs):
     if platform.system() == 'Darwin':
         usb_path = '/Volumes/'+app_name+'_usb/'
     else:
-        usb_path = ''
+        usb_path = '/media/'+app_name+'_usb/'
     if not app_name:
         raise ValidationError('app_name cannot be None')
     try:
