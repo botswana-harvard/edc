@@ -156,6 +156,15 @@ class ExportAsCsv(object):
     def get_field_names(self):
         return self._field_names
 
+    def get_simple_field_names(self):
+        """Returns a list of field names with tuples and __ parsed out."""
+        flds = []
+        for fld in self.get_field_names():
+            if isinstance(fld, tuple):
+                fld = fld[0]
+            flds.append(fld.split('__')[-1])
+        return flds
+
     def get_field_name(self, field_name):
         """Returns the field name if it is in the list.
 
@@ -217,9 +226,9 @@ class ExportAsCsv(object):
         name = None
         try:
             # find subject_identifier if it exists
-            subject_identifier_field = [fld for fld in self.get_field_names() if fld.split(LOOKUP_SEP)[-1] == 'subject_identifier']
+            subject_identifier_field = [fld for fld in self.get_simple_field_names() if fld.split(LOOKUP_SEP)[-1] == 'subject_identifier']
             if subject_identifier_field:
-                name = self.get_field_names().pop(self.get_field_names().index(subject_identifier[0]))
+                name = self.get_field_names().pop(self.get_field_names().index(subject_identifier_field[0]))
                 self.get_field_names().insert(0, name)
         except ValueError:
             pass
@@ -237,7 +246,7 @@ class ExportAsCsv(object):
                 pass
         self.get_field_names().extend(required_fields)
 
-    def set_header_row(self, obj):
+    def set_header_row(self):
         """Sets the header row to whatever :func:`get_field_names` returns."""
         self._header_row = []
         for header_name in self.get_field_names():

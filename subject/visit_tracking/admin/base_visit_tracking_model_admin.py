@@ -21,29 +21,57 @@ class BaseVisitTrackingModelAdmin(BaseModelAdmin):
         self._visit_model_attr = None
         self._visit_model_pk = None
         super(BaseVisitTrackingModelAdmin, self).__init__(*args, **kwargs)
-        # get visit model from class attribute
+        self.set_visit_model()
+        self.set_visit_model_fk_name()
+        self.extend_list_display()
+        self.extend_list_filter()
+        self.extend_search_fields()
+
+    def set_visit_model(self):
+        """Checks that visit model attribute is set"""
         if not self.visit_model:
             raise ImproperlyConfigured("Class attribute \'visit model\' on BaseVisitModelAdmin for model {0} may not be None. Please correct.".format(self.model))
-        # determine name of field that points to the visit model on this model
+
+    def set_visit_model_fk_name(self):
+        """Determine name of field that points to the visit model on this model"""
         self.visit_model_foreign_key = [fk for fk in [f for f in self.model._meta.fields if isinstance(f, ForeignKey)] if fk.rel.to._meta.module_name == self.visit_model._meta.module_name]
         if not self.visit_model_foreign_key:
             raise ValueError("The model for {0} requires a foreign key to visit model {1}. None found. Either correct the model or change the ModelAdmin class.".format(self, self.visit_model))
         else:
             self.visit_model_foreign_key = self.visit_model_foreign_key[0].name
-        # add common settings for the ModelAdmin configuration
-        self.search_fields = ['id', self.visit_model_foreign_key + '__appointment__registered_subject__subject_identifier', self.visit_model_foreign_key + '__pk']
-        self.list_display = [self.visit_model_foreign_key, 'created', 'modified', 'user_created', 'user_modified', ]
-        self.list_filter = [
-            self.visit_model_foreign_key + '__report_datetime',
-            self.visit_model_foreign_key + '__reason',
-            self.visit_model_foreign_key + '__appointment__appt_status',
-            self.visit_model_foreign_key + '__appointment__visit_definition__code',
-            self.visit_model_foreign_key + '__appointment__registered_subject__study_site__site_code',
-            'created',
-            'modified',
-            'user_created',
-            'user_modified',
-            'hostname_created']
+
+    def extend_search_fields(self):
+        if isinstance(self.search_fields, list):
+            for item in ['id', self.visit_model_foreign_key + '__appointment__registered_subject__subject_identifier', self.visit_model_foreign_key + '__pk']:
+                if item not in self.search_fields:
+                    self.search_fields.append(item)
+
+    def extend_list_display(self):
+        """Extends list display with additional values if passed as a list."""
+        if isinstance(self.list_display, list):
+            for item in [self.visit_model_foreign_key, 'created', 'modified', 'user_created', 'user_modified', ]:
+                if item not in self.list_display:
+                    self.list_display.append(item)
+            self.list_display = tuple(self.list_display)
+
+    def extend_list_filter(self):
+        """Extends list filter with additional values if passed as a list."""
+        if isinstance(self.list_filter, list):
+            extended_list_filter = [
+                self.visit_model_foreign_key + '__report_datetime',
+                self.visit_model_foreign_key + '__reason',
+                self.visit_model_foreign_key + '__appointment__appt_status',
+                self.visit_model_foreign_key + '__appointment__visit_definition__code',
+                self.visit_model_foreign_key + '__appointment__registered_subject__study_site__site_code',
+                'created',
+                'modified',
+                'user_created',
+                'user_modified',
+                'hostname_created']
+            for item in extended_list_filter:
+                if item not in self.list_filter:
+                    self.list_filter.append(item)
+            self.list_filter = tuple(self.list_filter)
 
     def get_actions(self, request):
         actions = super(BaseVisitTrackingModelAdmin, self).get_actions(request)
