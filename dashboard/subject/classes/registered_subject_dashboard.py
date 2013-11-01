@@ -34,6 +34,7 @@ from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
 from .scheduled_entry_context import ScheduledEntryContext
+from .scheduled_requisition_context import ScheduledRequisitionContext
 
 
 class RegisteredSubjectDashboard(Dashboard):
@@ -980,6 +981,26 @@ class RegisteredSubjectDashboard(Dashboard):
             scheduled_entries.append(inst.get_context())
         rendered_scheduled_forms = render_to_string(template, {
             'scheduled_entries': scheduled_entries,
+            'visit_attr': self.get_visit_model_attrname(),
+            'visit_model_instance': self._get_visit_model_instance(),
+            'registered_subject': self.get_registered_subject().pk,
+            'appointment': self.get_appointment().pk,
+            'dashboard_type': self.get_dashboard_type(),
+            'dashboard_model': self.get_dashboard_model_name(),
+            'dashboard_id': self.get_dashboard_id(),
+            'subject_dashboard_url': self.get_dashboard_url_name(),
+            'show': self.get_show()})
+        return rendered_scheduled_forms
+
+    def render_scheduled_requisitions(self):
+        """Renders the Scheduled Requisitions section of the dashboard using the context class ScheduledLabEntryContext."""
+        template = 'scheduled_requisitions.html'
+        scheduled_requisitions = []
+        for scheduled_requisition in self.get_scheduled_lab_bucket():
+            inst = ScheduledRequisitionContext(scheduled_requisition, self.get_appointment(), self.get_visit_model(), self.get_requisition_model())
+            scheduled_requisitions.append(inst.get_context())
+        rendered_scheduled_forms = render_to_string(template, {
+            'scheduled_entries': scheduled_requisitions,
             'visit_attr': self.get_visit_model_attrname(),
             'visit_model_instance': self._get_visit_model_instance(),
             'registered_subject': self.get_registered_subject().pk,
