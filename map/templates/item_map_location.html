@@ -119,14 +119,17 @@ function setLandMarks(map, locations) {
 	{% if item_map %}
 		{% if not map %}
 			<tr valign="top"><td><img src="{{ MEDIA_URL }}{{ item_map }}" alt="item map" width="800" height="450"></td></tr><tr>
-			<td>Key <A href="{% url 'item_map_url' mapper_name identifier lon lat %}/?map=1">(All plots)</A> </td></tr>
-			<tr><td>label</td><td>Landmark</td></tr>
-			{% for key, value in markers_l.items %}
-				<tr><td width:400px; >{{ key }}</td><td width:10px; >{{ value }}</td></tr>
-			{% endfor %}
 		{% else %}
 			<tr valign="top"><td><img src="{{ MEDIA_URL }}{{ item_map }}" alt="item map" width="800" height="450"></td></tr>
 		{% endif %}
+		<td>Key <A href="{% url 'item_map_url' mapper_name identifier lon lat %}/?map=1">(zoom level 18)</A>
+				<A href="{% url 'item_map_url' mapper_name identifier lon lat %}/?map=2">(zoom level 17)</A>
+				<A href="{% url 'item_map_url' mapper_name identifier lon lat %}/?map=3">(zoom level 16)</A>
+		</td></tr>
+		<tr><td>label</td><td>Landmark</td></tr>
+		{% for key, value in markers_l.items %}
+			<tr><td width:400px; >{{ key }}</td><td width:10px; >{{ value }}</td></tr>
+		{% endfor %}
 	{% else %}
 		<tr valign="top"><td><div id="map" style="width: 800px; height: 450px"></div></td></tr>
 	{% endif %}
