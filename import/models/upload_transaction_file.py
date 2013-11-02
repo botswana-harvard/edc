@@ -21,7 +21,7 @@ class UploadTransactionFile(BaseModel):
 
     not_consumed = models.IntegerField(editable=False, default=0, help_text='duplicates')
 
-    producer = models.TextField(maxlength=1000, null=True, editable=False, help_text='List of producers detected from the file.')
+    producer = models.TextField(max_length=1000, null=True, editable=False, help_text='List of producers detected from the file.')
 
     def save(self, *args, **kwargs):
         if not self.id:
