@@ -23,6 +23,7 @@ class Migration(SchemaMigration):
             ('total', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('consumed', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('not_consumed', self.gf('django.db.models.fields.IntegerField')(default=0)),
+            ('producer', self.gf('django.db.models.fields.TextField')(max_length=1000, null=True)),
         ))
         db.send_create_signal('import', ['UploadTransactionFile'])
 
@@ -44,6 +45,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'not_consumed': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'producer': ('django.db.models.fields.TextField', [], {'max_length': '1000', 'null': 'True'}),
             'total': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'transaction_file': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),

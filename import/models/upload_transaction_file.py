@@ -26,15 +26,18 @@ class UploadTransactionFile(BaseModel):
     def save(self, *args, **kwargs):
         if not self.id:
             self.file_name = self.transaction_file.name.replace('\\', '/').split('/')[-1]
-            if not self.check_for_transactions():
-                raise ValidationError('File does not contain any transactions. Got {0}'.format(self.file_name))
+            self.check_for_transactions()
             if self.consume:
                 self.consume_transactions()
         super(UploadTransactionFile, self).save(*args, **kwargs)
 
-    def check_for_transactions(self):
+    def check_for_transactions(self, transaction_file=None, exception_cls=None):
+        transaction_file = transaction_file or self.transaction_file
+        transaction_file.open()
+        exception_cls = exception_cls or ValidationError
         deserializer = DeserializeFromTransaction()
-        return deserializer.deserialize_json_file(self.transaction_file)
+        if not deserializer.deserialize_json_file(transaction_file):
+            raise exception_cls('File does not contain any transactions. Got {0}'.format(transaction_file.name))
 
     def consume_transactions(self):
         deserializer = DeserializeFromTransaction()
