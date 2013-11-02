@@ -1,1 +1,1 @@
-from upload_file_admin import UploadFileAdmin
+from upload_transaction_file_admin import UploadTransactionFileAdmin

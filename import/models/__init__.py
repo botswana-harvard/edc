@@ -1,1 +1,1 @@
-from upload_file import UploadFile
+from upload_transaction_file import UploadTransactionFile
