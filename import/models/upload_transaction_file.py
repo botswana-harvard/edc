@@ -56,7 +56,7 @@ class UploadTransactionFile(BaseModel):
                         timestamp=outgoing.get('fields').get('timestamp'),
                         producer=outgoing.get('fields').get('producer'),
                         action=outgoing.get('fields').get('action'))
-                    if outgoing.get('fields').get('producer') not in self.producer:
+                    if outgoing.get('fields').get('producer') not in producer_list:
                         producer_list.append(outgoing.get('fields').get('producer'))
             else:
                 self.not_consumed += 1
