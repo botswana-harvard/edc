@@ -3,10 +3,29 @@
 {% load url from future %}
 {% load describer_tags %}{% load common_tags %}
 
-{% block content %}
 
-{% include 'selector_buttons.html' %}
+{% block breadcrumbs %}
 
+    {% load tags %}
+    
+    <div class="breadcrumbs">
+        <a href="/{% app_name %}">Home</a>
+        {% if selected_section  %}
+            &rsaquo; <a href="{% url 'section_url' section_name=section_name %}">{{ selected_section|capfirst }}</a>
+        {% endif %}        
+        {% if selected_section  %}
+            &rsaquo; <a href="{% url 'model_data_inspector_url_name' %}">Model Data Summary</a>
+        {% endif %}        
+        {% if report_title  %}
+            &rsaquo; {{ report_title }}
+        {% endif %}        
+        
+    </div>
+    
+{% endblock %}
+
+
+{% block section_tiles %}
 
 {% if form %}
     {{ form.errors }}
@@ -27,17 +46,9 @@
 {% endif %}
 
 
-{% if not app_label and not model_name %}
-    {% block app_labels %}{% endblock %}
-{% endif%}
-{% if app_label and not model_name %}
-    {% block model_names %}{% endblock %}
-{% endif%}
-
-
 {% if app_label and model_name %}
 
-    {% block describer %} {% endblock %}
+    {% block inspector %} {% endblock %}
     
 {% endif %}
 

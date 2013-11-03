@@ -1,13 +1,16 @@
 from datetime import datetime, time
-from django.db.models import Q
+
 from django.conf import settings
-from django.db import models
-from django.shortcuts import render_to_response
-from django.db.models import Count
-from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.db import models
+from django.db.models import Count
+from django.db.models import Q
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
 from edc.core.bhp_variables.models import StudySite
-from edc.core.model_describer.forms import DateRangeForm
+
+from ..forms import DateRangeForm
 
 
 @login_required
@@ -18,7 +21,7 @@ def base_model_group_describer(request, **kwargs):
     app_list = kwargs.get('app_list')
     section_name = kwargs.get('section_name')
     common_foreign_key_field_name = kwargs.get('common_foreign_key_field_name')
-    report_title = 'Data Summary by Gender and Site for Models with Key Field \'%s\'' % common_foreign_key_field_name
+    report_title = 'Data Summary for Models with Key Field \'%s\'' % common_foreign_key_field_name
     template = 'model_group_describer.html'
     months = []
     years = []
