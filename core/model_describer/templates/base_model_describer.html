@@ -1,4 +1,6 @@
-{% extends "section_statistics.html"%}
+{% extends "section.html"%}
+{% load admin_urls %}
+{% load url from future %}
 {% load describer_tags %}{% load common_tags %}
 
 {% block content %}
@@ -6,7 +8,23 @@
 {% include 'selector_buttons.html' %}
 
 
-{% include 'selector_form.html' %}
+{% if form %}
+    {{ form.errors }}
+    <div id="search_tile">
+    <form class="form" action="" method="post">
+        {% csrf_token %}
+        {# Include the hidden fields #}
+        {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+        {% endfor %}
+        {# Include the visible fields #}
+        {% for field in form.visible_fields %}
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+        {% endfor %}<input type="submit" value="Select">
+    </form>
+    </div>
+{% endif %}
 
 
 {% if not app_label and not model_name %}
