@@ -1,38 +1,5 @@
 from django import forms
 
-from .choices import AGGREGATE
-
-
-class SelectModelForm(forms.Form):
-
-    app_label = forms.CharField(
-        label="App label",
-        required=True,
-        )
-
-    model_name = forms.CharField(
-        label="Model name",
-        required=True,
-        )
-
-
-class DateRangeForm(forms.Form):
-
-    start_date = forms.DateField(
-        label="Start",
-        required=False,
-        )
-    end_date = forms.DateField(
-        label="End",
-        required=False,
-        )
-    aggregate_on = forms.ChoiceField(
-        label="Aggregate on",
-        choices=AGGREGATE,
-        initial='month',
-        required=False,
-        )
-
 
 class ModelInstanceCounterForm(forms.Form):
 

@@ -1,9 +1,10 @@
-from django.shortcuts import render_to_response
-from django.template import RequestContext
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from ..forms import ModelInstanceCounterForm
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
 from ..classes import ModelInstanceCounter
+from ..forms import ModelInstanceCounterForm
 
 
 @login_required

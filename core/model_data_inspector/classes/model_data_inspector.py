@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Count, Sum, Avg, Max, Min, StdDev, Variance
-from django.db.models import DateTimeField, DateField, IntegerField, DecimalField, CharField
+from django.db.models import DateTimeField, DateField, IntegerField, DecimalField, CharField, BooleanField, NullBooleanField
 
 from edc.core.model_selector.classes import ModelSelector
 
@@ -92,6 +92,13 @@ class ModelDataInspector(ModelSelector):
                             for aggregate in aggregates:
                                 new_aggregates.append({'count': aggregate['count'], 'label': aggregate[fld_string]})
                             self.grouping[field.name] = new_aggregates
+                elif isinstance(field, (BooleanField, NullBooleanField)):
+                    aggregates = self.get_model().objects.all().aggregate(Count(field.name))
+                    new_aggregates = {}
+                    for key, value in aggregates.items():
+                        k = key.split('__')
+                        new_aggregates[k[1]] = value
+                    q = new_aggregates
 
             grouping = {'table': self.get_model()._meta.db_table, 'fields': self.grouping}
 
