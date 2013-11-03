@@ -6,10 +6,10 @@ class ModelSelectorForm(forms.Form):
     app_label = forms.CharField(
         max_length=50,
         label="App",
-        required=False,
+        required=True,
         )
     model_name = forms.CharField(
         max_length=50,
         label="Model",
-        required=False,
+        required=True,
         )

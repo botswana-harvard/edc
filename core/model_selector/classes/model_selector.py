@@ -2,60 +2,56 @@ from django.db.models import get_model, get_models
 from django.conf import settings
 
 
-class AppLabelDescriptor(object):
-
-    def __init__(self):
-        self.name = 'app_label'
-        self.value = None
-        self.error = ''
-
-    def __get__(self, instance, owner):
-        return self.value
-
-    def __set__(self, instance, value):
-        if value in settings.INSTALLED_APPS:
-            self.value = value
-        else:
-            self.value = None
-
-
 class ModelSelector(object):
-
-    app_label = AppLabelDescriptor()
 
     def __init__(self, app_label, model_name):
 
-        self.app_label = app_label
-        self.model_name = model_name
-        self.app_labels = None
-        self.model_names = None
+        self._app_label = None
+        self._model_name = None
+        self._app_labels = None
+        self._model_names = None
 
-        self.model = None
-        self.opts = None
-        self.table = None
+        self.set_app_label(app_label)
+        self.set_model_name(model_name)
+        self.set_model()
+        self.set_app_labels()
+        self.set_model_names()
 
-        self.error_message = None
-        self.error_type = None
+    def set_app_label(self, value):
+        if value not in settings.INSTALLED_APPS:
+            self._app_label = value
+        if not self._app_label:
+            raise AttributeError('Attribute app_label may not be None.')
 
-        self.get_model()
+    def get_app_label(self):
+        return self._app_label
+
+    def set_model_name(self, value):
+        self._model_name = value.replace('_', '')  # make it object_name
+        if not self._model_name:
+            raise AttributeError('Attribute model_name may not be None.')
+
+    def get_model_name(self):
+        return self._model_name
+
+    def set_model(self):
+        self._model = get_model(self.get_app_label(), self.get_model_name())
+        if not self._model:
+            AttributeError('Could not get model for app_label={0}, model_name={1}.'.format(self.get_app_label(), self.get_model_name()))
 
     def get_model(self):
+        return self._model
 
-        if self.app_label not in settings.INSTALLED_APPS:
-            self.got_model = False
-            self.app_labels = [model._meta.app_label for model in get_models() if model._meta.app_label not in ['contenttypes', 'admin', 'auth', 'sites', 'sessions', 'south']]
-            self.app_labels = set(self.app_labels)
-            self.app_labels = list(self.app_labels)
-            self.app_labels.sort()
-            self.error_type = 'app_label'
-        else:
-            self.model_names = [{'module_name':model._meta.module_name, 'verbose_name':model._meta.verbose_name} for model in get_models() if model._meta.app_label == self.app_label and model._meta.verbose_name[-5:] != 'audit']
-            if self.model_name in [m['module_name'] for m in self.model_names]:
-                self.model = get_model(self.app_label, self.model_name)
-                self.opts = self.model._meta
-                self.table = '%s__%s' % (self.app_label, self.model_name)
-                self.error_message = None
-                self.error_type = None
-            else:
-                self.model_name = None
-                self.error_type = 'model_name'
+    def set_app_labels(self):
+        self._app_labels = [model._meta.app_label for model in get_models() if model._meta.app_label not in ['contenttypes', 'admin', 'auth', 'sites', 'sessions', 'south']]
+        self._app_labels = list(set(self._app_labels))
+        self._app_labels.sort()
+
+    def get_app_labels(self):
+        return self._app_labels
+
+    def set_model_names(self):
+        self._model_names = [{'module_name':model._meta.module_name, 'verbose_name':model._meta.verbose_name} for model in get_models() if model._meta.app_label == self.get_app_label() and model._meta.verbose_name[-5:] != 'audit']
+
+    def get_model_names(self):
+        return self._model_names
