@@ -11,7 +11,7 @@ class UploadTransactionFile(BaseModel):
 
     transaction_file = models.FileField(upload_to=settings.MEDIA_ROOT)
 
-    file_name = models.CharField(max_length=50, null=True, editable=False)
+    file_name = models.CharField(max_length=50, null=True, editable=False, unique=True)
 
     consume = models.BooleanField(default=True)
 

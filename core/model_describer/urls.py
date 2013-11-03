@@ -1,16 +1,16 @@
 from django.conf.urls import url, patterns
 
-from .views import model_describer_view, model_instance_counter
+from .views import model_data_inspector_view, model_instance_counter
 
 urlpatterns = patterns('',
     url(r'^(?P<app_label>\w+)/(?P<model_name>\w+)/$',
-        model_describer_view,
-        name="model_describer_url_name"
+        model_data_inspector_view,
+        name="model_data_inspector_url_name"
         ),
 
     url(r'^(?P<app_label>\w+)/$',
-        model_describer_view,
-        name="model_describer_url_name"
+        model_data_inspector_view,
+        name="model_data_inspector_url_name"
         ),
 
     url(r'^counter/',
@@ -19,7 +19,7 @@ urlpatterns = patterns('',
         ),
 
     url(r'',
-        model_describer_view,
-        name="model_describer_url_name"
+        model_data_inspector_view,
+        name="model_data_inspector_url_name"
         ),
     )
