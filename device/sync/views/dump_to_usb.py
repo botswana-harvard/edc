@@ -8,14 +8,22 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.conf import settings
 
+from edc.map.classes import site_mappers
 from ..classes import SerializeToTransaction
 from ..models import OutgoingTransaction
 
+site_mappers.autodiscover()
 
 @login_required
 def dump_to_usb(request, **kwargs):
     app_name = kwargs.get('app_name', None)
+    mapper = None
+    if not 'CURRENT_COMMUNITY' in dir(settings) or not settings.CURRENT_COMMUNITY:
+        raise TypeError('Ensure settings.CURRENT_COMMUNITY exists and is not \'None\'')
+    mapper = site_mappers.get_registry(settings.CURRENT_COMMUNITY)()
+    site_name = mapper.get_map_area()
     usb_path = None
     if platform.system() == 'Darwin':
         usb_path = '/Volumes/' + app_name + '_usb/'
@@ -24,7 +32,7 @@ def dump_to_usb(request, **kwargs):
     if not app_name:
         raise ValidationError('app_name cannot be None')
     try:
-        f = open(usb_path + app_name + '_' + str(datetime.now().strftime("%Y-%m-%d%H%M")) + '.json', 'w')
+        f = open(usb_path + app_name +'_'+ site_name + '_' + str(datetime.now().strftime("%Y%m%d%H%M")) + '.json', 'w')
     except:
         raise ValidationError('Please insert a usb device named \'{0}_usb\', currently using USB_PATH \'{1}\''.format(app_name, usb_path))
     outgoing_transactions = OutgoingTransaction.objects.filter(is_consumed_server=False)
