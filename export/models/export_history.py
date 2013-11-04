@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from django.db import models
-
 from django_extensions.db.fields import UUIDField
+
+from django.db import models
+from django.core.exceptions import ValidationError
 
 from edc.device.sync.models import BaseSyncUuidModel
 
@@ -37,6 +38,7 @@ class ExportHistory(BaseSyncUuidModel):
 
     def save(self, *args, **kwargs):
         if self.sent and self.received and not self.exported:
+            self.update_target_model()
             self.exported = True
             self.export_datetime = datetime.now()
         # TODO: may also want to raise a ValidationError is received_datetime greater than sent, etc
@@ -50,6 +52,15 @@ class ExportHistory(BaseSyncUuidModel):
         if self.model_class().objects.filter(pk=self.instance_pk):
             obj = self.model_class().objects.get(pk=self.instance_pk)
         return obj
+
+    def update_target_model(self):
+        """Updates the target model as exported triggered by an update to the instance."""
+        target_model_cls = models.get_model(self.app_label, self.object_name)
+        if not target_model_cls:
+            raise ValidationError('Model not found using {0}.{1}'.format(self.app_label, self.object_name))
+        if not target_model_cls.objects.filter(pk=self.instance_pk):
+            raise ValidationError('Instance not found for {0}.{1} pk={2}'.format(self.app_label, self.object_name, self.instance_pk))
+        target_model_cls.objects.filter(pk=self.instance_pk).update(exported=True, exported_datetime=datetime.today())
 
     class Meta:
         app_label = 'export'
