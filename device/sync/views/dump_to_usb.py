@@ -35,7 +35,7 @@ def dump_to_usb(request, **kwargs):
         f = open(usb_path + app_name +'_'+ site_name + '_' + str(datetime.now().strftime("%Y%m%d%H%M")) + '.json', 'w')
     except:
         raise ValidationError('Please insert a usb device named \'{0}_usb\', currently using USB_PATH \'{1}\''.format(app_name, usb_path))
-    outgoing_transactions = OutgoingTransaction.objects.filter(is_consumed_server=False)
+    outgoing_transactions = OutgoingTransaction.objects.filter(is_consumed_server=False, is_consumed_middleman=False)
     serializer = SerializeToTransaction()
     success = serializer.serialize_to_file(outgoing_transactions, f, True)
     f.close()
