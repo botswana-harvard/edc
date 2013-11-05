@@ -49,6 +49,8 @@ class UploadTransactionFile(BaseModel):
             raise exception_cls('File does not contain any transactions. Got {0}'.format(transaction_file.name))
 
     def consume_transactions(self):
+        if self.today_set_as_skip_day():
+            raise TypeError('Date \'{0}\' is already added to the skip table. So cannot upload on a date set to be skipped.'.format(self.file_date))
         #Can only upload if there exists an upload from the previous day, or a valid skip day exists in its preence.
         if self.file_already_uploaded():
             raise TypeError('File covering date of \'{0}\', is already uploaded.'.format(self.file_name))
@@ -92,6 +94,11 @@ class UploadTransactionFile(BaseModel):
     def skip_previous_day(self):
         yesterday = self.file_date - timedelta(1)
         if UploadSkipDays.objects.filter(skip_date=yesterday).exists():
+            return True
+        return False
+    
+    def today_set_as_skip_day(self):
+        if UploadSkipDays.objects.filter(skip_date=self.file_date).exists():
             return True
         return False
     
