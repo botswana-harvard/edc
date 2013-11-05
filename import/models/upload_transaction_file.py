@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
@@ -5,6 +7,7 @@ from django.conf import settings
 from edc.base.model.models import BaseModel
 from edc.device.sync.classes import DeserializeFromTransaction
 from edc.device.sync.models import IncomingTransaction
+from ..models import UploadSkipDays
 
 
 class UploadTransactionFile(BaseModel):
@@ -13,6 +16,8 @@ class UploadTransactionFile(BaseModel):
 
     file_name = models.CharField(max_length=50, null=True, editable=False, unique=True)
 
+    file_date = models.DateField(unique=True)
+    
     consume = models.BooleanField(default=True)
 
     total = models.IntegerField(editable=False, default=0)
@@ -26,6 +31,8 @@ class UploadTransactionFile(BaseModel):
     def save(self, *args, **kwargs):
         if not self.id:
             self.file_name = self.transaction_file.name.replace('\\', '/').split('/')[-1]
+            date_string = self.file_name.split('_')[2].split('.')[0][:8]
+            self.file_date = date(int(date_string[:4]),int(date_string[4:6]), int(date_string[6:8]))
             self.check_for_transactions()
             if self.consume:
                 self.consume_transactions()
@@ -40,6 +47,10 @@ class UploadTransactionFile(BaseModel):
             raise exception_cls('File does not contain any transactions. Got {0}'.format(transaction_file.name))
 
     def consume_transactions(self):
+        if self.file_already_uploaded():
+            raise TypeError('File \'{0}\', is already uploaded.'.format(self.file_name))
+        if not self.is_previous_day_file_uploaded() and not self.skip_previous_day():
+            raise TypeError('Missing Upload file from the previous day. Previous day is not set as a SKIP date'.format())
         deserializer = DeserializeFromTransaction()
         index = 0
         self.transaction_file.open()
@@ -63,7 +74,27 @@ class UploadTransactionFile(BaseModel):
         self.total = index
         producer_list.sort()
         self.producer = ','.join(producer_list)
-
+        
+    def file_already_uploaded(self):
+        if self.__class__.objects.filter(file_date=self.file_date).exists():
+            return True
+        return False
+    
+    def is_previous_day_file_uploaded(self):
+        yesterday = date.today() - timedelta(1)
+        if self.__class__.objects.filter(file_date=yesterday).exists():
+            return True
+        return False
+    
+    def skip_previous_day(self):
+        yesterday = date.today() - timedelta(1)
+        if UploadSkipDays.objects.filter(skip_date=yesterday).exists():
+            return True
+        return False
+    
+    def __unicode__(self):
+        return unicode(self.file_name)
+    
     class Meta:
         app_label = 'import'
         ordering = ('-created', )
