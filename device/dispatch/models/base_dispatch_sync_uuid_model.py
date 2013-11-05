@@ -57,12 +57,13 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         For example: a household model instance may serve as a container for all household members and data."""
         is_dispatched = False
         if self.is_dispatch_container_model():
-            DispatchContainerRegister = get_model('dispatch', 'DispatchContainerRegister')
-            if DispatchContainerRegister:
-                is_dispatched = DispatchContainerRegister.objects.using(using).filter(
-                    container_identifier=getattr(self, self.dispatched_as_container_identifier_attr()),
-                    is_dispatched=True,
-                    return_datetime__isnull=True).exists()
+            if not self._bypass_for_edit():
+                DispatchContainerRegister = get_model('dispatch', 'DispatchContainerRegister')
+                if DispatchContainerRegister:
+                    is_dispatched = DispatchContainerRegister.objects.using(using).filter(
+                        container_identifier=getattr(self, self.dispatched_as_container_identifier_attr()),
+                        is_dispatched=True,
+                        return_datetime__isnull=True).exists()
         return is_dispatched
 
     def is_dispatched_within_user_container(self, using=None):
