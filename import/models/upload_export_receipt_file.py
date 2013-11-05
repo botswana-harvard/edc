@@ -33,6 +33,8 @@ class UploadExportReceiptFile(BaseModel):
 
     receipt_datetime = models.DateTimeField(editable=False, null=True)
 
+    objects = models.Manager()
+    
     def save(self, *args, **kwargs):
         if not self.id:
             self.file_name = self.export_receipt_file.name.replace('\\', '/').split('/')[-1]

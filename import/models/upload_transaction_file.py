@@ -7,7 +7,7 @@ from django.conf import settings
 from edc.base.model.models import BaseModel
 from edc.device.sync.classes import DeserializeFromTransaction
 from edc.device.sync.models import IncomingTransaction
-from ..models import UploadSkipDays
+from .upload_skip_days import UploadSkipDays
 
 
 class UploadTransactionFile(BaseModel):
@@ -16,7 +16,7 @@ class UploadTransactionFile(BaseModel):
 
     file_name = models.CharField(max_length=50, null=True, editable=False, unique=True)
 
-    file_date = models.DateField(unique=True)
+    file_date = models.DateField(null=True, editable=False, unique=True)
     
     consume = models.BooleanField(default=True)
 
@@ -28,6 +28,8 @@ class UploadTransactionFile(BaseModel):
 
     producer = models.TextField(max_length=1000, null=True, editable=False, help_text='List of producers detected from the file.')
 
+    objects = models.Manager()
+    
     def save(self, *args, **kwargs):
         if not self.id:
             self.file_name = self.transaction_file.name.replace('\\', '/').split('/')[-1]
