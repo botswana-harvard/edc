@@ -60,12 +60,15 @@ class Command(BaseCommand):
                     else:
                         file_name = folder + '/' + name + '.jpg'
                     urlretrieve(url_str, file_name)
-                    item.uploaded_map = name + '.jpg'
-                    item.save()
                     sleep(5)
                     print "The image at zoom level: " + str(zoom) + " of plot: " + str(name) + " is done"
                     zoom -= 1
                     zoom_level += 1
+                item.uploaded_map = name + '.jpg'
+                try:
+                    item.save()
+                except Exception as e:
+                    pass
                 count += 1
                 print str((count/float(len(items)))*100) + ' percent done! only ' + str(len(items) - count) + ' more pictures to download'
 
