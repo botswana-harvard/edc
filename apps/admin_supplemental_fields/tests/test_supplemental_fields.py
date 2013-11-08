@@ -18,8 +18,8 @@ from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 from edc.subject.visit_tracking.admin import BaseVisitTrackingModelAdmin
 from edc.testing.forms import TestScheduledModelForm
-from edc.testing.models import TestScheduledModel, TestVisit, TestConsentWithMixin
-from edc.testing.tests.factories import TestScheduledModelFactory, TestVisitFactory, TestConsentWithMixinFactory
+from edc.testing.models import TestConsentWithMixin
+from edc.testing.tests.factories import TestScheduledModelFactory
 
 from ..admin import SupplementalModelAdminMixin
 from ..classes import SupplementalFields
@@ -27,7 +27,7 @@ from ..models import ExcludedHistory
 
 
 class TestScheduledModelAdmin(SupplementalModelAdminMixin, BaseVisitTrackingModelAdmin):
-    visit_model = TestVisit
+    visit_model = models.get_model('testing', 'TestVisit')
     form = TestScheduledModelForm
     supplemental_fields = SupplementalFields(('f2', 'f3', 'f4'), p=0.9, group='TEST', grouping_field='test_visit')
     fields = ('report_datetime', 'f1', 'f2', 'f3', 'f4')
@@ -38,7 +38,7 @@ class TestScheduledModelAdmin(SupplementalModelAdminMixin, BaseVisitTrackingMode
     def has_change_permission(self, request, obj):
         return True
 
-admin.site.register(TestScheduledModel, TestScheduledModelAdmin)
+#admin.site.register(TestScheduledModel, TestScheduledModelAdmin)
 
 
 class TestSupplementalFields(TestCase):
@@ -46,6 +46,8 @@ class TestSupplementalFields(TestCase):
     app_label = 'testing'
 
     def setUp(self):
+        from edc.testing.tests.factories import TestVisitFactory, TestConsentWithMixinFactory
+        self.test_visit_factory = TestVisitFactory
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username='erikvw', email='erik@doghouse.com', password='bad_dog')
         site_lab_tracker.autodiscover()

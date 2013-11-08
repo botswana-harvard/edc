@@ -18,41 +18,41 @@
 <th>Audit</th>                
 </thead>
 <tbody>
-{% if not scheduled_entries %}
+{% if not scheduled_requisitions %}
     <tr class="{% cycle 'row1' 'row2' %}"><td colspan="12"></td></tr>
 {% else %}
-    {% for entry in scheduled_entries %}
+    {% for scheduled_requisition in scheduled_requisitions %}
         <tr class="{% cycle 'row1' 'row2' %}">
-        <td><span {% if entry.status == 'NEW'%}style="background:red;"{% endif %}>&nbsp;</span></td>
+        <td><span {% if scheduled_requisition.status == 'NEW'%}style="background:red;"{% endif %}>&nbsp;</span></td>
         <td>{{ forloop.counter }}</td>
         <td>
-        {% if entry.model_url %}
-            <A href="{{ entry.model_url }}?next={{ subject_dashboard_url }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms&{{visit_attr}}={{ visit_model_instance.pk }}&visit_attr={{visit_attr}}&entry_order={{ entry.entry_order }}&group_title={{ entry.group_title }}&panel={{ entry.panel }}">{{ entry.label|title }}</A>
+        {% if scheduled_requisition.model_url %}
+            <A href="{{ scheduled_requisition.model_url }}?next={{ subject_dashboard_url }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms&{{visit_attr}}={{ visit_model_instance.pk }}&visit_attr={{visit_attr}}&entry_order={{ scheduled_requisition.entry_order }}&group_title={{ scheduled_requisition.group_title }}&panel={{ scheduled_requisition.panel }}">{{ scheduled_requisition.label|title }}</A>
         {% else %}                
-            {{ entry.label|title }}
+            {{ scheduled_requisition.label|title }}
         {% endif %}
         </td>       
         
-        <td><span style="font-size:18px;">{{ entry.requisition_identifier }}</span></td>
+        <td><span style="font-size:18px;">{{ scheduled_requisition.requisition_identifier }}</span></td>
                  
         <td>
-          {% if entry.scheduled_entry_url %}
-            <A href="{{ entry.scheduled_entry_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms&registered_subject={{ registered_subject }}&entry={{ entry.entry.pk }}&appointment={{ appointment.pk }}">{{ entry.status }}</A></td>
+          {% if scheduled_requisition.scheduled_entry_url %}
+            <A href="{{ scheduled_requisition.scheduled_entry_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms&registered_subject={{ registered_subject }}&entry={{ scheduled_requisition.scheduled_requisition.pk }}&appointment={{ appointment.pk }}">{{ scheduled_requisition.status }}</A></td>
           {% else %}
-            {{ entry.status }}
+            {{ scheduled_requisition.status }}
           {% endif %}
-        <td>{{ entry.due_datetime|date:"Y-m-d" }}</td>
-        <td>{{ entry.user_created|default:'' }}{% if entry.user_modified %}/{{ entry.user_modified }}{% endif %}</td>            
-        <td>{{ entry.created|date:"Y-m-d H:i"  }}{% if entry.modified %}/{{ entry.modified|date:"Y-m-d H:i"  }}{% endif %}</td>            
-        <td>{{ entry.entry_comment|default:'' }}</td>        
+        <td>{{ scheduled_requisition.due_datetime|date:"Y-m-d" }}</td>
+        <td>{{ scheduled_requisition.user_created|default:'' }}{% if scheduled_requisition.user_modified %}/{{ scheduled_requisition.user_modified }}{% endif %}</td>            
+        <td>{{ scheduled_requisition.created|date:"Y-m-d H:i"  }}{% if scheduled_requisition.modified %}/{{ scheduled_requisition.modified|date:"Y-m-d H:i"  }}{% endif %}</td>            
+        <td>{{ scheduled_requisition.entry_comment|default:'' }}</td>        
         <td>
-        {% if entry.databrowse_url %}
-            <A href="{{ entry.databrowse_url }}">Browse</A>
+        {% if scheduled_requisition.databrowse_url %}
+            <A href="{{ scheduled_requisition.databrowse_url }}">Browse</A>
         {% endif %}
         </td>
         <td>
-        {% if entry.audit_trail_url %}
-          <A href="{{ entry.audit_trail_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms">Audit trail</A>
+        {% if scheduled_requisition.audit_trail_url %}
+          <A href="{{ scheduled_requisition.audit_trail_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms">Audit trail</A>
         {% endif %}
         </td>
         </tr>

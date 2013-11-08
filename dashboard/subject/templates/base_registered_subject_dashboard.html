@@ -70,7 +70,7 @@
 {% if scheduled_lab_bucket %}   
     {% block scheduled_lab_bucket %}
 
-        {% include 'scheduled_lab_bucket_include.html' %}
+        {{ rendered_scheduled_requisitions }}
         
     {% endblock scheduled_lab_bucket %}
 {% endif %}

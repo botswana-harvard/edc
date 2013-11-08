@@ -7,14 +7,13 @@ from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 from edc.subject.appointment.models import Appointment
-from edc.subject.appointment.tests.factories import ConfigurationFactory, AppointmentFactory
+from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
-from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 from edc.testing.models import TestModel, TestScheduledModel, TestConsentWithMixin
-from edc.testing.tests.factories import TestModelFactory, TestScheduledModelFactory, TestVisitFactory, TestConsentWithMixinFactory
+from edc.testing.tests.factories import TestModelFactory, TestScheduledModelFactory, TestConsentWithMixinFactory
 
 from ..classes import ExportAsCsv
 from ..models import ExportHistory, ExportTransaction
@@ -25,6 +24,8 @@ class ExportAsCsvTests(TestCase):
     app_label = 'testing'
 
     def setUp(self):
+        from edc.testing.tests.factories import TestVisitFactory
+        self.test_visit_factory = TestVisitFactory
         site_lab_tracker.autodiscover()
         study_specific = StudySpecificFactory()
         StudySiteFactory()

@@ -1,15 +1,19 @@
 from django.test import TestCase
 from edc.subject.registration.models import RegisteredSubject
 from edc.testing.forms import TestSubjectUuidModelForm
-from edc.testing.tests.factories import TestConsentFactory
 from edc.testing.tests.factories import TestM2mFactory, TestForeignKeyFactory
 from .base_methods import BaseMethods
 
 
 class FormsTests(TestCase, BaseMethods):
 
+    def setUp(self):
+        from edc.testing.tests.factories import TestConsentFactory
+        self.test_consent_factory = TestConsentFactory
+        self.create_study_variables()
+
     def test_base_consented_model_form(self):
-        subject_consent = TestConsentFactory()
+        subject_consent = self.test_consent_factory()
         self.prepare_consent_catalogue()
         registered_subject = RegisteredSubject.objects.get(subject_identifier=subject_consent.subject_identifier)
         test_m2m = TestM2mFactory(name='test_m2m', short_name='test_m2m')

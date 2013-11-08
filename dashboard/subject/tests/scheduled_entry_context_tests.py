@@ -1,12 +1,13 @@
 from django.contrib import admin
+from django.db import models
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.subject.entry.tests.factories import ScheduledEntryBucketFactory, EntryFactory
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.subject.appointment.tests.factories import AppointmentFactory, ConfigurationFactory
-from edc.testing.tests.factories import TestVisitFactory, TestScheduledModelFactory
-from edc.testing.models import TestVisit, TestScheduledModel
+from edc.testing.tests.factories import TestScheduledModelFactory
+from edc.testing.models import TestScheduledModel
 from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.subject.entry.models import Entry
@@ -16,6 +17,8 @@ from ..classes import ScheduledEntryContext
 class ScheduledEntryContextTests(TestCase):
 
     def test_p1(self):
+        from edc.testing.tests.factories import TestVisitFactory
+        TestVisit = models.get_model('testing', 'TestVisit')
         admin.autodiscover()
         content_type_map_helper = ContentTypeMapHelper()
         content_type_map_helper.populate()
