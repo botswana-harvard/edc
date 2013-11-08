@@ -1,18 +1,19 @@
 from django.db import models
+
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.choices.common import YES_NO_OPTIONAL
 from edc.subject.visit_schedule.models import BaseWindowPeriodItem, VisitDefinition
+
 from ..choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
 from ..managers import EntryBucketManager
+from ..exceptions import EntryManagerError
 
 
 class Entry(BaseWindowPeriodItem):
 
-    """Model of metadata for each model_class linked to a visit definition.
+    """Links a model to a visit definition.
 
-    This model lists entry forms by visit definition used to fill
-    the scheduled entry bucket for a subject once a visit is reported
-    """
+    The model class it links to must have the EntryMetaDataManager defined, see exception in save. """
 
     visit_definition = models.ForeignKey(VisitDefinition)
     content_type_map = models.ForeignKey(ContentTypeMap,
@@ -42,10 +43,30 @@ class Entry(BaseWindowPeriodItem):
         max_length=25,
         choices=ENTRY_STATUS,
         default='NEW')
+
+    app_label = models.CharField(max_length=50, null=True)
+
+    model_name = models.CharField(max_length=50, null=True)
+
     objects = EntryBucketManager()
+
+    def save(self, *args, **kwargs):
+        if not self.app_label:
+            self.app_label = self.content_type_map.app_label
+        if not self.model_name:
+            self.model_name = self.content_type_map.model
+        model = models.get_model(self.app_label, self.model_name)
+        try:
+            model.entry_meta_data_manager
+        except AttributeError:
+            raise EntryManagerError('Models linked by the Entry class require a meta data manager. Add entry_meta_data_manager=EntryMetaDataManager() to model {0}.{1}'.format(self.app_label, self.model_name))
+        super(Entry, self).save(*args, **kwargs)
 
     def natural_key(self):
         return (self.visit_definition, ) + self.content_type_map.natural_key()
+
+    def get_model(self):
+        return models.get_model(self.app_label, self.model_name)
 
     def form_title(self):
         self.content_type_map.content_type.model_class()._meta.verbose_name

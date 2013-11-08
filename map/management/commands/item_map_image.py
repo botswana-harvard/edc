@@ -7,7 +7,7 @@ from django.conf import settings
 from ...classes import site_mappers
 from ...exceptions import MapperError
 
-        
+
 class Command(BaseCommand):
 
     APP_NAME = 0
@@ -18,7 +18,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if not args or len(args) < 1:
             raise CommandError('Missing \'using\' parameters.')
-    
+
         mapper_name = args[0]
         site_mappers.autodiscover()
         if not site_mappers.get_registry(mapper_name):
@@ -44,7 +44,7 @@ class Command(BaseCommand):
                         lon = getattr(item, m.target_gps_lon_field_attr)
                         dist = m.gps_distance_between_points(lat, lon, mark[1], mark[2])
                         lmarks.append([dist, landmarks[0], mark[1], mark[2]])
-                    lmark = sorted(lmarks,key=itemgetter(0))
+                    lmark = sorted(lmarks, key=itemgetter(0))
                     markers_l = m.make_dictionary(letters, lmark)
                     markers_str = ''
                     for key, value in markers_l.iteritems():
@@ -67,6 +67,4 @@ class Command(BaseCommand):
                     zoom -= 1
                     zoom_level += 1
                 count += 1
-                print str((count/float(len(items)))*100) + ' percent done! only ' + str(len(items) - count) + ' more pictures to download'
-
-
+                print str((count / float(len(items))) * 100) + ' percent done! only ' + str(len(items) - count) + ' more pictures to download'

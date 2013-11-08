@@ -25,7 +25,7 @@ from edc.subject.lab_entry.models import ScheduledLabEntryBucket, AdditionalLabE
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.locator.models import BaseLocator
 from edc.subject.registration.models import RegisteredSubject
-from edc.subject.rule_groups.classes import rule_groups
+from edc.subject.rule_groups.classes import site_rule_groups
 from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.subject_summary.models import Link
 from edc.subject.visit_schedule.classes import MembershipFormHelper
@@ -175,6 +175,13 @@ class RegisteredSubjectDashboard(Dashboard):
         self._set_registered_subject(registered_subject)
         self._set_membership_form_category(membership_form_category)
         self.set_show(show)
+        self._set_has_requisition_model(kwargs.get('has_requisition_model', False))
+        if visit_model:
+            self._set_visit_model(visit_model)
+        self._set_requisition_model(kwargs.get('requisition_model', None))
+        self._set_appointment()
+        self.set_scheduled_entry_bucket()
+        self.set_scheduled_lab_bucket()
 
     def add_to_context(self):
 
@@ -229,6 +236,7 @@ class RegisteredSubjectDashboard(Dashboard):
                 )
             if self._get_requisition_model():
                 self.context.add(requisition_model_meta=self._get_requisition_model()._meta)
+                self.context.add(rendered_scheduled_requisitions=self.render_scheduled_requisitions())
             self.render_summary_links()
         self.context.add(rendered_action_items=self.render_action_item())
         self.context.add(rendered_locator=self.render_locator())
@@ -256,6 +264,12 @@ class RegisteredSubjectDashboard(Dashboard):
                 if not 'get_registered_subject' in dir(model):
                     raise ImproperlyConfigured('RegisteredSubjectDashboard dashboard_model {0} must have method get_registered_subject(). See {1}.'.format(model, self))
 
+    def add_visit_message(self, message):
+        self._visit_messages.append(message)
+
+    def get_visit_messages(self):
+        return self._visit_messages
+
     def set_site_lab_tracker(self):
         """Sets to the site_lab_tracker.
 
@@ -266,14 +280,6 @@ class RegisteredSubjectDashboard(Dashboard):
         if not self._site_lab_tracker:
             self.set_site_lab_tracker()
         return self._site_lab_tracker
-
-    def set_scheduled_entry_meta(self):
-        self._scheduled_entry_bucket_meta = ScheduledEntryBucket._meta
-
-    def get_scheduled_entry_meta(self):
-        if not self._scheduled_entry_bucket_meta:
-            self.set_scheduled_entry_meta()
-        return self._scheduled_entry_bucket_meta
 
     def set_subject_hiv_status(self):
         """Sets to the value returned by the site_lab_tracker for this registered subject."""
@@ -410,13 +416,14 @@ class RegisteredSubjectDashboard(Dashboard):
                 self._appointment = Appointment.objects.get(pk=self.get_dashboard_id())
             elif self.get_dashboard_model_name() == 'visit':
                 self._appointment = self._get_visit_model_instance().get_appointment()
+            else:
+                if self._get_visit_model_instance():
+                    self._appointment = self._get_visit_model_instance().get_appointment()
         if self._appointment:
             self.set_appointment_code(self._appointment.visit_definition.code)
             self.set_appointment_continuation_count(self._appointment.visit_instance)
 
     def get_appointment(self):
-        if not self._appointment:
-            self._set_appointment()
         return self._appointment
 
     def set_appointment_zero(self):
@@ -556,8 +563,8 @@ class RegisteredSubjectDashboard(Dashboard):
         """Users must override if requisitions are used to specify the requisition model."""
         self._requisition_model = None
 
-    def _set_requisition_model(self):
-        self._requisition_model = self.get_requisition_model()
+    def _set_requisition_model(self, requisition_model=None):
+        self._requisition_model = self.get_requisition_model() or requisition_model  # FIXME: a little weird, calls overriden get to set!
         if self._get_has_requisition_model():
             if not self._requisition_model:
                 raise TypeError('Attribute _requisition model cannot be None. See {0}'.format(self))
@@ -565,13 +572,11 @@ class RegisteredSubjectDashboard(Dashboard):
                 raise TypeError('Expected a subclass of BaseBaseRequisition. Got {0}. See {1}.'.format(self._requisition_model, self))
 
     def _get_requisition_model(self):
-        if not self._requisition_model:
-            self._set_requisition_model()
         return self._requisition_model
 
     def get_requisition_model(self):
         """Users must override if requisitions are used to return the requisition model."""
-        self._set_has_requisition_model(False)
+
         return None
 
     def _set_has_requisition_model(self, value=None):
@@ -584,8 +589,6 @@ class RegisteredSubjectDashboard(Dashboard):
         """Returns a boolean indicating if the class has a requisition model (default: True).
 
         .. note:: :func:`get_requisition_model` will set this to False by default."""
-        if self._has_requisition_model == None:
-            self._set_has_requisition_model()
         return self._has_requisition_model
 
     def _set_packing_list_model(self):
@@ -603,6 +606,40 @@ class RegisteredSubjectDashboard(Dashboard):
     def get_packing_list_model(self):
         """Users must override if requisitions are used to specify the requisition model."""
         return None
+
+    def set_subject_membership_models(self):
+        """Sets to a dictionary of membership "models" that are keyed model instances and unkeyed model classes.
+
+        Membership forms can also be proxy models ... see mochudi_subject.models."""
+        helper = MembershipFormHelper()
+        self._subject_membership_models = helper.get_membership_models_for(
+            self.get_registered_subject(),
+            self.get_membership_form_category(),
+            extra_grouping_key=self.exclude_others_if_keyed_model_name)
+
+    def get_subject_membership_models(self, key=None):
+        if not self._subject_membership_models:
+            self.set_subject_membership_models()
+        return self._subject_membership_models
+
+    def get_keyed_subject_membership_models(self):
+        return self.get_subject_membership_models().get('keyed', [])
+
+    def get_unkeyed_subject_membership_models(self):
+        return self.get_subject_membership_models().get('unkeyed', [])
+
+    def _run_rule_groups(self):
+        """ Runs rules in any rule groups if visit_code is known and update entries as (new, not required) when the visit dashboard is refreshed.
+
+        If status is 'keyed' and the form is actually keyed, do nothing."""
+        if not self.get_subject_identifier():
+            raise AttributeError('set value of subject_identifier before calling dashboard create() when scheduled_entry_bucket_rules exist')
+        # run rules if visit_code is known -- user selected, that is user clicked to see list of
+        # scheduled entries for a given visit.
+
+        # TODO: on data entry, is the visit_model_instance always 0 or the actual instance 0,1,2, etc
+        if self._get_visit_model_instance():
+            site_rule_groups.update_all(self._get_visit_model_instance())
 
     def set_membership_form_category(self, value=None):
         """Sets to a category name needed to filter the MembershipForm model.
@@ -650,6 +687,14 @@ class RegisteredSubjectDashboard(Dashboard):
     def get_membership_form_categories(self):
         return self._membership_form_categories
 
+    def set_scheduled_entry_meta(self):
+        self._scheduled_entry_bucket_meta = ScheduledEntryBucket._meta
+
+    def get_scheduled_entry_meta(self):
+        if not self._scheduled_entry_bucket_meta:
+            self.set_scheduled_entry_meta()
+        return self._scheduled_entry_bucket_meta
+
     def _add_or_update_entry_buckets(self):
         """ Adds missing bucket entries and flags added and existing entries as keyed or not keyed (only)."""
         if self._get_visit_model_instance():
@@ -664,12 +709,6 @@ class RegisteredSubjectDashboard(Dashboard):
             additional_entry = AdditionalEntry()
             additional_entry.update_for_registered_subject(self.get_registered_subject())
 
-    def add_visit_message(self, message):
-        self._visit_messages.append(message)
-
-    def get_visit_messages(self):
-        return self._visit_messages
-
     def set_scheduled_entry_bucket(self):
         """ Sets the scheduled bucket entries using the appointment with instance=0 and adds to context ."""
         self._scheduled_entry_bucket = None
@@ -680,8 +719,6 @@ class RegisteredSubjectDashboard(Dashboard):
                 registered_subject=self.get_registered_subject())
 
     def get_scheduled_entry_bucket(self):
-        if not self._scheduled_entry_bucket:
-            self.set_scheduled_entry_bucket()
         return self._scheduled_entry_bucket
 
     def set_scheduled_lab_bucket(self):
@@ -694,8 +731,6 @@ class RegisteredSubjectDashboard(Dashboard):
                                             visit_code=self.get_appointment().visit_definition.code)
 
     def get_scheduled_lab_bucket(self):
-        if not self._scheduled_lab_bucket:
-            self.set_scheduled_lab_bucket()
         return self._scheduled_lab_bucket
 
     def set_additional_lab_bucket(self):
@@ -763,40 +798,6 @@ class RegisteredSubjectDashboard(Dashboard):
         if not self._show:
             self.set_show()
         return self._show
-
-    def set_subject_membership_models(self):
-        """Sets to a dictionary of membership "models" that are keyed model instances and unkeyed model classes.
-
-        Membership forms can also be proxy models ... see mochudi_subject.models."""
-        helper = MembershipFormHelper()
-        self._subject_membership_models = helper.get_membership_models_for(
-            self.get_registered_subject(),
-            self.get_membership_form_category(),
-            extra_grouping_key=self.exclude_others_if_keyed_model_name)
-
-    def get_subject_membership_models(self, key=None):
-        if not self._subject_membership_models:
-            self.set_subject_membership_models()
-        return self._subject_membership_models
-
-    def get_keyed_subject_membership_models(self):
-        return self.get_subject_membership_models().get('keyed', [])
-
-    def get_unkeyed_subject_membership_models(self):
-        return self.get_subject_membership_models().get('unkeyed', [])
-
-    def _run_rule_groups(self):
-        """ Runs rules in any rule groups if visit_code is known and update entries as (new, not required) when the visit dashboard is refreshed.
-
-        If status is 'keyed' and the form is actually keyed, do nothing."""
-        if not self.get_subject_identifier():
-            raise AttributeError('set value of subject_identifier before calling dashboard create() when scheduled_entry_bucket_rules exist')
-        # run rules if visit_code is known -- user selected, that is user clicked to see list of
-        # scheduled entries for a given visit.
-
-        # TODO: on data entry, is the visit_model_instance always 0 or the actual instance 0,1,2, etc
-        if self._get_visit_model_instance():
-            rule_groups.update_all(self._get_visit_model_instance())
 
     def render_summary_links(self, template_filename=None):
         """Renders the side bar template for subject summaries."""
@@ -999,8 +1000,8 @@ class RegisteredSubjectDashboard(Dashboard):
         for scheduled_requisition in self.get_scheduled_lab_bucket():
             inst = ScheduledRequisitionContext(scheduled_requisition, self.get_appointment(), self.get_visit_model(), self.get_requisition_model())
             scheduled_requisitions.append(inst.get_context())
-        rendered_scheduled_forms = render_to_string(template, {
-            'scheduled_entries': scheduled_requisitions,
+        render_scheduled_requisitions = render_to_string(template, {
+            'scheduled_requisitions': scheduled_requisitions,
             'visit_attr': self.get_visit_model_attrname(),
             'visit_model_instance': self._get_visit_model_instance(),
             'registered_subject': self.get_registered_subject().pk,
@@ -1010,7 +1011,7 @@ class RegisteredSubjectDashboard(Dashboard):
             'dashboard_id': self.get_dashboard_id(),
             'subject_dashboard_url': self.get_dashboard_url_name(),
             'show': self.get_show()})
-        return rendered_scheduled_forms
+        return render_scheduled_requisitions
 
     def get_subject_hiv_template(self):
         return 'subject_hiv_status.html'

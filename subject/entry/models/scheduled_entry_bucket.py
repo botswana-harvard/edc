@@ -1,7 +1,10 @@
 from django.db import models
+
 from edc.subject.appointment.models import Appointment
+
 from ..managers import ScheduledEntryBucketManager
 from ..models import BaseEntryBucket
+
 from .entry import Entry
 
 
@@ -10,10 +13,10 @@ class ScheduledEntryBucket(BaseEntryBucket):
 
     appointment = models.ForeignKey(Appointment, related_name='+')
     entry = models.ForeignKey(Entry)
+
     objects = ScheduledEntryBucketManager()
 
     def save(self, *args, **kwargs):
-        # update with verbose name for display on dashboard
         self.current_entry_title = self.entry.content_type_map.content_type.model_class()._meta.verbose_name
         super(ScheduledEntryBucket, self).save(*args, **kwargs)
 

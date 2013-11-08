@@ -23,6 +23,7 @@ class BaseScheduledEntryContext(object):
         self._appointment = appointment
         self._visit_model = visit_model
         self.set_scheduled_entry(scheduled_entry)
+        self.set_model_inst()
 
     def get_context(self):
         """Returns a dictionary for the template context including all fields from ScheduledEntryBucket, URLs, etc.
@@ -63,19 +64,11 @@ class BaseScheduledEntryContext(object):
         Users may override."""
         return context
 
-    def get_entry_label(self):
-        return self.get_model_verbose_name()
-
-    def get_scheduled_entry_cls(self):
-        return self.get_scheduled_entry().__class__
-
     def set_scheduled_entry(self, value=None):
         """Sets to the schedule entry instance received on __init__."""
         self._scheduled_entry = value
 
     def get_scheduled_entry(self):
-        if not self._scheduled_entry:
-            self.set_scheduled_entry()
         return self._scheduled_entry
 
     def set_model_inst(self):
@@ -86,32 +79,21 @@ class BaseScheduledEntryContext(object):
             self._model_inst = self.get_model_cls().objects.get(**options)
 
     def get_model_inst(self):
-        if not self._model_inst:
-            self.set_model_inst()
         return self._model_inst
 
-    def set_model_pk(self, value=None):
-        """Sets to the pk of the model instance.
+    def get_entry_label(self):
+        return self.get_model_cls()._meta.verbose_name
 
-        .. seealso:: :func:`set_model_inst`"""
-
-        self._model_pk = None
-        if self.get_model_inst():
-            self._model_pk = self.get_model_inst().pk
+    def get_scheduled_entry_cls(self):
+        return self.get_scheduled_entry().__class__
 
     def get_model_pk(self):
-        if not self._model_pk:
-            self.set_model_pk()
-        return self._model_pk
-
-    def set_entry(self):
-        """Sets to the Entry instance related to the scheduled entry."""
-        self._entry = self.get_scheduled_entry().entry
+        if self.get_model_inst():
+            return self.get_model_inst().pk
+        return None
 
     def get_entry(self):
-        if not self._entry:
-            self.set_entry()
-        return self._entry
+        return self.get_scheduled_entry().entry
 
     def get_visit_model(self):
         """Returns the visit model class."""
@@ -120,10 +102,6 @@ class BaseScheduledEntryContext(object):
     def get_visit_model_instance(self):
         """Returns and instance of the visit model taken from the appointment."""
         return getattr(self.get_appointment(), self.get_visit_model()._meta.object_name.lower())
-
-    def get_model_verbose_name(self):
-        """Returns the verbose name of the model referred to by the scheduled entry."""
-        return self.get_model_cls()._meta.verbose_name
 
     def get_model_cls(self):
         """Returns the model class of the model referred to by the scheduled entry."""
@@ -145,13 +123,8 @@ class BaseScheduledEntryContext(object):
     def get_entry_order(self):
         return self.get_entry().entry_order
 
-    def set_entry_status(self):
-        self._entry_status = self.get_scheduled_entry().entry_status
-
     def get_entry_status(self):
-        if not self._entry_status:
-            self.set_entry_status()
-        return self._entry_status
+        return self.get_scheduled_entry().entry_status
 
     def get_model_url(self):
         """Returns the URL to the model referred to by the scheduled entry meta data if the current appointment is 'in progress'."""

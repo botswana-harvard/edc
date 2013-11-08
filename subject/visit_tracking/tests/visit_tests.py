@@ -1,21 +1,21 @@
 from django.test import TestCase
-from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
-from edc.subject.entry.tests.factories import EntryFactory
+
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.testing.models import TestVisit
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from edc.subject.appointment.models import Appointment
+from edc.subject.appointment.tests.factories import ConfigurationFactory
+from edc.subject.consent.tests.factories import ConsentCatalogueFactory
+from edc.subject.entry.tests.factories import EntryFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
-from edc.subject.appointment.models import Appointment
+from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 
 
 class VisitTests(TestCase):
 
     def test_p1(self):
-        from edc.testing.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory, TestScheduledModelFactory
+        from edc.testing.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory
         site_lab_tracker.autodiscover()
         StudySpecificFactory()
         study_site = StudySiteFactory()
@@ -34,7 +34,7 @@ class VisitTests(TestCase):
 
         print 'setup bhp_visit (1000, 1010, 1020, 1030)'
         content_type_map = ContentTypeMap.objects.get(content_type__model='testregistration')
-        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model=TestVisit._meta.object_name.lower())
+        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model='testvisit')
         membership_form = MembershipFormFactory(content_type_map=content_type_map)
         schedule_group = ScheduleGroupFactory(membership_form=membership_form, group_name='Test Reg', grouping_key='REGISTRATION')
         visit_definition = VisitDefinitionFactory(code='1000', title='Test Registration 00', grouping='test_subject', 

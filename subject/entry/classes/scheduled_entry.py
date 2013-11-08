@@ -118,6 +118,10 @@ class ScheduledEntry(BaseScheduledEntry):
                         bucket_instance.entry_status = entry_status
                         bucket_instance.save()
 
+    def delete_for_visit(self, visit_model_instance):
+        """Deletes metadata if visit is deleted."""
+        self.get_bucket_model_cls().objects.filter(appointment=visit_model_instance.appointment).delete()
+
     def update_status_from_instance(self, action, target_model_instance, filter_model_cls, comment=None):
         "Sets up then calls update bucket using a user model instance."""
         self.set_target_model_cls(target_model_instance.__class__)

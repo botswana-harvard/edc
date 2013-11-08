@@ -1,14 +1,22 @@
 import re
+
 from django.test import TestCase
 from django.conf import settings
-from edc.testing.models import TestConsent
-from edc.testing.tests.factories import TestConsentFactory
+
 from edc.core.identifier.exceptions import IdentifierError
+from edc.testing.models import TestConsent
+
 from ..models import RegisteredSubject
+
 from .factories import RegisteredSubjectFactory
 
 
 class ModelTests(TestCase):
+
+    def setUp(self):
+        from edc.testing.tests.factories import TestConsentFactory
+        self.test_consent_factory = TestConsentFactory
+        self.create_study_variables()
 
     def test_p1(self):
         """Tests the subject_identifier is a uuid by default"""
@@ -21,7 +29,7 @@ class ModelTests(TestCase):
         """Tests natural key."""
 
         re_pk = re.compile('[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}')
-        for index, cls_tpl in enumerate([(RegisteredSubject, RegisteredSubjectFactory), (TestConsent, TestConsentFactory)]):
+        for index, cls_tpl in enumerate([(RegisteredSubject, RegisteredSubjectFactory), (TestConsent, self.test_consent_factory)]):
             cls, cls_factory = cls_tpl
             print 'using {0}'.format(cls._meta.object_name)
             print 'test {0} natural key'.format(cls._meta.object_name)

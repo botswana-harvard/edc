@@ -13,7 +13,7 @@ from django.utils.encoding import force_unicode
 from edc.base.admin.exceptions import NextUrlError
 from edc.core.bhp_data_manager.models import ModelHelpText
 from edc.subject.entry.classes import ScheduledEntry
-from edc.subject.rule_groups.classes import rule_groups
+from edc.subject.rule_groups.classes import site_rule_groups
 
 logger = logging.getLogger(__name__)
 
@@ -364,4 +364,4 @@ class BaseModelAdmin (admin.ModelAdmin):
     def run_rule_groups(self, visit_model_instance):
         """ Runs rules in any rule groups for a given visit model instance."""
         if visit_model_instance:
-            rule_groups.update_all(visit_model_instance)
+            site_rule_groups.update_all(visit_model_instance)

@@ -1,18 +1,22 @@
 from datetime import datetime
+
 from django.core.exceptions import ValidationError
+
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-from edc.subject.visit_schedule.models import VisitDefinition
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.registration.models import RegisteredSubject
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
-from edc.testing.models import TestConsent, TestVisit, TestScheduledModel
 from edc.subject.entry.models import ScheduledEntryBucket
 from edc.subject.entry.tests.factories import EntryFactory
+from edc.subject.lab_tracker.classes import site_lab_tracker
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.visit_schedule.models import VisitDefinition
+from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+from edc.testing.models import TestConsent, TestScheduledModel
+
 from ..choices import APPT_STATUS
 from ..models import Appointment
+
 from .factories import ConfigurationFactory
 from .base_appointment_tests import BaseAppointmentTests
 
@@ -107,7 +111,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
  
         print 'setup bhp_visit (1000, 1010, 1020, 1030)'
         content_type_map = ContentTypeMap.objects.get(content_type__model='testregistration')
-        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model=TestVisit._meta.object_name.lower())
+        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model='testvisit')
         membership_form = MembershipFormFactory(content_type_map=content_type_map)
         schedule_group = ScheduleGroupFactory(membership_form=membership_form, group_name='Test Reg', grouping_key='REGISTRATION')
         visit_definition = VisitDefinitionFactory(code='1000', title='Test Registration 00', grouping='test_subject', 
