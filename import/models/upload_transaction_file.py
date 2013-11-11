@@ -18,6 +18,8 @@ class UploadTransactionFile(BaseModel):
 
     file_date = models.DateField(null=True, editable=False, unique=True)
     
+    identifier = models.CharField(max_length=50, null=True) 
+    
     consume = models.BooleanField(default=True)
 
     total = models.IntegerField(editable=False, default=0)
@@ -35,6 +37,7 @@ class UploadTransactionFile(BaseModel):
             self.file_name = self.transaction_file.name.replace('\\', '/').split('/')[-1]
             date_string = self.file_name.split('_')[2].split('.')[0][:8]
             self.file_date = date(int(date_string[:4]),int(date_string[4:6]), int(date_string[6:8]))
+            self.identifier = self.file_name.split('_')[1]
             self.check_for_transactions()
             if self.consume:
                 self.consume_transactions()
@@ -81,24 +84,24 @@ class UploadTransactionFile(BaseModel):
         self.producer = ','.join(producer_list)
         
     def file_already_uploaded(self):
-        if self.__class__.objects.filter(file_date=self.file_date).exists():
+        if self.__class__.objects.filter(file_date=self.file_date, identifier=self.identifier).exists():
             return True
         return False
     
     def is_previous_day_file_uploaded(self):
         yesterday = self.file_date - timedelta(1)
-        if self.__class__.objects.filter(file_date=yesterday).exists():
+        if self.__class__.objects.filter(file_date=yesterday, identifier=self.identifier).exists():
             return True
         return False
     
     def skip_previous_day(self):
         yesterday = self.file_date - timedelta(1)
-        if UploadSkipDays.objects.filter(skip_date=yesterday).exists():
+        if UploadSkipDays.objects.filter(skip_date=yesterday, identifier=self.identifier).exists():
             return True
         return False
     
     def today_set_as_skip_day(self):
-        if UploadSkipDays.objects.filter(skip_date=self.file_date).exists():
+        if UploadSkipDays.objects.filter(skip_date=self.file_date, identifier=self.identifier).exists():
             return True
         return False
     
