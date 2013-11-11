@@ -28,7 +28,7 @@ class BaseBaseRequisition (BaseUuidModel):
 
     requisition_identifier = models.CharField(
         verbose_name='Requisition Id',
-        max_length=25,
+        max_length=50,
         unique=True,
         )
 
@@ -38,7 +38,7 @@ class BaseBaseRequisition (BaseUuidModel):
 
     specimen_identifier = models.CharField(
         verbose_name='Specimen Id',
-        max_length=25,
+        max_length=50,
         null=True,
         blank=True,
         editable=False,
@@ -190,7 +190,13 @@ class BaseBaseRequisition (BaseUuidModel):
                 self.specimen_identifier = self.prepare_specimen_identifier()
 
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
-
+    
+    def requisition_identifier_as_uuid_on_post_save(self, **kwargs):
+        if self.is_drawn.lower() == 'no' and not self.specimen_identifier and not self.requisition_identifier:
+            self.requisition_identifier = self.id
+            self.specimen_identifier = self.id
+            self.save()
+                
     def get_site_code(self):
         site_code = ''
         try:
