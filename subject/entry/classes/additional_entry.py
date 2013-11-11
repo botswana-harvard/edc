@@ -11,7 +11,7 @@ class AdditionalEntry(BaseRegisteredSubjectEntry):
 
     def add_from_rule(self, rule_name, visit_model_instance, content_type_map):
         """Add an entry to the bucket"""
-        #print scheduled_entry_bucket_id
+        #print scheduled_entry_meta_data_id
         options = {'due_datetime': visit_model_instance.report_datetime,
                    'rule_name': rule_name}
         self.get_bucket_model_cls().objects.get_or_create(

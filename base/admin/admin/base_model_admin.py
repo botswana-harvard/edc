@@ -167,11 +167,11 @@ class BaseModelAdmin (admin.ModelAdmin):
                     pass
                 elif post_save_next:
                     # post_save_next is only available to subject forms
-                    # try to reverse using method next_url_in_scheduled_entry_bucket()
+                    # try to reverse using method next_url_in_scheduled_entry_meta_data()
                     # which jumps to the next form on the subject dashboard instead of going
                     # back to the subject dashboard
                     try:
-                        next_url, visit_model_instance, entry_order = self.next_url_in_scheduled_entry_bucket(obj, visit_attr, entry_order)
+                        next_url, visit_model_instance, entry_order = self.next_url_in_scheduled_entry_meta_data(obj, visit_attr, entry_order)
                         if next_url:
                             url = ('{next_url}?next={next}&dashboard_type={dashboard_type}&dashboard_id={dashboard_id}'
                                    '&dashboard_model={dashboard_model}&show={show}{visit_attr}{visit_model_instance}{entry_order}{help_link}'
@@ -344,8 +344,8 @@ class BaseModelAdmin (admin.ModelAdmin):
             mht.update({model_help_text.field_name: model_help_text})
         return (ModelHelpText._meta, mht)
 
-    def next_url_in_scheduled_entry_bucket(self, obj, visit_attr, entry_order):
-        """Returns a tuple with the reverse of the admin url for the next model listed in scheduled_entry_bucket.
+    def next_url_in_scheduled_entry_meta_data(self, obj, visit_attr, entry_order):
+        """Returns a tuple with the reverse of the admin url for the next model listed in scheduled_entry_meta_data.
 
         If there is not a "next" model, returns an empty tuple (None, None, None).
 
@@ -355,10 +355,10 @@ class BaseModelAdmin (admin.ModelAdmin):
             return retval
         visit_model_inst = getattr(obj, visit_attr)
         self.run_rule_groups(visit_model_inst)
-        scheduled_entry_bucket = ScheduledEntry().get_next_entry_for(entry_order, visit_model_inst.get_appointment(), visit_model_inst.appointment.get_registered_subject())
-        if scheduled_entry_bucket:
-            url = reverse('admin:{0}_{1}_add'.format(scheduled_entry_bucket.entry.content_type_map.app_label, scheduled_entry_bucket.entry.content_type_map.module_name))
-            retval = (url, visit_model_inst, scheduled_entry_bucket.entry.entry_order)
+        scheduled_entry_meta_data = ScheduledEntry(visit_model_inst.get_appointment(), visit_model_inst.__class__, visit_attr).get_next_entry_for(entry_order)
+        if scheduled_entry_meta_data:
+            url = reverse('admin:{0}_{1}_add'.format(scheduled_entry_meta_data.entry.content_type_map.app_label, scheduled_entry_meta_data.entry.content_type_map.module_name))
+            retval = (url, visit_model_inst, scheduled_entry_meta_data.entry.entry_order)
         return retval
 
     def run_rule_groups(self, visit_model_instance):

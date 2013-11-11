@@ -1,4 +1,4 @@
-from .base_entry_bucket_manager import BaseEntryBucketManager
-from .scheduled_entry_bucket_manager import ScheduledEntryBucketManager
+from .base_entry_bucket_manager import BaseEntryMetaDataManager
+from .scheduled_entry_meta_data_manager import ScheduledEntryMetaDataManager
 from .additional_entry_bucket_manager import AdditionalEntryBucketManager
 from .entry_manager import EntryBucketManager

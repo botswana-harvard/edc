@@ -7,10 +7,10 @@ Models
 .. autoclass:: Entry
     :members:    
 
-.. autoclass:: BaseEntryBucket
+.. autoclass:: BaseEntryMetaData
     :members:
     
-.. autoclass:: ScheduledEntryBucket
+.. autoclass:: ScheduledEntryMetaData
     :members:
     
 .. autoclass:: AdditionalEntryBucket

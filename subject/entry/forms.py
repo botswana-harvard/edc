@@ -1,8 +1,8 @@
 from django import forms
-from .models import ScheduledEntryBucket
+from .models import ScheduledEntryMetaData
 
 
-class ScheduledEntryBucketForm (forms.ModelForm):
+class ScheduledEntryMetaDataForm (forms.ModelForm):
     def clean(self):
 
         cleaned_data = self.cleaned_data
@@ -13,4 +13,4 @@ class ScheduledEntryBucketForm (forms.ModelForm):
         return cleaned_data
 
     class Meta:
-        model = ScheduledEntryBucket
+        model = ScheduledEntryMetaData

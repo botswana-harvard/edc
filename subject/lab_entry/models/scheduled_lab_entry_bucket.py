@@ -1,12 +1,12 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from edc.subject.appointment.models import Appointment
-from edc.subject.entry.models import BaseEntryBucket
+from edc.subject.entry.models import BaseEntryMetaData
 from ..managers import ScheduledLabEntryBucketManager
 from .lab_entry import LabEntry
 
 
-class ScheduledLabEntryBucket(BaseEntryBucket):
+class ScheduledLabEntryBucket(BaseEntryMetaData):
 
     """Subject-specific list of required and scheduled lab as per normal visit schedule."""
 

@@ -67,7 +67,7 @@ class Controller(object):
         filtered_list_of_rules = []
         for rule_group in self.get_registry(source_model._meta.app_label):
             for rule in rule_group.rules:
-                if rule.source_model == source_model:
+                if rule.get_source_model() == source_model:
                     filtered_list_of_rules.append(rule)
         return filtered_list_of_rules
 

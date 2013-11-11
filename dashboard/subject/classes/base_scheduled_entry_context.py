@@ -26,7 +26,7 @@ class BaseScheduledEntryContext(object):
         self.set_model_inst()
 
     def get_context(self):
-        """Returns a dictionary for the template context including all fields from ScheduledEntryBucket, URLs, etc.
+        """Returns a dictionary for the template context including all fields from ScheduledEntryMetaData, URLs, etc.
 
         .. note:: The main purpose of this class is to return the template context."""
         context = copy.deepcopy(self.get_scheduled_entry().__dict__)

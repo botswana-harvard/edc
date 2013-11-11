@@ -1,8 +1,10 @@
-from django.db import models
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from edc.core.bhp_content_type_map.models import ContentTypeMap
+from django.db import models
+
 from edc.base.model.models import BaseUuidModel
+from edc.core.bhp_content_type_map.models import ContentTypeMap
+
 from ..managers import MembershipFormManager
 
 
@@ -19,7 +21,8 @@ class MembershipForm(BaseUuidModel):
         max_length=25,
         default='subject',
         null=True,
-        help_text='In lowercase, this should be a valid subject type (as in registered_subject).'
+        help_text='In lowercase, this should be a valid subject type (as in registered_subject).',
+        unique=True,
         )
 
     visible = models.BooleanField(

@@ -211,7 +211,7 @@ class BaseVisitTracking (BaseConsentedUuidModel):
         return visit_reason_choices
 
     def post_save_check_in_progress(self):
-        ScheduledEntryBucket = models.get_model('entry', 'ScheduledEntryBucket')
+        ScheduledEntryMetaData = models.get_model('entry', 'ScheduledEntryMetaData')
         dirty = False
         if self.reason in self.get_visit_reason_no_follow_up_choices():
             self.get_appointment().appt_status = 'done'
@@ -222,7 +222,7 @@ class BaseVisitTracking (BaseConsentedUuidModel):
                 dirty = True
             # look for any others in progress
         for appointment in self.get_appointment().__class__.objects.filter(registered_subject=self.get_registered_subject(), appt_status='in_progress').exclude(pk=self.get_appointment().pk):
-            if ScheduledEntryBucket.objects.filter(appointment=appointment, entry_status='NEW').exists():
+            if ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status='NEW').exists():
                 appointment.appt_status = 'incomplete'
             else:
                 appointment.appt_status = 'done'

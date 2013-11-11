@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import get_model
 
 
-class BaseEntryBucketManager(models.Manager):
+class BaseEntryMetaDataManager(models.Manager):
 
     def __init__(self, *args, **kwargs):
         self.visit_model_instance = None
@@ -10,7 +10,7 @@ class BaseEntryBucketManager(models.Manager):
         self.report_datetime = None
         self.appointment = None
         self.entry = None
-        super(BaseEntryBucketManager, self).__init__(*args, **kwargs)
+        super(BaseEntryMetaDataManager, self).__init__(*args, **kwargs)
 
     def set_entry(self):
         """Finds occurrence for this visit_definition in the Entry model and if not found, update_status() has nothing to do."""

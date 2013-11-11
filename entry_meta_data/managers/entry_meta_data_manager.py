@@ -2,7 +2,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.subject.entry.models import ScheduledEntryBucket, Entry
+from edc.subject.entry.models import ScheduledEntryMetaData, Entry
 from edc.subject.lab_entry.models import ScheduledLabEntryBucket
 from edc.subject.rule_groups.classes import site_rule_groups
 
@@ -19,6 +19,7 @@ class BaseMetaDataManager(models.Manager):
     may_delete_entry_status = ['NEW', 'NOT_REQUIRED']
 
     def __init__(self, visit_model=None, visit_attr_name=None):
+        self._instance = None
         if not visit_model:
             raise ImproperlyConfigured('MetaDataManager expects \'visit_model\'. Got None.')
         self._visit_model = visit_model
@@ -41,9 +42,18 @@ class BaseMetaDataManager(models.Manager):
             raise AttributeError('Attribute meta_data_model may not be None.')
         return self.meta_data_model
 
-    def set_instance(self, instance):
-        """Sets the model instance referred to by the meta data."""
-        self._instance = instance
+    def set_instance(self, instance=None, visit_instance=None):
+        """Sets the model instance referred to by the meta data directly or with a given visit instance."""
+        if visit_instance:
+            if super(EntryMetaDataManager, self).filter(**{self.get_visit_attr_name(): visit_instance}):
+                self._instance = super(EntryMetaDataManager, self).get(**{self.get_visit_attr_name(): visit_instance})
+        elif instance:
+            self._instance = instance
+        else:
+            raise AttributeError('Expected either \'instance\' or \'visit_instance\'. Got neither.')
+        if self._instance:
+            if not isinstance(self._instance, self.model):
+                raise TypeError('Model instance must be an instance of {0}. Got {1}'.format(self.model, self._instance.__class__))
 
     def get_instance(self):
         return self._instance
@@ -68,11 +78,19 @@ class BaseMetaDataManager(models.Manager):
         """Returns the meta data instance, may be None so you need to test the value first."""
         return self._meta_data_instance
 
+    def get_change_type(self):
+        if not self.get_instance():
+            return 'DoesNotExist'
+        return 'Exists'
+
     def get_status(self, change_type=None):
-        """Figures out the the current status of the user model instance, KEYED or NEW (not keyed)."""
+        """Figures out the the current status of the user model instance, KEYED or NEW (not keyed).
+
+        Insert, Update and Delete (I, U, D) come from the signal.
+        """
         if not change_type:
-            return 'NEW'
-        change_types = {'I': 'KEYED', 'U': 'KEYED', 'D': 'NEW'}
+            change_type = self.get_change_type()
+        change_types = {'DoesNotExist': 'NEW', 'Exists': 'KEYED', 'I': 'KEYED', 'U': 'KEYED', 'D': 'NEW'}
         if change_type not in change_types:
             raise ValueError('Change type must be any of {0}. Got {1}'.format(change_types.keys(), change_type))
         return change_types.get(change_type)
@@ -88,7 +106,7 @@ class BaseMetaDataManager(models.Manager):
 
 class EntryMetaDataManager(BaseMetaDataManager):
 
-    meta_data_model = ScheduledEntryBucket
+    meta_data_model = ScheduledEntryMetaData
 
     def create_meta_data(self, instance=None, visit_instance=None):
         """Creates a meta_data instance for the model at the time point (appointment) for the given registered_subject.

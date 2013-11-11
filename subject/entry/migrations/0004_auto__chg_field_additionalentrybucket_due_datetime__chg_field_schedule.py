@@ -11,7 +11,7 @@ class Migration(SchemaMigration):
         # Changing field 'AdditionalEntryBucket.due_datetime'
         db.alter_column('bhp_form_additionalentrybucket', 'due_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True))
 
-        # Changing field 'ScheduledEntryBucket.due_datetime'
+        # Changing field 'ScheduledEntryMetaData.due_datetime'
         db.alter_column('bhp_form_scheduledentrybucket', 'due_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True))
 
 
@@ -20,8 +20,8 @@ class Migration(SchemaMigration):
         # User chose to not deal with backwards NULL issues for 'AdditionalEntryBucket.due_datetime'
         raise RuntimeError("Cannot reverse this migration. 'AdditionalEntryBucket.due_datetime' and its values cannot be restored.")
 
-        # User chose to not deal with backwards NULL issues for 'ScheduledEntryBucket.due_datetime'
-        raise RuntimeError("Cannot reverse this migration. 'ScheduledEntryBucket.due_datetime' and its values cannot be restored.")
+        # User chose to not deal with backwards NULL issues for 'ScheduledEntryMetaData.due_datetime'
+        raise RuntimeError("Cannot reverse this migration. 'ScheduledEntryMetaData.due_datetime' and its values cannot be restored.")
 
 
     models = {
@@ -103,7 +103,7 @@ class Migration(SchemaMigration):
             'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_visit.VisitDefinition']"})
         },
         'bhp_entry.scheduledentrybucket': {
-            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryBucket', 'db_table': "'bhp_form_scheduledentrybucket'"},
+            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryMetaData', 'db_table': "'bhp_form_scheduledentrybucket'"},
             'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_appointment.Appointment']"}),
             'close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),

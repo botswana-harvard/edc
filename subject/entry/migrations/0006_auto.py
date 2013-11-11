@@ -20,10 +20,10 @@ class Migration(SchemaMigration):
         # Adding index on 'Entry', fields ['hostname_modified']
         db.create_index('bhp_form_entry', ['hostname_modified'])
 
-        # Adding index on 'ScheduledEntryBucket', fields ['hostname_created']
+        # Adding index on 'ScheduledEntryMetaData', fields ['hostname_created']
         db.create_index('bhp_form_scheduledentrybucket', ['hostname_created'])
 
-        # Adding index on 'ScheduledEntryBucket', fields ['hostname_modified']
+        # Adding index on 'ScheduledEntryMetaData', fields ['hostname_modified']
         db.create_index('bhp_form_scheduledentrybucket', ['hostname_modified'])
         
         # add manually by erik
@@ -32,10 +32,10 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
         
-        # Removing index on 'ScheduledEntryBucket', fields ['hostname_modified']
+        # Removing index on 'ScheduledEntryMetaData', fields ['hostname_modified']
         db.delete_index('bhp_form_scheduledentrybucket', ['hostname_modified'])
 
-        # Removing index on 'ScheduledEntryBucket', fields ['hostname_created']
+        # Removing index on 'ScheduledEntryMetaData', fields ['hostname_created']
         db.delete_index('bhp_form_scheduledentrybucket', ['hostname_created'])
 
         # Removing index on 'Entry', fields ['hostname_modified']
@@ -130,7 +130,7 @@ class Migration(SchemaMigration):
             'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_visit.VisitDefinition']"})
         },
         'bhp_entry.scheduledentrybucket': {
-            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryBucket', 'db_table': "'bhp_form_scheduledentrybucket'"},
+            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryMetaData', 'db_table': "'bhp_form_scheduledentrybucket'"},
             'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_appointment.Appointment']"}),
             'close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),

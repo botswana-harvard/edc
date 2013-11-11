@@ -2,10 +2,10 @@ from django.db.models import get_model
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.models import VisitDefinition
-from ..managers import BaseEntryBucketManager
+from ..managers import BaseEntryMetaDataManager
 
 
-class ScheduledEntryBucketManager(BaseEntryBucketManager):
+class ScheduledEntryMetaDataManager(BaseEntryMetaDataManager):
 
     def get_by_natural_key(self, visit_instance, code, identity, first_name, dob, initials, registration_identifier, visit_definition, app_label, model):
         """Returns the instance using the natural key."""

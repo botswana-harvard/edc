@@ -2,10 +2,12 @@ import copy
 import re
 import inspect
 
+from django.conf import settings
 from django.conf.urls import patterns, url
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils import translation
 
 from edc.base.model.models import BaseModel
 from edc.core.bhp_common.utils import convert_from_camel
@@ -24,27 +26,27 @@ class Dashboard(object):
 
     def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None):
 
-        self.search_name = None  # ??
-        self._dashboard_type = None
-        self._dashboard_type_list = None
-        self._template = None
-        self._context_is_set = None  # ??
-        self._dashboard_id = None
-        self._dashboard_model = None
-        self._dashboard_model_name = None
-        self._dashboard_model_instance = None
-        self._dashboard_models = None
-        self._dashboard_name = None
-        self._dashboard_url_name = None
+#         self.search_name = None  # ??
+#         self._dashboard_type = None
+#         self._dashboard_type_list = None
+#         self._template = None
+#         self._context_is_set = None  # ??
+#         self._dashboard_id = None
+#         self._dashboard_model = None
+#         self._dashboard_model_name = None
+#         self._dashboard_model_instance = None
+#         self._dashboard_models = None
+#         self._dashboard_name = None
+#         self._dashboard_url_name = None
         if dashboard_type_list:
             self._set_dashboard_type_list(dashboard_type_list)
-        self._section = None
-        self._section_name = None
-        self._search_type = None
+#         self._section = None
+#         self._section_name = None
+#         self._search_type = None
         self._set_dashboard_models(dashboard_models)
         self._set_dashboard_type(dashboard_type)
         self._set_dashboard_model(dashboard_model)
-        self._set_dashboard_id(dashboard_id)
+        self.set_dashboard_id(dashboard_id)
         # dashboard model may be the name or the model class
         if isinstance(dashboard_model, basestring):
             self._set_dashboard_model_name(dashboard_model)
@@ -52,6 +54,17 @@ class Dashboard(object):
             self._set_dashboard_model(dashboard_model)
         else:
             raise TypeError('Invalid dashboard_model. Expected either a Model class or a name of a model. Got {0}'.format(dashboard_model))
+        self._set_dashboard_name()
+        self.set_dashboard_model_instance()
+        self._set_dashboard_url_name()
+        self.set_language()
+        self.set_template()
+
+#         self.set_section()
+#         self.set_section_name()
+#         self.set_search_type()
+        self._set_extra_url_context()
+#         self.set_context()
 
     @classmethod
     def get_urlpatterns(self, pattern_prefix, urlpattern_string_kwargs, view=None, **kwargs):
@@ -146,8 +159,6 @@ class Dashboard(object):
         self._dashboard_name = self.dashboard_name
 
     def get_dashboard_name(self):
-        if not self._dashboard_name:
-            self._set_dashboard_name()
         return self._dashboard_name
 
     def _set_dashboard_url_name(self):
@@ -156,8 +167,6 @@ class Dashboard(object):
             raise ImproperlyConfigured('Class attribute \'dashboard_url_name\' may not be None. Set this on the class declaration for {0}.'.format(self))
 
     def get_dashboard_url_name(self):
-        if not self._dashboard_url_name:
-            self._set_dashboard_url_name()
         return self._dashboard_url_name
 
     def _set_dashboard_type(self, value=None):
@@ -170,8 +179,6 @@ class Dashboard(object):
             raise TypeError('_dashboard_type may not be None.')
 
     def get_dashboard_type(self):
-        if not self._dashboard_type:
-            self._set_dashboard_type()
         return self._dashboard_type
 
     def set_dashboard_type_list(self):
@@ -188,8 +195,6 @@ class Dashboard(object):
             raise TypeError('Attribute _dashboard_type_list may not be None. Either override the setter or pass as a list on __init__.')
 
     def get_dashboard_type_list(self):
-        if not self._dashboard_type_list:
-            self._set_dashboard_type_list()
         return self._dashboard_type_list
 
     def _set_dashboard_model(self, value=None):
@@ -225,8 +230,6 @@ class Dashboard(object):
 #                         self._dashboard_model = self.get_dashboard_models(model_name)
 
     def get_dashboard_model(self):
-        if not self._dashboard_model:
-            self._set_dashboard_model()
         return self._dashboard_model
 
     def _set_dashboard_model_name(self, value=None):
@@ -237,11 +240,9 @@ class Dashboard(object):
             raise TypeError('_dashboard_model_name may not be None.')
 
     def get_dashboard_model_name(self):
-        if not self._dashboard_model_name:
-            self._set_dashboard_model_name()
         return self._dashboard_model_name
 
-    def _set_dashboard_id(self, value=None):
+    def set_dashboard_id(self, value=None):
         """Sets the pk of the dashboard model class given by the dashboard URL."""
         if not value:
             TypeError('Parameter \'pk\' may not be None.')
@@ -253,8 +254,6 @@ class Dashboard(object):
         self._dashboard_id = value
 
     def get_dashboard_id(self):
-        if not self._dashboard_id:
-            self._set_dashboard_id()
         return self._dashboard_id
 
     def get_context_prep(self, **kwargs):
@@ -265,11 +264,8 @@ class Dashboard(object):
 
     def set_context(self):
         self._add_to_context()
-        self._context_is_set = True
 
     def get_context(self):
-        if not self._context_is_set:
-            self.set_context()
         return self.context
 
     def set_search_type(self):
@@ -278,8 +274,6 @@ class Dashboard(object):
         #    raise TypeError('Attribute \'self._search_type\' may not be None.')
 
     def get_search_type(self):
-        if not self._search_type:
-            self.set_search_type()
         return self._search_type
 
     def set_section(self, section_name=None):
@@ -301,16 +295,12 @@ class Dashboard(object):
         self._section = section()
 
     def get_section(self):
-        if not self._section:
-            self.set_section()
         return self._section
 
     def set_section_name(self):
         self._section_name = self.get_section().get_section_name()
 
     def get_section_name(self):
-        if not self._section_name:
-            self.set_section_name()
         return self._section_name
 
     def set_dashboard_model_instance(self):
@@ -318,8 +308,6 @@ class Dashboard(object):
         self._dashboard_model_instance = self.get_dashboard_model().objects.get(pk=self.get_dashboard_id())
 
     def get_dashboard_model_instance(self):
-        if not self._dashboard_model_instance:
-            self.set_dashboard_model_instance()
         return self._dashboard_model_instance
 
     def verify_dashboard_model(self, value):
@@ -354,15 +342,12 @@ class Dashboard(object):
     def _set_dashboard_models(self, value=None):
         """Sets a reference dictionary by updating the user defined dictionary with a default for registered_subject.
         """
-        if self._dashboard_models == None:
-            self._dashboard_models = {}
+        self._dashboard_models = {}
         self._dashboard_models.update({'registered_subject': RegisteredSubject})
         if value:
             self.add_dashboard_model(value)
 
     def get_dashboard_models(self, model_name=None):
-        if not self._dashboard_models:
-            self._set_dashboard_models()
         if model_name:
             if model_name not in self._dashboard_models:
                 raise TypeError(('Dashboard model name {0} is not in the user defined dictionary returned by '
@@ -380,8 +365,6 @@ class Dashboard(object):
             raise TypeError('Attribute _template cannot be None.')
 
     def get_template(self):
-        if not self._template:
-            self.set_template()
         return self._template
 
     def set_extra_url_context(self):
@@ -396,6 +379,19 @@ class Dashboard(object):
 
     def get_extra_url_context(self):
         """Gets the extra_url_context and returns as a GET query string."""
-        if not self._extra_url_context:
-            self._set_extra_url_context()
         return self._extra_url_context
+
+    def set_language(self):
+        """Sets to the language of consent.
+
+        If the consent has not been defined for this dashboard, just take the settings LANGUAGE attribute."""
+        try:
+            if self.get_consent():
+                self.get_consent().language
+                translation.activate(self.get_consent().language)
+            self._language = translation.get_language()
+        except:
+            self._language = settings.LANGUAGE_CODE
+
+    def get_language(self):
+        return self._language

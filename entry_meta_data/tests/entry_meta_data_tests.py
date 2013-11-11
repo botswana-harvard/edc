@@ -8,7 +8,7 @@ from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySi
 from edc.subject.appointment.models import Appointment
 from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.subject.entry.models import ScheduledEntryBucket
+from edc.subject.entry.models import ScheduledEntryMetaData
 from edc.subject.entry.tests.factories import EntryFactory
 from edc.subject.entry.exceptions import EntryManagerError
 from edc.subject.lab_entry.models import ScheduledLabEntryBucket
@@ -74,55 +74,55 @@ class EntryMetaDataTests(TestCase):
 
     def test_creates_meta_data1(self):
         """No meta data if visit tracking form is not entered."""
-        self.assertEqual(ScheduledEntryBucket.objects.filter(registered_subject=self.registered_subject).count(), 0)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
 
     def test_creates_meta_data2(self):
         """Meta data is created when visit tracking form is added, each instance set to NEW."""
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(ScheduledEntryBucket.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
 
     def test_creates_meta_data3(self):
         """Meta data is not re-created when visit tracking form is updated."""
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         TestScheduledModel1Factory(test_visit=self.test_visit)
-        self.assertEqual(ScheduledEntryBucket.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 2)
-        self.assertEqual(ScheduledEntryBucket.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 2)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject).count(), 1)
 
     def test_creates_meta_data4(self):
         """Meta data is deleted when visit tracking form is deleted."""
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(ScheduledEntryBucket.objects.filter(registered_subject=self.registered_subject).count(), 3)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 3)
         self.test_visit.delete()
-        self.assertEqual(ScheduledEntryBucket.objects.filter(registered_subject=self.registered_subject).count(), 0)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
 
     def test_creates_meta_data5(self):
         """Meta data is not created if visit reason is missed. See 'skip_create_visit_reasons class' attribute"""
         self.test_visit = self.test_visit_factory(appointment=self.appointment, reason='missed')
-        self.assertEqual(ScheduledEntryBucket.objects.filter(registered_subject=self.registered_subject).count(), 0)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
 
     def test_updates_meta_data4(self):
         """Meta data instance linked to the model is updated if model is entered."""
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         TestScheduledModel1Factory(test_visit=self.test_visit)
-        self.assertEqual(ScheduledEntryBucket.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, entry__content_type_map__model='testscheduledmodel1').count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, entry__content_type_map__model='testscheduledmodel1').count(), 1)
 
     def test_updates_meta_data5(self):
         """Meta data instance linked to the model is updated if model is entered and then updated."""
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         obj = TestScheduledModel1Factory(test_visit=self.test_visit)
         obj.save()
-        self.assertEqual(ScheduledEntryBucket.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, entry__content_type_map__model='testscheduledmodel1').count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, entry__content_type_map__model='testscheduledmodel1').count(), 1)
 
     def test_updates_meta_data6(self):
         """Meta data instance linked to the model is updated if model is deleted."""
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         obj = TestScheduledModel1Factory(test_visit=self.test_visit)
         obj.delete()
-        self.assertEqual(ScheduledEntryBucket.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__content_type_map__model='testscheduledmodel1').count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__content_type_map__model='testscheduledmodel1').count(), 1)
 
     def test_updates_meta_data7(self):
         """Meta data instance linked to the model is created if missing, knows model is KEYED."""
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        ScheduledEntryBucket.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name='testscheduledmodel1').delete()
+        ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name='testscheduledmodel1').delete()
         TestScheduledModel1Factory(test_visit=self.test_visit)
-        self.assertEqual(ScheduledEntryBucket.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, entry__model_name='testscheduledmodel1').count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, entry__model_name='testscheduledmodel1').count(), 1)

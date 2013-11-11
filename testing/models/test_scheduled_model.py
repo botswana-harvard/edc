@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db import models
 
+from edc.choices import YES_NO
 from edc.base.model.models import BaseUuidModel
 from edc.entry_meta_data.managers import EntryMetaDataManager
 from edc.export.managers import ExportHistoryManager
@@ -21,7 +22,7 @@ class TestScheduledModel(BaseUuidModel):
 
     f3 = models.CharField(max_length=10, null=True)
 
-    f4 = models.CharField(max_length=10, null=True)
+    f4 = models.CharField(max_length=10, choices=YES_NO, null=True)
 
     objects = models.Manager()
 

@@ -3,7 +3,7 @@ from django.db import models
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.subject.entry.tests.factories import ScheduledEntryBucketFactory, EntryFactory
+from edc.subject.entry.tests.factories import ScheduledEntryMetaDataFactory, EntryFactory
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.subject.appointment.tests.factories import AppointmentFactory, ConfigurationFactory
 from edc.testing.tests.factories import TestScheduledModelFactory
@@ -32,12 +32,12 @@ class ScheduledEntryContextTests(TestCase):
         content_type = ContentType.objects.get(app_label='bhp_base_test', model='testscheduledmodel')
         content_type_map = ContentTypeMap.objects.get(content_type=content_type)
         entry = EntryFactory(visit_definition=visit_definition, content_type_map=content_type_map)
-        scheduled_entry_bucket = ScheduledEntryBucketFactory(appointment=appointment, entry=entry)
+        scheduled_entry_meta_data = ScheduledEntryMetaDataFactory(appointment=appointment, entry=entry)
         test_visit = TestVisitFactory(appointment=appointment)
         test_scheduled_model = TestScheduledModelFactory(test_visit=test_visit)
-        inst = ScheduledEntryContext(scheduled_entry_bucket, appointment, TestVisit)
+        inst = ScheduledEntryContext(scheduled_entry_meta_data, appointment, TestVisit)
 
-        self.assertEqual(inst.get_scheduled_entry(), scheduled_entry_bucket)
+        self.assertEqual(inst.get_scheduled_entry(), scheduled_entry_meta_data)
         print 'try to reverse scheduled_entry for pk={0}'.format(inst.get_scheduled_entry().pk)
         self.assertIsNotNone(inst.get_scheduled_entry().pk)
         self.assertIsNotNone(inst.get_scheduled_entry().pk)

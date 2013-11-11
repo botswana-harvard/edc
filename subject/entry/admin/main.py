@@ -2,8 +2,8 @@ from django.contrib import admin
 from edc.base.admin.admin import BaseModelAdmin, BaseTabularInline
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.appointment.models import Appointment
-from ..forms import ScheduledEntryBucketForm
-from ..models import Entry, ScheduledEntryBucket, AdditionalEntryBucket
+from ..forms import ScheduledEntryMetaDataForm
+from ..models import Entry, ScheduledEntryMetaData, AdditionalEntryBucket
 
 
 class EntryAdmin(BaseModelAdmin):
@@ -14,9 +14,9 @@ class EntryAdmin(BaseModelAdmin):
 admin.site.register(Entry, EntryAdmin)
 
 
-class ScheduledEntryBucketAdmin(BaseModelAdmin):
+class ScheduledEntryMetaDataAdmin(BaseModelAdmin):
 
-    form = ScheduledEntryBucketForm
+    form = ScheduledEntryMetaDataForm
     search_fields = ('registered_subject__subject_identifier', 'entry__visit_definition__code', 'entry__content_type_map__model', 'id')
     list_display = ('registered_subject', 'entry', 'entry_status', 'fill_datetime', 'due_datetime', 'close_datetime', 'created', 'hostname_created')
     list_filter = ('entry_status', 'entry__visit_definition__code', 'fill_datetime', 'created', 'hostname_created')
@@ -28,8 +28,8 @@ class ScheduledEntryBucketAdmin(BaseModelAdmin):
             kwargs["queryset"] = Appointment.objects.filter(pk=request.GET.get('appointment'))
         if db_field.name == "entry":
             kwargs["queryset"] = Entry.objects.filter(pk=request.GET.get('entry'))
-        return super(ScheduledEntryBucketAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
-admin.site.register(ScheduledEntryBucket, ScheduledEntryBucketAdmin)
+        return super(ScheduledEntryMetaDataAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+admin.site.register(ScheduledEntryMetaData, ScheduledEntryMetaDataAdmin)
 
 
 class AdditionalEntryBucketAdmin(BaseModelAdmin):
