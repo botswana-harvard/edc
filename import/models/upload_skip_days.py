@@ -3,10 +3,13 @@ from datetime import date, timedelta
 from django.db import models
 
 from edc.base.model.models import BaseModel
+from apps.bcpp.choices import COMMUNITIES
 
 class UploadSkipDays(BaseModel):
 
     skip_date = models.DateField(default=date.today(), unique=True)
+    
+    identifier = models.CharField(max_length=50, choices=COMMUNITIES)
 
     objects = models.Manager()
     
@@ -21,19 +24,19 @@ class UploadSkipDays(BaseModel):
     def previous_day_file_uploaded(self):
         from .upload_transaction_file import UploadTransactionFile
         previous = self.skip_date - timedelta(1)
-        if UploadTransactionFile.objects.filter(file_date=previous).exists():
+        if UploadTransactionFile.objects.filter(file_date=previous, identifier=self.identifier).exists():
             return True
         return False
     
     def today_upload_exists(self):
         from .upload_transaction_file import UploadTransactionFile
-        if UploadTransactionFile.objects.filter(file_date=self.skip_date).exists():
+        if UploadTransactionFile.objects.filter(file_date=self.skip_date, identifier=self.identifier).exists():
             return True
         return False
     
     def skip_previous_day(self):
         yesterday = self.skip_date - timedelta(1)
-        if self.__class__.objects.filter(skip_date=yesterday).exists():
+        if self.__class__.objects.filter(skip_date=yesterday, identifier=self.identifier).exists():
             return True
         return False
             
