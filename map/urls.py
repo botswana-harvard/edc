@@ -31,6 +31,10 @@ urlpatterns = patterns('',
     url(r'^save_section/(?P<mapper_name>\w+)/', save_section, name='save_section_url'),
     url(r'^save_sub_section/(?P<mapper_name>\w+)/', save_sub_section, name='save_sub_section_url'),
     url(r'^clear_section/(?P<mapper_name>\w+)/', clear_section, name='clear_section_url'),
+    url(r'^clear_sub_section/(?P<mapper_name>\w+)/', clear_sub_section, name='clear_sub_section_url'),
+    
+    url(r'^clear_sub_section_index/(?P<mapper_name>\w+)/', clear_sub_section_index, name='clear_sub_section_index_url'),
+    
     url(r'^clear_all_sections/(?P<mapper_name>\w+)/', clear_all_sections, name='clear_all_sections_url'),
     url(r'^upload_item_map/(?P<mapper_name>\w+)/', upload_item_map, name='upload_item_map_url'),
     url(r'^map_section/(?P<mapper_name>\w+)/', map_section, name='map_section_url'),

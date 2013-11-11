@@ -15,7 +15,7 @@
 	   
 	   	<div id="section_navbar">
     	<ul>
-    	<li><A href="">clear {{ section_field_attr }}</A></li>
+    	<li><A href="{% url 'clear_sub_section_index_url' mapper_name %}">clear {{ section_field_attr }}</A></li>
     	</ul>
     	</div>
 	   <br /><br />
@@ -37,6 +37,10 @@
 			{% for section in sections %}
 			  <option value="{{ section }}">{{ section }}</option>
 			{% endfor %}
+		</select>
+		selected:&nbsp;<select id="selected" name="selected">
+			<option value="twenty_percent">Twenty Percent</option>
+			<option value="five_percent">Five Percent</option>
 		</select>
 		<input type="submit" value="submit">			
 		</form>	
