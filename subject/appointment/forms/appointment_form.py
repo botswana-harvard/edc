@@ -1,7 +1,7 @@
 from datetime import date
 from django import forms
 from django.core.exceptions import ValidationError
-from edc.subject.entry.models import ScheduledEntryBucket
+from edc.subject.entry.models import ScheduledEntryMetaData
 from edc.base.form.forms import BaseModelForm
 from ..models import Appointment
 
@@ -65,7 +65,7 @@ class AppointmentForm(BaseModelForm):
                     visit_definition=visit_definition,
                     visit_instance=visit_instance)
 
-                if ScheduledEntryBucket.objects.filter(appointment=appointment, entry_status='NEW').exists():
+                if ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status='NEW').exists():
                     self.cleaned_data['appt_status'] = 'incomplete'
         elif appt_status == 'new':
             # must be future relative to best_appt_datetime

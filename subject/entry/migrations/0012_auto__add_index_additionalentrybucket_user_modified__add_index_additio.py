@@ -107,7 +107,7 @@ class Migration(SchemaMigration):
             'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['visit_schedule.VisitDefinition']"})
         },
         'entry.scheduledentrybucket': {
-            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryBucket'},
+            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryMetaData'},
             'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['appointment.Appointment']"}),
             'close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),

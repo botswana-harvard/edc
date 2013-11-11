@@ -103,7 +103,7 @@
 
 <div class="viewcode-block" id="ScheduledModelRule"><a class="viewcode-back" href="../../../classes.html#bhp_bucket.classes.scheduled_model_rule.ScheduledModelRule">[docs]</a><span class="k">class</span> <span class="nc">ScheduledModelRule</span><span class="p">(</span><span class="n">ModelRule</span><span class="p">):</span>
     
-    <span class="sd">&quot;&quot;&quot; Model rule applied to ScheduledEntryBucket, if (logic) then update entry. &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Model rule applied to ScheduledEntryMetaData, if (logic) then update entry. &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         
@@ -132,14 +132,14 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">ScheduledModelRule</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">app_label</span><span class="p">)</span>
                 
                        
-        <span class="n">ScheduledEntryBucket</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="s">&#39;bhp_entry&#39;</span><span class="p">,</span> <span class="s">&#39;scheduledentrybucket&#39;</span><span class="p">)</span>
+        <span class="n">ScheduledEntryMetaData</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="s">&#39;bhp_entry&#39;</span><span class="p">,</span> <span class="s">&#39;scheduledentrybucket&#39;</span><span class="p">)</span>
         <span class="n">ContentTypeMap</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="s">&#39;bhp_content_type_map&#39;</span><span class="p">,</span> <span class="s">&#39;contenttypemap&#39;</span><span class="p">)</span>
         <span class="c"># run the rule for each target model in the list</span>
         <span class="k">for</span> <span class="n">target_model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_models</span><span class="p">:</span>
             
             <span class="n">contenttypemap</span> <span class="o">=</span> <span class="n">ContentTypeMap</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app_label</span> <span class="o">=</span> <span class="n">target_model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span>
                                                         <span class="n">model</span> <span class="o">=</span> <span class="n">target_model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-            <span class="k">if</span> <span class="n">ScheduledEntryBucket</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">entry__content_type_map</span> <span class="o">=</span> <span class="n">contenttypemap</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ScheduledEntryMetaData</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">entry__content_type_map</span> <span class="o">=</span> <span class="n">contenttypemap</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_eval</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">target_model</span><span class="p">)</span>  
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Cannot determine target model for bucket rule, </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target_model</span><span class="p">,))</span>
@@ -148,10 +148,10 @@
 
         <span class="sd">&quot;&quot;&quot; Evaluate predicate and update status if true &quot;&quot;&quot;</span>
     
-        <span class="n">ScheduledEntryBucket</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="s">&#39;bhp_entry&#39;</span><span class="p">,</span> <span class="s">&#39;scheduledentrybucket&#39;</span><span class="p">)</span>
+        <span class="n">ScheduledEntryMetaData</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="s">&#39;bhp_entry&#39;</span><span class="p">,</span> <span class="s">&#39;scheduledentrybucket&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_predicate</span><span class="p">):</span>
-            <span class="n">ScheduledEntryBucket</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span> 
+            <span class="n">ScheduledEntryMetaData</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span> 
                 <span class="n">model</span> <span class="o">=</span> <span class="n">target_model</span><span class="p">,</span>
                 <span class="n">visit_model_instance</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visit_model_fieldname</span><span class="p">),</span>
                 <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consequent_action</span><span class="p">,</span>
@@ -161,7 +161,7 @@
             <span class="c">#                   predicate = self._predicate, </span>
             <span class="c">#                   action = self._consequent_action)             </span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ScheduledEntryBucket</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span> 
+            <span class="n">ScheduledEntryMetaData</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">update_status</span><span class="p">(</span> 
                 <span class="n">model</span> <span class="o">=</span> <span class="n">target_model</span><span class="p">,</span>
                 <span class="n">visit_model_instance</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visit_model_fieldname</span><span class="p">),</span>
                 <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alternative_action</span><span class="p">,</span>

@@ -11,12 +11,12 @@ class Migration(SchemaMigration):
         # Adding index on 'AdditionalEntryBucket', fields ['entry_status']
         db.create_index('bhp_form_additionalentrybucket', ['entry_status'])
 
-        # Adding index on 'ScheduledEntryBucket', fields ['entry_status']
+        # Adding index on 'ScheduledEntryMetaData', fields ['entry_status']
         db.create_index('bhp_form_scheduledentrybucket', ['entry_status'])
 
 
     def backwards(self, orm):
-        # Removing index on 'ScheduledEntryBucket', fields ['entry_status']
+        # Removing index on 'ScheduledEntryMetaData', fields ['entry_status']
         db.delete_index('bhp_form_scheduledentrybucket', ['entry_status'])
 
         # Removing index on 'AdditionalEntryBucket', fields ['entry_status']
@@ -103,7 +103,7 @@ class Migration(SchemaMigration):
             'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_visit.VisitDefinition']"})
         },
         'bhp_entry.scheduledentrybucket': {
-            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryBucket', 'db_table': "'bhp_form_scheduledentrybucket'"},
+            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryMetaData', 'db_table': "'bhp_form_scheduledentrybucket'"},
             'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_appointment.Appointment']"}),
             'close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),

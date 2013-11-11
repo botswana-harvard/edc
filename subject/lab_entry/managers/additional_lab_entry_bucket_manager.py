@@ -1,10 +1,10 @@
 from datetime import datetime
 from django.db import models
-from edc.subject.entry.managers import BaseEntryBucketManager
+from edc.subject.entry.managers import BaseEntryMetaDataManager
 from ..models import LabEntryUnscheduled
 
 
-class AdditionalLabEntryBucketManager(BaseEntryBucketManager):
+class AdditionalLabEntryBucketManager(BaseEntryMetaDataManager):
 
     def get_by_natural_key(self, visit_definition_code, name, visit_instance, appt_status, visit_definition_code1, subject_identifier_as_pk):
         Appointment = models.get_model('appointment', 'Appointment')

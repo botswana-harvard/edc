@@ -2,14 +2,14 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from ..managers import AdditionalEntryBucketManager
-from .base_entry_bucket import BaseEntryBucket
+from .base_entry_bucket import BaseEntryMetaData
 
 
-class AdditionalEntryBucket(BaseEntryBucket):
+class AdditionalEntryBucket(BaseEntryMetaData):
 
     """List of required but unscheduled entries by registered_subject such as off-study, death, adverse event, etc (not attached to appointment model).
 
-    This model differs from ScheduledEntryBucket in that it is not attached to an
+    This model differs from ScheduledEntryMetaData in that it is not attached to an
     appointment/visit_definition. Also, it is not attached to the Entry model and instead refers
     directly to the ContentType model.
     """

@@ -1,10 +1,10 @@
 from datetime import datetime
 from django.db import models
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from ..managers import BaseEntryBucketManager
+from ..managers import BaseEntryMetaDataManager
 
 
-class AdditionalEntryBucketManager(BaseEntryBucketManager):
+class AdditionalEntryBucketManager(BaseEntryMetaDataManager):
 
     def is_keyed(self):
         """ Confirms if model instance exists / is_keyed. """

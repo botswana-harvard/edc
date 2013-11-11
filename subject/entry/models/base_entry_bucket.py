@@ -4,7 +4,7 @@ from edc.subject.registration.models import RegisteredSubject
 from ..choices import ENTRY_STATUS
 
 
-class BaseEntryBucket(BaseUuidModel):
+class BaseEntryMetaData(BaseUuidModel):
 
     """ Base model for list of required entries by registered_subject. """
 

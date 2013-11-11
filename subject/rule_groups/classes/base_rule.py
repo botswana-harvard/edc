@@ -1,13 +1,17 @@
 import re
+
 from datetime import date, datetime
+
 from django.db.models import get_model, Model, IntegerField
-from edc.core.bhp_content_type_map.models import ContentTypeMap
+from django.core.exceptions import ImproperlyConfigured
+
 from edc.subject.consent.classes import ConsentHelper
+from edc.subject.entry.classes import BaseEntry
+from edc.subject.entry.models import BaseEntryMetaData
+from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.subject.entry.models import BaseEntryBucket
-from edc.subject.entry.classes import BaseEntry
-from edc.subject.lab_tracker.classes import site_lab_tracker
+
 from .logic import Logic
 
 
@@ -24,15 +28,15 @@ class BaseRule(object):
         self._alternative_action = None
         self._comment = None
         self._target_model_list = None
-        self._target_model_cls = None
-        self._source_model_cls = None
+        self._target_model = None
+        self._source_model = None
         self._filter_fieldname = None
         self._filter_instance = None
         self._filter_model_cls = None
-        self._source_model_instance = None
-        self._bucket_cls = None
-        self._entry_cls = None
-        self._target_bucket_instance_id = None
+        self._source_instance = None
+        self._meta_data_model = None
+        self._entry_class = None
+        self._meta_data_instance = None
         self._target_content_type_map = None
         self._visit_model_instance = None
         self.rule_group_name = ''
@@ -43,7 +47,7 @@ class BaseRule(object):
             self.set_target_model_list(kwargs.get('target_model'))
         # these attributes usually come in thru Meta, but not always...
         if 'source_model' in kwargs:
-            self.set_source_model_cls(kwargs.get('source_model'))
+            self.set_source_model(kwargs.get('source_model'))
             # set attribute for inspection by RuleGroup
             self.source_model = kwargs.get('source_model')
         if 'filter_model' in kwargs:
@@ -51,43 +55,39 @@ class BaseRule(object):
             self.set_filter_fieldname(kwargs.get('filter_model')[1])
             # set attribute for inspection by RuleGroup
             self.filter_model = kwargs.get('filter_model')
+        self._set_meta_data_model()
+        self.set_entry_class()
 
     def __repr__(self):
         return '{0}.{1}'.format(self.rule_group_name, self.name)
 
     def reset(self, visit_model_instance=None):
         """ Resets before run()."""
-        #self._predicate = None
-        #self._consequent_action = None
-        #self._alternative_action = None
-        # set all instances to None to force a "get"
-        self._source_model_instance = None
-        self._target_bucket_instance_id = None
-        self._target_content_type_map = None
+        self._source_instance = None
+        self._meta_data_instance = None
+#         self._target_content_type_map = None
         self.set_visit_model_instance(visit_model_instance)
         self.set_filter_instance()
+        self.set_meta_data_instance()
 
     def run(self, visit_model_instance):
         """ Evaluate the rule for each target model in the target model list."""
-        for target_model_cls in self.get_target_model_list():
+        for target_model in self.get_target_model_list():
+            self.set_target_model(target_model)
             self.reset(visit_model_instance)
-            self.set_target_model_cls(target_model_cls)
             self.evaluate()
 
     def evaluate(self):
         raise AttributeError('Evaluate should be overridden. Nothing to do.')
 
-    def set_site_lab_tracker(self):
-        self._site_lab_tracker = site_lab_tracker
-
     def get_site_lab_tracker(self):
-        if not self._site_lab_tracker:
-            self.set_site_lab_tracker()
-        return self._site_lab_tracker
+        return site_lab_tracker
 
     def set_logic(self, logic):
         if isinstance(logic, Logic):
             self._logic = logic
+            if self._logic is None:
+                raise AttributeError('Logic cannot be None.')
             if self.is_valid_action(logic.consequence):
                 self.set_consequent_action(logic.consequence)
             if self.is_valid_action(logic.alternative):
@@ -98,8 +98,6 @@ class BaseRule(object):
             raise AttributeError('Attribute \'logic\' must be an instance of class Logic.')
 
     def get_logic(self):
-        if self._logic is None:
-            raise AttributeError('Logic cannot be None.')
         return self._logic
 
     def set_consequent_action(self, action):
@@ -235,8 +233,6 @@ class BaseRule(object):
             self._unresolved_predicate = unresolved_predicate
 
     def _get_unresolved_predicate(self):
-        if not self._unresolved_predicate:
-            self._set_unresolved_predicate()
         return self._unresolved_predicate
 
     def set_predicate(self):
@@ -247,7 +243,7 @@ class BaseRule(object):
         which would resolve to 'value' == 'value' or 'value' == 'value'.
         """
         self._predicate = None
-        if self.get_source_model_instance():  # if no instance, just skip the rule
+        if self.get_source_instance():  # if no instance, just skip the rule
             self._predicate = ''
             self._set_unresolved_predicate(self.get_logic().predicate)
             n = 0
@@ -256,7 +252,7 @@ class BaseRule(object):
                     ValueError('The logic tuple (or the first tuple of tuples) must must have three items')
                 if n > 0 and not len(item) == 4:
                     ValueError('Additional tuples in the logic tuple must have a boolean operator as the fourth item')
-                self._set_predicate_field_value(self.get_source_model_instance(), item[0])
+                self._set_predicate_field_value(self.get_source_instance(), item[0])
                 self._set_predicate_comparative_value(item[2])
                 # logical_operator if more than one tuple in the logic tuple
                 if len(item) == 4:
@@ -324,41 +320,39 @@ class BaseRule(object):
                 self._target_model_list.append(target_model)
 
     def get_target_model_list(self):
-        if not self._target_model_list:
-            self.set_target_model_list()
         return self._target_model_list
 
-    def set_target_model_cls(self, target_model_cls=None):
-        self._target_bucket_instance_id = None
-        if not target_model_cls:
-            raise AttributeError('Attribute _target_model_cls cannot be None.')
-        if not issubclass(target_model_cls, Model):
+    def set_target_model(self, target_model=None):
+        """Sets a list of target models.
+
+        Target models are the models affected by the rule. For example, the entry status
+        on the meta data instance for the target model will be NOT_REQUIRED. """
+        if not target_model:
+            raise AttributeError('Attribute _target_model cannot be None.')
+        if not issubclass(target_model, Model):
             # could be that something went wrong when converting from model_name to model class in RuleGroup __metaclass__
-            raise AttributeError('Attribute _target_model_cls must be a Model Class. Got {0}'.format(target_model_cls))
-        self._target_model_cls = target_model_cls
+            raise AttributeError('Attribute _target_model must be a Model Class. Got {0}'.format(target_model))
+        self._target_model = target_model
+        self._meta_data_instance = None
 
-    def get_target_model_cls(self):
-        if not self._target_model_cls:
-            self.set_target_model_cls()
-        return self._target_model_cls
+    def get_target_model(self):
+        return self._target_model
 
-    def set_source_model_cls(self, model_cls=None):
+    def set_source_model(self, model_cls=None):
         """Sets the source model class.
 
         The predicate refers to an attribute of the source model class."""
-        self._source_model_instance = None
+        self._source_instance = None
         if model_cls:
             if isinstance(model_cls, tuple):
-                self._source_model_cls = get_model(model_cls[0], model_cls[1])
+                self._source_model = get_model(model_cls[0], model_cls[1])
             else:
-                self._source_model_cls = model_cls
+                self._source_model = model_cls
         else:
-            raise AttributeError('Attribute _source_model_cls cannot be None.')
+            raise AttributeError('Attribute _source_model cannot be None.')
 
-    def get_source_model_cls(self):
-        if not self._source_model_cls:
-            self.set_source_model_cls()
-        return self._source_model_cls
+    def get_source_model(self):
+        return self._source_model
 
     def set_visit_model_instance(self, visit_model_instance=None):
         if not isinstance(visit_model_instance, BaseVisitTracking):
@@ -368,12 +362,10 @@ class BaseRule(object):
             raise AttributeError('Attribute _visit_model_instance cannot be None')
 
     def get_visit_model_instance(self):
-        if not self._visit_model_instance:
-            self.set_visit_model_instance()
         return self._visit_model_instance
 
     def set_filter_fieldname(self, filter_fieldname=None):
-        """Sets the filter fieldname that is used to filter on the source_model_cls if a source_model_instance is not provided."""
+        """Sets the filter fieldname that is used to filter on the source_model if a source_instance is not provided."""
         self._filter_fieldname = None
         if filter_fieldname:
             self._filter_fieldname = filter_fieldname
@@ -381,8 +373,6 @@ class BaseRule(object):
             raise AttributeError('Attribute _filter_fieldname cannot be None')
 
     def get_filter_fieldname(self):
-        if not self._filter_fieldname:
-            self.set_filter_fieldname()
         return self._filter_fieldname
 
     def set_filter_model_cls(self, model_cls=None):
@@ -396,8 +386,6 @@ class BaseRule(object):
             raise AttributeError('Attribute _filter_model_cls cannot be None.')
 
     def get_filter_model_cls(self):
-        if not self._filter_model_cls:
-            self.set_filter_model_cls()
         return self._filter_model_cls
 
     def set_filter_instance(self):
@@ -412,72 +400,68 @@ class BaseRule(object):
             raise AttributeError('Attribute _filter_instance cannot be None')
 
     def get_filter_instance(self):
-        if not self._filter_instance:
-            self.set_filter_instance()
         return self._filter_instance
 
-    def set_source_model_instance(self, source_model_instance=None):
+    def set_source_instance(self, source_instance=None):
         """ Set the user model instance using either a given instance or by filtering on the user model class.
 
         If the source model instance does not exist (yet), value is None"""
-        self._source_model_instance = None
-        if source_model_instance:
-            self._source_model_instance = source_model_instance
-        elif self.get_source_model_cls()._meta.object_name.lower() == 'registeredsubject':
+        self._source_instance = None
+        if source_instance:
+            self._source_instance = source_instance
+        elif self.get_source_model()._meta.object_name.lower() == 'registeredsubject':
             # special case
-            self._source_model_instance = self.get_visit_model_instance().appointment.registered_subject
+            self._source_instance = self.get_visit_model_instance().appointment.registered_subject
         else:
-            if self.get_source_model_cls().objects.filter(**{self.get_filter_fieldname(): self.get_filter_instance()}).exists():
-                self._source_model_instance = self.get_source_model_cls().objects.get(**{self.get_filter_fieldname(): self.get_filter_instance()})
+            if self.get_source_model().objects.filter(**{self.get_filter_fieldname(): self.get_filter_instance()}).exists():
+                self._source_instance = self.get_source_model().objects.get(**{self.get_filter_fieldname(): self.get_filter_instance()})
 
-    def get_source_model_instance(self):
+    def get_source_instance(self):
         """Gets the source model instance but users should check if the return value is None."""
-        if not self._source_model_instance:
-            self.set_source_model_instance()
-        return self._source_model_instance
+        return self._source_instance
 
-    def set_bucket_cls(self):
+    def _set_meta_data_model(self):
         """Sets the entry bucket class but users should override"""
-        if not self._bucket_cls:
-            raise AttributeError('Attribute _bucket_cls cannot be None')
+        self.set_meta_data_model()
+        if not self._meta_data_model:
+            raise AttributeError('Attribute _meta_data_model cannot be None')
+        if not issubclass(self._meta_data_model, BaseEntryMetaData):
+            raise AttributeError('Attribute _meta_data_model must be a subclass of BaseEntryMetaData.')
 
-    def get_bucket_cls(self):
-        if not self._bucket_cls:
-            self.set_bucket_cls()
-        elif not issubclass(self._bucket_cls, BaseEntryBucket):
-            raise AttributeError('Attribute _bucket_cls must be a subclass of BaseEntryBucket.')
-        return self._bucket_cls
+    def set_meta_data_model(self):
+        raise ImproperlyConfigured('You have to override this method in the child class to set the instance attribute _meta_data_model.')
 
-    def set_entry_cls(self):
+    def get_meta_data_model(self):
+        return self._meta_data_model
+
+    def _set_entry_class(self):
         """Sets the entry class but users should override."""
-        if not self._entry_cls:
-            raise AttributeError('Attribute _entry_cls cannot be None')
+        self.set_entry_class()
+        if not self._entry_class:
+            raise AttributeError('Attribute _entry_class cannot be None')
+        if not issubclass(self._entry_class, BaseEntry):
+            raise AttributeError('Attribute _entry_class must be a subclass of BaseEntry.')
 
-    def get_entry_cls(self):
-        if not self._entry_cls:
-            self.set_entry_cls()
-        elif not issubclass(self._entry_cls, BaseEntry):
-            raise AttributeError('Attribute _entry_cls must be a subclass of BaseEntry.')
-        return self._entry_cls
+    def set_entry_class(self):
+        raise ImproperlyConfigured('You have to override this method in the child class to set the instance attribute entry_class.')
 
-    def set_target_bucket_instance_id(self, bucket_cls):
+    def get_entry_class(self):
+        return self._entry_class
+
+    def set_meta_data_instance(self, meta_data_model):
         """Users should override"""
-        self._target_bucket_instance_id = None
-        if not self._target_bucket_instance_id:
-            raise AttributeError('Attribute _target_bucket_instance_id cannot be None')
+        self._meta_data_instance = None
+        if not self._meta_data_instance:
+            raise AttributeError('Attribute _meta_data_instance cannot be None')
 
-    def get_target_bucket_instance_id(self):
-        if not self._target_bucket_instance_id:
-            self.set_target_bucket_instance_id()
-        return self._target_bucket_instance_id
+    def get_meta_data_instance(self):
+        return self._meta_data_instance
 
-    def set_target_content_type_map(self):
-        """Sets the content type for the target model to help locate the target's entry bucket instance."""
-        self._target_content_type_map = ContentTypeMap.objects.get(
-            app_label=self.get_target_model_cls()._meta.app_label,
-            model=self.get_target_model_cls()._meta.object_name.lower())
-
-    def get_target_content_type_map(self):
-        if not self._target_content_type_map:
-            self.set_target_content_type_map()
-        return self._target_content_type_map
+#     def set_target_content_type_map(self):
+#         """Sets the content type for the target model to help locate the target's entry bucket instance."""
+#         self._target_content_type_map = ContentTypeMap.objects.get(
+#             app_label=self.get_target_model()._meta.app_label,
+#             model=self.get_target_model()._meta.object_name.lower())
+# 
+#     def get_target_content_type_map(self):
+#         return self._target_content_type_map

@@ -19,7 +19,7 @@ from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, Sc
 from edc.testing.models import TestConsent
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestVisitFactory
 
-from ..models import ScheduledEntryBucket
+from ..models import ScheduledEntryMetaData
 
 
 class ScheduledEntryTests(TestCase):
@@ -86,9 +86,9 @@ class ScheduledEntryTests(TestCase):
                         has_requisition_model=True)
         dashboard.render_scheduled_forms()
 
-        self.assertEqual(ScheduledEntryBucket.objects.count(), 3)
+        self.assertEqual(ScheduledEntryMetaData.objects.count(), 3)
         self.assertEqual(ScheduledLabEntryBucket.objects.count(), 3)
 
     def test_p2(self):
-        """Add a model instance, ScheduledEntryBucket is updated to KEYED."""
+        """Add a model instance, ScheduledEntryMetaData is updated to KEYED."""
         pass

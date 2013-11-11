@@ -2,23 +2,24 @@ from django.db import models
 
 from edc.subject.appointment.models import Appointment
 
-from ..managers import ScheduledEntryBucketManager
-from ..models import BaseEntryBucket
+from ..managers import ScheduledEntryMetaDataManager
+from ..models import BaseEntryMetaData
 
 from .entry import Entry
 
 
-class ScheduledEntryBucket(BaseEntryBucket):
+class ScheduledEntryMetaData(BaseEntryMetaData):
     """Subject-specific list of required and scheduled entry as per normal visit schedule."""
 
     appointment = models.ForeignKey(Appointment, related_name='+')
+
     entry = models.ForeignKey(Entry)
 
-    objects = ScheduledEntryBucketManager()
+    objects = ScheduledEntryMetaDataManager()
 
     def save(self, *args, **kwargs):
         self.current_entry_title = self.entry.content_type_map.content_type.model_class()._meta.verbose_name
-        super(ScheduledEntryBucket, self).save(*args, **kwargs)
+        super(ScheduledEntryMetaData, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.current_entry_title

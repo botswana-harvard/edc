@@ -3,7 +3,7 @@ from edc.base.model.tests.factories import BaseUuidModelFactory
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 
 
-class BaseEntryBucketFactory(BaseUuidModelFactory):
+class BaseEntryMetaDataFactory(BaseUuidModelFactory):
     ABSTRACT_FACTORY = True
 
     registered_subject = factory.SubFactory(RegisteredSubjectFactory)

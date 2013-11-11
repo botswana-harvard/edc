@@ -2,11 +2,11 @@ from datetime import datetime
 from django.db import models
 from django.db.models import ForeignKey, Q
 from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.subject.entry.managers import BaseEntryBucketManager
+from edc.subject.entry.managers import BaseEntryMetaDataManager
 from ..models import LabEntry
 
 
-class ScheduledLabEntryBucketManager(BaseEntryBucketManager):
+class ScheduledLabEntryBucketManager(BaseEntryMetaDataManager):
 
     def get_by_natural_key(self, visit_definition_code, name, visit_instance, appt_status, visit_definition_code1, subject_identifier_as_pk):
         Appointment = models.get_model('appointment', 'Appointment')
@@ -84,7 +84,7 @@ class ScheduledLabEntryBucketManager(BaseEntryBucketManager):
         return is_keyed
 
     def add_for_visit(self, **kwargs):
-        """ Add entries to the scheduled_entry_bucket for a given visit_model.
+        """ Add entries to the scheduled_entry_meta_data for a given visit_model.
 
         Normally called from Base model admin class BaseAppointmentModelAdmin
 
@@ -232,18 +232,18 @@ class ScheduledLabEntryBucketManager(BaseEntryBucketManager):
                                                                   appointment=self.appointment,
                                                                   lab_entry=self.entry):
                 # already in bucket, so get bucket entry
-                scheduled_entry_bucket = super(ScheduledLabEntryBucketManager, self).get(registered_subject=self.visit_model_instance.appointment.registered_subject,
+                scheduled_entry_meta_data = super(ScheduledLabEntryBucketManager, self).get(registered_subject=self.visit_model_instance.appointment.registered_subject,
                                                                     appointment=self.appointment,
                                                                     lab_entry=self.entry)
                 # update entry_status if NEW no matter what, to indictate perhaps that it was modified
                 status = self.get_status(
                     action=action,
                     report_datetime=report_datetime,
-                    entry_status=scheduled_entry_bucket.entry_status,
+                    entry_status=scheduled_entry_meta_data.entry_status,
                     entry_comment=comment)
-                scheduled_entry_bucket.report_datetime = status['report_datetime']
-                scheduled_entry_bucket.entry_status = status['current_status']
-                scheduled_entry_bucket.entry_comment = status['entry_comment']
-                scheduled_entry_bucket.close_datetime = status['close_datetime']
-                scheduled_entry_bucket.modified = datetime.today()
-                scheduled_entry_bucket.save()
+                scheduled_entry_meta_data.report_datetime = status['report_datetime']
+                scheduled_entry_meta_data.entry_status = status['current_status']
+                scheduled_entry_meta_data.entry_comment = status['entry_comment']
+                scheduled_entry_meta_data.close_datetime = status['close_datetime']
+                scheduled_entry_meta_data.modified = datetime.today()
+                scheduled_entry_meta_data.save()

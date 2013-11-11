@@ -1,7 +1,6 @@
 import copy
 from django.db.models import get_model, Model
 from django.utils.encoding import smart_str
-from django.conf import settings
 
 from .base_rule import BaseRule
 
@@ -41,7 +40,7 @@ class BaseRuleGroup(type):
                             raise AttributeError('Attribute \'source model\' must be declared in either the rule or class Meta (source_model=<ModelClass>) for rule {0}.'.format(rule_name))
                         if not 'source_model' in dir(rule):
                             if 'source_model' in dir(meta):
-                                rule.set_source_model_cls(meta.source_model)
+                                rule.set_source_model(meta.source_model)
                         if 'filter_model' not in dir(rule):
                             if 'filter_model' in dir(meta):
                                 if not isinstance(meta.filter_model, tuple):

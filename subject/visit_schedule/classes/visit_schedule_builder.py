@@ -1,4 +1,0 @@
-
-
-class VisitScheduleBuilder(object):
-    pass

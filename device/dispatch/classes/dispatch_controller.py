@@ -245,7 +245,7 @@ class DispatchController(BaseDispatchController):
             if requisitions:
                 self.dispatch_user_items_as_json(requisitions, user_container)
 
-    def dispatch_entry_buckets(self, registered_subject):
+    def dispatch_entry_meta_data(self, registered_subject):
         pass
 
     def dispatch_consent_instances(self, app_label, registered_subject, container, **kwargs):

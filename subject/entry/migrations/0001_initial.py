@@ -36,7 +36,7 @@ class Migration(SchemaMigration):
         # Adding unique constraint on 'Entry', fields ['visit_definition', 'content_type_map']
         db.create_unique('bhp_form_entry', ['visit_definition_id', 'content_type_map_id'])
 
-        # Adding model 'ScheduledEntryBucket'
+        # Adding model 'ScheduledEntryMetaData'
         db.create_table('bhp_form_scheduledentrybucket', (
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
@@ -56,9 +56,9 @@ class Migration(SchemaMigration):
             ('appointment', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', to=orm['bhp_appointment.Appointment'])),
             ('entry', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bhp_entry.Entry'])),
         ))
-        db.send_create_signal('bhp_entry', ['ScheduledEntryBucket'])
+        db.send_create_signal('bhp_entry', ['ScheduledEntryMetaData'])
 
-        # Adding unique constraint on 'ScheduledEntryBucket', fields ['registered_subject', 'entry', 'appointment']
+        # Adding unique constraint on 'ScheduledEntryMetaData', fields ['registered_subject', 'entry', 'appointment']
         db.create_unique('bhp_form_scheduledentrybucket', ['registered_subject_id', 'entry_id', 'appointment_id'])
 
         # Adding model 'AdditionalEntryBucket'
@@ -91,7 +91,7 @@ class Migration(SchemaMigration):
         # Removing unique constraint on 'AdditionalEntryBucket', fields ['registered_subject', 'content_type_map']
         db.delete_unique('bhp_form_additionalentrybucket', ['registered_subject_id', 'content_type_map_id'])
 
-        # Removing unique constraint on 'ScheduledEntryBucket', fields ['registered_subject', 'entry', 'appointment']
+        # Removing unique constraint on 'ScheduledEntryMetaData', fields ['registered_subject', 'entry', 'appointment']
         db.delete_unique('bhp_form_scheduledentrybucket', ['registered_subject_id', 'entry_id', 'appointment_id'])
 
         # Removing unique constraint on 'Entry', fields ['visit_definition', 'content_type_map']
@@ -100,7 +100,7 @@ class Migration(SchemaMigration):
         # Deleting model 'Entry'
         db.delete_table('bhp_form_entry')
 
-        # Deleting model 'ScheduledEntryBucket'
+        # Deleting model 'ScheduledEntryMetaData'
         db.delete_table('bhp_form_scheduledentrybucket')
 
         # Deleting model 'AdditionalEntryBucket'
@@ -183,7 +183,7 @@ class Migration(SchemaMigration):
             'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_visit.VisitDefinition']"})
         },
         'bhp_entry.scheduledentrybucket': {
-            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryBucket', 'db_table': "'bhp_form_scheduledentrybucket'"},
+            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryMetaData', 'db_table': "'bhp_form_scheduledentrybucket'"},
             'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['bhp_appointment.Appointment']"}),
             'close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),

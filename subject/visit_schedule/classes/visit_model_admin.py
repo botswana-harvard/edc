@@ -1,6 +1,6 @@
 # from django.core.urlresolvers import reverse
 # from edc.core.bhp_common.models import MyModelAdmin
-# from bhp_entry.models import ScheduledEntryBucket
+# from bhp_entry.models import ScheduledEntryMetaData
 # 
 # 
 # # this is not used, see bhp_appointment
@@ -20,7 +20,7 @@
 # 
 #     def save_model(self, request, obj, form, change):
 #         """Updates the scheduled entry bucket."""
-#         ScheduledEntryBucket.objects.update_status(
+#         ScheduledEntryMetaData.objects.update_status(
 #             model=obj,
 #             subject_visit_model=obj.visit,
 #             )
@@ -29,7 +29,7 @@
 # 
 #     def delete_model(self, request, obj):
 # 
-#         ScheduledEntryBucket.objects.update_status(
+#         ScheduledEntryMetaData.objects.update_status(
 #             model=obj,
 #             action='delete',
 #             subject_visit_model=obj.visit,
