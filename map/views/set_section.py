@@ -22,6 +22,11 @@ def set_section(request, **kwargs):
         #item_region_field = 'ward'
         has_items = False
         items = []
+        selected_randomization = request.POST.get(mapper.item_selected_field)
+        if selected_randomization == 'twenty_percent':
+            selected_randomization = 1
+        if selected_randomization == 'five_percent':
+            selected_randomization = 2
         identifiers = request.session.get('identifiers', [])
         action_script_url = 'save_section_url'
         cart_size = len(identifiers)
@@ -29,7 +34,7 @@ def set_section(request, **kwargs):
         request.session['icon'] = request.POST.get('marker_icon')
         if mapper.item_model_cls.objects.filter(**{mapper.get_region_field_attr(): None}).exists():
             has_items = True
-            items = mapper.item_model_cls.objects.filter(**{mapper.get_region_field_attr(): None, mapper.item_selected_field: 1})
+            items = mapper.item_model_cls.objects.filter(**{mapper.get_region_field_attr(): None, mapper.item_selected_field: selected_randomization})
 
         icon = str(request.session['icon'])
         payload = mapper.prepare_map_points(items,

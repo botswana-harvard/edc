@@ -24,26 +24,31 @@ def plot_item_points(request, **kwargs):
         has_items = False
         identifiers = request.session.get('identifiers', [])
         selected_sub_section = request.POST.get(mapper.get_section_field_attr())
+        selected_randomization = request.POST.get(mapper.item_selected_field)
+        if selected_randomization == 'twenty_percent':
+            selected_randomization = 1
+        if selected_randomization == 'five_percent':
+            selected_randomization = 2
         cart_size = len(identifiers)
         section_color_code_list = []
         selected_region = request.POST.get(mapper.get_region_field_attr())
         request.session['icon'] = request.POST.get('marker_icon')
         if selected_region == 'All':
             if selected_sub_section == 'All':
-                items = mapper.get_item_model_cls().objects.filter(Q(**{mapper.item_selected_field: 1}))
+                items = mapper.get_item_model_cls().objects.filter(Q(**{mapper.item_selected_field: selected_randomization}))
             else:
                 items = mapper.get_item_model_cls().objects.filter(
                     Q(**{mapper.get_section_field_attr(): selected_sub_section, mapper.item_selected_field: 1}) |
-                    Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.item_selected_field: 1}))
+                    Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.item_selected_field: selected_randomization}))
         else:
             if selected_sub_section == 'All':
                 items = mapper.get_item_model_cls().objects.filter(
-                Q(**{mapper.get_region_field_attr(): selected_region, mapper.item_selected_field: 1}) | 
-                Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.item_selected_field: 1}))
+                Q(**{mapper.get_region_field_attr(): selected_region, mapper.item_selected_field: selected_randomization}) | 
+                Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.item_selected_field: selected_randomization}))
             else:
                 items = mapper.get_item_model_cls().objects.filter(
-                Q(**{mapper.get_region_field_attr(): selected_region, mapper.get_section_field_attr(): selected_sub_section, mapper.item_selected_field: 1}) | 
-                Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.get_section_field_attr(): selected_sub_section, mapper.item_selected_field: 1}))
+                Q(**{mapper.get_region_field_attr(): selected_region, mapper.get_section_field_attr(): selected_sub_section, mapper.item_selected_field: selected_randomization}) | 
+                Q(**{'{0}__in'.format(mapper.get_identifier_field_attr()): identifiers, mapper.get_section_field_attr(): selected_sub_section, mapper.item_selected_field: selected_randomization}))
         icon = str(request.session['icon'])
         payload = mapper.prepare_map_points(items,
             icon,
