@@ -7,13 +7,7 @@ from edc.subject.entry.choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
 
 class BaseLabEntry(BaseWindowPeriodItem):
 
-    # TODO: this needs to be dropped
-    #panel = models.ForeignKey(Panel)
-
-    # TODO: this needs to be filled in then renamed as panel
-    panel = models.ForeignKey(Panel,
-        null=True,
-        help_text='This is to replace panel above...')
+    panel = models.ForeignKey(Panel, null=True)
 
     entry_order = models.IntegerField()
 

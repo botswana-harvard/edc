@@ -111,7 +111,10 @@ class EntryMetaDataTests(TestCase):
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         obj = TestScheduledModel1Factory(test_visit=self.test_visit)
         obj.save()
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, entry__content_type_map__model='testscheduledmodel1').count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='KEYED',
+                                                               registered_subject=self.registered_subject,
+                                                               entry__app_label='testing',
+                                                               entry__model_name='testscheduledmodel1').count(), 1)
 
     def test_updates_meta_data6(self):
         """Meta data instance linked to the model is updated if model is deleted."""
