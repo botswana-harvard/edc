@@ -53,12 +53,12 @@ class UploadTransactionFile(BaseModel):
 
     def consume_transactions(self):
         if self.today_set_as_skip_day():
-            raise TypeError('Date \'{0}\' is already added to the skip table. So cannot upload on a date set to be skipped.'.format(self.file_date))
+            raise TypeError('Date \'{0}\' for \'{1}\' is already added to the skip table. So cannot upload on a date set to be skipped.'.format(self.file_date, self.identifier))
         #Can only upload if there exists an upload from the previous day, or a valid skip day exists in its preence.
         if self.file_already_uploaded():
-            raise TypeError('File covering date of \'{0}\', is already uploaded.'.format(self.file_name))
+            raise TypeError('File covering date of \'{0}\' for \'{1}\' is already uploaded.'.format(self.file_date, self.identifier))
         if not self.is_previous_day_file_uploaded() and not self.skip_previous_day():
-            raise TypeError('Missing Upload file from the previous day. Previous day is not set as a SKIP date.'.format())
+            raise TypeError('Missing Upload file from the previous day for \'{0}\'. Previous day is not set as a SKIP date.'.format(self.identifier))
         deserializer = DeserializeFromTransaction()
         index = 0
         self.transaction_file.open()
@@ -84,24 +84,24 @@ class UploadTransactionFile(BaseModel):
         self.producer = ','.join(producer_list)
         
     def file_already_uploaded(self):
-        if self.__class__.objects.filter(file_date=self.file_date, identifier=self.identifier).exists():
+        if self.__class__.objects.filter(file_date=self.file_date, identifier__iexact=self.identifier).exists():
             return True
         return False
     
     def is_previous_day_file_uploaded(self):
         yesterday = self.file_date - timedelta(1)
-        if self.__class__.objects.filter(file_date=yesterday, identifier=self.identifier).exists():
+        if self.__class__.objects.filter(file_date=yesterday, identifier__iexact=self.identifier).exists():
             return True
         return False
     
     def skip_previous_day(self):
         yesterday = self.file_date - timedelta(1)
-        if UploadSkipDays.objects.filter(skip_date=yesterday, identifier=self.identifier).exists():
+        if UploadSkipDays.objects.filter(skip_date=yesterday, identifier__iexact=self.identifier).exists():
             return True
         return False
     
     def today_set_as_skip_day(self):
-        if UploadSkipDays.objects.filter(skip_date=self.file_date, identifier=self.identifier).exists():
+        if UploadSkipDays.objects.filter(skip_date=self.file_date, identifier__iexact=self.identifier).exists():
             return True
         return False
     
