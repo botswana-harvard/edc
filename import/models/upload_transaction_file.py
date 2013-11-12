@@ -16,7 +16,7 @@ class UploadTransactionFile(BaseModel):
 
     file_name = models.CharField(max_length=50, null=True, editable=False, unique=True)
 
-    file_date = models.DateField(null=True, editable=False, unique=True)
+    file_date = models.DateField(null=True, editable=False)
     
     identifier = models.CharField(max_length=50, null=True) 
     
