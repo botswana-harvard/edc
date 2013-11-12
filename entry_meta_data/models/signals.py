@@ -26,17 +26,21 @@ def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_f
 
 @receiver(pre_delete, weak=False, dispatch_uid="entry_meta_data_on_pre_delete")
 def entry_meta_data_on_pre_delete(sender, instance, using, **kwargs):
-    try:
-        sender.entry_meta_data_manager.update_meta_data(instance, 'D', using=using)
-    except AttributeError as e:
-        if 'entry_meta_data_manager' in str(e):
-            pass
-        else:
-            raise
-
-
-@receiver(post_delete, weak=False, dispatch_uid="entry_meta_data_on_post_delete")
-def entry_meta_data_on_post_delete(sender, instance, using, **kwargs):
     """Delete metadata if the visit tracking instance is deleted."""
     if isinstance(instance, BaseVisitTracking):
-        ScheduledEntry(instance.appointment, sender).delete_for_visit(instance)
+        ScheduledEntry(instance.appointment, sender).delete_for_visit()
+    else:
+        try:
+            sender.entry_meta_data_manager.update_meta_data(instance, 'D', using=using)
+        except AttributeError as e:
+            if 'entry_meta_data_manager' in str(e):
+                pass
+            else:
+                raise
+
+
+# @receiver(post_delete, weak=False, dispatch_uid="entry_meta_data_on_post_delete")
+# def entry_meta_data_on_post_delete(sender, instance, using, **kwargs):
+#     """Delete metadata if the visit tracking instance is deleted."""
+#     if isinstance(instance, BaseVisitTracking):
+#         ScheduledEntry(instance.appointment, sender).delete_for_visit(instance)

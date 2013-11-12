@@ -6,7 +6,7 @@ from ..managers import ScheduledLabEntryBucketManager
 from .lab_entry import LabEntry
 
 
-class ScheduledLabEntryBucket(BaseEntryMetaData):
+class ScheduledLabEntryMetaData(BaseEntryMetaData):
 
     """Subject-specific list of required and scheduled lab as per normal visit schedule."""
 
@@ -31,6 +31,6 @@ class ScheduledLabEntryBucket(BaseEntryMetaData):
     class Meta:
         app_label = 'lab_entry'
         db_table = 'bhp_lab_entry_scheduledlabentrybucket'
-        verbose_name = "Subject Scheduled Lab Bucket"
+        verbose_name = "Scheduled Lab Meta Data"
         ordering = ['registered_subject', 'lab_entry__panel__name', 'appointment', ]
         unique_together = ['registered_subject', 'lab_entry', 'appointment', ]
