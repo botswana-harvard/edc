@@ -38,7 +38,7 @@ class Command(BaseCommand):
             folder = settings.MEDIA_ROOT
             count = 0
             for item in items:
-                if settings.DEVICE_ID == '99' | settings.DEVICE_ID == '71' | settings.DEVICE_ID == '70':
+                if settings.DEVICE_ID == '99' or settings.DEVICE_ID == '71' or settings.DEVICE_ID == '70':
                     zoom_level = 0
                     zoom = 18
                     while zoom_level < 3:
