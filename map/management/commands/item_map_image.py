@@ -88,4 +88,3 @@ class Command(BaseCommand):
                     pass
                 count += 1
                 print str((count/float(len(items)))*100) + ' percent done! only ' + str(len(items) - count) + ' more pictures to download'
-               
