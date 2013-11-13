@@ -90,32 +90,31 @@ class Command(BaseCommand):
                     count += 1
                     print str((count/float(len(items)))*100) + ' percent done! only ' + str(len(items) - count) + ' more pictures to download'
                 else:
-                    for item in items:
-                        if settings.DEVICE_ID == '99' or settings.DEVICE_ID == '71' or settings.DEVICE_ID == '70':
-                            zoom_level = 0
-                            zoom = 18
-                            while zoom_level < 3:
-                                name = getattr(item, mapper.get_identifier_field_attr())
-                                if zoom == 18:
-                                    file_name_18 = folder + '/' + name + '_18.jpg'
-                                elif zoom == 17:
-                                    file_name_17 = folder + '/' + name + '_17.jpg'
-                                else:
-                                    file_name_16 = folder + '/' + name + '.jpg'
-                                print "The image at zoom level: " + str(zoom) + " of plot: " + str(name) + " is done"
-                                zoom -= 1
-                                zoom_level += 1
-                            with open(file_name_18, 'rb') as f:
-                                item.uploaded_map_18 = name + '_18.jpg'
+                    if not (settings.DEVICE_ID == '99' or settings.DEVICE_ID == '71' or settings.DEVICE_ID == '70'):
+                        zoom_level = 0
+                        zoom = 18
+                        while zoom_level < 3:
+                            name = getattr(item, mapper.get_identifier_field_attr())
+                            if zoom == 18:
+                                file_name_18 = folder + '/' + name + '_18.jpg'
+                            elif zoom == 17:
+                                file_name_17 = folder + '/' + name + '_17.jpg'
+                            else:
+                                file_name_16 = folder + '/' + name + '.jpg'
+                            print "The image at zoom level: " + str(zoom) + " of plot: " + str(name) + " is done"
+                            zoom -= 1
+                            zoom_level += 1
+                        with open(file_name_18, 'rb') as f:
+                            item.uploaded_map_18 = name + '_18.jpg'
+        
+                        with open(file_name_17, 'rb') as f1:
+                            item.uploaded_map_17 = name + '_17.jpg'
             
-                            with open(file_name_17, 'rb') as f1:
-                                item.uploaded_map_17 = name + '_17.jpg'
-                
-                            with open(file_name_16, 'rb') as f2:
-                                item.uploaded_map_16 = name + '.jpg'
-                            try:
-                                item.save()
-                            except Exception as e:
-                                pass
-                            count += 1
-                            print str((count/float(len(items)))*100) + ' percent done! only ' + str(len(items) - count) + ' more pictures linked to their images'
+                        with open(file_name_16, 'rb') as f2:
+                            item.uploaded_map_16 = name + '.jpg'
+                        try:
+                            item.save()
+                        except Exception as e:
+                            pass
+                        count += 1
+                        print str((count/float(len(items)))*100) + ' percent done! only ' + str(len(items) - count) + ' more pictures linked to their images'
