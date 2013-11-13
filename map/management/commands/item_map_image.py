@@ -91,7 +91,7 @@ class Command(BaseCommand):
                     print str((count/float(len(items)))*100) + ' percent done! only ' + str(len(items) - count) + ' more pictures to download'
                 else:
                     for item in items:
-                        if settings.DEVICE_ID == '99' | settings.DEVICE_ID == '71' | settings.DEVICE_ID == '70':
+                        if settings.DEVICE_ID == '99' or settings.DEVICE_ID == '71' or settings.DEVICE_ID == '70':
                             zoom_level = 0
                             zoom = 18
                             while zoom_level < 3:
