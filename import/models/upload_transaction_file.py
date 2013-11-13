@@ -16,7 +16,9 @@ class UploadTransactionFile(BaseModel):
 
     file_name = models.CharField(max_length=50, null=True, editable=False, unique=True)
 
-    file_date = models.DateField(null=True, editable=False, unique=True)
+    file_date = models.DateField(null=True, editable=False)
+    
+    identifier = models.CharField(max_length=50, null=True) 
     
     consume = models.BooleanField(default=True)
 
@@ -35,6 +37,7 @@ class UploadTransactionFile(BaseModel):
             self.file_name = self.transaction_file.name.replace('\\', '/').split('/')[-1]
             date_string = self.file_name.split('_')[2].split('.')[0][:8]
             self.file_date = date(int(date_string[:4]),int(date_string[4:6]), int(date_string[6:8]))
+            self.identifier = self.file_name.split('_')[1]
             self.check_for_transactions()
             if self.consume:
                 self.consume_transactions()
@@ -50,12 +53,12 @@ class UploadTransactionFile(BaseModel):
 
     def consume_transactions(self):
         if self.today_set_as_skip_day():
-            raise TypeError('Date \'{0}\' is already added to the skip table. So cannot upload on a date set to be skipped.'.format(self.file_date))
+            raise TypeError('Date \'{0}\' for \'{1}\' is already added to the skip table. So cannot upload on a date set to be skipped.'.format(self.file_date, self.identifier))
         #Can only upload if there exists an upload from the previous day, or a valid skip day exists in its preence.
         if self.file_already_uploaded():
-            raise TypeError('File covering date of \'{0}\', is already uploaded.'.format(self.file_name))
+            raise TypeError('File covering date of \'{0}\' for \'{1}\' is already uploaded.'.format(self.file_date, self.identifier))
         if not self.is_previous_day_file_uploaded() and not self.skip_previous_day():
-            raise TypeError('Missing Upload file from the previous day. Previous day is not set as a SKIP date.'.format())
+            raise TypeError('Missing Upload file from the previous day for \'{0}\'. Previous day is not set as a SKIP date.'.format(self.identifier))
         deserializer = DeserializeFromTransaction()
         index = 0
         self.transaction_file.open()
@@ -81,24 +84,24 @@ class UploadTransactionFile(BaseModel):
         self.producer = ','.join(producer_list)
         
     def file_already_uploaded(self):
-        if self.__class__.objects.filter(file_date=self.file_date).exists():
+        if self.__class__.objects.filter(file_date=self.file_date, identifier__iexact=self.identifier).exists():
             return True
         return False
     
     def is_previous_day_file_uploaded(self):
         yesterday = self.file_date - timedelta(1)
-        if self.__class__.objects.filter(file_date=yesterday).exists():
+        if self.__class__.objects.filter(file_date=yesterday, identifier__iexact=self.identifier).exists():
             return True
         return False
     
     def skip_previous_day(self):
         yesterday = self.file_date - timedelta(1)
-        if UploadSkipDays.objects.filter(skip_date=yesterday).exists():
+        if UploadSkipDays.objects.filter(skip_date=yesterday, identifier__iexact=self.identifier).exists():
             return True
         return False
     
     def today_set_as_skip_day(self):
-        if UploadSkipDays.objects.filter(skip_date=self.file_date).exists():
+        if UploadSkipDays.objects.filter(skip_date=self.file_date, identifier__iexact=self.identifier).exists():
             return True
         return False
     

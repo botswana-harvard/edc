@@ -36,7 +36,8 @@ class MiddleManTransaction(BaseTransaction):
         model = get_model(app_name, model_name)
         if model and 'save_to_inspector' in dir(model):
             fields = model_dict.get('fields')
-            model().save_to_inspector(fields)
+            instance_pk = model_dict.get('pk')
+            model().save_to_inspector(fields, instance_pk )
 
     objects = models.Manager()
 
