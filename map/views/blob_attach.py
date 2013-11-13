@@ -7,6 +7,7 @@ from database_storage import DatabaseStorage
 
 
 def blog_attach(request, **kwargs):
+    """Loads a map image from database to render on template."""
     
     mapper_name = kwargs.get('mapper_name', '')
     mapper_item_label = kwargs.get('mapper_item_label', '')
