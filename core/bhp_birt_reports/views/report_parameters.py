@@ -7,10 +7,10 @@ from django import forms
 from django.contrib.admin import widgets
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from bhp_birt_reports.models import ReportParameter
-from bhp_birt_reports.models import BaseReport
-from bhp_birt_reports.forms import ReportForm
-from bhp_birt_reports.forms import ParametersForm
+from ..models import ReportParameter
+from ..models import BaseReport
+from ..forms import ReportForm
+from ..forms import ParametersForm
 
 @login_required
 def report_parameters(request, **kwargs):

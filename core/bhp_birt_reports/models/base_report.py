@@ -9,6 +9,8 @@ class BaseReport(BaseModel):
         unique=True,
         )
     
+    objects = models.Manager()
+    
     def __unicode__(self):
         return '{0}'.format(
             self.report_name)
