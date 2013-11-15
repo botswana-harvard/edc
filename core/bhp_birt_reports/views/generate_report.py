@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from bhp_birt_reports.classes import ReportDecryptor
+from ..classes import ReportDecryptor
 
 @login_required
 def generate_report(request, **kwargs):

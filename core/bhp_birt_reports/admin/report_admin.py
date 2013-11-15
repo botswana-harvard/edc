@@ -1,8 +1,8 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_birt_reports.models import ReportParameter
-from bhp_birt_reports.models import BaseReport
-from bhp_birt_reports.actions import process_report
+from edc.base.admin.admin import BaseModelAdmin
+from ..models import ReportParameter
+from ..models import BaseReport
+from ..actions import process_report
 
 class ReportParameterAdmin(BaseModelAdmin):
     #form = HouseholdLogEntryForm

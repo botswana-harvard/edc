@@ -1,5 +1,5 @@
 from django import forms
-from bhp_birt_reports.models import BaseReport
+from ..models import BaseReport
 
 
 class ParametersForm(forms.Form):
