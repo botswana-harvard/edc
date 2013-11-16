@@ -1,2 +1,2 @@
 from .entry_factory import EntryFactory
-from .scheduled_entry_meta_data_factory import ScheduledEntryMetaDataFactory
+from lab_entry_factory import LabEntryFactory

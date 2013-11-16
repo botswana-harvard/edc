@@ -1,1 +1,1 @@
-from .entry_meta_data_manager import EntryMetaDataManager
+from .meta_data_managers import EntryMetaDataManager, RequisitionMetaDataManager

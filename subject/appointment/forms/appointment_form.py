@@ -1,7 +1,7 @@
 from datetime import date
 from django import forms
 from django.core.exceptions import ValidationError
-from edc.subject.entry.models import ScheduledEntryMetaData
+from edc.entry_meta_data.models import ScheduledEntryMetaData
 from edc.base.form.forms import BaseModelForm
 from ..models import Appointment
 

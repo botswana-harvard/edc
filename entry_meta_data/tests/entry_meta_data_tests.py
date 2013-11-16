@@ -8,11 +8,10 @@ from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySi
 from edc.subject.appointment.models import Appointment
 from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.subject.entry.models import ScheduledEntryMetaData
+from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
 from edc.subject.entry.tests.factories import EntryFactory
 from edc.subject.entry.exceptions import EntryManagerError
-from edc.subject.lab_entry.models import ScheduledLabEntryBucket
-from edc.subject.lab_entry.tests.factories import LabEntryFactory
+from edc.subject.entry.tests.factories import LabEntryFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory

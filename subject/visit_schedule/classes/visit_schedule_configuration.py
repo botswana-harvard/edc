@@ -1,9 +1,12 @@
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.subject.entry.models import Entry
+from edc.subject.entry.models import Entry, LabEntry
+from edc.lab.lab_clinic_api.models import Panel
 
 from ..models import MembershipForm, ScheduleGroup, VisitDefinition
+
+RequisitionTuple = namedtuple('RequisitionTuple', 'entry_order app_label model_name panel_name panel_edc_name panel_type aliquot_type')
 
 
 class VisitScheduleConfiguration(object):
@@ -14,6 +17,7 @@ class VisitScheduleConfiguration(object):
     visit_definitions = OrderedDict()
 
     def rebuild(self):
+        """Rebuild, WARNING which DELETES meta data."""
         from edc.subject.appointment.models import Appointment
         for code in self.visit_definitions.iterkeys():
             if VisitDefinition.objects.filter(code=code):
@@ -107,3 +111,23 @@ class VisitScheduleConfiguration(object):
                     obj.app_label = entry[1]
                     obj.model_name = entry[2]
                     obj.save()
+            for requisition in definition.get('requisitions'):
+                if not Panel.objects.filter(name=requisition.panel_name):
+                    panel = Panel.objects.create(name=requisition.panel_name, edc_name=requisition.panel_edc_name, panel_type=requisition.panel_type)
+                    #panel.aliquot_type.add(requisition.aliquot_type)
+                else:
+                    Panel.objects.filter(name=requisition.panel_name).update(name=requisition.panel_name, edc_name=requisition.panel_edc_name, panel_type=requisition.panel_type)
+                    panel = Panel.objects.get(name=requisition.panel_name)
+                    panel.aliquot_type.clear()
+                    #panel.aliquot_type.add(requisition.aliquot_type)
+
+                if not LabEntry.objects.filter(panel=panel, app_label=requisition.app_label, model_name=requisition.model_name, visit_definition=visit_definition):
+                    LabEntry.objects.create(
+                        app_label=requisition.app_label,
+                        model_name=requisition.model_name,
+                        panel=panel,
+                        visit_definition=visit_definition,
+                        entry_order=requisition.entry_order,
+                        )
+                else:
+                    LabEntry.objects.filter(panel=panel, app_label=requisition.app_label, model_name=requisition.model_name, visit_definition=visit_definition).update(entry_order=requisition.entry_order)

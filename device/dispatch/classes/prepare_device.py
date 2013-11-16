@@ -356,10 +356,11 @@ class PrepareDevice(BasePrepareDevice):
             print "23. checking Review. {0} objects in destination, {1} objects in source.".format(in_destination, in_source)
             # logger.info("23. checking Review. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
         if not step > 24:
-            UnscheduledLabEntryBucket = get_model('lab_entry', 'UnscheduledLabEntryBucket')
-            in_destination = UnscheduledLabEntryBucket.objects.using(self.get_using_destination()).all().count()
-            in_source = UnscheduledLabEntryBucket.objects.using(self.get_using_source()).all().count()
-            print "24. checking UnscheduledLabEntryBucket. {0} objects in destination, {1} objects in source.".format(in_destination, in_source)
+            pass
+#             UnscheduledLabEntryBucket = get_model('lab_entry', 'UnscheduledLabEntryBucket')
+#             in_destination = UnscheduledLabEntryBucket.objects.using(self.get_using_destination()).all().count()
+#             in_source = UnscheduledLabEntryBucket.objects.using(self.get_using_source()).all().count()
+#             print "24. checking UnscheduledLabEntryBucket. {0} objects in destination, {1} objects in source.".format(in_destination, in_source)
             # logger.info("24. checking UnscheduledLabEntryBucket. {0} objects in destination, {1} objects in source.".format(in_destination, in_source))
         if not step > 25:
             LabEntry = get_model('lab_entry', 'LabEntry')

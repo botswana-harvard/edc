@@ -45,11 +45,11 @@ class Controller(object):
     def build(self, app_label):
         visit_schedule = self.get_visit_schedule(self, app_label)
         if visit_schedule:
-            visit_schedule.rebuild()
+            visit_schedule.build()
 
     def build_all(self):
         for visit_schedule in self.get_visit_schedules().itervalues():
-            visit_schedule.rebuild()
+            visit_schedule.build()
 
     def register(self, visit_schedule_configuration):
         """ Register visit_schedule_configurations"""

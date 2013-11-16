@@ -62,14 +62,25 @@ class Controller(object):
             for rule in self.get_rules_for_source_model(source_model):
                 rule.run(visit_instance)
 
+    def update_rules_for_source_model(self, source_model, visit_instance):
+        for rule in self.get_rules_for_source_model(source_model):
+            rule.run(visit_instance)
+
     def get_rules_for_source_model(self, source_model):
-        """Returns a list of rules filtered from apps rule groups matched on the rule 'source_model' class."""
+        """Returns a list of rules filtered on source_model.
+
+        Takes a list of rules for app_label=<source_model.app_label> and filters on source_model=<source_model>.
+
+        ..note:: if RuleGroup attribute Meta.source_model=None, source_model will default to RegisteredSubject."""
         filtered_list_of_rules = []
+        registeredsubject_list_of_rules = []
         for rule_group in self.get_registry(source_model._meta.app_label):
             for rule in rule_group.rules:
-                if rule.get_source_model() == source_model:
+                if rule.source_model._meta.object_name.lower() == 'registeredsubject':
+                    registeredsubject_list_of_rules.append(rule)
+                if rule.source_model == source_model:
                     filtered_list_of_rules.append(rule)
-        return filtered_list_of_rules
+        return registeredsubject_list_of_rules + filtered_list_of_rules
 
     def autodiscover(self):
         """ Autodiscover rules from a rule_groups module."""

@@ -36,8 +36,8 @@
         <td><span style="font-size:18px;">{{ scheduled_requisition.requisition_identifier }}</span></td>
                  
         <td>
-          {% if scheduled_requisition.scheduled_entry_url %}
-            <A href="{{ scheduled_requisition.scheduled_entry_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms&registered_subject={{ registered_subject }}&entry={{ scheduled_requisition.scheduled_requisition.pk }}&appointment={{ appointment.pk }}">{{ scheduled_requisition.status }}</A></td>
+          {% if scheduled_requisition.meta_data_model_change_url %}
+            <A href="{{ scheduled_requisition.meta_data_model_change_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms&registered_subject={{ registered_subject }}&entry={{ scheduled_requisition.scheduled_requisition.pk }}&appointment={{ appointment.pk }}">{{ scheduled_requisition.status }}</A></td>
           {% else %}
             {{ scheduled_requisition.status }}
           {% endif %}

@@ -5,7 +5,7 @@ from edc.choices.common import YES_NO_OPTIONAL
 from edc.subject.visit_schedule.models import BaseWindowPeriodItem, VisitDefinition
 
 from ..choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
-from ..managers import EntryBucketManager
+from ..managers import EntryManager
 from ..exceptions import EntryManagerError
 
 
@@ -48,7 +48,7 @@ class Entry(BaseWindowPeriodItem):
 
     model_name = models.CharField(max_length=50, null=True)
 
-    objects = EntryBucketManager()
+    objects = EntryManager()
 
     def save(self, *args, **kwargs):
         if not self.app_label:
@@ -76,7 +76,6 @@ class Entry(BaseWindowPeriodItem):
 
     class Meta:
         app_label = 'entry'
-        db_table = 'bhp_entry_entry'  # TODO: remove once schema is refactored
         verbose_name = "Entry"
         ordering = ['visit_definition__code', 'entry_order', ]
         unique_together = ['visit_definition', 'content_type_map', ]
