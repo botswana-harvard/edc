@@ -12,24 +12,19 @@ class BaseScheduledEntryContext(object):
 
     .. note:: "model" is the data form or requisition to be keyed and "scheduled entry" is the meta data instance."""
 
-    def __init__(self, scheduled_entry, appointment, visit_model):
-        self._scheduled_entry = None
-        self._model_pk = None
-        self._app_label = None
-        self._entry = None
-        self._entry_status = None
-        self._model_verbose_name = None
-        self._model_inst = None
-        self._appointment = appointment
-        self._visit_model = visit_model
-        self.set_scheduled_entry(scheduled_entry)
-        self.set_model_inst()
+    meta_data_model = None
+
+    def __init__(self, meta_data_instance, appointment, visit_model):
+        self._instance = None
+        self.appointment = appointment
+        self.visit_model = visit_model
+        self.meta_data_instance = meta_data_instance
 
     def get_context(self):
         """Returns a dictionary for the template context including all fields from ScheduledEntryMetaData, URLs, etc.
 
         .. note:: The main purpose of this class is to return the template context."""
-        context = copy.deepcopy(self.get_scheduled_entry().__dict__)
+        context = copy.deepcopy(self.meta_data_instance.__dict__)
         for key in [key for key in context.keys() if key.startswith('_')]:
             del context[key]
         context.update({
@@ -37,23 +32,20 @@ class BaseScheduledEntryContext(object):
             'user_modified': None,
             'created': None,
             'modified': None,
-            'status': self.get_entry_status(),
-            'model_pk': self.get_model_pk(),
-            'entry': self.get_entry(),
-            'label': self.get_entry_label(),
-            'entry_order': self.get_entry_order(),
-            'group_title': self.get_group_title(),
-            'model_url': self.get_model_url(),
-            'scheduled_entry_url': self.get_scheduled_entry_change_url(),
-            'databrowse_url': self.get_databrowse_url(),
-            'audit_trail_url': self.get_audit_trail_url(),
+            'status': self.meta_data_instance.entry_status,
+            'label': self.model._meta.verbose_name,
+            'model_url': self.model_url,
+            'meta_data_model_change_url': self.meta_data_model_change_url,
+            'databrowse_url': self.databrowse_url,
+            'audit_trail_url': self.audit_trail_url,
             })
-        if self.get_model_inst():
+        if self.instance:
             context.update({
-                'user_created': self.get_model_inst().user_created,
-                'user_modified': self.get_model_inst().user_modified,
-                'created': self.get_model_inst().created,
-                'modified': self.get_model_inst().modified,
+                'model_pk': self.instance.pk,
+                'user_created': self.instance.user_created,
+                'user_modified': self.instance.user_modified,
+                'created': self.instance.created,
+                'modified': self.instance.modified,
                 })
         context = self.contribute_to_context(context)
         return context
@@ -64,95 +56,68 @@ class BaseScheduledEntryContext(object):
         Users may override."""
         return context
 
-    def set_scheduled_entry(self, value=None):
-        """Sets to the schedule entry instance received on __init__."""
-        self._scheduled_entry = value
+    @property
+    def instance(self):
+        """Sets to the model instance referred to by the scheduled entry."""
+        if not self._instance:
+            options = {convert_from_camel(self.visit_instance._meta.object_name): self.visit_instance}
+            if self.model.objects.filter(**options):
+                self._instance = self.model.objects.get(**options)
+        return self._instance
 
-    def get_scheduled_entry(self):
-        return self._scheduled_entry
+    @property
+    def visit_instance(self):
+        """Returns and instance of the visit model filtered on appointment."""
+        return self.visit_model.objects.get(appointment=self.appointment)
 
-    def set_model_inst(self):
-        """Sets to the model instance refered to by the scheduled entry."""
-        self._model_inst = None
-        options = {convert_from_camel(self.get_visit_model_instance()._meta.object_name): self.get_visit_model_instance()}
-        if self.get_model_cls().objects.filter(**options):
-            self._model_inst = self.get_model_cls().objects.get(**options)
-
-    def get_model_inst(self):
-        return self._model_inst
-
-    def get_entry_label(self):
-        return self.get_model_cls()._meta.verbose_name
-
-    def get_scheduled_entry_cls(self):
-        return self.get_scheduled_entry().__class__
-
-    def get_model_pk(self):
-        if self.get_model_inst():
-            return self.get_model_inst().pk
-        return None
-
-    def get_entry(self):
-        return self.get_scheduled_entry().entry
-
-    def get_visit_model(self):
-        """Returns the visit model class."""
-        return self._visit_model
-
-    def get_visit_model_instance(self):
-        """Returns and instance of the visit model taken from the appointment."""
-        return getattr(self.get_appointment(), self.get_visit_model()._meta.object_name.lower())
-
-    def get_model_cls(self):
+    @property
+    def model(self):
         """Returns the model class of the model referred to by the scheduled entry."""
-        return get_model(self.get_app_label(), self.get_model_name())
+        app_label = self.meta_data_instance.entry.app_label
+        model_name = self.meta_data_instance.entry.model_name
+        return get_model(app_label, model_name)
 
-    def get_app_label(self):
-        return self.get_entry().content_type_map.app_label
-
-    def get_model_name(self):
-        return self.get_entry().content_type_map.model
-
-    def get_appointment(self):
-        """returns the current appointment."""
-        return self._appointment
-
-    def get_group_title(self):
-        return self.get_entry().group_title
-
-    def get_entry_order(self):
-        return self.get_entry().entry_order
-
-    def get_entry_status(self):
-        return self.get_scheduled_entry().entry_status
-
-    def get_model_url(self):
+    @property
+    def model_url(self):
         """Returns the URL to the model referred to by the scheduled entry meta data if the current appointment is 'in progress'."""
         model_url = None
-        if self.get_appointment().appt_status == 'in_progress':
-            if self.get_scheduled_entry().entry_status == 'NEW':
-                model_url = reverse('admin:{app_label}_{model_name}_add'.format(app_label=self.get_app_label(), model_name=self.get_model_name()))
-            elif self.get_scheduled_entry().entry_status == 'KEYED':
-                if self.get_model_pk():
-                    model_url = reverse('admin:{app_label}_{model_name}_change'.format(app_label=self.get_app_label(), model_name=self.get_model_name()), args=(self.get_model_pk(), ))
-            else:
-                pass  # could be NOT_REQUIRED
+        if self.appointment.appt_status == 'in_progress':
+            if self.meta_data_instance.entry_status == 'NOT_REQUIRED':
+                model_url = None
+            elif not self.instance:
+                model_url = reverse('admin:{app_label}_{model_name}_add'.format(app_label=self.model._meta.app_label,
+                                                                                model_name=self.model._meta.object_name.lower()))
+            elif self.instance:
+                model_url = reverse('admin:{app_label}_{model_name}_change'.format(app_label=self.model._meta.app_label,
+                                                                                       model_name=self.model._meta.object_name.lower()
+                                                                                       ), args=(self.instance.pk, ))
         return model_url
 
-    def get_scheduled_entry_change_url(self):
+    @property
+    def meta_data_model_change_url(self):
         """Returns the admin change URL for the scheduled entry meta data instance if the current appointment is 'in progress'."""
-        if self.get_appointment().appt_status == 'in_progress':
-            return reverse('admin:{app_label}_{model_name}_change'.format(app_label=self.get_scheduled_entry_cls()._meta.app_label, model_name=self.get_scheduled_entry_cls()._meta.object_name.lower()), args=(self.get_scheduled_entry().pk, ))
+        if self.appointment.appt_status == 'in_progress':
+            return reverse('admin:{app_label}_{model_name}_change'.format(app_label=self.meta_data_model._meta.app_label,
+                                                                          model_name=self.meta_data_model._meta.object_name.lower()
+                                                                          ), args=(self.meta_data_instance.pk, ))
         return ''
 
-    def get_databrowse_url(self):
+    @property
+    def databrowse_url(self):
         """Returns the URL to display this model instance using databrowse."""
-        if self.get_model_inst():
-            return '/databrowse/{app_label}/{model_name}/objects/{pk}/'.format(app_label=self.get_app_label(), model_name=self.get_model_name(), pk=self.get_model_pk())
+        if self.instance:
+            return '/databrowse/{app_label}/{model_name}/objects/{pk}/'.format(
+                app_label=self.model._meta.app_label,
+                model_name=self.model._meta.object_name.lower(),
+                pk=self.instance.pk)
         return ''
 
-    def get_audit_trail_url(self):
+    @property
+    def audit_trail_url(self):
         """returns the URL to display the audit trail for this model instance."""
-        if self.get_model_inst():
-            return '/audit_trail/{app_label}/{model_name}/{subject_identifier}/'.format(app_label=self.get_app_label(), model_name=self.get_model_name(), subject_identifier=self.get_model_inst().get_subject_identifier())
+        if self.instance:
+            return '/audit_trail/{app_label}/{model_name}/{subject_identifier}/'.format(
+                app_label=self.model._meta.app_label,
+                model_name=self.model._meta.object_name.lower(),
+                subject_identifier=self.instance.get_subject_identifier())
         return ''

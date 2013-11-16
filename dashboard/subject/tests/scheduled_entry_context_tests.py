@@ -1,57 +1,83 @@
-from django.contrib import admin
-from django.db import models
+from datetime import datetime
+
 from django.test import TestCase
-from django.contrib.contenttypes.models import ContentType
+
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.subject.entry.tests.factories import ScheduledEntryMetaDataFactory, EntryFactory
-from edc.subject.registration.tests.factories import RegisteredSubjectFactory
-from edc.subject.appointment.tests.factories import AppointmentFactory, ConfigurationFactory
-from edc.testing.tests.factories import TestScheduledModelFactory
-from edc.testing.models import TestScheduledModel
-from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.subject.entry.models import Entry
-from ..classes import ScheduledEntryContext
+from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from edc.dashboard.subject.classes import ScheduledEntryContext
+from edc.subject.appointment.models import Appointment
+from edc.subject.appointment.tests.factories import ConfigurationFactory
+from edc.subject.consent.tests.factories import ConsentCatalogueFactory
+from edc.entry_meta_data.models import ScheduledEntryMetaData
+from edc.subject.entry.tests.factories import EntryFactory
+from edc.subject.lab_entry.tests.factories import LabEntryFactory
+from edc.subject.lab_tracker.classes import site_lab_tracker
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
 
 
 class ScheduledEntryContextTests(TestCase):
 
-    def test_p1(self):
+    app_label = 'testing'
+    consent_catalogue_name = 'v1'
+
+    def setUp(self):
         from edc.testing.tests.factories import TestVisitFactory
-        TestVisit = models.get_model('testing', 'TestVisit')
-        admin.autodiscover()
+        self.test_visit_factory = TestVisitFactory
+        site_lab_tracker.autodiscover()
+        study_specific = StudySpecificFactory()
+        StudySiteFactory()
+        ConfigurationFactory()
         content_type_map_helper = ContentTypeMapHelper()
         content_type_map_helper.populate()
         content_type_map_helper.sync()
-        ConfigurationFactory()
-        registered_subject = RegisteredSubjectFactory()
-        content_type = ContentType.objects.get(app_label='bhp_base_test', model='testvisit')
-        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type=content_type)
-        visit_definition = VisitDefinitionFactory(visit_tracking_content_type_map=visit_tracking_content_type_map)
-        appointment = AppointmentFactory(registered_subject=registered_subject, visit_definition=visit_definition)
-        content_type = ContentType.objects.get(app_label='bhp_base_test', model='testscheduledmodel')
-        content_type_map = ContentTypeMap.objects.get(content_type=content_type)
-        entry = EntryFactory(visit_definition=visit_definition, content_type_map=content_type_map)
-        scheduled_entry_meta_data = ScheduledEntryMetaDataFactory(appointment=appointment, entry=entry)
-        test_visit = TestVisitFactory(appointment=appointment)
-        test_scheduled_model = TestScheduledModelFactory(test_visit=test_visit)
-        inst = ScheduledEntryContext(scheduled_entry_meta_data, appointment, TestVisit)
+        content_type_map = ContentTypeMap.objects.get(content_type__model='TestConsentWithMixin'.lower())
+        ConsentCatalogueFactory(
+            name=self.app_label,
+            consent_type='study',
+            content_type_map=content_type_map,
+            version=1,
+            start_datetime=study_specific.study_start_datetime,
+            end_datetime=datetime(datetime.today().year + 5, 1, 1),
+            add_for_app=self.app_label)
+        membership_form = MembershipFormFactory(content_type_map=content_type_map, category='subject')
+        schedule_group = ScheduleGroupFactory(membership_form=membership_form, group_name='GROUP_NAME', grouping_key='GROUPING_KEY')
+        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model='testvisit')
+        self.visit_definition = VisitDefinitionFactory(code='T0', title='T0', grouping='subject', visit_tracking_content_type_map=visit_tracking_content_type_map)
+        self.visit_definition.schedule_group.add(schedule_group)
 
-        self.assertEqual(inst.get_scheduled_entry(), scheduled_entry_meta_data)
-        print 'try to reverse scheduled_entry for pk={0}'.format(inst.get_scheduled_entry().pk)
-        self.assertIsNotNone(inst.get_scheduled_entry().pk)
-        self.assertIsNotNone(inst.get_scheduled_entry().pk)
-        self.assertEqual(inst.get_visit_model(), TestVisit)
-        self.assertEqual(inst.get_appointment(), appointment)
+        # add entries
+        content_type_map = ContentTypeMap.objects.get(app_label='testing', model='testscheduledmodel1')
+        EntryFactory(content_type_map=content_type_map, visit_definition=self.visit_definition, entry_order=100, entry_category='clinic', app_label='testing', model_name='testscheduledmodel1')
+        content_type_map = ContentTypeMap.objects.get(app_label='testing', model='testscheduledmodel2')
+        EntryFactory(content_type_map=content_type_map, visit_definition=self.visit_definition, entry_order=110, entry_category='clinic', app_label='testing', model_name='testscheduledmodel2')
+        content_type_map = ContentTypeMap.objects.get(app_label='testing', model='testscheduledmodel3')
+        EntryFactory(content_type_map=content_type_map, visit_definition=self.visit_definition, entry_order=120, entry_category='clinic', app_label='testing', model_name='testscheduledmodel3')
 
-        self.assertEqual(inst.get_entry(), inst.get_scheduled_entry().entry)
-        self.assertTrue(isinstance(inst.get_entry(), Entry))
+        # add requisitions
+        LabEntryFactory(visit_definition=self.visit_definition, entry_order=100)
+        LabEntryFactory(visit_definition=self.visit_definition, entry_order=110)
+        LabEntryFactory(visit_definition=self.visit_definition, entry_order=120)
 
-        self.assertEqual(inst.get_app_label(), 'bhp_base_test')
-        self.assertEqual(inst.get_model_name(), 'testscheduledmodel')
-        self.assertEqual(inst.get_model_cls(), TestScheduledModel)
-        self.assertIsNotNone(inst.get_model_pk())
+        self.test_consent = TestConsentWithMixinFactory(gender='M')
 
-        inst.get_context()
-        #print inst.get_context()
-        self.assertIsNotNone(inst.get_scheduled_entry_url())
+        self.registered_subject = RegisteredSubject.objects.get(subject_identifier=self.test_consent.subject_identifier)
+        self.appointment = Appointment.objects.get(registered_subject=self.registered_subject)
+        #self.test_visit = self.test_visit_factory(appointment=self.appointment)
+
+    def test_url1(self):
+        """Instance exists, model_url should be a change url, not add."""
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        TestScheduledModel1Factory(test_visit=self.test_visit)
+        meta_data_instance = ScheduledEntryMetaData.objects.get(entry_status='KEYED', registered_subject=self.registered_subject, entry__app_label='testing', entry__model_name='testscheduledmodel1')
+        scheduled_entry_context = ScheduledEntryContext(meta_data_instance, self.appointment, self.test_visit.__class__)
+        self.assertNotIn('add', scheduled_entry_context.get_context().get('model_url'))
+
+    def test_url2(self):
+        """Instance does not exist, model_url should be an add url."""
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        meta_data_instance = ScheduledEntryMetaData.objects.get(registered_subject=self.registered_subject, entry__app_label='testing', entry__model_name='testscheduledmodel1')
+        scheduled_entry_context = ScheduledEntryContext(meta_data_instance, self.appointment, self.test_visit.__class__)
+        self.assertIn('add', scheduled_entry_context.get_context().get('model_url'))

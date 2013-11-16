@@ -25,37 +25,35 @@ class BaseRuleGroup(type):
                         if 'app_label' not in dir(rule):
                             setattr(rule, 'app_label', meta.app_label)
                             # check target model list and convert to classes using meta.app_label
-                            target_model_list = copy.copy(rule._target_model_list)
-                            for item in rule._target_model_list:
+                            #target_model_list = copy.copy(rule.target_model_list)
+                            for item in rule.target_model_list:
                                 if isinstance(item, basestring):
-                                    model_name = target_model_list.pop(target_model_list.index(item))
+                                    model_name = rule.target_model_list.pop(rule.target_model_list.index(item))
                                     model_cls = get_model(meta.app_label, model_name)
                                     if not model_cls:
                                         raise AttributeError('Attribute \'target_model\' in rule \'{0}.{1}\' contains a model_name that does not exist. app_label=\'{2}\', model_name=\'{3}\'.'.format(name, rule_name, meta.app_label, model_name))
-                                    target_model_list.append(model_cls)
-                            rule._target_model_list = target_model_list
-                        if 'source_model' in dir(rule) and 'source_model' in dir(meta):
-                            raise AttributeError('Cannot declare attribute \'source model\' in both a rule and class Meta for rule {0}.'.format(rule_name))
-                        if not 'source_model' in dir(rule) and not 'source_model' in dir(meta):
-                            raise AttributeError('Attribute \'source model\' must be declared in either the rule or class Meta (source_model=<ModelClass>) for rule {0}.'.format(rule_name))
-                        if not 'source_model' in dir(rule):
-                            if 'source_model' in dir(meta):
-                                rule.set_source_model(meta.source_model)
+                                    rule.target_model_list.append(model_cls)
+                            #rule.target_model_list = target_model_list
+#                         TODO: add this back, should allow source to be by rule or only in meta
+#                         if 'source_model' in dir(rule) and 'source_model' in dir(meta):
+#                             raise AttributeError('Cannot declare attribute \'source model\' in both a rule and class Meta for rule {0}.'.format(rule_name))
+#                         if not 'source_model' in dir(rule) and not 'source_model' in dir(meta):
+#                             raise AttributeError('Attribute \'source model\' must be declared in either the rule or class Meta (source_model=<ModelClass>) for rule {0}.'.format(rule_name))
+#                         if not 'source_model' in dir(rule):
+#                             if 'source_model' in dir(meta):
+                        rule.source_model = meta.source_model
                         if 'filter_model' not in dir(rule):
                             if 'filter_model' in dir(meta):
                                 if not isinstance(meta.filter_model, tuple):
                                     raise AttributeError('Rule Meta Attribute \'filter_model\' must be a tuple of (ModelClass, fieldname).')
                                 if not issubclass(meta.filter_model[0], Model) and not isinstance(meta.filter_model[0], tuple):
                                     raise AttributeError('Rule Meta Attribute \'filter_model\' must be a tuple of (ModelClass, fieldname) or ((app_label, model_name), fieldname).')
-                                rule.set_filter_model_cls(meta.filter_model[0])
-                                rule.set_filter_fieldname(meta.filter_model[1])
+                                rule.filter_model_cls = meta.filter_model[0]
+                                rule.filter_fieldname = meta.filter_model[1]
                     app_label = rule.app_label
                     rules.append(rule)
                     attrs.update({rule_name: rule})
         attrs.update({'rules': tuple(rules)})
-#         if app_label not in settings.INSTALLED_APPS:
-#             raise AttributeError('Rule group app_label not found in INSTALLED_APPS. Got {0}'.format(app_label))
-#         attrs.update({'app_label': attrs.get('__module__').split('.')[0]})
         attrs.update({'app_label': app_label})
         return super(BaseRuleGroup, cls).__new__(cls, name, bases, attrs)
 

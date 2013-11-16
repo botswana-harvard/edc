@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from edc.subject.entry.models import ScheduledEntryMetaData
-from edc.subject.entry.classes import ScheduledEntry
+from edc.entry_meta_data.models import ScheduledEntryMetaData
+from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper
 
 from ..classes import BaseRule, Logic
 
@@ -29,7 +29,7 @@ class BaseRuleTests(TestCase):
         class TestRule(BaseRule):
 
             def set_entry_class(self):
-                self._entry_class = ScheduledEntry
+                self._entry_class = ScheduledEntryMetaDataHelper
 
             def set_meta_data_model(self):
                 self._meta_data_model = ScheduledEntryMetaData

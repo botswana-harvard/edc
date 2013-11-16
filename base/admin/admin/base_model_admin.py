@@ -12,7 +12,7 @@ from django.utils.encoding import force_unicode
 
 from edc.base.admin.exceptions import NextUrlError
 from edc.core.bhp_data_manager.models import ModelHelpText
-from edc.subject.entry.classes import ScheduledEntry
+from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper
 from edc.subject.rule_groups.classes import site_rule_groups
 
 logger = logging.getLogger(__name__)
@@ -225,23 +225,6 @@ class BaseModelAdmin (admin.ModelAdmin):
             request.session['filtered'] = None
         return custom_http_response_redirect
 
-#     def set_excluded_supplemental_fields(self, obj):
-#         self._excluded_supplemental_fields = None
-#         if 'supplemental_fields' in dir(self):
-#             # we are using form._meta.exclude, so make sure it was not set in the form.Meta class definition
-#             if not 'Meta' in dir(self.form):
-#                 raise AttributeError('ModelAdmin classes used with \'supplemental_fields\' must declare a form. See {0}.'.format(self.__class__))
-#             if 'exclude' in dir(self.form.Meta):
-#                 raise AttributeError('The form.Meta attribute exclude cannot be used with \'supplemental_fields\'. See {0}.'.format(self.form))
-#             # always set to None first
-#             self.form._meta.exclude = None
-#             self.fields, self._excluded_supplemental_fields = self.supplemental_fields.choose_fields(self.fields, self.form._meta.model, obj)
-
-#     def get_excluded_supplemental_fields(self, obj=None):
-#         if not self._excluded_supplemental_fields:
-#             self.set_excluded_supplemental_fields(obj)
-#         return self._excluded_supplemental_fields
-
     def get_form_prep(self, request, obj=None, **kwargs):
         pass
 
@@ -351,17 +334,12 @@ class BaseModelAdmin (admin.ModelAdmin):
 
         Called from response_add and response_change."""
         retval = (None, None, None)
-        if not visit_attr or not entry_order:
-            return retval
-        visit_model_inst = getattr(obj, visit_attr)
-        self.run_rule_groups(visit_model_inst)
-        scheduled_entry_meta_data = ScheduledEntry(visit_model_inst.get_appointment(), visit_model_inst.__class__, visit_attr).get_next_entry_for(entry_order)
-        if scheduled_entry_meta_data:
-            url = reverse('admin:{0}_{1}_add'.format(scheduled_entry_meta_data.entry.content_type_map.app_label, scheduled_entry_meta_data.entry.content_type_map.module_name))
-            retval = (url, visit_model_inst, scheduled_entry_meta_data.entry.entry_order)
+        if visit_attr and entry_order:
+            visit_instance = getattr(obj, visit_attr)
+            site_rule_groups.update_all(visit_instance)
+            scheduled_entry_meta_data_helper = ScheduledEntryMetaDataHelper(visit_instance.get_appointment(), visit_instance.__class__, visit_attr)
+            scheduled_entry_meta_data_helper = scheduled_entry_meta_data_helper.get_next_entry_for(entry_order)
+            if scheduled_entry_meta_data_helper:
+                url = reverse('admin:{0}_{1}_add'.format(scheduled_entry_meta_data_helper.entry.content_type_map.app_label, scheduled_entry_meta_data_helper.entry.content_type_map.module_name))
+                retval = (url, visit_instance, scheduled_entry_meta_data_helper.entry.entry_order)
         return retval
-
-    def run_rule_groups(self, visit_model_instance):
-        """ Runs rules in any rule groups for a given visit model instance."""
-        if visit_model_instance:
-            site_rule_groups.update_all(visit_model_instance)

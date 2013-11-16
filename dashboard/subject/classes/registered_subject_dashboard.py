@@ -12,17 +12,14 @@ from edc.core.bhp_common.utils import convert_from_camel
 from edc.core.bhp_data_manager.models import ActionItem
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.dashboard.base.classes import Dashboard
+from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
 from edc.lab.lab_clinic_api.classes import EdcLabResults
 from edc.lab.lab_packing.models import BasePackingList
 from edc.lab.lab_requisition.models import BaseBaseRequisition
 from edc.subject.appointment.models import Appointment
-from edc.subject.entry.classes import ScheduledEntry, AdditionalEntry
-from edc.subject.entry.models import ScheduledEntryMetaData, AdditionalEntryBucket
-from edc.subject.lab_entry.models import ScheduledLabEntryBucket, AdditionalLabEntryBucket
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.locator.models import BaseLocator
 from edc.subject.registration.models import RegisteredSubject
-from edc.subject.rule_groups.classes import site_rule_groups
 from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.subject_summary.models import Link
 from edc.subject.visit_schedule.classes import MembershipFormHelper
@@ -31,7 +28,7 @@ from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
 from .scheduled_entry_context import ScheduledEntryContext
-from .scheduled_requisition_context import ScheduledRequisitionContext
+from .requisition_context import RequisitionContext
 
 
 class RegisteredSubjectDashboard(Dashboard):
@@ -40,6 +37,11 @@ class RegisteredSubjectDashboard(Dashboard):
     dashboard_url_name = 'subject_dashboard_url'
 
     def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None, membership_form_category=None, visit_model=None, registered_subject=None, show=None, **kwargs):
+
+        self._appointment = None
+        self._appointment_zero = None
+        self._appointment_code = None
+        self._appointment_continuation_count = None
 
         dashboard_models = dashboard_models or {}
         dashboard_models.update({'appointment': Appointment})
@@ -93,20 +95,13 @@ class RegisteredSubjectDashboard(Dashboard):
             extra_url_context=self.extra_url_context,
             )
         if self.show == 'forms':
-            #self._add_or_update_entry_buckets()
-            #self._run_rule_groups()
             self.context.add(
-                scheduled_entry_meta_data_meta=self.scheduled_entry_meta,
-                scheduled_entry_meta_data=self.scheduled_entry_meta_data,  # TODO: things takes a long time!!
-                scheduled_lab_bucket=self.scheduled_lab_bucket,
-                additional_entry_bucket=self.additional_entry_bucket,
-                additional_lab_bucket=self.additional_lab_bucket,
                 requisition_model=self.requisition_model,
                 rendered_scheduled_forms=self.render_scheduled_forms()
                 )
             if self.requisition_model:
                 self.context.add(requisition_model_meta=self.requisition_model._meta)
-                self.context.add(rendered_scheduled_requisitions=self.render_scheduled_requisitions())
+                self.context.add(rendered_scheduled_requisitions=self.render_requisitions())
             self.render_summary_links()
         self.context.add(rendered_action_items=self.render_action_item())
         self.context.add(rendered_locator=self.render_locator())
@@ -193,29 +188,32 @@ class RegisteredSubjectDashboard(Dashboard):
 
     @property
     def appointment(self):
-        if self.dashboard_model_name == 'appointment':
-            self._appointment = Appointment.objects.get(pk=self.dashboard_id)
-        elif self.dashboard_model_name == 'visit':
-            self._appointment = self.visit_model.objects.get(pk=self.dashboard_id).appointment
-        else:
-            self._appointment = None
+        if not self._appointment:
+            if self.dashboard_model_name == 'appointment':
+                self._appointment = Appointment.objects.get(pk=self.dashboard_id)
+            elif self.dashboard_model_name == 'visit':
+                self._appointment = self.visit_model.objects.get(pk=self.dashboard_id).appointment
+            else:
+                self._appointment = None
+            self._appointment_zero = None
+            self._appointment_code = None
+            self._appointment_continuation_count = None
         return self._appointment
 
     @property
     def appointment_zero(self):
-        self._appointment_zero = None
-        if self.appointment:
-            if self.appointment.visit_instance == 0:
-                self._appointment_zero = self.appointment
-            else:
-                if Appointment.objects.filter(registered_subject=self.appointment.registered_subject, visit_definition=self.appointment.visit_definition, visit_instance=0) > 1:
-                    self.delete_duplicate_appointments(inst=self)
-                self._appointment_zero = Appointment.objects.get(registered_subject=self.appointment.registered_subject, visit_definition=self.appointment.visit_definition, visit_instance=0)
+        if not self._appointment_zero:
+            if self.appointment:
+                if self.appointment.visit_instance == '0':
+                    self._appointment_zero = self.appointment
+                else:
+                    if Appointment.objects.filter(registered_subject=self.appointment.registered_subject, visit_definition=self.appointment.visit_definition, visit_instance=0) > 1:
+                        self.delete_duplicate_appointments(inst=self)
+                    self._appointment_zero = Appointment.objects.get(registered_subject=self.appointment.registered_subject, visit_definition=self.appointment.visit_definition, visit_instance=0)
         return self._appointment_zero
 
     @property
     def appointment_code(self):
-        self._appointment_code = None
         if not self._appointment_code:
             if self.appointment:
                 self._appointment_code = self._appointment.visit_definition.code
@@ -223,7 +221,6 @@ class RegisteredSubjectDashboard(Dashboard):
 
     @property
     def appointment_continuation_count(self):
-        self._appointment_continuation_count = None
         if not self._appointment_continuation_count:
             if self.appointment:
                 self._appointment_continuation_count = self._appointment.visit_instance
@@ -354,19 +351,6 @@ class RegisteredSubjectDashboard(Dashboard):
     def unkeyed_subject_membership_models(self):
         return self.subject_membership_models.get('unkeyed', [])
 
-    def _run_rule_groups(self):
-        """ Runs rules in any rule groups if visit_code is known and update entries as (new, not required) when the visit dashboard is refreshed.
-
-        If status is 'keyed' and the form is actually keyed, do nothing."""
-        if not self.subject_identifier:
-            raise AttributeError('set value of subject_identifier before calling dashboard create() when scheduled_entry_meta_data_rules exist')
-        # run rules if visit_code is known -- user selected, that is user clicked to see list of
-        # scheduled entries for a given visit.
-
-        # TODO: on data entry, is the visit_model_instance always 0 or the actual instance 0,1,2, etc
-        if self.visit_model_instance:
-            site_rule_groups.update_all(self.visit_model_instance)
-
     @property
     def membership_form_category(self):
         return self._membership_form_category
@@ -398,61 +382,6 @@ class RegisteredSubjectDashboard(Dashboard):
         if not self._membership_form_categories:
             raise MembershipFormError('Attribute _categories may not be None. Have any membership forms been defined?. See module \'edc.subject.visit_schedule\'. See {0}'.format(self))
         return self._membership_form_categories
-
-    def _add_or_update_entry_buckets(self):
-        """ Adds missing bucket entries and flags added and existing entries as keyed or not keyed (only)."""
-        if self.visit_model_instance:
-            scheduled_entry = ScheduledEntry(self.appointment, self.visit_model, self.visit_model_attrname)
-            scheduled_entry.add_or_update_for_visit(self.visit_model_instance)
-            # if requisition_model has been defined, assume scheduled labs otherwise pass
-            if self._requisition_model:
-                ScheduledLabEntryBucket.objects.add_for_visit(
-                    visit_model_instance=self.visit_model_instance,
-                    requisition_model=self._requisition_model)
-        if self.registered_subject:
-            additional_entry = AdditionalEntry()
-            additional_entry.update_for_registered_subject(self.registered_subject)
-
-    @property
-    def scheduled_entry_meta(self):
-        return ScheduledEntryMetaData._meta
-
-    @property
-    def scheduled_entry_meta_data(self):
-        """ Returns the scheduled meta data using the appointment with instance=0."""
-        # TODO: If reason for visit (visit tracking form) is not scheduled, filters out NEW.
-        #       see #show_scheduled_entries = ScheduledEntry().show_scheduled_entries(registered_subject)
-        # TODO: does this handle appointments where appointment.visit_instance != 0??
-        # TODO: specifies entry_catgory='clinic'. is this required or correct??
-        self._scheduled_entry_meta_data = None
-        if self.appointment:
-            # TODO: should this be appointment_zero?
-            self._scheduled_entry_meta_data = ScheduledEntry(self.appointment, self.visit_model, self.visit_model_attrname).get_entries_for('clinic')
-        return self._scheduled_entry_meta_data
-
-    @property
-    def scheduled_lab_bucket(self):
-        """ Sets the scheduled lab bucket entries using the appointment with instance=0 and adds to context ."""
-        self._scheduled_lab_bucket = None
-        if self.appointment:
-            self._scheduled_lab_bucket = ScheduledLabEntryBucket.objects.get_scheduled_labs_for(
-                                            registered_subject=self.registered_subject,
-                                            appointment=self.appointment_zero,
-                                            visit_code=self.appointment.visit_definition.code)
-        return self._scheduled_lab_bucket
-
-    @property
-    def additional_lab_bucket(self):
-        """ Gets the additional lab bucket entries using the appointment with instance=0 and adds to context ."""
-        self._additional_lab_bucket = None
-        if self.appointment:
-            self._additional_lab_bucket = AdditionalLabEntryBucket.objects.get_labs_for(registered_subject=self.registered_subject,
-                                                                                  appointment=self.appointment_zero)
-        return self._additional_lab_bucket
-
-    @property
-    def additional_entry_bucket(self):
-        return AdditionalEntryBucket.objects.filter(registered_subject=self.registered_subject)
 
     @property
     def subject_type(self):
@@ -654,9 +583,10 @@ class RegisteredSubjectDashboard(Dashboard):
         """Renders the Scheduled Entry Forms section of the dashboard using the context class ScheduledEntryContext."""
         template = 'scheduled_entries.html'
         scheduled_entries = []
-        for scheduled_entry in self.scheduled_entry_meta_data:
-            inst = ScheduledEntryContext(scheduled_entry, self.appointment, self.visit_model)
-            scheduled_entries.append(inst.get_context())
+        scheduled_entry_helper = ScheduledEntryMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
+        for meta_data_instance in scheduled_entry_helper.get_entries_for('clinic'):
+            scheduled_entry_context = ScheduledEntryContext(meta_data_instance, self.appointment, self.visit_model)
+            scheduled_entries.append(scheduled_entry_context.get_context())
         rendered_scheduled_forms = render_to_string(template, {
             'scheduled_entries': scheduled_entries,
             'visit_attr': self.visit_model_attrname,
@@ -670,15 +600,16 @@ class RegisteredSubjectDashboard(Dashboard):
             'show': self.show})
         return rendered_scheduled_forms
 
-    def render_scheduled_requisitions(self):
-        """Renders the Scheduled Requisitions section of the dashboard using the context class ScheduledLabEntryContext."""
+    def render_requisitions(self):
+        """Renders the Scheduled Requisitions section of the dashboard using the context class RequisitionContext."""
         template = 'scheduled_requisitions.html'
-        scheduled_requisitions = []
-        for scheduled_requisition in self.scheduled_lab_bucket:
-            inst = ScheduledRequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
-            scheduled_requisitions.append(inst.get_context())
-        render_scheduled_requisitions = render_to_string(template, {
-            'scheduled_requisitions': scheduled_requisitions,
+        requisitions = []
+        requisition_helper = RequisitionMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
+        for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
+            inst = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
+            requisitions.append(inst.get_context())
+        render_requisitions = render_to_string(template, {
+            'scheduled_requisitions': requisitions,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
             'registered_subject': self.registered_subject.pk,
@@ -688,7 +619,7 @@ class RegisteredSubjectDashboard(Dashboard):
             'dashboard_id': self.dashboard_id,
             'subject_dashboard_url': self.dashboard_url_name,
             'show': self.show})
-        return render_scheduled_requisitions
+        return render_requisitions
 
     def render_subject_hiv_status(self):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""

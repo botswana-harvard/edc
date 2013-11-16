@@ -13,7 +13,7 @@ from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
 from edc.base.model.models import BaseListModel
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc.core.bhp_variables.models import StudySite
-from edc.subject.entry.models import BaseEntryMetaData
+from edc.entry_meta_data.models import BaseEntryMetaData
 from edc.device.sync.classes import BaseProducer
 from edc.device.sync.helpers import TransactionHelper
 from edc.device.sync.exceptions import PendingTransactionError

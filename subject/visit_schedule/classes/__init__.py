@@ -2,5 +2,5 @@ from .visit_definition_helper import VisitDefinitionHelper
 from .membership_form_helper import MembershipFormHelper
 from .window_period import WindowPeriod
 from .permissions import Permissions
-from .visit_schedule_configuration import VisitScheduleConfiguration
+from .visit_schedule_configuration import VisitScheduleConfiguration, RequisitionTuple
 from .controller import site_visit_schedules

@@ -5,8 +5,8 @@ from django.core.exceptions import ValidationError
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from edc.entry_meta_data.models import ScheduledEntryMetaData
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.subject.entry.models import ScheduledEntryMetaData
 from edc.subject.entry.tests.factories import EntryFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject

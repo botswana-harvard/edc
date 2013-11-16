@@ -1,4 +1,4 @@
-from .additional_data_rule import AdditionalDataRule
+#from .additional_data_rule import AdditionalDataRule
 from .base_rule import BaseRule
 from .controller import Controller, site_rule_groups
 from .dashboard_rule import DashboardRule

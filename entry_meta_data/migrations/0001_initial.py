@@ -8,8 +8,8 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Entry'
-        db.create_table(u'entry_entry', (
+        # Adding model 'ScheduledEntryMetaData'
+        db.create_table(u'entry_meta_data_scheduledentrymetadata', (
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
@@ -18,32 +18,24 @@ class Migration(SchemaMigration):
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('revision', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
-            ('time_point', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('base_interval', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('base_interval_unit', self.gf('django.db.models.fields.CharField')(default='D', max_length=10)),
-            ('lower_window', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('lower_window_unit', self.gf('django.db.models.fields.CharField')(default='D', max_length=10)),
-            ('upper_window', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('upper_window_unit', self.gf('django.db.models.fields.CharField')(default='D', max_length=10)),
-            ('grouping', self.gf('django.db.models.fields.CharField')(max_length=25, null=True, blank=True)),
-            ('visit_definition', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['visit_schedule.VisitDefinition'])),
-            ('content_type_map', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', to=orm['bhp_content_type_map.ContentTypeMap'])),
-            ('entry_order', self.gf('django.db.models.fields.IntegerField')()),
-            ('group_title', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
-            ('required', self.gf('django.db.models.fields.CharField')(default='Yes', max_length=10)),
-            ('entry_category', self.gf('django.db.models.fields.CharField')(default='CLINIC', max_length=25, db_index=True)),
-            ('entry_window_calculation', self.gf('django.db.models.fields.CharField')(default='VISIT', max_length=25)),
-            ('default_entry_status', self.gf('django.db.models.fields.CharField')(default='NEW', max_length=25)),
-            ('app_label', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('model_name', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
+            ('registered_subject', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', to=orm['registration.RegisteredSubject'])),
+            ('current_entry_title', self.gf('django.db.models.fields.CharField')(max_length=250, null=True)),
+            ('entry_status', self.gf('django.db.models.fields.CharField')(default='NEW', max_length=25, db_index=True)),
+            ('due_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('report_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('entry_comment', self.gf('django.db.models.fields.TextField')(max_length=250, null=True, blank=True)),
+            ('close_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('fill_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('appointment', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', to=orm['appointment.Appointment'])),
+            ('entry', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['entry.Entry'])),
         ))
-        db.send_create_signal('entry', ['Entry'])
+        db.send_create_signal('entry_meta_data', ['ScheduledEntryMetaData'])
 
-        # Adding unique constraint on 'Entry', fields ['visit_definition', 'content_type_map']
-        db.create_unique(u'entry_entry', ['visit_definition_id', 'content_type_map_id'])
+        # Adding unique constraint on 'ScheduledEntryMetaData', fields ['registered_subject', 'entry', 'appointment']
+        db.create_unique(u'entry_meta_data_scheduledentrymetadata', ['registered_subject_id', 'entry_id', 'appointment_id'])
 
-        # Adding model 'LabEntry'
-        db.create_table(u'entry_labentry', (
+        # Adding model 'RequisitionMetaData'
+        db.create_table(u'entry_meta_data_requisitionmetadata', (
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
@@ -52,45 +44,65 @@ class Migration(SchemaMigration):
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('revision', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
-            ('time_point', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('base_interval', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('base_interval_unit', self.gf('django.db.models.fields.CharField')(default='D', max_length=10)),
-            ('lower_window', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('lower_window_unit', self.gf('django.db.models.fields.CharField')(default='D', max_length=10)),
-            ('upper_window', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('upper_window_unit', self.gf('django.db.models.fields.CharField')(default='D', max_length=10)),
-            ('grouping', self.gf('django.db.models.fields.CharField')(max_length=25, null=True, blank=True)),
-            ('visit_definition', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['visit_schedule.VisitDefinition'])),
-            ('panel', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['lab_clinic_api.Panel'], null=True)),
-            ('app_label', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('model_name', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('entry_order', self.gf('django.db.models.fields.IntegerField')()),
-            ('required', self.gf('django.db.models.fields.CharField')(default='YES', max_length=10)),
-            ('entry_category', self.gf('django.db.models.fields.CharField')(default='CLINIC', max_length=25)),
-            ('entry_window_calculation', self.gf('django.db.models.fields.CharField')(default='VISIT', max_length=25)),
-            ('default_entry_status', self.gf('django.db.models.fields.CharField')(default='NEW', max_length=25)),
+            ('registered_subject', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', to=orm['registration.RegisteredSubject'])),
+            ('current_entry_title', self.gf('django.db.models.fields.CharField')(max_length=250, null=True)),
+            ('entry_status', self.gf('django.db.models.fields.CharField')(default='NEW', max_length=25, db_index=True)),
+            ('due_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('report_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('entry_comment', self.gf('django.db.models.fields.TextField')(max_length=250, null=True, blank=True)),
+            ('close_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('fill_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('appointment', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', to=orm['appointment.Appointment'])),
+            ('lab_entry', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['entry.LabEntry'])),
         ))
-        db.send_create_signal('entry', ['LabEntry'])
+        db.send_create_signal('entry_meta_data', ['RequisitionMetaData'])
 
-        # Adding unique constraint on 'LabEntry', fields ['visit_definition', 'panel']
-        db.create_unique(u'entry_labentry', ['visit_definition_id', 'panel_id'])
+        # Adding unique constraint on 'RequisitionMetaData', fields ['registered_subject', 'lab_entry', 'appointment']
+        db.create_unique(u'entry_meta_data_requisitionmetadata', ['registered_subject_id', 'lab_entry_id', 'appointment_id'])
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'LabEntry', fields ['visit_definition', 'panel']
-        db.delete_unique(u'entry_labentry', ['visit_definition_id', 'panel_id'])
+        # Removing unique constraint on 'RequisitionMetaData', fields ['registered_subject', 'lab_entry', 'appointment']
+        db.delete_unique(u'entry_meta_data_requisitionmetadata', ['registered_subject_id', 'lab_entry_id', 'appointment_id'])
 
-        # Removing unique constraint on 'Entry', fields ['visit_definition', 'content_type_map']
-        db.delete_unique(u'entry_entry', ['visit_definition_id', 'content_type_map_id'])
+        # Removing unique constraint on 'ScheduledEntryMetaData', fields ['registered_subject', 'entry', 'appointment']
+        db.delete_unique(u'entry_meta_data_scheduledentrymetadata', ['registered_subject_id', 'entry_id', 'appointment_id'])
 
-        # Deleting model 'Entry'
-        db.delete_table(u'entry_entry')
+        # Deleting model 'ScheduledEntryMetaData'
+        db.delete_table(u'entry_meta_data_scheduledentrymetadata')
 
-        # Deleting model 'LabEntry'
-        db.delete_table(u'entry_labentry')
+        # Deleting model 'RequisitionMetaData'
+        db.delete_table(u'entry_meta_data_requisitionmetadata')
 
 
     models = {
+        'appointment.appointment': {
+            'Meta': {'ordering': "['registered_subject', 'appt_datetime']", 'unique_together': "(('registered_subject', 'visit_definition', 'visit_instance'),)", 'object_name': 'Appointment', 'db_table': "'bhp_appointment_appointment'"},
+            'appt_close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'appt_datetime': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True'}),
+            'appt_reason': ('django.db.models.fields.CharField', [], {'max_length': '25', 'blank': 'True'}),
+            'appt_status': ('django.db.models.fields.CharField', [], {'default': "'new'", 'max_length': '25', 'db_index': 'True'}),
+            'appt_type': ('django.db.models.fields.CharField', [], {'default': "'clinic'", 'max_length': '20'}),
+            'best_appt_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'comment': ('django.db.models.fields.CharField', [], {'max_length': '250', 'blank': 'True'}),
+            'contact_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'contact_tel': ('django.db.models.fields.CharField', [], {'max_length': '250', 'blank': 'True'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'dashboard_type': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '25', 'null': 'True', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'is_confirmed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['registration.RegisteredSubject']"}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']", 'null': 'True'}),
+            'timepoint_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['visit_schedule.VisitDefinition']"}),
+            'visit_instance': ('django.db.models.fields.CharField', [], {'default': "'0'", 'max_length': '1', 'null': 'True', 'db_index': 'True', 'blank': 'True'})
+        },
         'bhp_content_type_map.contenttypemap': {
             'Meta': {'ordering': "['name']", 'unique_together': "(['app_label', 'model'],)", 'object_name': 'ContentTypeMap'},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'}),
@@ -103,6 +115,19 @@ class Migration(SchemaMigration):
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'module_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'bhp_variables.studysite': {
+            'Meta': {'ordering': "['site_code']", 'unique_together': "[('site_code', 'site_name')]", 'object_name': 'StudySite'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'site_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '4'}),
+            'site_name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '35'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
@@ -170,6 +195,48 @@ class Migration(SchemaMigration):
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'visit_definition': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['visit_schedule.VisitDefinition']"})
         },
+        'entry_meta_data.requisitionmetadata': {
+            'Meta': {'ordering': "['registered_subject', 'lab_entry__panel__name', 'appointment']", 'unique_together': "(['registered_subject', 'lab_entry', 'appointment'],)", 'object_name': 'RequisitionMetaData'},
+            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['appointment.Appointment']"}),
+            'close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'current_entry_title': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True'}),
+            'due_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'entry_comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
+            'entry_status': ('django.db.models.fields.CharField', [], {'default': "'NEW'", 'max_length': '25', 'db_index': 'True'}),
+            'fill_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'lab_entry': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['entry.LabEntry']"}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['registration.RegisteredSubject']"}),
+            'report_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'entry_meta_data.scheduledentrymetadata': {
+            'Meta': {'ordering': "['registered_subject', 'entry', 'appointment']", 'unique_together': "(['registered_subject', 'entry', 'appointment'],)", 'object_name': 'ScheduledEntryMetaData'},
+            'appointment': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['appointment.Appointment']"}),
+            'close_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'current_entry_title': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True'}),
+            'due_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'entry': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['entry.Entry']"}),
+            'entry_comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
+            'entry_status': ('django.db.models.fields.CharField', [], {'default': "'NEW'", 'max_length': '25', 'db_index': 'True'}),
+            'fill_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['registration.RegisteredSubject']"}),
+            'report_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
         'lab_clinic_api.aliquottype': {
             'Meta': {'ordering': "['name']", 'object_name': 'AliquotType'},
             'alpha_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
@@ -230,6 +297,42 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
+        'registration.registeredsubject': {
+            'Meta': {'ordering': "['subject_identifier']", 'unique_together': "(('first_name', 'dob', 'initials'),)", 'object_name': 'RegisteredSubject', 'db_table': "'bhp_registration_registeredsubject'"},
+            'comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'dob': ('django.db.models.fields.DateField', [], {'null': 'True'}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
+            'gender': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True'}),
+            'hiv_status': ('django.db.models.fields.CharField', [], {'max_length': '15', 'null': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'identity': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True', 'blank': 'True'}),
+            'identity_type': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
+            'initials': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'is_dob_estimated': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
+            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
+            'may_store_samples': ('django.db.models.fields.CharField', [], {'default': "'?'", 'max_length': '3'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'randomization_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'registration_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'registration_identifier': ('django.db.models.fields.CharField', [], {'max_length': '36', 'null': 'True', 'blank': 'True'}),
+            'registration_status': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
+            'relative_identifier': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'salt': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
+            'screening_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'sid': ('django.db.models.fields.CharField', [], {'max_length': '15', 'null': 'True', 'blank': 'True'}),
+            'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']", 'null': 'True', 'blank': 'True'}),
+            'subject_consent_id': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'subject_identifier': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'unique': 'True', 'max_length': '50', 'blank': 'True'}),
+            'subject_identifier_as_pk': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'db_index': 'True'}),
+            'subject_type': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
+            'survival_status': ('django.db.models.fields.CharField', [], {'max_length': '15', 'null': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
         'visit_schedule.membershipform': {
             'Meta': {'object_name': 'MembershipForm', 'db_table': "'bhp_visit_membershipform'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
@@ -287,4 +390,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['entry']
+    complete_apps = ['entry_meta_data']

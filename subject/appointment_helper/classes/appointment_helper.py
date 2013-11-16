@@ -1,9 +1,11 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model, Max
-from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
-from edc.subject.subject_config.models import SubjectConfiguration
-from edc.subject.appointment.models import Configuration
+
 from edc.subject.appointment.exceptions import AppointmentStatusError
+from edc.subject.appointment.models import Configuration
+from edc.subject.subject_config.models import SubjectConfiguration
+from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
+
 from .appointment_date_helper import AppointmentDateHelper
 
 
@@ -122,7 +124,8 @@ class AppointmentHelper(object):
     def check_appt_status(self, appointment, using):
         """Checks the appt_status relative to the visit tracking form and ScheduledEntryMetaData.
         """
-        from edc.subject.entry.classes import ScheduledEntry
+        from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper
+
         # for an existing appointment, check if there is a visit tracking form already on file
         if not appointment.visit_definition.visit_tracking_content_type_map:
             raise ImproperlyConfigured('Unable to determine the visit tracking model. Update bhp_visit.visit_definition {0} and select the correct visit model.'.format(appointment.visit_definition))
@@ -134,7 +137,8 @@ class AppointmentHelper(object):
             # have visit tracking, can only be Done, Incomplete, In Progress
             visit_model_instance = appointment.visit_definition.visit_tracking_content_type_map.model_class().objects.get(appointment=appointment)
             #if visit_model_instance.reason in visit_model_instance.get_visit_reason_no_follow_up_choices():
-            if not ScheduledEntry(appointment, visit_model_instance.__class__).show_scheduled_entries():
+            scheduled_entry_helper = ScheduledEntryMetaDataHelper(appointment, visit_model_instance.__class__)
+            if not scheduled_entry_helper.show_scheduled_entries():
                 # visit reason implies no data will be collected, so set appointment to Done
                 appointment.appt_status = 'done'
             else:
