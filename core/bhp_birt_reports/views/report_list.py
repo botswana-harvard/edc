@@ -9,6 +9,6 @@ def report_list(request, **kwargs):
     
     return render_to_response(
         #'report_'+request.user.username+'_'+report_name+'.html', {},
-        'report_list.html', {'reports' : reports, 'report_url': '/reports/operational/'},
+        'report_list.html', {'reports' : reports,},
         context_instance=RequestContext(request)
         )
