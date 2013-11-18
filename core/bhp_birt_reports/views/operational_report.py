@@ -1,4 +1,5 @@
 import collections
+from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -11,12 +12,25 @@ from apps.bcpp.choices import COMMUNITIES
 @login_required
 def operational_report(request, **kwargs):
     values = {}
+    community = request.GET.get('community', '')
+    date_from = request.GET.get('date_from', '1960/01/01')
+    if date_from == 'YYYY/MM/DD':
+        date_from = '1960/01/01'
+    date_to = request.GET.get('date_to', '2099/12/31')
+    if date_to == 'YYYY/MM/DD':
+        date_to = '2099/12/31'
+    
+    d_from = date_from.split('/')
+    date_from = date(int(d_from[0]), int(d_from[1]), int(d_from[2]))
+    d_to = date_to.split('/')
+    date_to = date(int(d_to[0]), int(d_to[1]), int(d_to[2]))
+    
     plt = Plot.objects.all()
-    reached = plt.filter(action='confirmed').count()
+    reached = plt.filter(action='confirmed', community__icontains=community ,modified__gte=date_from, modified__lte=date_to).count()
     values['1. Plots reached'] = reached
-    not_reached = plt.filter(action='unconfirmed').count()
+    not_reached = plt.filter(action='unconfirmed', community__icontains=community ,modified__gte=date_from, modified__lte=date_to).count()
     values['2. Plots not reached'] = not_reached
-    members = HouseholdMember.objects.all()
+    members = HouseholdMember.objects.filter(household_structure__household__plot__community__icontains=community ,created__gte=date_from, created__lte=date_to)
     values['3. Total members'] = members.count()
     age_eligible = members.filter(eligible_member=True).count()
     values['4. Total age eligible members'] = age_eligible
@@ -37,7 +51,7 @@ def operational_report(request, **kwargs):
     age_eligible_refused = members.filter(eligible_member=True, member_status='REFUSED')
     refused = age_eligible_refused.count()
     values['91. Age eligible members that REFUSED'] = refused
-    how_many_tested = HivResult.objects.all().count()
+    how_many_tested = HivResult.objects.filter(subject_visit__household_member__household_structure__household__plot__community__icontains=community ,created__gte=date_from, created__lte=date_to).count()
     values['92. Age eligible members that TESTED'] = how_many_tested
     values = collections.OrderedDict(sorted(values.items()))
     
@@ -53,7 +67,7 @@ def operational_report(request, **kwargs):
     for undecided in age_eligible_undecided:
             visits_per_undecided.append((str(undecided),undecided_entries.filter(subject_undecided__registered_subject=undecided.registered_subject).count()))
     
-    communities = [community[0] for community in  COMMUNITIES]
+    communities = [community[0].lower() for community in  COMMUNITIES]
     communities[0] = '---------'
     return render_to_response(
         #'report_'+request.user.username+'_'+report_name+'.html', {},
