@@ -20,7 +20,11 @@
 <tbody>
 {% for report in reports %}
 	<tr style="background: LightYellow;">
-		<td><A href="{{report_url}}">{{ report.report_name }}.&nbsp;</A></td>       
+		{% if report.is_active %}
+			<td><A href="{{report.report_url}}">{{ report.report_name }}.&nbsp;</A></td>
+		{% else %}
+			<td>{{ report.report_name }}.&nbsp;</td>
+		{% endif %}      
     </tr> 
 {% endfor %}
 </tbody>

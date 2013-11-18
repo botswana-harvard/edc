@@ -9,6 +9,16 @@ class BaseReport(BaseModel):
         unique=True,
         )
     
+    report_url = models.CharField(
+        verbose_name=("Url to report"),
+        max_length=150,
+        )
+    
+    is_active = models.BooleanField(
+        verbose_name=("Is active"),
+        default=False,
+        )
+    
     objects = models.Manager()
     
     def __unicode__(self):

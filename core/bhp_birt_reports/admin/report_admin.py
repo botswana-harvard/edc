@@ -23,8 +23,9 @@ class BaseReportAdmin(BaseModelAdmin):
     #form = HouseholdLogForm
     inlines = [ReportParameterInline, ]
     list_per_page = 15
-    search_fields = ('report_name',)
-    list_display = ('report_name',)
-    list_filter = ('report_name',)
+    fields = ('report_name', 'report_url', 'is_active')
+    search_fields = ('report_name', 'report_url', 'is_active')
+    list_display = ('report_name', 'report_url', 'is_active')
+    list_filter = ('report_name', 'is_active')
     actions = [process_report, ]
 admin.site.register(BaseReport, BaseReportAdmin)
