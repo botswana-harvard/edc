@@ -6,6 +6,7 @@ from ..models import BaseReport
 from apps.bcpp_household.models import Plot
 from apps.bcpp_household_member.models import HouseholdMember
 from apps.bcpp_subject.models import HivResult, SubjectAbsenteeEntry, SubjectUndecidedEntry
+from apps.bcpp.choices import COMMUNITIES
 
 @login_required
 def operational_report(request, **kwargs):
@@ -52,9 +53,14 @@ def operational_report(request, **kwargs):
     for undecided in age_eligible_undecided:
             visits_per_undecided.append((str(undecided),undecided_entries.filter(subject_undecided__registered_subject=undecided.registered_subject).count()))
     
+    communities = [community[0] for community in  COMMUNITIES]
+    communities[0] = '---------'
     return render_to_response(
         #'report_'+request.user.username+'_'+report_name+'.html', {},
         
-        'operational_report.html', {'values' : values, 'absentee_tobe_visited' : absentee_tobe_visited, 'visits_per_undecided' : visits_per_undecided},
+        'operational_report.html', {'values' : values, 
+                                    'absentee_tobe_visited' : absentee_tobe_visited, 
+                                    'visits_per_undecided' : visits_per_undecided,
+                                    'communities' : communities},
         context_instance=RequestContext(request)
         )
