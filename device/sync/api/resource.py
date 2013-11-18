@@ -105,4 +105,19 @@ class MiddleManTransactionResource(ModelResource):
 #             'producer': ['exact', ],
         }
         serializer = Serializer()
+        
+class OutgoingTransactionSiteServerResource(ModelResource):
+
+    """ Api resource for used for pulling transactions by the Master Server from Site Servers."""
+
+    class Meta:
+        queryset = OutgoingTransaction.objects.filter(is_consumed_server=False).order_by('timestamp')
+        resource_name = 'outgoingtransaction'
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
+        allowed_methods = ['get', 'post', 'put', ]
+        filtering = {
+#            'producer': ['exact', ],
+        }
+        serializer = Serializer()
 # models.signals.post_save.connect(create_api_key, sender=User)
