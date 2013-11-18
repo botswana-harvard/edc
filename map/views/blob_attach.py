@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404
 from django.conf import settings
 from ..classes import site_mappers
 from ..exceptions import MapperError
-from database_storage import DatabaseStorage
+# from database_storage import DatabaseStorage
 
 
 def blog_attach(request, **kwargs):
@@ -21,7 +21,7 @@ def blog_attach(request, **kwargs):
             map = int(kwargs.get('map', None)) 
             if map == 1:
                 # Read file from database
-                storage = DatabaseStorage(settings.DB_FILES)
+                storage = None #DatabaseStorage(settings.DB_FILES)
                 image_file = storage.open(item.uploaded_map_18.name, 'rb')
                 if not image_file:
                     raise Http404
