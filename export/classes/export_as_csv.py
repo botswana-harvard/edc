@@ -16,7 +16,7 @@ class ExportAsCsv(object):
         self._modeladmin = modeladmin
         self._model = None
         self._file_obj = None
-        self._delimiter = None
+        self._delimiter = ','
         self._header_row = []
         self._header_row_is_set = None
         self._header_from_m2m_complete = False
@@ -24,7 +24,7 @@ class ExportAsCsv(object):
         self._track_history = track_history
         self._queryset = queryset
         if delimiter:
-            self._delimiter = delimiter or ','
+            self._delimiter = delimiter
         self.set_model(model)
         if show_all_fields:
             self.set_field_names_from_model()  # set initial field name list
