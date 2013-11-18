@@ -13,6 +13,8 @@ from apps.bcpp.choices import COMMUNITIES
 def operational_report(request, **kwargs):
     values = {}
     community = request.GET.get('community', '')
+    if community.find('----') != -1:
+        community = ''
     date_from = request.GET.get('date_from', '1960/01/01')
     if date_from == 'YYYY/MM/DD':
         date_from = '1960/01/01'
@@ -56,13 +58,13 @@ def operational_report(request, **kwargs):
     values = collections.OrderedDict(sorted(values.items()))
     
     absentee_tobe_visited = []
-    absentee_entries = SubjectAbsenteeEntry.objects.all()
+    absentee_entries = SubjectAbsenteeEntry.objects.filter(subject_absentee__household_member__household_structure__household__plot__community__icontains=community ,created__gte=date_from, created__lte=date_to)
     absentee_entries.count()
     for absentee in age_eligible_absent:
             if absentee_entries.filter(subject_absentee__registered_subject=absentee.registered_subject).count() < 3:
                     absentee_tobe_visited.append((str(absentee),absentee_entries.filter(subject_absentee__registered_subject=absentee.registered_subject).count()))
-    undecided_entries = SubjectUndecidedEntry.objects.all()
-
+    
+    undecided_entries = SubjectUndecidedEntry.objects.filter(subject_undecided__household_member__household_structure__household__plot__community__icontains=community ,created__gte=date_from, created__lte=date_to)
     visits_per_undecided = []
     for undecided in age_eligible_undecided:
             visits_per_undecided.append((str(undecided),undecided_entries.filter(subject_undecided__registered_subject=undecided.registered_subject).count()))
