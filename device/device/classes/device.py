@@ -58,7 +58,7 @@ class Device(object):
     def is_producer_name_server(self, name):
         if not name:
             raise TypeError('argument name cannot be None. Pass the producer name.')
-        hostname = name.split('-')
+        hostname = name.split('-')[0]
         if int(hostname[4:]) in self.SERVER_DEVICE_ID_LIST:
             return True
         return False
