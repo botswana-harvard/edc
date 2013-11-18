@@ -22,10 +22,30 @@ def operational_report(request, **kwargs):
     if date_to == 'YYYY/MM/DD' or date_to == '':
         date_to = '2099/12/31'
     
-    d_from = date_from.split('/')
-    date_from = date(int(d_from[0]), int(d_from[1]), int(d_from[2]))
-    d_to = date_to.split('/')
-    date_to = date(int(d_to[0]), int(d_to[1]), int(d_to[2]))
+    if date_from.find('/') != -1:
+        d_from = date_from.split('/')
+        if int(d_from[0]) > 1950:#format must be YYYY-MM-DD           
+            date_from = date(int(d_from[0]), int(d_from[1]), int(d_from[2]))
+        else:
+            date_from = date(int(d_from[2]), int(d_from[1]), int(d_from[0]))#format must be DD-MM-YYYY
+        d_to = date_to.split('/')
+        if int(d_to[0]) > 1950:#format must be YYYY-MM-DD           
+            date_to = date(int(d_to[0]), int(d_to[1]), int(d_to[2]))
+        else:
+            date_to = date(int(d_to[2]), int(d_to[1]), int(d_to[0]))#format must be DD-MM-YYYY
+    elif date_from.find('-') != -1:
+        d_from = date_from.split('-')
+        if int(d_from[0]) > 1950:#format must be YYYY-MM-DD           
+            date_from = date(int(d_from[0]), int(d_from[1]), int(d_from[2]))
+        else:
+            date_from = date(int(d_from[2]), int(d_from[1]), int(d_from[0]))#format must be DD-MM-YYYY
+        d_to = date_to.split('-')
+        if int(d_to[0]) > 1950:#format must be YYYY-MM-DD           
+            date_to = date(int(d_to[0]), int(d_to[1]), int(d_to[2]))
+        else:
+            date_to = date(int(d_to[2]), int(d_to[1]), int(d_to[0]))#format must be DD-MM-YYYY
+    else:
+        raise TypeError('Unrecorgnised date format. Please use either Mozilla Firefox, Google Chrome or Safari.')
     
     plt = Plot.objects.all()
     reached = plt.filter(action='confirmed', community__icontains=community ,modified__gte=date_from, modified__lte=date_to).count()
