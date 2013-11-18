@@ -16,6 +16,7 @@ class ExportAsCsv(object):
         self._modeladmin = modeladmin
         self._model = None
         self._file_obj = None
+        self._delimiter = None
         self._header_row = []
         self._header_row_is_set = None
         self._header_from_m2m_complete = False
