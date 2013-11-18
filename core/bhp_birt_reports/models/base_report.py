@@ -9,7 +9,7 @@ class BaseReport(BaseModel):
         unique=True,
         )
     
-    report_name = models.CharField(
+    report_url = models.CharField(
         verbose_name=("Url to report"),
         max_length=150,
         )
