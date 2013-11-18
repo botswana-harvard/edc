@@ -16,10 +16,10 @@ def operational_report(request, **kwargs):
     if community.find('----') != -1:
         community = ''
     date_from = request.GET.get('date_from', '1960/01/01')
-    if date_from == 'YYYY/MM/DD':
+    if date_from == 'YYYY/MM/DD' or date_from == '':
         date_from = '1960/01/01'
     date_to = request.GET.get('date_to', '2099/12/31')
-    if date_to == 'YYYY/MM/DD':
+    if date_to == 'YYYY/MM/DD' or date_to == '':
         date_to = '2099/12/31'
     
     d_from = date_from.split('/')
