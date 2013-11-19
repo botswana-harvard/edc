@@ -192,6 +192,8 @@ class BaseBaseRequisition (BaseUuidModel):
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
     
     def requisition_identifier_as_uuid_on_post_save(self, **kwargs):
+        #TODO: you're calling save in a post-save??
+        #      why not just set to uuid4() in the save or default on the model ??
         if self.is_drawn.lower() == 'no' and not self.specimen_identifier and not self.requisition_identifier:
             self.requisition_identifier = self.id
             self.specimen_identifier = self.id
