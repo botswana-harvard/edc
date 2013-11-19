@@ -504,7 +504,7 @@ class Mapper(object):
 
         Wrapper for :func:`gps_validator`"""
         verify = True
-        if 'VERIFY_GPS' in dir(settings.CURRENT_MAPPER):
+        if 'VERIFY_GPS' in dir(settings):
             verify = settings.VERIFY_GPS
         if verify:
             dist = self.gps_distance_between_points(lat, lon, center_lat, center_lon, radius)
