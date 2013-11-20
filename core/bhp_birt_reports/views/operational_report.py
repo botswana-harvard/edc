@@ -8,44 +8,17 @@ from apps.bcpp_household.models import Plot
 from apps.bcpp_household_member.models import HouseholdMember
 from apps.bcpp_subject.models import HivResult, SubjectAbsenteeEntry, SubjectUndecidedEntry
 from apps.bcpp.choices import COMMUNITIES
+from ..classes import OperataionalReportUtilities
 
 @login_required
 def operational_report(request, **kwargs):
     values = {}
+    utilities = OperataionalReportUtilities()
     community = request.GET.get('community', '')
     if community.find('----') != -1:
         community = ''
-    date_from = request.GET.get('date_from', '1960/01/01')
-    if date_from == 'YYYY/MM/DD' or date_from == '':
-        date_from = '1960/01/01'
-    date_to = request.GET.get('date_to', '2099/12/31')
-    if date_to == 'YYYY/MM/DD' or date_to == '':
-        date_to = '2099/12/31'
-    
-    if date_from.find('/') != -1:
-        d_from = date_from.split('/')
-        if int(d_from[0]) > 1950:#format must be YYYY-MM-DD           
-            date_from = date(int(d_from[0]), int(d_from[1]), int(d_from[2]))
-        else:
-            date_from = date(int(d_from[2]), int(d_from[1]), int(d_from[0]))#format must be DD-MM-YYYY
-        d_to = date_to.split('/')
-        if int(d_to[0]) > 1950:#format must be YYYY-MM-DD           
-            date_to = date(int(d_to[0]), int(d_to[1]), int(d_to[2]))
-        else:
-            date_to = date(int(d_to[2]), int(d_to[1]), int(d_to[0]))#format must be DD-MM-YYYY
-    elif date_from.find('-') != -1:
-        d_from = date_from.split('-')
-        if int(d_from[0]) > 1950:#format must be YYYY-MM-DD           
-            date_from = date(int(d_from[0]), int(d_from[1]), int(d_from[2]))
-        else:
-            date_from = date(int(d_from[2]), int(d_from[1]), int(d_from[0]))#format must be DD-MM-YYYY
-        d_to = date_to.split('-')
-        if int(d_to[0]) > 1950:#format must be YYYY-MM-DD           
-            date_to = date(int(d_to[0]), int(d_to[1]), int(d_to[2]))
-        else:
-            date_to = date(int(d_to[2]), int(d_to[1]), int(d_to[0]))#format must be DD-MM-YYYY
-    else:
-        raise TypeError('Unrecorgnised date format. Please use either Mozilla Firefox, Google Chrome or Safari.')
+    date_from = utilities.date_format_utility(request.GET.get('date_from', ''), '1960/01/01')
+    date_to = utilities.date_format_utility(request.GET.get('date_to', ''), '2099/12/31')
     
     plt = Plot.objects.all()
     reached = plt.filter(action='confirmed', community__icontains=community ,modified__gte=date_from, modified__lte=date_to).count()
