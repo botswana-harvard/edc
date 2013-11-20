@@ -34,7 +34,9 @@ class UploadTransactionFile(BaseModel):
     
     def save(self, *args, **kwargs):
         if not self.id:
+            print 'TRANSACTION_FILE_NAME= '+self.transaction_file.name
             self.file_name = self.transaction_file.name.replace('\\', '/').split('/')[-1]
+            print 'FILE_NAME= '+self.file_name
             date_string = self.file_name.split('_')[2].split('.')[0][:8]
             self.file_date = date(int(date_string[:4]),int(date_string[4:6]), int(date_string[6:8]))
             self.identifier = self.file_name.split('_')[1]
@@ -57,7 +59,7 @@ class UploadTransactionFile(BaseModel):
         #Can only upload if there exists an upload from the previous day, or a valid skip day exists in its preence.
         if self.file_already_uploaded():
             raise TypeError('File covering date of \'{0}\' for \'{1}\' is already uploaded.'.format(self.file_date, self.identifier))
-        if not self.is_previous_day_file_uploaded() and not self.skip_previous_day():
+        if not self.is_previous_day_file_uploaded() and not self.skip_previous_day() and not self.first_upload_or_skip_day():
             raise TypeError('Missing Upload file from the previous day for \'{0}\'. Previous day is not set as a SKIP date.'.format(self.identifier))
         deserializer = DeserializeFromTransaction()
         index = 0
@@ -91,6 +93,12 @@ class UploadTransactionFile(BaseModel):
     def is_previous_day_file_uploaded(self):
         yesterday = self.file_date - timedelta(1)
         if self.__class__.objects.filter(file_date=yesterday, identifier__iexact=self.identifier).exists():
+            return True
+        return False
+    
+    def first_upload_or_skip_day(self):
+        #This is the first upload or skip day record.
+        if (self.__class__.objects.all().count() == 0) and (UploadSkipDays.objects.all().count() == 0):
             return True
         return False
     

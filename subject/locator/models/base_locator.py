@@ -54,6 +54,8 @@ class BaseLocator(BaseConsentedUuidModel):
     may_sms_follow_up = models.CharField(
         max_length=25,
         choices=YES_NO,
+        null=True,
+        blank=False,
         verbose_name="Has the participant given his/her permission for study staff to SMS her for follow-up purposes during the study?",
         )
 
