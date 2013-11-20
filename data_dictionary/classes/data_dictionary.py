@@ -6,6 +6,7 @@ from django.db.models.fields import NOT_PROVIDED
 
 from ..models import DataDictionaryModel
 
+
 class DataDictionary(object):
 
     def __init__(self, app_label):
