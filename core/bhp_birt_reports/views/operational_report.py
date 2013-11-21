@@ -6,7 +6,8 @@ from django.template import RequestContext
 from ..models import BaseReport
 from apps.bcpp_household.models import Plot
 from apps.bcpp_household_member.models import HouseholdMember
-from apps.bcpp_subject.models import HivResult, SubjectAbsenteeEntry, SubjectUndecidedEntry
+from apps.bcpp_subject.models import HivResult
+from apps.bcpp_household_member.models import SubjectAbsenteeEntry, SubjectUndecidedEntry
 from apps.bcpp.choices import COMMUNITIES
 from ..classes import OperataionalReportUtilities
 
