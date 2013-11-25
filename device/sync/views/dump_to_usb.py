@@ -20,10 +20,10 @@ site_mappers.autodiscover()
 def dump_to_usb(request, **kwargs):
     app_name = kwargs.get('app_name', None)
     mapper = None
-    if not 'CURRENT_COMMUNITY' in dir(settings) or not settings.CURRENT_COMMUNITY:
-        raise TypeError('Ensure settings.CURRENT_COMMUNITY exists and is not \'None\'')
-    mapper = site_mappers.get_registry(settings.CURRENT_COMMUNITY)()
+    mapper = site_mappers.get_registry(site_mappers.get_current_mapper().map_area)()
     site_name = mapper.get_map_area()
+    if not site_name.islower():
+        raise TypeError('Ensure settings.CURRENT_COMMUNITY is all small letters.')
     usb_path = None
     if platform.system() == 'Darwin':
         usb_path = '/Volumes/' + app_name + '_usb/'
@@ -32,6 +32,7 @@ def dump_to_usb(request, **kwargs):
     if not app_name:
         raise ValidationError('app_name cannot be None')
     try:
+        #filename should be in form appname_identifier_timestamp.jso eg bcpp_ranaka_2013118.json
         f = open(usb_path + app_name +'_'+ site_name + '_' + str(datetime.now().strftime("%Y%m%d%H%M")) + '.json', 'w')
     except:
         raise ValidationError('Please insert a usb device named \'{0}_usb\', currently using USB_PATH \'{1}\''.format(app_name, usb_path))

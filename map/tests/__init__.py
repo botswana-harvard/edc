@@ -1,1 +1,2 @@
 from mapper_methods_tests import MapperTests
+from controller_methods_tests import ControllerTests

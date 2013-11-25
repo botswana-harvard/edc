@@ -4,11 +4,13 @@ from .views import index, view_transaction, consume_transactions, dump_to_usb, c
 
 outgoing_transaction_middle_man_resource = OutgoingTransactionMiddleManResource()
 outgoing_transaction_server_resource = OutgoingTransactionServerResource()
+outgoing_transaction_site_server_resource = OutgoingTransactionServerResource()
 middle_man_transaction_resource = MiddleManTransactionResource()
 
 urlpatterns = patterns('',
     (r'^api_otmr/', include(outgoing_transaction_middle_man_resource.urls)),
     (r'^api_otsr/', include(outgoing_transaction_server_resource.urls)),
+    (r'^api_otssr/', include(outgoing_transaction_site_server_resource.urls)),
     (r'^api_mmtr/', include(middle_man_transaction_resource.urls)),
     )
 

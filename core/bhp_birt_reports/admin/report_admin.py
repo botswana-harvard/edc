@@ -1,8 +1,8 @@
 from django.contrib import admin
-from bhp_base_admin.admin import BaseModelAdmin
-from bhp_birt_reports.models import ReportParameter
-from bhp_birt_reports.models import BaseReport
-from bhp_birt_reports.actions import process_report
+from edc.base.admin.admin import BaseModelAdmin
+from ..models import ReportParameter
+from ..models import BaseReport
+from ..actions import process_report
 
 class ReportParameterAdmin(BaseModelAdmin):
     #form = HouseholdLogEntryForm
@@ -23,8 +23,9 @@ class BaseReportAdmin(BaseModelAdmin):
     #form = HouseholdLogForm
     inlines = [ReportParameterInline, ]
     list_per_page = 15
-    search_fields = ('report_name',)
-    list_display = ('report_name',)
-    list_filter = ('report_name',)
+    fields = ('report_name', 'report_url', 'is_active')
+    search_fields = ('report_name', 'report_url', 'is_active')
+    list_display = ('report_name', 'report_url', 'is_active')
+    list_filter = ('report_name', 'is_active')
     actions = [process_report, ]
 admin.site.register(BaseReport, BaseReportAdmin)
