@@ -34,9 +34,8 @@ class UploadTransactionFile(BaseModel):
     
     def save(self, *args, **kwargs):
         if not self.id:
-            print 'TRANSACTION_FILE_NAME= '+self.transaction_file.name
+            #if not self.file_name:
             self.file_name = self.transaction_file.name.replace('\\', '/').split('/')[-1]
-            print 'FILE_NAME= '+self.file_name
             date_string = self.file_name.split('_')[2].split('.')[0][:8]
             self.file_date = date(int(date_string[:4]),int(date_string[4:6]), int(date_string[6:8]))
             self.identifier = self.file_name.split('_')[1]
