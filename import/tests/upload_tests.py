@@ -27,22 +27,22 @@ class UploadTests(TestCase):
         #Ensure that you initially have zero skip days defined
         self.assertEqual(UploadSkipDays.objects.count(), 0)
         #create initial upload file, all should work ok.
-        upload_file_1 = UploadTransactionFileFactory(identifier='file1')
-        #Attempting to create another upload file for the same day and identifier(community) should raise an error.
-        self.assertRaises(TypeError, UploadTransactionFileFactory(identifier='file1'))
-        #Creating another upload file with a different identifier(community) should work fine
-        upload_file_2 = UploadTransactionFileFactory(identifier='file2')
-        #Attempting to create a skip day for an identifier(community) with an existing upload file should raise an error.
-        self.assertRaises(TypeError, UploadSkipDaysFactory(identifier='file1'))
-        #creating the next day as a skip day for FILE1 should be ok.
-        skip_day_1 = UploadSkipDaysFactory(skip_date=date.today() + timedelta(1), identifier='file1')
-        #Attempting to create another upload two days from now for FILE2 should fail i.e no previous day upload or skip day found.
-        self.assertRaises(TypeError, UploadTransactionFileFactory(file_date=date.today() + timedelta(2), identifier='file2'))
-        #Creating an upload for two days later for FILE1 should work as there is a skip day from previous day.
-        UploadTransactionFileFactory(file_date=date.today() + timedelta(2), identifier='file1')
-        #Attempting to create a skip day for two days later for FILE2 should fail i.e no previous date skip or upload
-        self.assertRaises(TypeError, UploadSkipDaysFactory(file_date=date.today() + timedelta(2), identifier='file2'))
-        #Creating an upload for three days later for FILE1 should work as there is an upload day from previous day.
-        UploadTransactionFileFactory(file_date=date.today() + timedelta(3), identifier='file1')
+        upload_file_1 = UploadTransactionFileFactory(file_name='bcpp_ranaka_201311191820.json', identifier='ranaka')
+        #Attempting to create another upload file for the same day and identifier(ranaka) should raise an error.
+        self.assertRaises(TypeError, UploadTransactionFileFactory(file_name='bcpp_ranaka_201311191820.json', identifier='ranaka'))
+        #Creating another upload file with a different identifier(digawana) should work fine
+        upload_file_2 = UploadTransactionFileFactory(file_name='bcpp_digawana_201311191820.json', identifier='digawana')
+        #Attempting to create a skip day for an identifier(ranaka) with an existing upload file should raise an error.
+        self.assertRaises(TypeError, UploadSkipDaysFactory(identifier='ranaka'))
+        #creating the next day as a skip day for ranaka should be ok.
+        skip_day_1 = UploadSkipDaysFactory(skip_date=date(2013,11,20) + timedelta(1), identifier='ranaka')
+        #Attempting to create another upload two days from now for digawana should fail i.e no previous day upload or skip day found.
+        self.assertRaises(TypeError, UploadTransactionFileFactory(file_name='bcpp_ranaka_201311211820.json', identifier='digawana'))
+        #Creating an upload for two days later for ranaka should work as there is a skip day from previous day.
+        UploadTransactionFileFactory(file_name='bcpp_ranaka_201311211820.json', identifier='ranaka')
+        #Attempting to create a skip day for two days later for digawana should fail i.e no previous date skip or upload
+        self.assertRaises(TypeError, UploadSkipDaysFactory(skip_date=date(2013,11,20) + timedelta(2), identifier='digawana'))
+        #Creating an upload for three days later for ranaka should work as there is an upload day from previous day.
+        UploadTransactionFileFactory(file_name='bcpp_ranaka_201311221820.json', identifier='ranaka')
         
         
