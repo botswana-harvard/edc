@@ -118,9 +118,9 @@ function setLandMarks(map, locations) {
 <table>
 	{% if item_map %}
 		{% if not map %}
-			<tr valign="top"><td><img src="{{ MEDIA_URL }}{{ item_map }}" alt="item map" width="800" height="450"></td></tr><tr>
+			<tr valign="top"><td><img src="{% url "blob_attach_url" mapper_name identifier map %}" alt="item map" width="800" height="450"></td></tr><tr>
 		{% else %}
-			<tr valign="top"><td><img src="{{ MEDIA_URL }}{{ item_map }}" alt="item map" width="800" height="450"></td></tr>
+			<tr valign="top"><td><img src="{% url "blob_attach_url" mapper_name identifier map %}" alt="item map" width="800" height="450"></td></tr>
 		{% endif %}
 		<td>Key <A href="{% url 'item_map_url' mapper_name identifier lon lat %}/?map=1">(zoom level 18)</A>
 				<A href="{% url 'item_map_url' mapper_name identifier lon lat %}/?map=2">(zoom level 17)</A>

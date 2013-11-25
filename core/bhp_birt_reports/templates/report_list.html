@@ -1,0 +1,33 @@
+{% extends "section.html"%}
+
+{% block breadcrumbs %}
+
+    <div class="breadcrumbs">
+        <a href="/{{ home }}">Home</a>
+        &rsaquo; Generate a report
+    </div>
+    
+{% endblock %}
+
+
+{% block content %}
+<P>Below is a list of reports available to you in this system.</P>
+
+<table>
+<thead>
+<th>Report</th>
+</thead>
+<tbody>
+{% for report in reports %}
+	<tr style="background: LightYellow;">
+		{% if report.is_active %}
+			<td><A href="{{report.report_url}}">{{ report.report_name }}.&nbsp;</A></td>
+		{% else %}
+			<td>{{ report.report_name }}.&nbsp;</td>
+		{% endif %}      
+    </tr> 
+{% endfor %}
+</tbody>
+</table>
+{% endblock content %}
+

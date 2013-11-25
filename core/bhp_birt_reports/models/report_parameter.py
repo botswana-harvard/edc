@@ -1,9 +1,9 @@
 from django.db import models
-from edc.base.model.models import BaseModel
-from bhp_birt_reports.choices import PARAM_TYPES
-from bhp_birt_reports.models import BaseReport
-from bhp_birt_reports.validators import start_with_model
 from django.core.exceptions import ValidationError
+from edc.base.model.models import BaseModel
+from ..choices import PARAM_TYPES
+from ..models import BaseReport
+from ..validators import start_with_model
 
 class ReportParameter(BaseModel):
     

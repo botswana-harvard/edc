@@ -31,6 +31,10 @@ urlpatterns = patterns('',
     url(r'^save_section/(?P<mapper_name>\w+)/', save_section, name='save_section_url'),
     url(r'^save_sub_section/(?P<mapper_name>\w+)/', save_sub_section, name='save_sub_section_url'),
     url(r'^clear_section/(?P<mapper_name>\w+)/', clear_section, name='clear_section_url'),
+    url(r'^clear_sub_section/(?P<mapper_name>\w+)/', clear_sub_section, name='clear_sub_section_url'),
+    
+    url(r'^clear_sub_section_index/(?P<mapper_name>\w+)/', clear_sub_section_index, name='clear_sub_section_index_url'),
+    
     url(r'^clear_all_sections/(?P<mapper_name>\w+)/', clear_all_sections, name='clear_all_sections_url'),
     url(r'^upload_item_map/(?P<mapper_name>\w+)/', upload_item_map, name='upload_item_map_url'),
     url(r'^map_section/(?P<mapper_name>\w+)/', map_section, name='map_section_url'),
@@ -39,6 +43,7 @@ urlpatterns = patterns('',
     url(r'^gps_point_update/(?P<mapper_name>\w+)/', db_update_index, name='map_gps_point_update_url'),
     url(r'dispatch_to_gps_index/(?P<mapper_name>\w+)/', dispatch_to_gps_index, name='dispatch_to_gps_index_url'),
     url(r'coordinates_to_gps/(?P<mapper_name>\w+)/', coordinates_to_gps, name='coordinates_to_gps_url'),
+    url(r'^blog/atttach/(?P<mapper_name>\w+)/(?P<identifier>[a-zA-Z0-9_-]+)/(?P<map>[0-3]+)', blog_attach, name='blob_attach_url'),
 )
 
 for mapper_name in site_mappers.get_registry().iterkeys():

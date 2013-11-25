@@ -2,7 +2,7 @@ from edc.export.classes import ExportAsCsv
 
 
 def export_as_csv_action(description="Export selected objects to CSV",
-                         fields=None, exclude=None, extra_fields=None, header=True, track_history=True, show_all_fields=True):
+                         fields=None, exclude=None, extra_fields=None, header=True, track_history=True, show_all_fields=True, delimiter=None):
     """
     Return an export csv action
     'fields' and 'exclude' work like in django ModelForm
@@ -30,7 +30,8 @@ def export_as_csv_action(description="Export selected objects to CSV",
                                extra_fields=extra_fields,
                                header=header,
                                track_history=track_history,
-                               show_all_fields=show_all_fields)
+                               show_all_fields=show_all_fields,
+                               delimiter=delimiter)
         return export_as_csv.write_to_file()
 
     export.short_description = description

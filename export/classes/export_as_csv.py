@@ -11,17 +11,20 @@ from ..models import ExportHistory
 
 class ExportAsCsv(object):
     # TODO: maybe instead of separate lists for row values and column names, make this use an OrderedDict
-    def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None, header=True, track_history=False, show_all_fields=True):
+    def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None, header=True, track_history=False, show_all_fields=True, delimiter=None):
         self._field_names = []
         self._modeladmin = modeladmin
         self._model = None
         self._file_obj = None
+        self._delimiter = ','
         self._header_row = []
         self._header_row_is_set = None
         self._header_from_m2m_complete = False
         self._extra_fields = None
         self._track_history = track_history
         self._queryset = queryset
+        if delimiter:
+            self._delimiter = delimiter
         self.set_model(model)
         if show_all_fields:
             self.set_field_names_from_model()  # set initial field name list
@@ -48,7 +51,7 @@ class ExportAsCsv(object):
 
         The header row column names are collected on the first pass of the for loop."""
         self.set_file_obj()
-        writer = csv.writer(self.get_file_obj())
+        writer = csv.writer(self.get_file_obj(), delimiter=self.get_field_delimiter())
         self.reorder_field_names()
         for index, obj in enumerate(self.get_queryset()):
             row = self.get_row(obj)
@@ -267,7 +270,7 @@ class ExportAsCsv(object):
                 self.get_header_row().append(value)
 
     def get_field_delimiter(self):
-        return ','
+        return self._delimiter
 
     def get_m2m_value_delimiter(self):
         """Returns the delimiter for m2m values (for fields with a list of values)."""

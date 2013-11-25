@@ -36,7 +36,7 @@
 {% if 'edc.core.bhp_birt_reports' in installed_apps %}
 <H5>Reports</H5>
 <ul>
-<li><A href="/admin/bhp_birt_reports/basereport/">Generate a Report</A></li>
+<li><A href="/reports/list/">Generate a Report</A></li>
 </ul>
 {% endif %}
 
@@ -50,7 +50,6 @@
 {% if 'edc.lab.lab_clinic_api' in installed_apps %}
 <H5>Lab</H5>
 <ul>
-<li><A href="/admin/{{app_name}}_lab/">Requisitions and Packing Lists</A></li>
 <li><A href="/admin/lab_clinic_api/">Results</A></li>
 </ul>
 {% endif %}
