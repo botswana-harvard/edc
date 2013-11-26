@@ -5,16 +5,17 @@ from django.test import TestCase
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
 from edc.subject.appointment.models import Appointment
 from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
-from edc.subject.entry.tests.factories import EntryFactory
 from edc.subject.entry.exceptions import EntryManagerError
+from edc.subject.entry.tests.factories import EntryFactory
 from edc.subject.entry.tests.factories import LabEntryFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+from edc.testing.classes import TestVisitSchedule
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
 
 
@@ -42,24 +43,9 @@ class EntryMetaDataTests(TestCase):
             start_datetime=study_specific.study_start_datetime,
             end_datetime=datetime(datetime.today().year + 5, 1, 1),
             add_for_app=self.app_label)
-        membership_form = MembershipFormFactory(content_type_map=content_type_map, category='subject')
-        schedule_group = ScheduleGroupFactory(membership_form=membership_form, group_name='GROUP_NAME', grouping_key='GROUPING_KEY')
-        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model='testvisit')
-        self.visit_definition = VisitDefinitionFactory(code='T0', title='T0', grouping='subject', visit_tracking_content_type_map=visit_tracking_content_type_map)
-        self.visit_definition.schedule_group.add(schedule_group)
 
-        # add entries
-        content_type_map = ContentTypeMap.objects.get(app_label='testing', model='testscheduledmodel1')
-        EntryFactory(content_type_map=content_type_map, visit_definition=self.visit_definition, entry_order=100, entry_category='clinic')
-        content_type_map = ContentTypeMap.objects.get(app_label='testing', model='testscheduledmodel2')
-        EntryFactory(content_type_map=content_type_map, visit_definition=self.visit_definition, entry_order=110, entry_category='clinic')
-        content_type_map = ContentTypeMap.objects.get(app_label='testing', model='testscheduledmodel3')
-        EntryFactory(content_type_map=content_type_map, visit_definition=self.visit_definition, entry_order=120, entry_category='clinic')
-
-        # add requisitions
-        LabEntryFactory(visit_definition=self.visit_definition, entry_order=100)
-        LabEntryFactory(visit_definition=self.visit_definition, entry_order=110)
-        LabEntryFactory(visit_definition=self.visit_definition, entry_order=120)
+        test_visit_schedule = TestVisitSchedule()
+        test_visit_schedule.rebuild()
 
         self.test_consent = TestConsentWithMixinFactory(gender='M')
 

@@ -53,7 +53,7 @@ class LabEntry(BaseWindowPeriodItem):
     def save(self, *args, **kwargs):
         model = models.get_model(self.app_label, self.model_name)
         if not model:
-            raise TypeError('Lab Entry cannot determine requisition model from app_label=\'{0}\' and model_name=\'{1}\''.format(self.app_label, self.model_name))
+            raise TypeError('Lab Entry \'{2}\' cannot determine requisition model from app_label=\'{0}\' and model_name=\'{1}\''.format(self.app_label, self.model_name, self))
         try:
             model.entry_meta_data_manager
         except AttributeError:
