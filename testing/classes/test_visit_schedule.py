@@ -7,7 +7,7 @@ from ..models import TestVisit, TestConsentWithMixin
 
 class TestVisitSchedule(VisitScheduleConfiguration):
 
-    app_label = 'bcpp_subject'
+    app_label = 'testing'
     # membership forms
     # see edc.subject.visit_schedule.models.membership_forms
     membership_forms = OrderedDict({
@@ -24,7 +24,7 @@ class TestVisitSchedule(VisitScheduleConfiguration):
     # visit_schedule
     # see edc.subject.visit_schedule.models.visit_defintion
     visit_definitions = OrderedDict(
-        {'T0': {
+        {'1000': {
             'title': '1000',
             'time_point': 0,
             'base_interval': 0,
@@ -44,9 +44,9 @@ class TestVisitSchedule(VisitScheduleConfiguration):
                 RequisitionTuple(30L, u'testing', u'testrequisition', 'Microtube', 'Microtube', 'STORAGE', 'WB'),
                 ),
             'entries': (
-                (10L, u'testing', u'TestScheduledModel1Factory'),
-                (20L, u'testing', u'TestScheduledModel2Factory'),
-                (30L, u'testing', u'TestScheduledModel3Factory'),
+                (10L, u'testing', u'TestScheduledModel1'),
+                (20L, u'testing', u'TestScheduledModel2'),
+                (30L, u'testing', u'TestScheduledModel3'),
             )}
         }
     )
