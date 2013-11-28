@@ -14,6 +14,7 @@ from edc.subject.entry.tests.factories import EntryFactory
 from edc.subject.entry.tests.factories import LabEntryFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
+from edc.subject.visit_schedule.models import VisitDefinition
 from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 from edc.testing.classes import TestVisitSchedule
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
@@ -47,6 +48,8 @@ class EntryMetaDataTests(TestCase):
         test_visit_schedule = TestVisitSchedule()
         test_visit_schedule.rebuild()
 
+        self.visit_definition = VisitDefinition.objects.get(code='1000')
+
         self.test_consent = TestConsentWithMixinFactory(gender='M')
 
         self.registered_subject = RegisteredSubject.objects.get(subject_identifier=self.test_consent.subject_identifier)
@@ -55,7 +58,7 @@ class EntryMetaDataTests(TestCase):
 
     def model_for_entry_requires_manager(self):
         content_type_map = ContentTypeMap.objects.get(app_label='testing', model='testscheduledmodel')
-        self.assertRaises(EntryManagerError, EntryFactory, content_type_map=content_type_map, visit_definition=self.visit_definition, entry_order=100, entry_category='clinic')
+        self.assertRaises(EntryManagerError, EntryFactory, content_type_map=content_type_map, visit_definition=self.visit_definition, entry_order=10, entry_category='clinic')
 
     def test_creates_meta_data1(self):
         """No meta data if visit tracking form is not entered."""
@@ -63,6 +66,7 @@ class EntryMetaDataTests(TestCase):
 
     def test_creates_meta_data2(self):
         """Meta data is created when visit tracking form is added, each instance set to NEW."""
+        self.assertTrue(Entry.objects.all().count() > 0)
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
 
