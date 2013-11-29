@@ -1,11 +1,10 @@
 from django.test import TestCase
 
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.testing.classes import TestVisitSchedule
 from edc.subject.entry.models import Entry, LabEntry
 from edc.subject.appointment_helper.models import BaseAppointmentMixin
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
+from edc.testing.tests.factories import TestConsentWithMixinFactory
 from edc.subject.appointment.tests.factories import ConfigurationFactory
 
 from ..models import MembershipForm, ScheduleGroup, VisitDefinition
@@ -73,4 +72,3 @@ class VisitScheduleTests(TestCase):
             # i know this is a consent model in the test case
             self.assertEqual(membership_form_model, TestConsentWithMixinFactory.FACTORY_FOR)
             self.assertIsNotNone(TestConsentWithMixinFactory(gender='M'))
-
