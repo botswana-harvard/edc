@@ -10,8 +10,7 @@ from edc.subject.appointment.models import Appointment
 from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.entry_meta_data.models import ScheduledEntryMetaData
-from edc.subject.entry.tests.factories import EntryFactory
-from edc.subject.lab_entry.tests.factories import LabEntryFactory
+from edc.subject.entry.tests.factories import EntryFactory, LabEntryFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory

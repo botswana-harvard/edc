@@ -11,8 +11,8 @@ def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_f
     if isinstance(instance, BaseVisitTracking):
         scheduled_entry_helper = ScheduledEntryMetaDataHelper(instance.appointment, sender)
         scheduled_entry_helper.add_or_update_for_visit()
-        requisition_meta = RequisitionMetaDataHelper(instance.appointment, sender)
-        requisition_meta.add_or_update_for_visit()
+        requisition_meta_data_helper = RequisitionMetaDataHelper(instance.appointment, sender)
+        requisition_meta_data_helper.add_or_update_for_visit()
 
     else:
         try:
@@ -35,8 +35,8 @@ def entry_meta_data_on_pre_delete(sender, instance, using, **kwargs):
     if isinstance(instance, BaseVisitTracking):
         scheduled_entry_helper = ScheduledEntryMetaDataHelper(instance.appointment, sender)
         scheduled_entry_helper.delete_for_visit()
-        requisition_meta = RequisitionMetaDataHelper(instance.appointment, sender)
-        requisition_meta.delete_for_visit()
+        requisition_meta_data_helper = RequisitionMetaDataHelper(instance.appointment, sender)
+        requisition_meta_data_helper.delete_for_visit()
     else:
         try:
             sender.entry_meta_data_manager.update_meta_data(instance, 'D', using=using)

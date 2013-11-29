@@ -1,24 +1,25 @@
 from collections import OrderedDict
 
-from edc.subject.visit_schedule.classes import VisitScheduleConfiguration, site_visit_schedules, RequisitionTuple
+from edc.subject.visit_schedule.classes import VisitScheduleConfiguration, EntryTuple, RequisitionTuple, MembershipFormTuple, ScheduleGroupTuple
 
 from ..models import TestVisit, TestConsentWithMixin
 
 
 class TestVisitSchedule(VisitScheduleConfiguration):
-
+    """A visit schedule class for tests."""
+    name = 'Test Visit Schedule'
     app_label = 'testing'
     # membership forms
     # see edc.subject.visit_schedule.models.membership_forms
     membership_forms = OrderedDict({
-        'schedule-1': ('schedule-1', TestConsentWithMixin, True),
+        'schedule-1': MembershipFormTuple('schedule-1', TestConsentWithMixin, True),
         })
 
     # schedule groups
     # see edc.subject.visit_schedule.models.schedule_groups
-    # (group_name, membership_form, grouping_key, comment)
+    # (name, membership_form, grouping_key, comment)
     schedule_groups = OrderedDict({
-        'schedule-1': ('schedule-1', 'schedule-1', None, None),
+        'schedule-group-1': ScheduleGroupTuple('schedule-group-1', 'schedule-1', None, None),
         })
 
     # visit_schedule
@@ -35,7 +36,7 @@ class TestVisitSchedule(VisitScheduleConfiguration):
             'window_upper_bound_unit': 'D',
             'grouping': None,
             'visit_tracking_model': TestVisit,
-            'schedule_group': 'schedule-1',
+            'schedule_group': 'schedule-group-1',
             'instructions': None,
             'requisitions': (
                 # (entry_order, app_label, model_name, panel.name, panel.edc_name, panel.panel_type, aliquot_type)
@@ -44,9 +45,9 @@ class TestVisitSchedule(VisitScheduleConfiguration):
                 RequisitionTuple(30L, u'testing', u'testrequisition', 'Microtube', 'Microtube', 'STORAGE', 'WB'),
                 ),
             'entries': (
-                (10L, u'testing', u'TestScheduledModel1'),
-                (20L, u'testing', u'TestScheduledModel2'),
-                (30L, u'testing', u'TestScheduledModel3'),
+                EntryTuple(10L, u'testing', u'TestScheduledModel1'),
+                EntryTuple(20L, u'testing', u'TestScheduledModel2'),
+                EntryTuple(30L, u'testing', u'TestScheduledModel3'),
             )}
         }
     )

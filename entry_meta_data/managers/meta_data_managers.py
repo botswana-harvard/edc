@@ -74,15 +74,20 @@ class BaseMetaDataManager(models.Manager):
         Will be created if DoesNotExist."""
         if not self._meta_data_instance:
             try:
-                options = {
-                    'appointment': self.appointment_zero,
-                    '{0}__app_label'.format(self.entry_attr): self.model._meta.app_label,
-                    '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower(),
-                    }
-                self._meta_data_instance = self.meta_data_model.objects.get(**options)
+                self._meta_data_instance = self.meta_data_model.objects.get(**self.meta_data_query_options)
             except self.meta_data_model.DoesNotExist:
                 self._meta_data_instance = self.create_meta_data()
+            except AttributeError:
+                # 'NoneType' object has no attribute 'panel'
+                pass
         return self._meta_data_instance
+
+    @property
+    def meta_data_query_options(self):
+        """Returns the options to query on the meta data model."""
+        return {'appointment': self.appointment_zero,
+                '{0}__app_label'.format(self.entry_attr): self.model._meta.app_label,
+                '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower()}
 
     @property
     def status(self):
@@ -111,14 +116,15 @@ class BaseMetaDataManager(models.Manager):
 
         Called by the signal on post_save and pre_delete"""
         self.instance = model_or_visit_instance
-        if self.meta_data_instance.entry_status != 'NOT_REQUIRED':
-            if change_type == 'D' or not self.instance:
-                self.meta_data_instance.report_datetime = None
-            else:
-                self.meta_data_instance.report_datetime = self.instance.report_datetime
-            self.status = change_type
-            self.meta_data_instance.entry_status = self.status
-            self.meta_data_instance.save()
+        if self.meta_data_instance:
+            if self.meta_data_instance.entry_status != 'NOT_REQUIRED':
+                if change_type == 'D' or not self.instance:
+                    self.meta_data_instance.report_datetime = None
+                else:
+                    self.meta_data_instance.report_datetime = self.instance.report_datetime
+                self.status = change_type
+                self.meta_data_instance.entry_status = self.status
+                self.meta_data_instance.save()
 
     def update_meta_data_from_rule(self, model_or_visit_instance, change_type, using=None):
         change_types = ['NEW', 'NOT_REQUIRED']
@@ -130,7 +136,7 @@ class BaseMetaDataManager(models.Manager):
 
     def delete_meta_data(self, model_or_visit_instance):
         self.instance = model_or_visit_instance
-        if not self.instance and self.status in self.may_delete_entry_status:
+        if self.meta_data_instance and not self.instance and self.status in self.may_delete_entry_status:
             self.meta_data_instance.delete()
 
     def run_rule_groups(self):
@@ -151,7 +157,7 @@ class EntryMetaDataManager(BaseMetaDataManager):
         if self.visit_instance.reason not in self.skip_create_visit_reasons:
             try:
                 entry = self.entry_model.objects.get(
-                    app_label=self.model._meta.app_label,
+                    app_label=self.model._meta.app_label.lower(),
                     model_name=self.model._meta.object_name.lower(),
                     visit_definition=self.appointment_zero.visit_definition
                     )
@@ -174,21 +180,55 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
     entry_model = LabEntry
     entry_attr = 'lab_entry'
 
+    @property
+    def meta_data_query_options(self):
+        """Returns the options used to query the meta data model for the meta_data_instance."""
+        return {'appointment': self.appointment_zero,
+                '{0}__app_label'.format(self.entry_attr): self.model._meta.app_label,
+                '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower(),
+                '{0}__panel'.format(self.entry_attr): self.instance.panel}
+
     def create_meta_data(self):
-        """Creates a meta_data instance for the model at the time point (appointment) for the given registered_subject.
+        """Creates one meta_data instance for each panel for the requisition model at the time point (appointment) for the given registered_subject.
 
         might NOT be created based on visit reason."""
+        meta_data_instances = []
+        meta_data_instance = None
         if self.visit_instance.reason not in self.skip_create_visit_reasons:
-            lab_entry = self.entry_model.objects.filter(
-                app_label=self.model._meta.app_label,
+            lab_entries = self.entry_model.objects.filter(
+                app_label=self.model._meta.app_label.lower(),
                 model_name=self.model._meta.object_name.lower(),
                 visit_definition=self.appointment_zero.visit_definition,
                 )
-            return self.meta_data_model.objects.create(
-                appointment=self.appointment_zero,
-                registered_subject=self.appointment_zero.registered_subject,
-                due_datetime=lab_entry.visit_definition.get_upper_window_datetime(self.visit_instance.report_datetime),
-                lab_entry=lab_entry,
-                entry_status=self.status
-                )
-        return None
+            if not lab_entries:
+                raise ImproperlyConfigured('LabEntry matching queries do not exist. Model {0}.Check your'
+                                           ' visit schedule configuration or rule groups.'.format(self.model))
+            for lab_entry in lab_entries:
+                options = dict(
+                    appointment=self.appointment_zero,
+                    registered_subject=self.appointment_zero.registered_subject,
+                    due_datetime=lab_entry.visit_definition.get_upper_window_datetime(self.visit_instance.report_datetime),
+                    lab_entry=lab_entry,
+                    entry_status=self.status)
+                try:
+                    meta_data_instance = self.meta_data_model.objects.get(**options)
+                except self.meta_data_model.DoesNotExist:
+                    meta_data_instance = self.meta_data_model.objects.create(**options)
+                meta_data_instances.append(meta_data_instance)
+        if meta_data_instances:
+            try:
+                meta_data_instance = [item for item in meta_data_instances if item.lab_entry.panel == self.instance.panel][0]
+            except AttributeError:  # 'NoneType' object has no attribute 'panel'
+                meta_data_instance = None
+        return meta_data_instance
+
+    def update_meta_data(self, model_or_visit_instance, change_type=None, using=None):
+        """Updates the meta_data's instances by panel.
+
+        Called by the signal on post_save and pre_delete"""
+        self.instance = model_or_visit_instance
+        # only call update if you have an instance, because we need instance.panel.
+        if self.instance:
+            super(RequisitionMetaDataManager, self).update_meta_data(model_or_visit_instance, change_type, using)
+        else:
+            self.create_meta_data()

@@ -1,8 +1,10 @@
 import factory
-from lis.specimen.lab_aliquot_list.tests.factories import BaseAliquotTypeFactory, BaseAliquotConditionFactory
-from lis.specimen.lab_aliquot_list.models import AliquotType
+
 from lis.specimen.lab_aliquot.tests.factories import BaseAliquotFactory
-from ...models import Aliquot, AliquotCondition
+from lis.specimen.lab_aliquot_list.tests.factories import BaseAliquotTypeFactory, BaseAliquotConditionFactory
+
+from ...models import Aliquot, AliquotCondition, AliquotType
+
 from .receive_factory import ReceiveFactory
 
 
@@ -12,7 +14,6 @@ class AliquotConditionFactory(BaseAliquotConditionFactory):
 
 class AliquotTypeFactory(BaseAliquotTypeFactory):
     FACTORY_FOR = AliquotType
-    dmis_reference = '1111'
 
 
 class AliquotFactory(BaseAliquotFactory):
