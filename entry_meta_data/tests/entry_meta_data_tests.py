@@ -10,14 +10,13 @@ from edc.subject.appointment.models import Appointment
 from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.subject.entry.exceptions import EntryManagerError
-from edc.subject.entry.tests.factories import EntryFactory
-from edc.subject.entry.tests.factories import LabEntryFactory
+from edc.subject.entry.models import Entry, LabEntry
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.models import VisitDefinition
 from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 from edc.testing.classes import TestVisitSchedule
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
+from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestRequisitionFactory
 
 
 class EntryMetaDataTests(TestCase):
@@ -56,17 +55,83 @@ class EntryMetaDataTests(TestCase):
         self.appointment = Appointment.objects.get(registered_subject=self.registered_subject)
         #self.test_visit = self.test_visit_factory(appointment=self.appointment)
 
-    def model_for_entry_requires_manager(self):
-        content_type_map = ContentTypeMap.objects.get(app_label='testing', model='testscheduledmodel')
-        self.assertRaises(EntryManagerError, EntryFactory, content_type_map=content_type_map, visit_definition=self.visit_definition, entry_order=10, entry_category='clinic')
+#     def model_for_entry_requires_manager(self):
+#         content_type_map = ContentTypeMap.objects.get(app_label='testing', model='testscheduledmodel')
+#         self.assertRaises(EntryManagerError, EntryFactory, content_type_map=content_type_map, visit_definition=self.visit_definition, entry_order=10, entry_category='clinic')
 
     def test_creates_meta_data1(self):
         """No meta data if visit tracking form is not entered."""
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
 
+    def test_creates_requisition_meta_data(self):
+        """Meta data is created when visit tracking form is added, each instance set to NEW."""
+        self.assertTrue(LabEntry.objects.all().count() > 0)
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 3)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
+
+    def test_creates_requisition_meta_data2(self):
+        """Meta data is unchanged if you re-save visit."""
+        self.assertTrue(LabEntry.objects.all().count() > 0)
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.test_visit.save()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
+
+    def test_updates_requisition_meta_data(self):
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.panel
+        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel)
+        obj.save()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED',
+                                                               registered_subject=self.registered_subject,
+                                                               lab_entry__app_label='testing',
+                                                               lab_entry__model_name='testrequisition',
+                                                               lab_entry__panel=obj.panel).count(), 1)
+
+    def test_updates_requisition_meta_data2(self):
+        """Meta data is set to KEYED and is unchanged if you re-save requisition or re-save visit."""
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.panel
+        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel)
+        obj.save()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED',
+                                                               registered_subject=self.registered_subject,
+                                                               lab_entry__app_label='testing',
+                                                               lab_entry__model_name='testrequisition',
+                                                               lab_entry__panel=obj.panel).count(), 1)
+        self.test_visit.save()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED',
+                                                               registered_subject=self.registered_subject,
+                                                               lab_entry__app_label='testing',
+                                                               lab_entry__model_name='testrequisition',
+                                                               lab_entry__panel=obj.panel).count(), 1)
+        obj.save()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED',
+                                                               registered_subject=self.registered_subject,
+                                                               lab_entry__app_label='testing',
+                                                               lab_entry__model_name='testrequisition',
+                                                               lab_entry__panel=obj.panel).count(), 1)
+
+    def test_updates_requisition_meta_data_on_delete(self):
+        """Meta data is set to KEYED and is unchanged if you re-save requisition or re-save visit."""
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.panel
+        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel)
+        obj.save()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED',
+                                                               registered_subject=self.registered_subject,
+                                                               lab_entry__app_label='testing',
+                                                               lab_entry__model_name='testrequisition',
+                                                               lab_entry__panel=panel).count(), 1)
+        obj.delete()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW',
+                                                               registered_subject=self.registered_subject,
+                                                               lab_entry__app_label='testing',
+                                                               lab_entry__model_name='testrequisition',
+                                                               lab_entry__panel=panel).count(), 1)
+
     def test_creates_meta_data2(self):
         """Meta data is created when visit tracking form is added, each instance set to NEW."""
-        self.assertTrue(Entry.objects.all().count() > 0)
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
 
@@ -80,9 +145,11 @@ class EntryMetaDataTests(TestCase):
     def test_creates_meta_data4(self):
         """Meta data is deleted when visit tracking form is deleted."""
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 3)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 3)
         self.test_visit.delete()
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
 
     def test_creates_meta_data5(self):
         """Meta data is not created if visit reason is missed. See 'skip_create_visit_reasons class' attribute"""

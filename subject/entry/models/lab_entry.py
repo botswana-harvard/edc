@@ -70,7 +70,7 @@ class LabEntry(BaseWindowPeriodItem):
         self.content_type_map.content_type.model_class()._meta.verbose_name
 
     def __unicode__(self):
-        return '%s: %s' % (self.visit_definition.code, self.panel.name)
+        return '{0}.{1}'.format(self.visit_definition.code, self.panel.edc_name)
 
     class Meta:
         app_label = 'entry'
