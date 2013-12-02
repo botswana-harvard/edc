@@ -59,21 +59,17 @@
 {% endblock %}
 
 
-{% if scheduled_entry_meta_data %} 
     {% block scheduled_data_collection %}
  
         {{ rendered_scheduled_forms }}
         
     {% endblock scheduled_data_collection %}
-{% endif %}
-    
-{% if scheduled_lab_bucket %}   
-    {% block scheduled_lab_bucket %}
+
+    {% block scheduled_requisitions %}
 
         {{ rendered_scheduled_requisitions }}
         
-    {% endblock scheduled_lab_bucket %}
-{% endif %}
+    {% endblock scheduled_requisitions %}
 
 {% if additional_lab_bucket %}   
     {% block additional_lab_bucket %}

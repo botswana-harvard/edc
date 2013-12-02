@@ -606,8 +606,8 @@ class RegisteredSubjectDashboard(Dashboard):
         requisitions = []
         requisition_helper = RequisitionMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
-            inst = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
-            requisitions.append(inst.get_context())
+            requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
+            requisitions.append(requisition_context.get_context())
         render_requisitions = render_to_string(template, {
             'scheduled_requisitions': requisitions,
             'visit_attr': self.visit_model_attrname,
