@@ -220,6 +220,8 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                 meta_data_instance = [item for item in meta_data_instances if item.lab_entry.panel == self.instance.panel][0]
             except AttributeError:  # 'NoneType' object has no attribute 'panel'
                 meta_data_instance = None
+            except IndexError:  # [panel][0]
+                meta_data_instance = None
         return meta_data_instance
 
     def update_meta_data(self, model_or_visit_instance, change_type=None, using=None):
