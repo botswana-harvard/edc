@@ -22,7 +22,9 @@ class Mapper(object):
         self._item_model_cls = None
         self._item_label = None
         self._regions = None
-        self._map_field_attr = None
+        self._map_field_attr_18 = None
+        self._map_field_attr_17 = None
+        self._map_field_attr_16 = None
         self._item_selected_field = None
         self._sections = None
         self._icons = None
@@ -111,12 +113,24 @@ class Mapper(object):
 
     def get_radius(self):
         return self._get_attr('radius')
-    
-    def set_map_field_attr(self, attr=None):
-        self._set_attr('map_field_attr', attr)
 
-    def get_map_field_attr(self):
-        return self._get_attr('map_field_attr')    
+    def set_map_field_attr_18(self, attr=None):
+        self._set_attr('map_field_attr_18', attr)
+        
+    def set_map_field_attr_17(self, attr=None):
+        self._set_attr('map_field_attr_17', attr)
+        
+    def set_map_field_attr_16(self, attr=None):
+        self._set_attr('map_field_attr_16', attr)
+
+    def get_map_field_attr_18(self):
+        return self._get_attr('map_field_attr_18')    
+   
+    def get_map_field_attr_17(self):
+        return self._get_attr('map_field_attr_17')
+    
+    def get_map_field_attr_16(self):
+        return self._get_attr('map_field_attr_16')
     
     def set_gps_center_lat(self, attr=None):
         self._set_attr('gps_center_lat', attr)
