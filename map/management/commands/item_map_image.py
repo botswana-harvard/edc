@@ -36,6 +36,7 @@ class Command(BaseCommand):
             file_name_17 = ''
             file_name_16 = ''
             folder = settings.MEDIA_ROOT
+            print "folder directions", folder
             count = 0
             for item in items:
                 zoom_level = 0
@@ -64,7 +65,6 @@ class Command(BaseCommand):
                         sleep(5)
                     elif zoom == 17:
                         file_name_17 = folder + '/' + name + '_17.jpg'
-                        file_name_18 = folder + '/' + name + '_18.jpg'
                         urlretrieve(url_str, file_name_17)
                     else:
                         file_name_16 = folder + '/' + name + '.jpg'
@@ -73,16 +73,10 @@ class Command(BaseCommand):
                     print "The image at zoom level: " + str(zoom) + " of plot: " + str(name) + " is done"
                     zoom -= 1
                     zoom_level += 1
-                storage = DatabaseStorage(settings.DB_FILES)
-                with open(file_name_18, 'rb') as f:
-                    item.uploaded_map_18 = storage.save(name + '_18.jpg', f)
-
-                with open(file_name_17, 'rb') as f1:
-                    item.uploaded_map_17 = storage.save(name + '_17.jpg', f1)
-
-                with open(file_name_16, 'rb') as f2:
-                    item.uploaded_map_16 = storage.save(name + '.jpg', f2)
                 try:
+                    item.uploaded_map_18 = name + '_18.jpg'
+                    item.uploaded_map_17 = name + '_17.jpg'
+                    item.uploaded_map_16 = name + '.jpg'
                     item.save()
                 except Exception as e:
                     pass
