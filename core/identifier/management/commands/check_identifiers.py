@@ -56,4 +56,3 @@ class Command(BaseCommand):
         if action == 'check':
             print '{0} / {1} identifiers NOT found in RegisteredSubject but not in SubjectIdentifier'.format(n, tot)
         print 'Done.'
- 

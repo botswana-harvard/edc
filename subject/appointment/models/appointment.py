@@ -2,14 +2,17 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
+
 from edc.audit.audit_trail import AuditTrail
 from edc.core.bhp_variables.models import StudySite
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.visit_schedule.models import VisitDefinition
-from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.appointment_helper.classes import AppointmentHelper
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.visit_schedule.classes import WindowPeriod
+from edc.subject.visit_schedule.models import VisitDefinition
+
 from ..managers import AppointmentManager
 from ..choices import APPT_TYPE
+
 from .base_appointment import BaseAppointment
 
 
