@@ -214,7 +214,7 @@ class Mapper(object):
 
     def get_section_label(self):
         return self._get_attr('section_label')
-    
+
     def set_map_area_field_attr(self, attr=None):
         self._set_attr('map_area_field_attr', attr, allow_none=True)
         if not self._map_area_field_attr:
@@ -426,7 +426,7 @@ class Mapper(object):
                 if selected_section == "All":
                     for key_sec, icon_value in section_color_code_dict.iteritems():
                         if getattr(item, self.region_field_attr) == key_sec:
-                            icon = icon_value 
+                            icon = icon_value
                 else:
                     for key_sec, icon_value in section_color_code_dict.iteritems():
                         if getattr(item, self.section_field_attr) == key_sec:
@@ -509,8 +509,9 @@ class Mapper(object):
 
         Wrapper for :func:`gps_validator`"""
         radius = self.get_radius()
-        if self.gps_distance_between_points(lat, lon) > radius:
-            raise exception_cls('The location (GPS {0} {1}) does not fall within community {0}.'.format(lat, lon))
+        dist = self.gps_distance_between_points(lat, lon)
+        if dist > radius:
+            raise exception_cls('The location (GPS {0} {1}) does not fall within this community. Got {2}m'.format(lat, lon, dist * 1000))
         return True
 
     def verify_gps_to_target(self, lat, lon, center_lat, center_lon, radius, exception_cls):
@@ -523,5 +524,5 @@ class Mapper(object):
         if verify:
             dist = self.gps_distance_between_points(lat, lon, center_lat, center_lon, radius)
             if dist > radius:
-                raise exception_cls('GPS {0} {1} is more than {2} meters from the target location.'.format(lat, lon, radius * 1000))
+                raise exception_cls('GPS {0} {1} is more than {2} meters from the target location {3}/{4}. Got {5}m.'.format(lat, lon, radius * 1000, center_lat, center_lon, dist * 1000))
         return True

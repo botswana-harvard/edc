@@ -91,7 +91,7 @@
                            {% block scheduled_data_collection %}{% endblock scheduled_data_collection %}
                        </td>
                    </tr>
-                   {% if scheduled_lab_bucket %}
+
                    <tr name="bottom left" >
                         <td>
                            <H5>Scheduled Labs {% if visit_code %} for Visit {{ visit_code }}{% endif %}</H5>
@@ -102,11 +102,11 @@
                                 {% if appointment.appt_status != 'in_progress' %}
                                    <I> Hint: To edit the labs below, change the selected appointment's status to 'In Progress'</I> 
                                {% endif %}    
-                               {% block scheduled_lab_bucket %}{% endblock scheduled_lab_bucket %}
+                               {% block scheduled_requisitions %}{% endblock scheduled_requisitions %}
                            {% endif %}
                       </td>
                   </tr>
-                  {% endif %}
+
                   {% if additional_lab_bucket %}
                    <tr name="bottom left" >
                        <td>

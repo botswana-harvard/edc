@@ -1,7 +1,9 @@
 import factory
+
 from edc.base.model.tests.factories import BaseUuidModelFactory
-from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
 from edc.core.bhp_content_type_map.tests.factories import ContentTypeMapFactory
+from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
+
 from ...models import Entry
 
 

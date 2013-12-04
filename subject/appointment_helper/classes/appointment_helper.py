@@ -1,9 +1,11 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model, Max
-from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
-from edc.subject.subject_config.models import SubjectConfiguration
-from edc.subject.appointment.models import Configuration
+
 from edc.subject.appointment.exceptions import AppointmentStatusError
+from edc.subject.appointment.models import Configuration
+from edc.subject.subject_config.models import SubjectConfiguration
+from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
+
 from .appointment_date_helper import AppointmentDateHelper
 
 
@@ -120,9 +122,10 @@ class AppointmentHelper(object):
                     appt_datetime=appt_datetime)
 
     def check_appt_status(self, appointment, using):
-        """Checks the appt_status relative to the visit tracking form and ScheduledEntryBucket.
+        """Checks the appt_status relative to the visit tracking form and ScheduledEntryMetaData.
         """
-        from edc.subject.entry.classes import ScheduledEntry
+        from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper
+
         # for an existing appointment, check if there is a visit tracking form already on file
         if not appointment.visit_definition.visit_tracking_content_type_map:
             raise ImproperlyConfigured('Unable to determine the visit tracking model. Update bhp_visit.visit_definition {0} and select the correct visit model.'.format(appointment.visit_definition))
@@ -134,26 +137,27 @@ class AppointmentHelper(object):
             # have visit tracking, can only be Done, Incomplete, In Progress
             visit_model_instance = appointment.visit_definition.visit_tracking_content_type_map.model_class().objects.get(appointment=appointment)
             #if visit_model_instance.reason in visit_model_instance.get_visit_reason_no_follow_up_choices():
-            if not ScheduledEntry().show_scheduled_entries(appointment.registered_subject, visit_model_instance=visit_model_instance):
+            scheduled_entry_helper = ScheduledEntryMetaDataHelper(appointment, visit_model_instance.__class__)
+            if not scheduled_entry_helper.show_scheduled_entries():
                 # visit reason implies no data will be collected, so set appointment to Done
                 appointment.appt_status = 'done'
             else:
-                ScheduledEntryBucket = get_model('entry', 'ScheduledEntryBucket')
+                ScheduledEntryMetaData = get_model('entry', 'ScheduledEntryMetaData')
                 # set to in progress, if not already set
                 if appointment.appt_status in ['done', 'incomplete']:
                     # test if Done or Incomplete
-                    if ScheduledEntryBucket.objects.filter(appointment=appointment, entry_status='NEW').exists():
-                        #objs = ScheduledEntryBucket.objects.filter(appointment=appointment, entry_status='NEW')
+                    if ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status='NEW').exists():
+                        #objs = ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status='NEW')
                         appointment.appt_status = 'incomplete'
                     else:
                         appointment.appt_status = 'done'
                 elif appointment.appt_status in ['new', 'cancelled', 'in_progress']:
                     appointment.appt_status = 'in_progress'
                     # only one appointment can be "in_progress", so look for any others in progress and change
-                    # to Done or Incomplete, depending on ScheduledEntryBucket (if any NEW => incomplete)
-                    ScheduledEntryBucket = get_model('entry', 'ScheduledEntryBucket')
+                    # to Done or Incomplete, depending on ScheduledEntryMetaData (if any NEW => incomplete)
+                    ScheduledEntryMetaData = get_model('entry', 'ScheduledEntryMetaData')
                     for appt in appointment.__class__.objects.filter(registered_subject=appointment.registered_subject, appt_status='in_progress').exclude(pk=appointment.pk):
-                        if ScheduledEntryBucket.objects.filter(appointment=appt, entry_status='NEW').exists():
+                        if ScheduledEntryMetaData.objects.filter(appointment=appt, entry_status='NEW').exists():
                             # there are NEW forms
                             if appt.appt_status != 'incomplete':
                                 appt.appt_status = 'incomplete'

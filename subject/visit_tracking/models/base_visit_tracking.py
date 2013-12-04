@@ -171,9 +171,9 @@ class BaseVisitTracking (BaseConsentedUuidModel):
 
         Depending on how well the local VISIT_REASON choices tuple conforms to the default,
         methods :func:`get_visit_reason_no_follow_up_choices` and :func:`get_visit_reason_follow_up_choices`
-        are used to manipulate it so that it works with ScheduledEntry like the default.
+        are used to manipulate it so that it works with ScheduledEntryMetaDataHelper like the default.
 
-        This is called by the ScheduledEntry class when deciding to delete or create
+        This is called by the ScheduledEntryMetaDataHelper class when deciding to delete or create
         NEW forms for entry on the dashboard."""
 
         self._check_visit_reason_keys()
@@ -211,7 +211,7 @@ class BaseVisitTracking (BaseConsentedUuidModel):
         return visit_reason_choices
 
     def post_save_check_in_progress(self):
-        ScheduledEntryBucket = models.get_model('entry', 'ScheduledEntryBucket')
+        ScheduledEntryMetaData = models.get_model('entry_meta_data', 'ScheduledEntryMetaData')
         dirty = False
         if self.reason in self.get_visit_reason_no_follow_up_choices():
             self.get_appointment().appt_status = 'done'
@@ -222,7 +222,7 @@ class BaseVisitTracking (BaseConsentedUuidModel):
                 dirty = True
             # look for any others in progress
         for appointment in self.get_appointment().__class__.objects.filter(registered_subject=self.get_registered_subject(), appt_status='in_progress').exclude(pk=self.get_appointment().pk):
-            if ScheduledEntryBucket.objects.filter(appointment=appointment, entry_status='NEW').exists():
+            if ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status='NEW').exists():
                 appointment.appt_status = 'incomplete'
             else:
                 appointment.appt_status = 'done'

@@ -1,10 +1,14 @@
 from django.test import TestCase
 from edc.core.bhp_variables.tests.factories import StudySiteFactory, StudySpecificFactory
 from edc.subject.registration.models import RegisteredSubject
-from edc.testing.tests.factories import TestConsentFactory
 
 
 class ModelTests(TestCase):
+
+    def setUp(self):
+        from edc.testing.tests.factories import TestConsentFactory
+        self.test_consent_factory = TestConsentFactory
+        self.create_study_variables()
 
     def test_p2(self):
         """TEST registered subject is create when consent is created"""
@@ -12,7 +16,7 @@ class ModelTests(TestCase):
         study_site = StudySiteFactory(site_code='10', site_name='TEST_SITE')
         StudySpecificFactory()
         print "create a new consent"
-        subject_consent = TestConsentFactory(first_name='ERIK1', study_site=study_site)
+        subject_consent = self.test_consent_factory(first_name='ERIK1', study_site=study_site)
         print 'assert subject_identifier is not None. Got {0}'.format(subject_consent.subject_identifier)
         self.assertIsNotNone(subject_consent.subject_identifier)
         # confirm registered_subject is created and updated

@@ -61,6 +61,19 @@
 </ul>
 {% endif %}
 
+{% if 'edc.subject.visit_schedule' in installed_apps%}
+    <h5>Data Collection Schedule</h5>
+    <ul>
+        <li><A href="{% url 'admin:visit_schedule_membershipform_changelist' %}">Membership forms</A>
+        <li><A href="{% url 'admin:visit_schedule_schedulegroup_changelist' %}">Schedule groups</A>
+        <li><A href="{% url 'admin:visit_schedule_visitdefinition_changelist' %}">Visit definitions</A>
+        <li><A href="{% url 'admin:entry_meta_data_scheduledentrymetadata_changelist' %}">Scheduled Entry meta data</A>
+        <li><A href="{% url 'admin:entry_meta_data_requisitionmetadata_changelist' %}">Requisition meta data</A>
+        <li><A href="{% url 'admin:entry_entry_changelist' %}">Entry</A>
+        <li><A href="{% url 'admin:entry_labentry_changelist' %}">Lab Entry</A> and <A href="{% url 'admin:lab_clinic_api_panel_changelist' %}">Panels</A>
+    </ul>
+{% endif %}
+
 {% if 'edc.import' in installed_apps%}
     <h5>Import Data</h5>
     <ul>
