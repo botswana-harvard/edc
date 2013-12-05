@@ -30,9 +30,9 @@ class DispatchContainerRegister(BaseDispatch):
         return self.is_dispatched
 
     def to_items(self):
-        DispatchItem = models.get_model('dispatch', 'DispatchItem')
+        DispatchItem = models.get_model('dispatch', 'DispatchItemRegister')
         if DispatchItem.objects.filter(dispatch_container_register__pk=self.pk):
-            return '<a href="/admin/bhp_dispatch/dispatchitem/?q={pk}">items</a>'.format(pk=self.pk)
+            return '<a href="/admin/dispatch/dispatchcontainerregister/?q={pk}">items</a>'.format(pk=self.pk)
         return None
     to_items.allow_tags = True
 
