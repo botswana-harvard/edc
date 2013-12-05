@@ -1,1 +1,2 @@
 from .base_natural_key_tests import BaseNaturalKeyTests
+from .test_visit_schedule import TestVisitSchedule

@@ -1,14 +1,19 @@
-from django.test import TestCase
 from django.core.paginator import Page
 from django.db.models.query import QuerySet
+from django.test import TestCase
+
 from edc.dashboard.section.classes import BaseSectionView, site_sections
 from edc.testing.models import TestConsent
-from edc.testing.tests.factories import TestConsentFactory
+
 from ..classes import BaseSearchByWord
 from ..exceptions import SearchModelError, SearchAttributeError
 
 
 class SearchMethodsTests(TestCase):
+
+    def setUp(self):
+        from edc.testing.tests.factories import TestConsentFactory
+        self.test_consent_factory = TestConsentFactory
 
     def test_section_name(self):
 
@@ -46,7 +51,7 @@ class SearchMethodsTests(TestCase):
         print 'create 15 instances in the search model'
         i = 0
         while i < 15:
-            TestConsentFactory()
+            self.test_consent_factory()
             i += 1
         print 'get most recent (10)'
         self.assertIsNotNone(test_search.get_most_recent())

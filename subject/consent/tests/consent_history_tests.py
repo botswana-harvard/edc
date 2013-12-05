@@ -1,18 +1,25 @@
-from django.test import TestCase
 from datetime import datetime
+
+from django.test import TestCase
+
 from edc.subject.registration.models import RegisteredSubject
-from edc.testing.tests.factories import TestConsentFactory
+
 from ..models import BaseConsentHistory
 
 
 class ConsentUpdateTests(TestCase):
 
+    def setUp(self):
+        from edc.testing.tests.factories import TestConsentFactory
+        self.test_consent_factory = TestConsentFactory
+        self.create_study_variables()
+
     def test_p1(self):
         print 'create a consent'
-        TestConsentFactory(first_name='THING1')
-        TestConsentFactory(first_name='THING2')
-        TestConsentFactory(first_name='THING3')
-        test_consent = TestConsentFactory(first_name='THING4')
+        self.test_consent_factory(first_name='THING1')
+        self.test_consent_factory(first_name='THING2')
+        self.test_consent_factory(first_name='THING3')
+        test_consent = self.test_consent_factory(first_name='THING4')
         print 'assert has consent history methods'
         self.assertTrue('get_consent_history_model' in dir(test_consent))
         self.assertTrue('update_consent_history' in dir(test_consent))

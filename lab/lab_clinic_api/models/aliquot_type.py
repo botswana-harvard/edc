@@ -1,4 +1,5 @@
 from lis.specimen.lab_aliquot_list.models import BaseAliquotType
+
 from ..managers import AliquotTypeManager
 
 

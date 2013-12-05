@@ -5,7 +5,7 @@ Overview
 
 
 Module :mod:`bhp_entry` manages the metadata for scheduled and additional data collection forms and requisitions.
-The metadata is stored in models referred to as entry buckets; namely, models :class:`bhp_entry.models.ScheduledEntryBucket` 
+The metadata is stored in models referred to as entry buckets; namely, models :class:`bhp_entry.models.ScheduledEntryMetaData` 
 and  :class:`bhp_entry.models.AdditionalEntryBucket`. Requisitions are managed using the same base class as these "buckets"
 and reside in :mod:`bhp_lab_entry`.
 

@@ -46,7 +46,7 @@ class Command(BaseCommand):
         print "Deleting incoming transaction older than {0} day(s)".format(age)
         cut_off_date = datetime.now() - timedelta(days=age)
         transactions = IncomingTransaction.objects.filter(
-                            tx_name="ScheduledEntryBucket",
+                            tx_name="ScheduledEntryMetaData",
                         )
         tot = transactions.count()
         if tot == 0:
