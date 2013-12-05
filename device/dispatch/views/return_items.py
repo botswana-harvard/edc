@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from edc.device.sync.models import Producer
+from django.db.models import get_model
+from ..models import DispatchContainerRegister
 from ..classes import ReturnController
 
 
@@ -10,14 +12,27 @@ from ..classes import ReturnController
 def return_items(request, **kwargs):
     """ Return items from the producer to the source."""
     msg = None
-    producer = Producer.objects.get(name__iexact=kwargs.get('producer', None))
-    container_model = request.GET.getlist('container_model')
-    if len(container_model) > 0 and producer and request.GET.getlist(container_model[0], None):
-        msg = ReturnController('default', producer.name).return_selected_items(request.GET.getlist(container_model[0]))
-    elif producer:
-        msg = ReturnController('default', producer.name).return_dispatched_items()
+    items = request.GET.get('items').split(',')
+    user_container_list = []
+    dispatch_container_register = DispatchContainerRegister.objects.get(id=items[0])
+    previous = dispatch_container_register
+    current = None
+    defaults = {}
+    container_model = get_model(dispatch_container_register.container_app_label, dispatch_container_register.container_model_name)
+    if not container_model:
+         raise TypeError('Dispatch Container model \'{0}\' does not exist. Got from DispatchContainerRegister of id \'{1}\'.'.format(dispatch_container_register.container_app_label+','+dispatch_container_register.container_model_name, dispatch_container_register.id))
+    for item in items:
+        current = DispatchContainerRegister.objects.get(id=item)
+        if current.producer != previous.producer:
+            raise TypeError('All items to be returned must be in the same producer. Got \'{0}\' and \'{1}\'.'.format(current, previous))
+        defaults[current.container_identifier_attrname] = current.container_identifier
+        user_container_list.append(container_model.objects.get(**defaults))
+        previous = current
+        defaults = {}
+    producer = current.producer
+    msg = ReturnController('default', producer.name).return_selected_items(user_container_list)
     messages.add_message(request, messages.INFO, msg)
     return render_to_response(
-        'checkin_households.html', {'producer': producer, },
+        'return_items.html', {'producer': producer, },
         context_instance=RequestContext(request)
         )
