@@ -1,24 +1,30 @@
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
+
 from django.test import TestCase
+
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.subject.registration.tests.factories import RegisteredSubjectFactory
+from edc.core.bhp_variables.tests.factories import StudySiteFactory
 from edc.subject.appointment.models import Appointment
 from edc.subject.appointment.tests.factories import ConfigurationFactory
+from edc.subject.consent.models import AttachedModel
+from edc.subject.consent.tests.factories import ConsentCatalogueFactory
+from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.subject.visit_schedule.models import VisitDefinition
 from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
-from edc.testing.models import TestSubjectVisit
-from edc.subject.consent.models import AttachedModel
-from edc.testing.tests.factories import TestConsentFactory
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.core.bhp_variables.tests.factories import StudySiteFactory
 from edc.testing.models import TestOffStudy
+from edc.testing.models import TestSubjectVisit
 
 
 class OffStudyMethodsTests(TestCase):
 
     def setUp(self):
+
+        from edc.testing.tests.factories import TestConsentFactory
+        self.test_consent_factory = TestConsentFactory
+        self.create_study_variables()
+
         study_site = StudySiteFactory(site_code='10', site_name='TESTSITE')
         ConfigurationFactory()
         content_type_map_helper = ContentTypeMapHelper()
@@ -41,7 +47,7 @@ class OffStudyMethodsTests(TestCase):
         # create a subject
         self.registered_subject = RegisteredSubjectFactory()
         # consent the subject
-        self.subject_consent = TestConsentFactory(
+        self.subject_consent = self.test_consent_factory(
             first_name='TEST',
             last_name='TESTER',
             initials='TT',

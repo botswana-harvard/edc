@@ -1,137 +1,93 @@
 import re
+
 from datetime import date, datetime
+
 from django.db.models import get_model, Model, IntegerField
-from edc.core.bhp_content_type_map.models import ContentTypeMap
+
+from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.consent.classes import ConsentHelper
+from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.subject.entry.models import BaseEntryBucket
-from edc.subject.entry.classes import BaseEntry
-from edc.subject.lab_tracker.classes import site_lab_tracker
+
 from .logic import Logic
 
 
 class BaseRule(object):
     """Base class for all rules."""
 
-    OPERATORS = ['equals', 'eq', 'gt', 'gte', 'lt', 'lte', 'ne', '!=', '==', 'in', 'not in']
+    operators = ['equals', 'eq', 'gt', 'gte', 'lt', 'lte', 'ne', '!=', '==', 'in', 'not in']
+    action_list = ['new', 'not_required']
+    registered_subject_override_field_names = ['id', 'created', 'modified', 'hostname_created', 'hostname_modified', 'study_site', 'survival_status', 'hiv_status']
 
     def __init__(self, *args, **kwargs):
 
-        self._site_lab_tracker = None
-        self._predicate = None
-        self._consequent_action = None
-        self._alternative_action = None
-        self._comment = None
-        self._target_model_list = None
-        self._target_model_cls = None
-        self._source_model_cls = None
-        self._filter_fieldname = None
-        self._filter_instance = None
-        self._filter_model_cls = None
-        self._source_model_instance = None
-        self._bucket_cls = None
-        self._entry_cls = None
-        self._target_bucket_instance_id = None
-        self._target_content_type_map = None
-        self._visit_model_instance = None
+        self.target_model_list = []
+        self._source_instance = None
         self.rule_group_name = ''
 
         if 'logic' in kwargs:
-            self.set_logic(kwargs.get('logic'))
+            self.logic = kwargs.get('logic')
         if 'target_model' in kwargs:
-            self.set_target_model_list(kwargs.get('target_model'))
+            self.target_model_list = kwargs.get('target_model')
         # these attributes usually come in thru Meta, but not always...
         if 'source_model' in kwargs:
-            self.set_source_model_cls(kwargs.get('source_model'))
-            # set attribute for inspection by RuleGroup
             self.source_model = kwargs.get('source_model')
         if 'filter_model' in kwargs:
-            self.set_filter_model_cls(kwargs.get('filter_model')[0])
-            self.set_filter_fieldname(kwargs.get('filter_model')[1])
-            # set attribute for inspection by RuleGroup
-            self.filter_model = kwargs.get('filter_model')
+            raise AttributeError('filter_model attribute is not a valid attribute')
+#             self.filter_model_cls = kwargs.get('filter_model')[0]
+#             self.filter_fieldname = kwargs.get('filter_model')[1]
+#             self.filter_model = kwargs.get('filter_model')
 
     def __repr__(self):
         return '{0}.{1}'.format(self.rule_group_name, self.name)
 
-    def reset(self, visit_model_instance=None):
-        """ Resets before run()."""
-        #self._predicate = None
-        #self._consequent_action = None
-        #self._alternative_action = None
-        # set all instances to None to force a "get"
-        self._source_model_instance = None
-        self._target_bucket_instance_id = None
-        self._target_content_type_map = None
-        self.set_visit_model_instance(visit_model_instance)
-        self.set_filter_instance()
-
-    def run(self, visit_model_instance):
+    def run(self, visit_instance, source_model=None):
         """ Evaluate the rule for each target model in the target model list."""
-        for target_model_cls in self.get_target_model_list():
-            self.reset(visit_model_instance)
-            self.set_target_model_cls(target_model_cls)
-            self.evaluate()
+        for target_model in self.target_model_list:
+            self.target_model = target_model
+            self.visit_instance = visit_instance
+            self.registered_subject = visit_instance.appointment.registered_subject
+            self.visit_attr_name = convert_from_camel(self.visit_instance._meta.object_name)
+
+            self._source_instance = None
+            self._target_instance = None
+
+            change_type = self.evaluate()
+            if change_type:
+                # update target model's meta data, if it has not been keyed
+                self.target_model.entry_meta_data_manager.instance = self.visit_instance
+                if not self.target_model.entry_meta_data_manager.instance:
+                    self.target_model.entry_meta_data_manager.update_meta_data_from_rule(self.visit_instance, change_type)
 
     def evaluate(self):
         raise AttributeError('Evaluate should be overridden. Nothing to do.')
 
-    def set_site_lab_tracker(self):
-        self._site_lab_tracker = site_lab_tracker
+    @property
+    def logic(self):
+        return self._logic
 
-    def get_site_lab_tracker(self):
-        if not self._site_lab_tracker:
-            self.set_site_lab_tracker()
-        return self._site_lab_tracker
-
-    def set_logic(self, logic):
+    @logic.setter
+    def logic(self, logic):
         if isinstance(logic, Logic):
             self._logic = logic
+            if self._logic is None:
+                raise AttributeError('Logic cannot be None.')
             if self.is_valid_action(logic.consequence):
-                self.set_consequent_action(logic.consequence)
+                self.consequent_action = logic.consequence
             if self.is_valid_action(logic.alternative):
-                self.set_alternative_action(logic.alternative)
+                self.alternative_action = logic.alternative
             if 'comment' in dir(logic):
-                self.set_comment(logic.comment)
+                self.comment = logic.comment
         else:
             raise AttributeError('Attribute \'logic\' must be an instance of class Logic.')
 
-    def get_logic(self):
-        if self._logic is None:
-            raise AttributeError('Logic cannot be None.')
-        return self._logic
-
-    def set_consequent_action(self, action):
-        self._consequent_action = action
-
-    def get_consequent_action(self):
-        return self._consequent_action
-
-    def set_alternative_action(self, action):
-        self._alternative_action = action
-
-    def get_alternative_action(self):
-        return self._alternative_action
-
-    def set_comment(self, value):
-        self._comment = value
-
-    def get_comment(self):
-        return self._comment
-
-    def get_action_list(self):
-        """Users should override to return a valid list of actions for consequent and alternative actions.
-
-        For example ['new', 'not_required']."""
-        raise TypeError('Action list cannot be None.')
-
     def is_valid_action(self, action):
         """Returns true if the action is in the list of valid actions or, if invalid action, raises an error."""
-        if action.lower() not in self.get_action_list():
+        if action.lower() not in self.action_list:
             raise TypeError('Encountered an invalid action \'{0}\' when parsing additional rule. '
-                            'Valid actions are {1}.'.format(action, ', '.join(self.get_action_list())))
-        return True
+                            'Valid actions are \'{1}\'.'.format(action, ', '.join(self.action_list)))
+        return action
 
     def get_operator_from_word(self, word, a, b):
         """Returns the operator from the 'word' used in the predicate, for example 'equals' returns '=='.
@@ -140,8 +96,8 @@ class BaseRule(object):
                 a = field_value
                 b = comparative_value
         """
-        if word not in self.OPERATORS:
-            raise TypeError('Predicate operator must be one of {0}. Got {1}.'.format(self.OPERATORS, word))
+        if word not in self.operators:
+            raise TypeError('Predicate operator must be one of {0}. Got {1}.'.format(self.operators, word))
         operator = None
         if word.lower() == 'equals' or word.lower() == 'eq' or word == '==':
             if b is None:
@@ -178,306 +134,187 @@ class BaseRule(object):
             raise TypeError('Invalid predicate operator in rule for value None. Must be (equals, ea or ne). Got \'{0}\'.'.format(word))
         return operator
 
-    def _set_predicate_field_value(self, instance, field_name):
-        """ Returns a field value either by applying getattr to the source model or, if the field name matches one in RegisteredSubject, returns that value.
+    @property
+    def predicate_field_value(self):
+        return self._predicate_field_value
 
-        Some RegisteredSubject field names are excluded:
-            ['id', 'created', 'modified', 'hostname_created', 'hostname_modified', 'study_site', 'survival_status', 'hiv_status']"""
-        registered_subject_override_field_names = ['id', 'created', 'modified', 'hostname_created', 'hostname_modified', 'study_site', 'survival_status', 'hiv_status']
-        if field_name in [field.name for field in RegisteredSubject._meta.fields if field.name not in registered_subject_override_field_names]:
-            registered_subject = self.get_visit_model_instance().appointment.registered_subject
-            self._field_value = getattr(registered_subject, field_name)
+    @predicate_field_value.setter
+    def predicate_field_value(self, field_name):
+        """ Returns a field value either by applying getattr to the source model or, if the field name matches one in RegisteredSubject, returns that value."""
+
+        self._predicate_field_value = None
+        if field_name in [field.name for field in RegisteredSubject._meta.fields if field.name not in self.registered_subject_override_field_names]:
+            self._predicate_field_value = getattr(self.registered_subject, field_name)
         elif field_name == 'consent_version':
-            self._field_value = ConsentHelper(self.get_visit_model_instance(), suppress_exception=True).get_current_consent_version()
-            if not self._field_value:
-                self._field_value = 0
+            self._predicate_field_value = ConsentHelper(self.visit_instance, suppress_exception=True).get_current_consent_version()
+            if not self._predicate_field_value:
+                self._predicate_field_value = 0
         elif field_name == 'hiv_status':
-            self._field_value, is_default_value = self.get_site_lab_tracker().get_value('HIV', self.get_visit_model_instance().get_subject_identifier(), self.get_visit_model_instance().get_subject_type(), self.get_visit_model_instance().report_datetime)
+            self._predicate_field_value, is_default_value = site_lab_tracker.get_value(
+                'HIV',
+                self.visit_instance.get_subject_identifier(),
+                self.visit_instance.get_subject_type(),
+                self.visit_instance.report_datetime)
         else:
-            self._field_value = getattr(instance, field_name)
-        if self._field_value:
-            if isinstance(self._field_value, basestring):
-                self._field_value = re.escape(self._field_value).lower()
+            self._predicate_field_value = getattr(self.source_instance, field_name)
+
+        if self._predicate_field_value:
+            if isinstance(self._predicate_field_value, basestring):
+                self._predicate_field_value = re.escape(self._predicate_field_value).lower()
             else:
-                field_inst = [fld for fld in instance._meta.fields if fld.name == field_name]
+                field_inst = [fld for fld in self.source_instance._meta.fields if fld.name == field_name]
                 if field_inst:
                     if isinstance(field_inst[0], IntegerField):
-                        # make sure is int and not long
-                        self._field_value = int(self._field_value)
+                        self._predicate_field_value = int(self._predicate_field_value)
 
-    def _get_predicate_field_value(self):
-        return self._field_value
+    @property
+    def predicate_comparative_value(self):
+        return self._predicate_comparative_value
 
-    def _set_predicate_comparative_value(self, value):
-        self._comparative_value = value
-        if self._comparative_value:
-            if isinstance(self._comparative_value, basestring):
-                self._comparative_value = re.escape(self._comparative_value).lower()
+    @predicate_comparative_value.setter
+    def predicate_comparative_value(self, value):
+        self._predicate_comparative_value = value
+        if self._predicate_comparative_value:
+            if isinstance(self._predicate_comparative_value, basestring):
+                self._predicate_comparative_value = re.escape(self._predicate_comparative_value).lower()
 
-    def _get_predicate_comparative_value(self):
-        return self._comparative_value
-
-    def _set_unresolved_predicate(self, value=None):
-        if not value:
-            self._unresolved_predicate = self.get_logic().predicate
-        else:
-            unresolved_predicate = value
-            if isinstance(unresolved_predicate[0], basestring):
-                unresolved_predicate = (unresolved_predicate,)
-            elif isinstance(unresolved_predicate[0], tuple):
-                unresolved_predicate = unresolved_predicate
-            else:
-                raise TypeError('First item in predicate must be a string or tuple of (field, operator, value).')
-            # build the predicate
-            # check that unresolved predicate is a tuple
-            if not isinstance(unresolved_predicate, tuple):
-                raise TypeError('First \'logic\' item must be a tuple of (field, operator, value). Got %s' % (unresolved_predicate,))
-            self._unresolved_predicate = unresolved_predicate
-
-    def _get_unresolved_predicate(self):
-        if not self._unresolved_predicate:
-            self._set_unresolved_predicate()
+    @property
+    def unresolved_predicate(self):
         return self._unresolved_predicate
 
-    def set_predicate(self):
-        """Converts the predicate to something like "value==value" that can be evaluated with eval().
+    @unresolved_predicate.setter
+    def unresolved_predicate(self, value):
+        self._unresolved_predicate = value
+        if not value:
+            self._unresolved_predicate = self.logic.predicate
+        else:
+            self._unresolved_predicate = value
+        if isinstance(self._unresolved_predicate[0], basestring):
+            self._unresolved_predicate = (self._unresolved_predicate, )
+        elif isinstance(self._unresolved_predicate[0], tuple):
+            pass
+        else:
+            raise TypeError('First item in predicate must be a string or tuple of (field, operator, value).')
+        if not isinstance(self._unresolved_predicate, tuple):
+            raise TypeError('First \'logic\' item must be a tuple of (field, operator, value). Got %s' % (self._unresolved_predicate,))
+
+    @property
+    def predicate(self):
+        """Gets the predicate, but return value may be '' or None, so users should check for this.
+
+        Converts the predicate to something like "value==value" that can be evaluated with eval().
 
         A simple predicate would be a tuple ('field_name', 'equals', 'value') meant to resolve to 'value' == 'value'.
         A more complex one might be (('field_name', 'equals', 'value'), ('field_name', 'equals', 'value', 'or'))
         which would resolve to 'value' == 'value' or 'value' == 'value'.
         """
         self._predicate = None
-        if self.get_source_model_instance():  # if no instance, just skip the rule
+        if self.source_instance:  # if no instance, just skip the rule
             self._predicate = ''
-            self._set_unresolved_predicate(self.get_logic().predicate)
+            self.unresolved_predicate = self.logic.predicate
             n = 0
-            for item in self._get_unresolved_predicate():
+            for item in self.unresolved_predicate:
                 if n == 0 and not len(item) == 3:
-                    ValueError('The logic tuple (or the first tuple of tuples) must must have three items')
+                    raise ValueError('The logic tuple (or the first tuple of tuples) must must have three items. See {0}'.format(self))
                 if n > 0 and not len(item) == 4:
-                    ValueError('Additional tuples in the logic tuple must have a boolean operator as the fourth item')
-                self._set_predicate_field_value(self.get_source_model_instance(), item[0])
-                self._set_predicate_comparative_value(item[2])
+                    raise ValueError('Additional tuples in the logic tuple must have a boolean operator as the fourth item. See {0}'.format(self))
+                self.predicate_field_value = item[0]
+                self.predicate_comparative_value = item[2]
                 # logical_operator if more than one tuple in the logic tuple
                 if len(item) == 4:
                     logical_operator = item[3]
                     if logical_operator not in ['and', 'or', 'and not', 'or not']:
-                        ValueError('Invalid logical operator in logic tuple for rule {0}. Got {1}. '
+                        raise ValueError('Invalid logical operator in logic tuple for rule {0}. Got {1}.'
                                    'Valid options are {2}'.format(self, logical_operator, ', '.join(['and', 'or', 'and not', 'or not'])))
                 else:
                     logical_operator = ''
-                # add as string for eval()
-                a = self._get_predicate_field_value()
-                b = self._get_predicate_comparative_value()
-                if b == 'None':
-                    b = None
+                if self.predicate_comparative_value == 'None':
+                    self.predicate_comparative_value = None
                 # check type of field value and comparative value, must be the same or <Some>Type to NoneType
                 # if a or b are string or None
-                if (isinstance(a, (unicode, basestring)) or a is None) and (isinstance(b, (unicode, basestring)) or b is None):
+                if (isinstance(self.predicate_field_value, (unicode, basestring)) or self.predicate_field_value is None) and (isinstance(self.predicate_comparative_value, (unicode, basestring)) or self.predicate_comparative_value is None):
                     predicate_template = ' {logical_operator} (\'{field_value}\' {operator} \'{comparative_value}\')'
                     self._predicate = self._predicate.replace('\'None\'', 'None')
                 # if a or b are number or None
-                elif (isinstance(a, (int, long, float)) or a is None) and (isinstance(b, (int, long, float)) or b is None):
+                elif (isinstance(self.predicate_field_value, (int, long, float)) or self.predicate_field_value is None) and (isinstance(self.predicate_comparative_value, (int, long, float)) or self.predicate_comparative_value is None):
                     predicate_template = ' {logical_operator} ({field_value} {operator} {comparative_value})'
                 # if a is a date and b is a date, datetime
-                elif isinstance(a, (date)) and isinstance(b, (date, datetime)):
-                    if isinstance(b, datetime):
+                elif isinstance(self.predicate_field_value, (date)) and isinstance(self.predicate_comparative_value, (date, datetime)):
+                    if isinstance(self.predicate_comparative_value, datetime):
                         # convert b to date to match type of a
-                        b = date(date.year, date.month, date.day)
+                        self.predicate_comparative_value = date(date.year, date.month, date.day)
                     predicate_template = ' {logical_operator} (datetime.strptime({field_value},\'%Y-%m-%d\') {operator} datetime.strptime({comparative_value},\'%Y-%m-%d\'))'
                 # if a is a datetime and b is a date, datetime
-                elif isinstance(a, (datetime)) and isinstance(b, (date, datetime)):
-                    if isinstance(b, date):
+                elif isinstance(self.predicate_field_value, (datetime)) and isinstance(self.predicate_comparative_value, (date, datetime)):
+                    if isinstance(self.predicate_comparative_value, date):
                         # convert a to date if b is a date
-                        a = date(date.year, date.month, date.day)
+                        self.predicate_field_value = date(date.year, date.month, date.day)
                     predicate_template = ' {logical_operator} (datetime.strptime({field_value},\'%Y-%m-%d %H:%M\') {operator} datetime.strptime({comparative_value},\'%Y-%m-%d %H:%M\'))'
                 else:
-                    if isinstance(a, (date, datetime)) and b is None:
-                        raise TypeError('In a rule predicate, may not compare a date or datetime to None. Got \'{0}\' and \'{1}\''.format(a, b))
+                    if isinstance(self.predicate_field_value, (date, datetime)) and self.predicate_comparative_value is None:
+                        raise TypeError('In a rule predicate, may not compare a date or datetime to None. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
                     else:
-                        raise TypeError('Rule predicate values must be of the same data type and be either strings, dates or numbers. Got \'{0}\' and \'{1}\''.format(a, b))
+                        raise TypeError('Rule predicate values must be of the same data type and be either strings, dates or numbers. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
                 self._predicate += predicate_template.format(
                        logical_operator=logical_operator,
-                       field_value=a,
-                       operator=self.get_operator_from_word(item[1], a, b),
-                       comparative_value=b)
+                       field_value=self.predicate_field_value,
+                       operator=self.get_operator_from_word(item[1], self.predicate_field_value, self.predicate_comparative_value),
+                       comparative_value=self.predicate_comparative_value)
                 n += 1
-
-    def get_predicate(self):
-        """Gets the predicate, but return value may be '' or None, so users should check for this."""
-        # always set
-        self.set_predicate()
         return self._predicate
 
-    def set_target_model_list(self, target_model_list=None):
-        """ Sets up the target model list for this rule by converting model names to classes. """
-        self._target_model_list = []
-        # for each target model tuple, get the actual model
-        # and append to the internal list of target models to run against
-        for target_model in target_model_list:
-            if isinstance(target_model, tuple):
-                self._target_model_list.append(get_model(target_model[0], target_model[1]))
-            else:
-                # oh, app_label is in Meta ...
-                # we'll have to convert to classes later in RuleGroup __metaclass__
-                # just store the model_name as a string for now
-                self._target_model_list.append(target_model)
+    @property
+    def target_model(self):
+        return self._target_model
 
-    def get_target_model_list(self):
-        if not self._target_model_list:
-            self.set_target_model_list()
-        return self._target_model_list
+    @target_model.setter
+    def target_model(self, target_model):
+        """Sets a list of target models.
 
-    def set_target_model_cls(self, target_model_cls=None):
-        self._target_bucket_instance_id = None
-        if not target_model_cls:
-            raise AttributeError('Attribute _target_model_cls cannot be None.')
-        if not issubclass(target_model_cls, Model):
-            # could be that something went wrong when converting from model_name to model class in RuleGroup __metaclass__
-            raise AttributeError('Attribute _target_model_cls must be a Model Class. Got {0}'.format(target_model_cls))
-        self._target_model_cls = target_model_cls
+        Target models are the models affected by the rule. For example, the entry status
+        on the meta data instance for the target model will be NOT_REQUIRED. """
+        self._target_model = target_model
+        if isinstance(self._target_model, basestring):
+            self._target_model = get_model(self.app_label, self._target_model)
+        if not self._target_model:
+            raise AttributeError('Target model may not be None.')
 
-    def get_target_model_cls(self):
-        if not self._target_model_cls:
-            self.set_target_model_cls()
-        return self._target_model_cls
+    @property
+    def source_model(self):
+        return self._source_model
 
-    def set_source_model_cls(self, model_cls=None):
+    @source_model.setter
+    def source_model(self, model_cls=None):
         """Sets the source model class.
 
         The predicate refers to an attribute of the source model class."""
-        self._source_model_instance = None
-        if model_cls:
-            if isinstance(model_cls, tuple):
-                self._source_model_cls = get_model(model_cls[0], model_cls[1])
-            else:
-                self._source_model_cls = model_cls
+        self._source_instance = None
+        if isinstance(model_cls, tuple):
+            self._source_model = get_model(model_cls[0], model_cls[1])
+        elif model_cls:
+            self._source_model = model_cls
         else:
-            raise AttributeError('Attribute _source_model_cls cannot be None.')
+            self._source_model = RegisteredSubject  # default
 
-    def get_source_model_cls(self):
-        if not self._source_model_cls:
-            self.set_source_model_cls()
-        return self._source_model_cls
+    @property
+    def visit_instance(self):
+        return self._visit_instance
 
-    def set_visit_model_instance(self, visit_model_instance=None):
-        if not isinstance(visit_model_instance, BaseVisitTracking):
-            raise TypeError('Parameter \'visit_model_instance\' must be an instance of BaseVisitTracking.')
-        self._visit_model_instance = visit_model_instance
-        if not self._visit_model_instance:
-            raise AttributeError('Attribute _visit_model_instance cannot be None')
+    @visit_instance.setter
+    def visit_instance(self, visit_instance):
+        if not isinstance(visit_instance, BaseVisitTracking):
+            raise TypeError('Parameter \'visit_instance\' must be an instance of BaseVisitTracking.')
+        self._visit_instance = visit_instance
 
-    def get_visit_model_instance(self):
-        if not self._visit_model_instance:
-            self.set_visit_model_instance()
-        return self._visit_model_instance
-
-    def set_filter_fieldname(self, filter_fieldname=None):
-        """Sets the filter fieldname that is used to filter on the source_model_cls if a source_model_instance is not provided."""
-        self._filter_fieldname = None
-        if filter_fieldname:
-            self._filter_fieldname = filter_fieldname
-        else:
-            raise AttributeError('Attribute _filter_fieldname cannot be None')
-
-    def get_filter_fieldname(self):
-        if not self._filter_fieldname:
-            self.set_filter_fieldname()
-        return self._filter_fieldname
-
-    def set_filter_model_cls(self, model_cls=None):
-        self._filter_instance = None
-        if model_cls:
-            if isinstance(model_cls, tuple):
-                self._filter_model_cls = get_model(model_cls[0], model_cls[1])
-            else:
-                self._filter_model_cls = model_cls
-        else:
-            raise AttributeError('Attribute _filter_model_cls cannot be None.')
-
-    def get_filter_model_cls(self):
-        if not self._filter_model_cls:
-            self.set_filter_model_cls()
-        return self._filter_model_cls
-
-    def set_filter_instance(self):
-        """Sets the instance to filter the user model, for example an instance of a visit model or registered subject."""
-        self._filter_instance = None
-        if self.get_visit_model_instance():
-            if self.get_filter_model_cls() == RegisteredSubject:
-                self._filter_instance = self.get_visit_model_instance().appointment.registered_subject
-            else:
-                self._filter_instance = self.get_visit_model_instance()
-        if not self._filter_instance:
-            raise AttributeError('Attribute _filter_instance cannot be None')
-
-    def get_filter_instance(self):
-        if not self._filter_instance:
-            self.set_filter_instance()
-        return self._filter_instance
-
-    def set_source_model_instance(self, source_model_instance=None):
+    @property
+    def source_instance(self):
         """ Set the user model instance using either a given instance or by filtering on the user model class.
 
         If the source model instance does not exist (yet), value is None"""
-        self._source_model_instance = None
-        if source_model_instance:
-            self._source_model_instance = source_model_instance
-        elif self.get_source_model_cls()._meta.object_name.lower() == 'registeredsubject':
-            # special case
-            self._source_model_instance = self.get_visit_model_instance().appointment.registered_subject
-        else:
-            if self.get_source_model_cls().objects.filter(**{self.get_filter_fieldname(): self.get_filter_instance()}).exists():
-                self._source_model_instance = self.get_source_model_cls().objects.get(**{self.get_filter_fieldname(): self.get_filter_instance()})
-
-    def get_source_model_instance(self):
-        """Gets the source model instance but users should check if the return value is None."""
-        if not self._source_model_instance:
-            self.set_source_model_instance()
-        return self._source_model_instance
-
-    def set_bucket_cls(self):
-        """Sets the entry bucket class but users should override"""
-        if not self._bucket_cls:
-            raise AttributeError('Attribute _bucket_cls cannot be None')
-
-    def get_bucket_cls(self):
-        if not self._bucket_cls:
-            self.set_bucket_cls()
-        elif not issubclass(self._bucket_cls, BaseEntryBucket):
-            raise AttributeError('Attribute _bucket_cls must be a subclass of BaseEntryBucket.')
-        return self._bucket_cls
-
-    def set_entry_cls(self):
-        """Sets the entry class but users should override."""
-        if not self._entry_cls:
-            raise AttributeError('Attribute _entry_cls cannot be None')
-
-    def get_entry_cls(self):
-        if not self._entry_cls:
-            self.set_entry_cls()
-        elif not issubclass(self._entry_cls, BaseEntry):
-            raise AttributeError('Attribute _entry_cls must be a subclass of BaseEntry.')
-        return self._entry_cls
-
-    def set_target_bucket_instance_id(self, bucket_cls):
-        """Users should override"""
-        self._target_bucket_instance_id = None
-        if not self._target_bucket_instance_id:
-            raise AttributeError('Attribute _target_bucket_instance_id cannot be None')
-
-    def get_target_bucket_instance_id(self):
-        if not self._target_bucket_instance_id:
-            self.set_target_bucket_instance_id()
-        return self._target_bucket_instance_id
-
-    def set_target_content_type_map(self):
-        """Sets the content type for the target model to help locate the target's entry bucket instance."""
-        self._target_content_type_map = ContentTypeMap.objects.get(
-            app_label=self.get_target_model_cls()._meta.app_label,
-            model=self.get_target_model_cls()._meta.object_name.lower())
-
-    def get_target_content_type_map(self):
-        if not self._target_content_type_map:
-            self.set_target_content_type_map()
-        return self._target_content_type_map
+        if not self._source_instance:
+            if self.source_model._meta.object_name.lower() == 'registeredsubject':
+                self._source_instance = self.visit_instance.appointment.registered_subject
+            else:
+                if self.source_model.objects.filter(**{self.visit_attr_name: self.visit_instance}).exists():
+                    self._source_instance = self.source_model.objects.get(**{self.visit_attr_name: self.visit_instance})
+        return self._source_instance

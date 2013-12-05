@@ -4,7 +4,6 @@ from django.core.exceptions import ImproperlyConfigured
 from edc.base.model.models import BaseModel
 
 
-
 class MembershipFormHelper(object):
 
     def __init__(self, *args, **kwargs):

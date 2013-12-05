@@ -1,18 +1,22 @@
 from datetime import datetime
+
 from django.core.exceptions import ValidationError
+
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-from edc.subject.visit_schedule.models import VisitDefinition
+from edc.entry_meta_data.models import ScheduledEntryMetaData
+from edc.subject.consent.tests.factories import ConsentCatalogueFactory
+from edc.subject.entry.tests.factories import EntryFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
+from edc.subject.visit_schedule.models import VisitDefinition
 from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
-from edc.testing.models import TestConsent, TestVisit, TestScheduledModel
-from edc.subject.entry.models import ScheduledEntryBucket
-from edc.subject.entry.tests.factories import EntryFactory
+from edc.testing.models import TestConsent, TestScheduledModel
+
 from ..choices import APPT_STATUS
 from ..models import Appointment
+
 from .factories import ConfigurationFactory
 from .base_appointment_tests import BaseAppointmentTests
 
@@ -107,7 +111,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
  
         print 'setup bhp_visit (1000, 1010, 1020, 1030)'
         content_type_map = ContentTypeMap.objects.get(content_type__model='testregistration')
-        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model=TestVisit._meta.object_name.lower())
+        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model='testvisit')
         membership_form = MembershipFormFactory(content_type_map=content_type_map)
         schedule_group = ScheduleGroupFactory(membership_form=membership_form, group_name='Test Reg', grouping_key='REGISTRATION')
         visit_definition = VisitDefinitionFactory(code='1000', title='Test Registration 00', grouping='test_subject', 
@@ -166,7 +170,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
         print 'confirm appt_status changes to \'in_progress\''
         self.assertEquals(appointment.appt_status, 'in_progress')
         print 'confirm not scheduled entries for visit'
-        self.assertEqual(ScheduledEntryBucket.objects.filter(appointment=appointment).count(), 0)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(appointment=appointment).count(), 0)
         print 'try changing status'
         for appt_status in APPT_STATUS:
             appointment = Appointment.objects.get(registered_subject=registered_subject, visit_definition__code='1000', visit_instance='0')
@@ -206,7 +210,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
         print 'confirm appt_status changes to \'in_progress\''
         self.assertEquals(appointment.appt_status, 'in_progress')
         print 'confirm not scheduled entries for visit'
-        self.assertEqual(ScheduledEntryBucket.objects.filter(appointment=appointment).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(appointment=appointment).count(), 1)
         print 'try changing status'
         for appt_status in APPT_STATUS:
             appointment = Appointment.objects.get(registered_subject=registered_subject, visit_definition__code='1010', visit_instance='0')
@@ -241,11 +245,11 @@ class AppointmentMethodTests(BaseAppointmentTests):
  
         print 'add the TestScheduledModel for visit 1010, scheduledentry should be KEYED'
         TestScheduledModelFactory(test_visit=test_visit)
-        print 'assert is KEYED in ScheduledEntryBucket'
-        #for obj in ScheduledEntryBucket.objects.filter(appointment=appointment):
+        print 'assert is KEYED in ScheduledEntryMetaData'
+        #for obj in ScheduledEntryMetaData.objects.filter(appointment=appointment):
         #    print obj.entry_status
-        ScheduledEntryBucket.objects.filter(appointment=appointment).update(entry_status='KEYED')
-        self.assertEqual(ScheduledEntryBucket.objects.filter(appointment=appointment, entry_status='KEYED').count(), 1)
+        ScheduledEntryMetaData.objects.filter(appointment=appointment).update(entry_status='KEYED')
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status='KEYED').count(), 1)
         print 'try changing status'
         for appt_status in APPT_STATUS:
             appointment = Appointment.objects.get(registered_subject=registered_subject, visit_definition__code='1010', visit_instance='0')

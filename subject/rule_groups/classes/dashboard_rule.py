@@ -1,5 +1,5 @@
 from django.db.models import get_model
-from controller import rule_groups
+from controller import site_rule_groups
 
 
 class DashboardRule(object):
@@ -50,4 +50,4 @@ class DashboardRuleContainer(object):
     def count(self):
         return len(self.dashboard_rules)
 
-rule_groups.dashboard_rules = DashboardRuleContainer()
+site_rule_groups.dashboard_rules = DashboardRuleContainer()

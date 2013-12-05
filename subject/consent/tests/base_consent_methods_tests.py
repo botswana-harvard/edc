@@ -1,22 +1,26 @@
 import re
+
 from datetime import datetime
 from django.test import TestCase
-from edc.core.bhp_variables.models import StudySite
-from edc.core.bhp_variables.tests.factories import StudySiteFactory
-from edc.subject.registration.models import RegisteredSubject
-from edc.testing.models import TestForeignKey, TestM2m, TestConsent, TestSubjectUuidModel, TestConsentNoRs
-from edc.testing.tests.factories import TestConsentFactory
-from edc.core.identifier.exceptions import IdentifierError
+
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
+from edc.core.bhp_variables.models import StudySite
+from edc.core.bhp_variables.tests.factories import StudySiteFactory
+from edc.core.identifier.exceptions import IdentifierError
+from edc.subject.registration.models import RegisteredSubject
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
-from .factories import ConsentCatalogueFactory
+from edc.testing.models import TestForeignKey, TestM2m, TestConsent, TestSubjectUuidModel, TestConsentNoRs
+
 from .base_methods import BaseMethods
+from .factories import ConsentCatalogueFactory
 
 
 class BaseConsentMethodsTests(TestCase, BaseMethods):
 
     def setUp(self):
+        from edc.testing.tests.factories import TestConsentFactory
+        self.test_consent_factory = TestConsentFactory
         self.create_study_variables()
 
     def test_subject_consent_save(self):
@@ -31,7 +35,7 @@ class BaseConsentMethodsTests(TestCase, BaseMethods):
         RegisteredSubject.objects.all().delete()
 
         print 'create a consent without a user provided identifier'
-        subject_consent = TestConsentFactory(study_site=study_site)
+        subject_consent = self.test_consent_factory(study_site=study_site)
         print 'assert a new identifier was created'
         self.assertIsNotNone(subject_consent.subject_identifier)
         print subject_consent.subject_identifier
@@ -43,7 +47,7 @@ class BaseConsentMethodsTests(TestCase, BaseMethods):
 
         print 'create another consent but provide a subject_identifier=\'TEST_IDENTIFIER\''
         user_provided_subject_identifier = 'TEST_IDENTIFIER'
-        subject_consent = TestConsentFactory(user_provided_subject_identifier=user_provided_subject_identifier, study_site=study_site)
+        subject_consent = self.test_consent_factory(user_provided_subject_identifier=user_provided_subject_identifier, study_site=study_site)
         print subject_consent.subject_identifier
         print 'assert provided subject_identifier was used on the consent model'
         self.assertEqual(subject_consent.subject_identifier, user_provided_subject_identifier)
@@ -60,7 +64,7 @@ class BaseConsentMethodsTests(TestCase, BaseMethods):
 
         print 'create a consent, but do not specify registered subject'
         self.assertEqual(RegisteredSubject.objects.all().count(), 2)
-        subject_consent = TestConsentFactory(study_site=study_site)
+        subject_consent = self.test_consent_factory(study_site=study_site)
         print subject_consent.subject_identifier
         print 'assert subject_identifier was created and a registered subject was updated'
         self.assertEqual(RegisteredSubject.objects.get(subject_identifier=subject_consent.subject_identifier).subject_identifier, subject_consent.subject_identifier)
@@ -72,7 +76,7 @@ class BaseConsentMethodsTests(TestCase, BaseMethods):
         print 'create a blank RegisteredSubject'
         registered_subject = RegisteredSubjectFactory(subject_type='test_subject_type', first_name='ERIKIS')
         print 'create a consent with registered subject'
-        subject_consent = TestConsentFactory(registered_subject=registered_subject, study_site=study_site)
+        subject_consent = self.test_consent_factory(registered_subject=registered_subject, study_site=study_site)
         print subject_consent.subject_identifier
         print 'assert subject_identifier was created and a registered subject was updated'
         self.assertEqual(RegisteredSubject.objects.get(subject_identifier=subject_consent.subject_identifier).subject_identifier, subject_consent.subject_identifier)
@@ -81,7 +85,7 @@ class BaseConsentMethodsTests(TestCase, BaseMethods):
         print 'create a registered subject and set the subject identifier'
         registered_subject = RegisteredSubjectFactory(subject_identifier="REGISTERED_SUBJECT_ID")
         print 'create a consent related to the registerred_subject'
-        subject_consent = TestConsentFactory(registered_subject=registered_subject, study_site=study_site)
+        subject_consent = self.test_consent_factory(registered_subject=registered_subject, study_site=study_site)
         print subject_consent.subject_identifier
         print 'assert the consent used the subject_identifier on registered_subject'
         self.assertEqual(subject_consent.subject_identifier, "REGISTERED_SUBJECT_ID")

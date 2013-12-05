@@ -13,7 +13,7 @@ from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
 from edc.base.model.models import BaseListModel
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc.core.bhp_variables.models import StudySite
-from edc.subject.entry.models import BaseEntryBucket
+from edc.entry_meta_data.models import BaseEntryMetaData
 from edc.device.sync.classes import BaseProducer
 from edc.device.sync.helpers import TransactionHelper
 from edc.device.sync.exceptions import PendingTransactionError
@@ -175,7 +175,7 @@ class BaseController(BaseProducer):
             if not isinstance(additional_base_model_class, (list, tuple)):
                 additional_base_model_class = [additional_base_model_class]
             base_model_class = base_model_class + additional_base_model_class
-        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, ScheduleGroup, StudySite, BaseHistoryModel, BaseEntryBucket]
+        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, ScheduleGroup, StudySite, BaseHistoryModel, BaseEntryMetaData]
         return tuple(base_model_class)
 
     def get_allowed_base_models(self):
@@ -192,7 +192,7 @@ class BaseController(BaseProducer):
         base_model_class = self.get_base_models_for_default_serialization()
         if not isinstance(base_model_class, list):
             raise TypeError('Expected base_model classes as a list. Got{0}'.format(base_model_class))
-        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, StudySite, BaseHistoryModel, BaseEntryBucket]
+        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, StudySite, BaseHistoryModel, BaseEntryMetaData]
         return tuple(set(base_model_class))
 
     def get_base_models_for_default_serialization(self):

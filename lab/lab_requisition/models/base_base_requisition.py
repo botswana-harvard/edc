@@ -170,6 +170,10 @@ class BaseBaseRequisition (BaseUuidModel):
     def subject(self):
         return self.get_subject_identifier()
 
+    @property
+    def report_datetime(self):
+        return self.requisition_datetime
+
     def visit(self):
         return self.get_visit().appointment.visit_definition.code
 
