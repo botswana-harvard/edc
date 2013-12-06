@@ -59,7 +59,7 @@ def item_map(request, **kwargs):
             lmarks.append([dist, mark[0]])
         lmark = sorted(lmarks,key=itemgetter(0))
         markers_l = {}
-        print item_map +  "   its here where u printing"
+        print str(item_map) +  "   its here where u printing"
         count = 0
         for distanace, p_point in lmark:
             if count < 6:
