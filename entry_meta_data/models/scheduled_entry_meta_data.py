@@ -3,7 +3,7 @@ from django.db import models
 from edc.subject.appointment.models import Appointment
 from edc.subject.entry.models import Entry
 
-from ..models import BaseEntryMetaData
+from .base_entry_meta_data import BaseEntryMetaData
 
 
 class ScheduledEntryMetaData(BaseEntryMetaData):

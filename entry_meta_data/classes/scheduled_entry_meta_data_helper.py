@@ -1,7 +1,6 @@
 from edc.subject.entry.models import Entry
 
-from ..models import ScheduledEntryMetaData
-
+from edc.entry_meta_data.models import ScheduledEntryMetaData
 from .base_meta_data_helper import BaseMetaDataHelper
 
 

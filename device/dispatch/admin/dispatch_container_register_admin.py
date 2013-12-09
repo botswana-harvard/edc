@@ -1,6 +1,7 @@
 from django.contrib import admin
 from edc.base.admin.admin import BaseModelAdmin, BaseStackedInline
 from ..models import DispatchContainerRegister, DispatchItemRegister
+from ..actions import return_dispatched_containers
 
 
 class DispatchItemRegisterInline(BaseStackedInline):
@@ -31,4 +32,5 @@ class DispatchContainerRegisterAdmin(BaseModelAdmin):
         )
     search_fields = ('id', 'container_identifier', )
     inlines = [DispatchItemRegisterInline, ]
+    actions = [return_dispatched_containers, ]
 admin.site.register(DispatchContainerRegister, DispatchContainerRegisterAdmin)
