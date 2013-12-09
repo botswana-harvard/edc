@@ -29,8 +29,8 @@ def item_map(request, **kwargs):
             raise MapperError('Attribute latitude may not be None. Got {0}'.format(kwargs))
         identifier = kwargs.get('identifier', None)
         item = mapper.get_item_model_cls().objects.get(**{mapper.get_identifier_field_attr(): identifier})
-        item_map = getattr(item, mapper.map_field_attr) 
-        #folder = settings.MEDIA_ROOT
+        item_map = getattr(item, mapper.map_field_attr_18) 
+        folder = settings.MEDIA_URL
         landmark_list = []
         landmarks = mapper.get_landmarks()
         letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
@@ -41,23 +41,25 @@ def item_map(request, **kwargs):
         lat = getattr(item, mapper.target_gps_lat_field_attr)
         lon = getattr(item, mapper.target_gps_lon_field_attr)
         lmarks = []
-#         if request.GET.get('map'):
-#             map = int(request.GET.get('map'))
-#             print map
-#             if map == 1:
-#                 item_map = getattr(item[0], mapper.map_field_attr)[:-4] + '_18.jpg'
-#                 print item_map
-#             if map == 2:
-#                 item_map = getattr(item[0], mapper.map_field_attr)[:-4] + '_17.jpg'
-#                 print item_map
-#             if map == 3:
-#                 item_map = getattr(item[0], mapper.map_field_attr)
-#                 print item_map
+        if request.GET.get('map'):
+            map = int(request.GET.get('map'))
+            print map
+            if map == 1:
+                item_map = getattr(item, mapper.map_field_attr_18)
+                print item_map
+            if map == 2:
+                item_map = getattr(item, mapper.map_field_attr_17)
+                print item_map
+            if map == 3:
+                item_map = getattr(item, mapper.map_field_attr_16)
+                print item_map
+        print folder, item_map
         for mark in landmark_list:
             dist = mapper.gps_distance_between_points(lat, lon, mark[1], mark[2])
             lmarks.append([dist, mark[0]])
         lmark = sorted(lmarks,key=itemgetter(0))
         markers_l = {}
+        print str(item_map) +  "   its here where u printing"
         count = 0
         for distanace, p_point in lmark:
             if count < 6:
@@ -73,6 +75,7 @@ def item_map(request, **kwargs):
                     'item_map': item_map,
                     'markers_l': markers_l,
                     'map': map,
+                    'folder': folder,
                 },
                 context_instance=RequestContext(request)
             )

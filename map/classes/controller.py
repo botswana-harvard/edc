@@ -55,13 +55,14 @@ class Controller(object):
         return lst
 
     def get_current_mapper(self):
-        if not 'CURRENT_COMMUNITY' in dir(settings) or not settings.CURRENT_COMMUNITY:
-            raise TypeError('Ensure settings.CURRENT_MAPPER exists and is not \'None\'.')
-        if not settings.DEVICE_ID == '99':
-            mapper_class = self.get_registry(settings.CURRENT_COMMUNITY)()
-            items = mapper_class.get_item_model_cls().objects.all()
-            if not getattr(items[0], mapper_class.map_area_field_attr) == settings.CURRENT_COMMUNITY:
-                raise MapperError('The settings current community does not match the community the plots in the database belong to. Got {0} for current community in settings file and {1} for community plots belong to'.format(settings.CURRENT_COMMUNITY, getattr(items[0], mapper_class.map_area_field_attr)))
+        if settings.CURRENT_COMMUNITY_CHECK:
+            if not 'CURRENT_COMMUNITY' in dir(settings) or not settings.CURRENT_COMMUNITY:
+                raise MapperError('Ensure settings.CURRENT_MAPPER exists and is not \'None\'.')
+            if not settings.DEVICE_ID == '99':
+                mapper_class = self.get_registry(settings.CURRENT_COMMUNITY)()
+                items = mapper_class.get_item_model_cls().objects.all()
+                if not getattr(items[0], mapper_class.map_area_field_attr) == settings.CURRENT_COMMUNITY:
+                    raise MapperError('The settings current community does not match the community the plots in the database belong to. Got {0} for current community in settings file and {1} for community plots belong to'.format(settings.CURRENT_COMMUNITY, getattr(items[0], mapper_class.map_area_field_attr)))
         return self.get_registry(settings.CURRENT_COMMUNITY)
 
     def get_mapper_as_tuple(self):
