@@ -108,7 +108,7 @@ class BaseSearchByWord(BaseSearcher):
                     pass
             elif isinstance(field, (models.DateTimeField, models.DateField)):
                 pass
-            elif isinstance(field, (models.ForeignKey, models.OneToOneField, models.ManyToManyField, models.ImageField)):
+            elif isinstance(field, (models.ForeignKey, models.OneToOneField, models.ManyToManyField, models.ImageField, models.NullBooleanField)):
                 pass
             else:
                 raise SearchError('model contains a field type not handled. Got {0} from model {1}.'.format(field, self.get_search_model_cls()))
