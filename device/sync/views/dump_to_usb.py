@@ -43,6 +43,7 @@ def dump_to_usb(request, **kwargs):
     for outgoing_transaction in outgoing_transactions:
         outgoing_transaction.is_consumed_middleman = True
         outgoing_transaction.consumer = usb_path
+        outgoing_transaction.consumed_datetime = datetime.now()
         outgoing_transaction.save()
     if not success:
         messages.add_message(request, messages.ERROR, 'Serialization to path \'{0}\' failed'.format(usb_path))
