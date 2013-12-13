@@ -10,10 +10,11 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.encoding import force_unicode
 
-from edc.base.admin.exceptions import NextUrlError
 from edc.core.bhp_data_manager.models import ModelHelpText
 from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper
 from edc.subject.rule_groups.classes import site_rule_groups
+
+from ..exceptions import NextUrlError
 
 logger = logging.getLogger(__name__)
 
@@ -48,26 +49,26 @@ class BaseModelAdmin (admin.ModelAdmin):
     def add_view(self, request, form_url='', extra_context=None):
         META = 0
         DCT = 1
-        extra_context = extra_context or {}
+        extra_context = extra_context or dict()
         extra_context = self.contribute_to_extra_context(extra_context)
-        extra_context['instructions'] = self.instructions
-        extra_context['required_instructions'] = self.required_instructions
-        extra_context['form_language_code'] = request.GET.get('form_language_code', '')
+        extra_context.update(instructions=self.instructions)
+        extra_context.update(required_instructions=self.required_instructions)
+        extra_context.update(form_language_code=request.GET.get('form_language_code', ''))
         if request.GET.get('group_title'):
-            extra_context['title'] = ('{group_title}: Add {title}').format(group_title=request.GET.get('group_title'), title=force_unicode(self.model._meta.verbose_name))
+            extra_context.update(title=('{group_title}: Add {title}').format(group_title=request.GET.get('group_title'), title=force_unicode(self.model._meta.verbose_name)))
         extra_context.update(self.get_dashboard_context(request))
         model_help_text = self.get_model_help_text(self.model._meta.app_label, self.model._meta.object_name)
         extra_context.update(model_help_text_meta=model_help_text[META], model_help_text=model_help_text[DCT])
         return super(BaseModelAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        extra_context = extra_context or {}
+        extra_context = extra_context or dict()
         extra_context = self.contribute_to_extra_context(extra_context, object_id)
-        extra_context['instructions'] = self.instructions
-        extra_context['required_instructions'] = self.required_instructions
-        extra_context['form_language_code'] = request.GET.get('form_language_code', '')
+        extra_context.update(instructions=self.instructions)
+        extra_context.update(required_instructions=self.required_instructions)
+        extra_context.update(form_language_code=request.GET.get('form_language_code', ''))
         if request.GET.get('group_title'):
-            extra_context['title'] = ('{group_title}: Add {title}').format(group_title=request.GET.get('group_title'), title=force_unicode(self.model._meta.verbose_name))
+            extra_context.update(title=('{group_title}: Add {title}').format(group_title=request.GET.get('group_title'), title=force_unicode(self.model._meta.verbose_name)))
         extra_context.update(self.get_dashboard_context(request))
         result = super(BaseModelAdmin, self).change_view(request, object_id, form_url=form_url, extra_context=extra_context)
         # Look at the referer for a query string '^.*\?.*$'
@@ -141,7 +142,7 @@ class BaseModelAdmin (admin.ModelAdmin):
                     # try to reverse using the next_url_name and the all values in the GET string
                     # less ['next', 'dashboard_id', 'dashboard_model', 'dashboard_type', 'show'].
                     # dashbord_xx values are excluded because we do not want to intercept a dashboard url here
-                    kwargs = {}
+                    kwargs = dict()
                     [kwargs.update({key: value}) for key, value in request.GET.iteritems() if key not in ['next', 'dashboard_id', 'dashboard_model', 'dashboard_type', 'show']]
                     if kwargs:
                         url = reverse(next_url_name, kwargs=kwargs)
@@ -305,13 +306,13 @@ class BaseModelAdmin (admin.ModelAdmin):
         return url
 
     def convert_get_to_kwargs(self, request, obj):
-        kwargs = {}
+        kwargs = dict()
         for k, v in request.GET.iteritems():
-            kwargs[str(k)] = ''.join(unicode(i) for i in request.GET.get(k))
+            kwargs.update({str(k): ''.join(unicode(i) for i in request.GET.get(k))})
             if not v:
                 if k in dir(obj):
                     try:
-                        kwargs[str(k)] = getattr(obj, k)
+                        kwargs.update({str(k): getattr(obj, k)})
                     except:
                         pass
         if 'next' in kwargs:
@@ -322,7 +323,7 @@ class BaseModelAdmin (admin.ModelAdmin):
 
     def get_model_help_text(self, app_label=None, module_name=None):
         # TODO: and this does what?
-        mht = {}
+        mht = dict()
         for model_help_text in ModelHelpText.objects.filter(app_label=app_label, module_name=module_name.lower()):
             mht.update({model_help_text.field_name: model_help_text})
         return (ModelHelpText._meta, mht)
@@ -333,13 +334,16 @@ class BaseModelAdmin (admin.ModelAdmin):
         If there is not a "next" model, returns an empty tuple (None, None, None).
 
         Called from response_add and response_change."""
-        retval = (None, None, None)
+        next_url_tuple = (None, None, None)
         if visit_attr and entry_order:
             visit_instance = getattr(obj, visit_attr)
-            site_rule_groups.update_all(visit_instance)
-            scheduled_entry_meta_data_helper = ScheduledEntryMetaDataHelper(visit_instance.get_appointment(), visit_instance.__class__, visit_attr)
-            scheduled_entry_meta_data_helper = scheduled_entry_meta_data_helper.get_next_entry_for(entry_order)
-            if scheduled_entry_meta_data_helper:
-                url = reverse('admin:{0}_{1}_add'.format(scheduled_entry_meta_data_helper.entry.content_type_map.app_label, scheduled_entry_meta_data_helper.entry.content_type_map.module_name))
-                retval = (url, visit_instance, scheduled_entry_meta_data_helper.entry.entry_order)
-        return retval
+            #site_rule_groups.update_all(visit_instance)
+            site_rule_groups.update_rules_for_source_model(obj, visit_instance)
+            next_entry = ScheduledEntryMetaDataHelper(visit_instance.get_appointment(), visit_instance.__class__, visit_attr).get_next_entry_for(entry_order)
+            if next_entry:
+                next_url_tuple = (
+                    reverse('admin:{0}_{1}_add'.format(next_entry.entry.content_type_map.app_label, next_entry.entry.content_type_map.module_name)),
+                    visit_instance,
+                    next_entry.entry.entry_order
+                    )
+        return next_url_tuple
