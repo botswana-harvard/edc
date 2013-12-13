@@ -55,6 +55,14 @@ class Device(object):
         if int(self._device_id) in self.SERVER_DEVICE_ID_LIST:
             self._is_server = True
 
+    def is_producer_name_server(self, name):
+        if not name:
+            raise TypeError('argument name cannot be None. Pass the producer name.')
+        hostname = name.split('-')[0]
+        if hostname.find('bcpp') != -1 and int(hostname[4:]) in self.SERVER_DEVICE_ID_LIST:#TEMP Solution, need to FIX
+            return True
+        return False
+            
     def set_is_middleman(self):
         self._is_middleman = False
         if int(self._device_id) in self.MIDDLEMAN_DEVICE_ID_LIST:

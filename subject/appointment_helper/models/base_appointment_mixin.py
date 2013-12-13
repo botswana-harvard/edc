@@ -16,7 +16,7 @@ class BaseAppointmentMixin(object):
 
 #     def deserialize_prep(self):
 #         Signal.disconnect(post_save, None, weak=False, dispatch_uid="prepare_appointments_on_post_save")
-# 
+#
 #     def deserialize_post(self):
 #         Signal.connect(post_save, None, weak=False, dispatch_uid="prepare_appointments_on_post_save")
 

@@ -53,7 +53,7 @@ class AdminTests(TestCase):
 #                 print '%s %s\n' % (url_name.ljust(longest + 1), value)
 #                 urls = self._reverse_dashboard_url(url_name)
 #
-#         url = reverse('admin:bhp_base_test_testmodel_add')
+#         url = reverse('admin:testing_testmodel_add')
 #         app_label, module_name = None, None
 #         url = '{0}?next=add&app_label={1}&module_name={2}'.format(url, app_label or '', module_name or '')
 #         print '  assert fails with url={0}'.format(url)
@@ -66,7 +66,7 @@ class AdminTests(TestCase):
         test_model_admin = admin.site._registry.get(TestModel)
 
         print "specify next=add with missing GET parameters"
-        url = reverse('admin:bhp_base_test_testmodel_add')
+        url = reverse('admin:testing_testmodel_add')
         app_label, module_name = None, None
         url = '{0}?next=add&app_label={1}&module_name={2}'.format(url, app_label or '', module_name or '')
         print '  assert fails with url={0}'.format(url)
@@ -74,13 +74,13 @@ class AdminTests(TestCase):
         next_url_name = 'add'
         self.assertRaises(NextUrlError, test_model_admin.response_add_redirect_on_next_url, next_url_name, request, test_model, None)
 
-        app_label, module_name = 'bhp_base_test', None
+        app_label, module_name = 'testing', None
         url = '{0}?next=add&app_label={1}&module_name={2}'.format(url, app_label or '', module_name or '')
         print '  assert fails with url={0}'.format(url)
         request = self._mocked_authenticated_request(url, self.user)
         self.assertRaises(NextUrlError, test_model_admin.response_add_redirect_on_next_url, next_url_name, request, test_model, None)
 
-        app_label, module_name = 'bhp_base_test', 'testmodel'
+        app_label, module_name = 'testing', 'testmodel'
         url = '{0}?next=add&app_label={1}&module_name={2}'.format(url, app_label or '', module_name or '')
         print '  assert succeeds with url={0}'.format(url)
         request = self._mocked_authenticated_request(url, self.user)
@@ -88,20 +88,20 @@ class AdminTests(TestCase):
 
         print "specify next=changlist with missing GET parameters"
         next_url_name = 'changelist'
-        url = reverse('admin:bhp_base_test_testmodel_changelist')
+        url = reverse('admin:testing_testmodel_changelist')
         app_label, module_name = None, None
         url = '{0}?next=add&app_label={1}&module_name={2}'.format(url, app_label or '', module_name or '')
         print '  assert fails with url={0}'.format(url)
         request = self._mocked_authenticated_request(url, self.user)
         self.assertRaises(NextUrlError, test_model_admin.response_add_redirect_on_next_url, next_url_name, request, test_model, None)
 
-        app_label, module_name = 'bhp_base_test', None
+        app_label, module_name = 'testing', None
         url = '{0}?next=add&app_label={1}&module_name={2}'.format(url, app_label or '', module_name or '')
         print '  assert fails with url={0}'.format(url)
         request = self._mocked_authenticated_request(url, self.user)
         self.assertRaises(NextUrlError, test_model_admin.response_add_redirect_on_next_url, next_url_name, request, test_model, None)
 
-        app_label, module_name = 'bhp_base_test', 'testmodel'
+        app_label, module_name = 'testing', 'testmodel'
         url = '{0}?next=add&app_label={1}&module_name={2}'.format(url, app_label or '', module_name or '')
         print '  assert succeeds with url={0}'.format(url)
         request = self._mocked_authenticated_request(url, self.user)

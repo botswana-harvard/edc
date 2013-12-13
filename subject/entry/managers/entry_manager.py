@@ -3,7 +3,7 @@ from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.subject.visit_schedule.models import VisitDefinition
 
 
-class EntryBucketManager(models.Manager):
+class EntryManager(models.Manager):
 
     def get_by_natural_key(self, visit_definition_code, app_label, model):
         """Returns the instance using the natural key."""

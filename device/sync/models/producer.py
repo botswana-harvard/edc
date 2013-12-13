@@ -32,8 +32,10 @@ class Producer(BaseUuidModel):
         max_length=250,
         default='-',
         null=True)
+    
     json_limit = models.IntegerField(
         default=0)
+    
     json_total_count = models.IntegerField(
         default=0
         )
@@ -42,8 +44,35 @@ class Producer(BaseUuidModel):
         max_length=50,
         null=True,
         blank=True)
+    
     objects = models.Manager()
 
+
+    def save(self, *args, **kwargs):
+#         from django.conf import settings
+#         print settings.DATABASES
+#         producer_dict = {
+#                 'ENGINE': 'django.db.backends.mysql',
+#                 'TEST_MIRROR': None,
+#                 'NAME': self.settings_key,
+#                 'TEST_CHARSET': None,
+#                 'TIME_ZONE': 'Africa/Gaborone',
+#                 'TEST_COLLATION': None,
+#                 'PORT': '3306',
+#                 'HOST': self.url,
+#                 'USER': self.settings_key,
+#                 'TEST_NAME': None,
+#                 'PASSWORD': 'cc3721b',
+#                 'OPTIONS': {
+#                     'init_command': 'SET storage_engine=INNODB'
+#                 }
+#             }
+#         #if not settings.DATABASES.get(self.settings_key, None):
+#         settings.DATABASES[self.settings_key] = producer_dict
+#         print settings.DATABASES[self.settings_key]
+        pass
+        super(Producer, self).save(*args, **kwargs)
+    
     def __unicode__(self):
         return self.name
 

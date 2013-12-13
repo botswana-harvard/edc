@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.serializers.base import DeserializationError
 from django.db import IntegrityError
 from django.db.models.query import QuerySet
+from django.db.models import get_model
 from django.db.models import ForeignKey, OneToOneField, get_app, get_models
 from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
@@ -13,7 +14,7 @@ from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
 from edc.base.model.models import BaseListModel
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc.core.bhp_variables.models import StudySite
-from edc.subject.entry.models import BaseEntryBucket
+from edc.entry_meta_data.models import BaseEntryMetaData
 from edc.device.sync.classes import BaseProducer
 from edc.device.sync.helpers import TransactionHelper
 from edc.device.sync.exceptions import PendingTransactionError
@@ -175,7 +176,7 @@ class BaseController(BaseProducer):
             if not isinstance(additional_base_model_class, (list, tuple)):
                 additional_base_model_class = [additional_base_model_class]
             base_model_class = base_model_class + additional_base_model_class
-        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, ScheduleGroup, StudySite, BaseHistoryModel, BaseEntryBucket]
+        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, ScheduleGroup, StudySite, BaseHistoryModel, BaseEntryMetaData]
         return tuple(base_model_class)
 
     def get_allowed_base_models(self):
@@ -192,7 +193,7 @@ class BaseController(BaseProducer):
         base_model_class = self.get_base_models_for_default_serialization()
         if not isinstance(base_model_class, list):
             raise TypeError('Expected base_model classes as a list. Got{0}'.format(base_model_class))
-        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, StudySite, BaseHistoryModel, BaseEntryBucket]
+        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, StudySite, BaseHistoryModel, BaseEntryMetaData]
         return tuple(set(base_model_class))
 
     def get_base_models_for_default_serialization(self):
@@ -288,6 +289,15 @@ class BaseController(BaseProducer):
         if self._session_container['class_counter'].get(instance._meta.object_name, None) == None:
             self._session_container['class_counter'].update({instance._meta.object_name: 0})
         return self._session_container['class_counter'].get(instance._meta.object_name)
+
+    def update_model(self, model_or_app_model_tuple, additional_base_model_class=None, fk_to_skip=None):
+        try:
+            app, model = model_or_app_model_tuple
+            model_cls = get_model(app, model)
+        except:
+            model_cls = model_or_app_model_tuple
+        #additional_base_model_class = model_cls
+        self.model_to_json(model_cls, additional_base_model_class, fk_to_skip=fk_to_skip)
 
     def _to_json(self, model_instances, additional_base_model_class=None, user_container=None, fk_to_skip=None):
         """Serialize model instances on source to destination.

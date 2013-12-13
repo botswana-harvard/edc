@@ -13,7 +13,5 @@ class ReportDecryptor(Cryptor):
         line = line.replace('</div>', '')
         line = line.strip()
         secret = Crypt.objects.filter(hash=line)
-        # decrypted = Cryptor('rsa',mode='local').rsa_decrypt(secret)
         decrypted = self.rsa_decrypt(secret[0].secret)
-        # print decrypted
         return '<div>' + decrypted + '</div>'

@@ -19,10 +19,12 @@ def consume_transactions(request, **kwargs):
     producer = None
     app_name = kwargs.get('app_name', None)#If we have subclassed sync.html, then we need app_name to tell this view
     #To redirect to the application sync template instead of sync.html
+    device = Device()
     middle_man = None
     remote_is_middleman = False
+    remote_is_site_server = False
     #if 'MIDDLE_MAN' in dir(settings) and settings.MIDDLE_MAN:
-    if Device().is_middleman():
+    if device.is_middleman():
         middle_man = True
     else:
         middle_man = False
@@ -50,6 +52,8 @@ def consume_transactions(request, **kwargs):
                                 break
                     else:
                         remote_is_middleman = False
+                    if device.is_producer_name_server(producer.name):
+                        remote_is_site_server = True
                     # url to producer, add in the producer, username and api_key of the current user
                     data = {'host': producer.url, 'producer': producer.name, 'limit': producer.json_limit, 'username': request.user.username, 'api_key': request.user.api_key.key}
                     if middle_man:
@@ -59,6 +63,9 @@ def consume_transactions(request, **kwargs):
                         if remote_is_middleman:
                             #I am a Server pulling from a MiddleMan, we dont care who the original producer was, just grab all eligible(i.e not synced by Server yet) tansanctions in MiddleManTransaction table
                             url = '{host}bhp_sync/api_mmtr/middlemantransaction/?format=json&limit={limit}&username={username}&api_key={api_key}'.format(**data)
+                        elif remote_is_site_server:
+                            #I am a master server pulling from site servers, we pull from OutgoingTransactions. We dont care who the original producer is, just grab them all.
+                            url = '{host}bhp_sync/api_otssr/outgoingtransaction/?format=json&limit={limit}&username={username}&api_key={api_key}'.format(**data)
                         else:
                             #I am still a Server, but now pulling from a netbook, just grab all eligible(i.e not synced by Server yet) transactions from OutgoingTransactions table
                             #however pass the producer for filtering on the other side.
