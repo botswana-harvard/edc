@@ -1,4 +1,5 @@
 from django import forms
+from ..models import UploadTransactionFile
 
 
 class UploadTransactionFileForm(forms.ModelForm):
@@ -12,3 +13,6 @@ class UploadTransactionFileForm(forms.ModelForm):
         self.instance.check_for_transactions(cleaned_data.get('transaction_file'), forms.ValidationError)
 
         return cleaned_data
+    
+    class Meta:
+        model = UploadTransactionFile

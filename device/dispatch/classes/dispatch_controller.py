@@ -44,6 +44,8 @@ class DispatchController(BaseDispatchController):
         self._dispatch_url = None
         self._set_dispatch_url(dispatch_url)
 
+
+
     def dispatch(self, debug=None, **kwargs):
         """Dispatches items to a device by creating a dispatch item instance.
 
@@ -245,7 +247,7 @@ class DispatchController(BaseDispatchController):
             if requisitions:
                 self.dispatch_user_items_as_json(requisitions, user_container)
 
-    def dispatch_entry_buckets(self, registered_subject):
+    def dispatch_entry_meta_data(self, registered_subject):
         pass
 
     def dispatch_consent_instances(self, app_label, registered_subject, container, **kwargs):
@@ -302,7 +304,7 @@ class DispatchController(BaseDispatchController):
 
     def dispatch_crypt(self):
         logger.info("Updating the Crypt table...")
-        self.update_model(('crypto', 'crypt'))
+        self.update_model(('crypto_fields', 'crypt'))
 
     def dispatch_registered_subjects(self):
         logger.info("Updating the Registered Subjects table...")

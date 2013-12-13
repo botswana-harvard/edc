@@ -1,12 +1,15 @@
 from datetime import timedelta
-from django.db import models
+
 from django.core.urlresolvers import reverse
 from django.core.validators import MaxLengthValidator
+from django.db import models
+
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from ..utils import get_lower_window_days, get_upper_window_days
-from ..models import ScheduleGroup
-from ..models import BaseWindowPeriodItem
+
 from ..managers import VisitDefinitionManager
+from ..models import BaseWindowPeriodItem
+from ..models import ScheduleGroup
+from ..utils import get_lower_window_days, get_upper_window_days
 from ..validators import is_visit_tracking_model
 
 
@@ -39,11 +42,15 @@ class VisitDefinition(BaseWindowPeriodItem):
         return (self.code, )
 
     def get_lower_window_datetime(self, appt_datetime):
+        if not appt_datetime:
+            return None
         days = get_lower_window_days(self.lower_window, self.lower_window_unit)
         td = timedelta(days=days)
         return appt_datetime - td
 
     def get_upper_window_datetime(self, appt_datetime):
+        if not appt_datetime:
+            return None
         days = get_upper_window_days(self.upper_window, self.upper_window_unit)
         td = timedelta(days=days)
         return appt_datetime + td

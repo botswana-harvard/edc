@@ -1,8 +1,8 @@
 from django.db import models
-from edc.device.sync.models import BaseSyncUuidModel
+from edc.device.dispatch.models import BaseDispatchSyncUuidModel
 
 
-class Crypt (BaseSyncUuidModel):
+class Crypt (BaseDispatchSyncUuidModel):
 
     """ A secrets lookup model searchable by hash """
 

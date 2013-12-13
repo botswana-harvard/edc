@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from edc.device.sync.models import BaseSyncUuidModel
+from edc.device.device.classes import Device
 from ..exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError
 
 
@@ -51,6 +52,12 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         Must be an field attname on the model used as a dispatch container, such as, household_identifier on model Household."""
         raise ImproperlyConfigured('Model {0} is not configured for dispatch as a container. Missing method dispatched_as_container_identifier_attr()'.format(self._meta.object_name))
 
+    def is_dispatched(self):
+        if self.is_dispatch_container_model():
+            return self.is_dispatched_as_container()
+        else:
+            return self.is_dispatched_as_item()
+
     def is_dispatched_as_container(self, using=None):
         """Determines if a model instance is dispatched as a container.
 
@@ -64,7 +71,10 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                     is_dispatched=True,
                     return_datetime__isnull=True).exists()
         return is_dispatched
-
+    
+    def is_current_device_server(self):
+        return Device().is_server()
+        
     def is_dispatched_within_user_container(self, using=None):
         """Returns True if the model class is dispatched within a user container.
 
@@ -157,18 +167,17 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         """Returns the models 'dispatched' status in model DispatchItemRegister."""
         is_dispatched = False
         if self.is_dispatchable_model():
-            if not self._bypass_for_edit():
-                if self.id:
-                    if self.get_dispatched_item(using):
-                        is_dispatched = True
-                if not is_dispatched:
-                    if not self.is_dispatch_container_model():
-                        # if item is not registered with DispatchItemRegister AND we are not checking on behalf of
-                        # a user_container ...
-                        if not is_dispatched and not user_container:
-                            is_dispatched = self.is_dispatched_within_user_container(using)
-                            if not isinstance(is_dispatched, bool):
-                                raise TypeError('Expected a boolean as a return value from method is_dispatched_within_user_container(). Got {0}'.format(is_dispatched))
+            if self.id:
+                if self.get_dispatched_item(using):
+                    is_dispatched = True
+            if not is_dispatched:
+                if not self.is_dispatch_container_model():
+                    # if item is not registered with DispatchItemRegister AND we are not checking on behalf of
+                    # a user_container ...
+                    if not is_dispatched and not user_container:
+                        is_dispatched = self.is_dispatched_within_user_container(using)
+                        if not isinstance(is_dispatched, bool):
+                            raise TypeError('Expected a boolean as a return value from method is_dispatched_within_user_container(). Got {0}'.format(is_dispatched))
         return is_dispatched
 
     def get_dispatched_item(self, using=None):
@@ -194,9 +203,9 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         if self.id:
             if self.is_dispatchable_model():
                 if self.is_dispatch_container_model():
-                    if self.is_dispatched_as_container(using):
+                    if self.is_dispatched_as_container(using) and not self._bypass_for_edit():
                         raise AlreadyDispatchedContainer('Model {0}-{1} is currently dispatched as a container for other dispatched items.'.format(self._meta.object_name, self.pk))
-                if self.is_dispatched_as_item(using):
+                if self.is_dispatched_as_item(using) and not self._bypass_for_edit():
                     raise AlreadyDispatchedItem('Model {0}-{1} is currently dispatched'.format(self._meta.object_name, self.pk))
         super(BaseDispatchSyncUuidModel, self).save(*args, **kwargs)
 
