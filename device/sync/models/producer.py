@@ -70,7 +70,6 @@ class Producer(BaseUuidModel):
 #         #if not settings.DATABASES.get(self.settings_key, None):
 #         settings.DATABASES[self.settings_key] = producer_dict
 #         print settings.DATABASES[self.settings_key]
-        pass
         super(Producer, self).save(*args, **kwargs)
     
     def __unicode__(self):
