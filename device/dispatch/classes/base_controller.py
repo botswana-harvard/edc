@@ -4,6 +4,7 @@ from datetime import datetime
 from django.conf import settings
 from django.core.serializers.base import DeserializationError
 from django.db import IntegrityError
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.db.models import get_model
 from django.db.models import ForeignKey, OneToOneField, get_app, get_models
@@ -16,6 +17,8 @@ from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc.core.bhp_variables.models import StudySite
 from edc.entry_meta_data.models import BaseEntryMetaData
 from edc.device.sync.classes import BaseProducer
+from edc.core.crypto_fields.classes import FieldCryptor
+from edc.core.crypto_fields.models import Crypt
 from edc.device.sync.helpers import TransactionHelper
 from edc.device.sync.exceptions import PendingTransactionError
 from ..exceptions import ControllerBaseModelError
@@ -299,7 +302,46 @@ class BaseController(BaseProducer):
         #additional_base_model_class = model_cls
         self.model_to_json(model_cls, additional_base_model_class, fk_to_skip=fk_to_skip)
 
-    def _to_json(self, model_instances, additional_base_model_class=None, user_container=None, fk_to_skip=None):
+
+    def update_model_crpts(self, mld_cls_instances):
+        
+        hash_keys = []
+        for mld_cls_instance in mld_cls_instances: # eg plot
+            #Getin model
+            model_cls = mld_cls_instance.__class__
+            mdl_cls = str(model_cls)
+            mdl_cls = mdl_cls.split('\'')
+            mdl_cls = mdl_cls[-2]
+            mdl_cls = mdl_cls.split('.')
+            mdl_cls = mdl_cls[-1]
+    
+            fields = model_cls._meta.fields
+            for f in fields:
+                f_dict = str(f)
+                f_dict = f_dict.split(':')
+                f_type = f_dict[0]
+                f_name = f_dict[1]
+                f_name = f_name[1:-1]
+                print f_name
+                
+                print f
+                #Check if field is encrypted
+                f_type = f_type.split('.')
+                f_type = f_type[-1]
+                f_type = f_type[:9]
+                if f_type == 'Encrypted':
+                    crypt = FieldCryptor('rsa', 'local')
+                    hash_value = crypt.get_hash(getattr(mld_cls_instance, f_name))
+                    if hash_value:
+                        hash_keys.append(hash_value)
+        crypt_objs_instances = []
+        for h_key in hash_keys:
+            crypt_objs_instance = Crypt.objects.filter(hash=h_key)
+            print crypt_objs_instance
+            crypt_objs_instances.append(crypt_objs_instance)
+        return crypt_objs_instances
+        
+    def _to_json(self, model_instance, additional_base_model_class=None, user_container=None, fk_to_skip=None):
         """Serialize model instances on source to destination.
 
         Args:
@@ -310,6 +352,13 @@ class BaseController(BaseProducer):
         ..warning:: This method assumes you have confirmed that the model_instances are "already dispatched" or not.
 
         """
+        #append crypts to all dispatched items
+        model_instances = []
+        model_instances.append(model_instance)
+        crypts_dispatched = self.update_model_crpts(model_instances)
+        for crypts in crypts_dispatched:
+            model_instances.append(crypts[0])
+        
         # check for pending transactions
         if self.has_incoming_transactions(model_instances):
             raise PendingTransactionError('One or more listed models have pending incoming transactions on \'{0}\'. Consume them first. Got \'{1}\'.'.format(self.get_using_source(), list(set(model_instances))))
