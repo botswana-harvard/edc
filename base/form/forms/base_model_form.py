@@ -62,10 +62,13 @@ class BaseModelForm(forms.ModelForm):
         """Calls crypto clean methods, OTHER/Specify and some functionality for bhp_dispatch."""
         cleaned_data = self.cleaned_data
         # check if dispatched
-        if 'edc.device.dispatch' in settings.INSTALLED_APPS:
-            if 'is_dispatched' in dir(self._meta.model()):
-                if self._meta.model().is_dispatched:
-                    raise forms.ValidationError('Cannot update. Form is currently dispatched')
+        #if 'edc.device.dispatch' in settings.INSTALLED_APPS:
+        #    if 'is_dispatched' in dir(self._meta.model()):
+        #        if self._meta.model().is_dispatched():#this does not work {self._meta.model()}
+        #                                              #The form about to be saved looses its foreign key objects
+        #                                              #which later causes a problem in is_dispatched_within_user_container
+        #                                              #using lookup_value = getattr(lookup_value, attrname, None).
+        #            raise forms.ValidationError('Cannot update. Form is currently dispatched')
         # encrypted fields may have their own validation code to run.
         # See the custom field objects in edc.core.crypto_fields.
         try:
