@@ -302,14 +302,14 @@ class DispatchController(BaseDispatchController):
                 self.dispatch_registered_subjects()
         return any_dispatched, any_transactions
 
-    def dispatch_crypt(self):
-        logger.info("Updating the Crypt table...")
-        self.update_model(('crypto_fields', 'crypt'))
+#     def dispatch_crypt(self):
+#         logger.info("Updating the Crypt table...")
+#         self.update_model(('crypto_fields', 'crypt'))
 
     def dispatch_registered_subjects(self):
         logger.info("Updating the Registered Subjects table...")
         self.update_model(('registration', 'RegisteredSubject'))
 
-    def send_cypts(self, crypts_to_send, **kwargs):
-        logger.info('  dispatching {0} crypts to {1}.'.format(crypts_to_send.count(), self.get_using_destination()))
-        self._to_json(crypts_to_send, kwargs.get('additional_class', None))
+#     def send_cypts(self, crypts_to_send, **kwargs):
+#         logger.info('  dispatching {0} crypts to {1}.'.format(crypts_to_send.count(), self.get_using_destination()))
+#         self._to_json(crypts_to_send, kwargs.get('additional_class', None))
