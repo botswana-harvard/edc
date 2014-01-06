@@ -12,11 +12,9 @@ class BaseModel(TimeStampedModel):
 
     user_modified = models.CharField(max_length=250, verbose_name='user modified', editable=False, default="", db_index=True)
 
-    hostname_created = HostnameCreationField(
-         db_index=True)
+    hostname_created = HostnameCreationField(db_index=True)
 
-    hostname_modified = HostnameModificationField(
-        db_index=True)
+    hostname_modified = HostnameModificationField(db_index=True)
 
     def get_absolute_url(self):
         if self.id:
