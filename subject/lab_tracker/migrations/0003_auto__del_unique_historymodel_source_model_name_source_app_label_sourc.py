@@ -9,12 +9,14 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Removing unique constraint on 'HistoryModel', fields ['source_model_name', 'source_app_label', 'source_identifier', 'group_name', 'test_code', 'value_datetime', 'subject_identifier']
-        db.delete_unique('bhp_lab_tracker_historymodel', ['source_model_name', 'source_app_label', 'source_identifier', 'group_name', 'test_code', 'value_datetime', 'subject_identifier'])
+        #db.delete_unique('bhp_lab_tracker_historymodel', ['source_model_name', 'source_app_label', 'source_identifier', 'group_name', 'test_code', 'value_datetime', 'subject_identifier'])
 
         # Adding unique constraint on 'HistoryModel', fields ['subject_type', 'source_model_name', 'source_app_label', 'source_identifier', 'group_name', 'test_code', 'value_datetime', 'subject_identifier']
-        db.create_unique('bhp_lab_tracker_historymodel', ['subject_type', 'source_model_name', 'source_app_label', 'source_identifier', 'group_name', 'test_code', 'value_datetime', 'subject_identifier'])
+        #db.create_unique('bhp_lab_tracker_historymodel', ['subject_type', 'source_model_name', 'source_app_label', 'source_identifier', 'group_name', 'test_code', 'value_datetime', 'subject_identifier'])
 
-
+        db.add_column(u'bhp_lab_tracker_historymodel', 'revision',
+                      self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True),
+                      keep_default=False)
     def backwards(self, orm):
         # Removing unique constraint on 'HistoryModel', fields ['subject_type', 'source_model_name', 'source_app_label', 'source_identifier', 'group_name', 'test_code', 'value_datetime', 'subject_identifier']
         db.delete_unique('bhp_lab_tracker_historymodel', ['subject_type', 'source_model_name', 'source_app_label', 'source_identifier', 'group_name', 'test_code', 'value_datetime', 'subject_identifier'])

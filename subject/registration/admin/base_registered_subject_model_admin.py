@@ -14,10 +14,9 @@ class BaseRegisteredSubjectModelAdmin (BaseModelAdmin):
     """
     date_hierarchy = 'created'
 
-    def __init__(self, *args, **kwargs):
-        self.search_fields = ['registered_subject__subject_identifier', 'registered_subject__sid']
-        self.list_display = ['registered_subject', 'created', 'modified', 'user_created', 'user_modified', ]
-        self.list_filter = [
+    search_fields = ['registered_subject__subject_identifier', 'registered_subject__sid']
+    list_display = ['registered_subject', 'created', 'modified', 'user_created', 'user_modified', ]
+    list_filter = [
             'registered_subject__gender',
             'registered_subject__study_site',
             'registered_subject__survival_status',
@@ -29,8 +28,23 @@ class BaseRegisteredSubjectModelAdmin (BaseModelAdmin):
             'hostname_created',
             'hostname_modified',
             ]
-
-        super(BaseRegisteredSubjectModelAdmin, self).__init__(*args, **kwargs)
+#     def __init__(self, *args, **kwargs):
+#         self.search_fields = ['registered_subject__subject_identifier', 'registered_subject__sid']
+#         self.list_display = ['registered_subject', 'created', 'modified', 'user_created', 'user_modified', ]
+#         self.list_filter = [
+#             'registered_subject__gender',
+#             'registered_subject__study_site',
+#             'registered_subject__survival_status',
+#             'registered_subject__registration_datetime',
+#             'created',
+#             'modified',
+#             'user_created',
+#             'user_modified',
+#             'hostname_created',
+#             'hostname_modified',
+#             ]
+# 
+#         super(BaseRegisteredSubjectModelAdmin, self).__init__(*args, **kwargs)
 
     def save_model(self, request, obj, form, change):
         # i am explicitly listing valid subclasses for now. in future when code has stabilized
