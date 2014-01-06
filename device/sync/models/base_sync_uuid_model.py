@@ -2,6 +2,7 @@ import logging
 
 from datetime import datetime
 
+from apps.bcpp.utils import Conf
 from django.conf import settings
 from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
@@ -24,11 +25,14 @@ class BaseSyncUuidModel(BaseUuidModel):
 
     """Base model for all UUID models and adds synchronization methods and signals. """
 
+   #def is_serialized(self, serialize=True):
+   #     if 'ALLOW_MODEL_SERIALIZATION' in dir(settings):
+   #         if settings.ALLOW_MODEL_SERIALIZATION:
+   #             return serialize
+   #     return False
+
     def is_serialized(self, serialize=True):
-        if 'ALLOW_MODEL_SERIALIZATION' in dir(settings):
-            if settings.ALLOW_MODEL_SERIALIZATION:
-                return serialize
-        return False
+        return Conf.get('ALLOW_MODEL_SERIALIZATION')
 
     def deserialize_prep(self):
         """Users may override to manipulate the incoming object before calling save()"""
