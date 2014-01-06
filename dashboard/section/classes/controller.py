@@ -1,4 +1,5 @@
 import copy
+from django.http import HttpRequest
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
@@ -49,7 +50,15 @@ class Controller(object):
 #             raise AttributeError('Attribute section_name cannot be None for class {0}'.format(section_view_cls))
         if section_view_cls().get_section_name() in self._registry:
             raise AlreadyRegistered('A section view class of type {1} is already registered ({0})'.format(section_view_cls, section_view_cls().get_section_name()))
-        self._registry[section_view_cls().get_section_name()] = section_view_cls()
+        if 'DENIED_SECTIONS_FOR_GROUP' in dir(settings) and 'LOGGED_IN_USER_GROUP' in dir(settings):
+            logged_in_user_group = settings.LOGGED_IN_USER_GROUP #settings.LOGGED_IN_USER_GROUP must be changed. Only temporary untill i figure out how to get logged in USER from within a class properly.
+            if settings.DENIED_SECTIONS_FOR_GROUP.get(logged_in_user_group, None):
+                #denied_sections_for_user should be a tuple of section names
+                denied_sections_for_user = settings.DENIED_SECTIONS_FOR_GROUP.get(logged_in_user_group)
+                if not section_view_cls().get_section_name() in denied_sections_for_user:
+                    self._registry[section_view_cls().get_section_name()] = section_view_cls()
+        else:
+            self._registry[section_view_cls().get_section_name()] = section_view_cls()
 
     def get(self, section_name):
         """Returns a dictionary value, s section_view_inst, for the given section name."""
