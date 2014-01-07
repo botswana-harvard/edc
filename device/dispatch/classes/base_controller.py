@@ -302,9 +302,8 @@ class BaseController(BaseProducer):
         #additional_base_model_class = model_cls
         self.model_to_json(model_cls, additional_base_model_class, fk_to_skip=fk_to_skip)
 
-
     def update_model_crpts(self, mld_cls_instances):
-        
+        """Grebs all crypt objects of models being dispatched. """
         hash_keys = []
         for mld_cls_instance in mld_cls_instances: # eg plot
             #Getin model
@@ -315,16 +314,10 @@ class BaseController(BaseProducer):
             mdl_cls = mdl_cls[-2]
             mdl_cls = mdl_cls.split('.')
             mdl_cls = mdl_cls[-1]
-    
             fields = model_cls._meta.fields
             print model_cls
-            for f in fields:
-                f_dict = str(f)
-                f_dict = f_dict.split(':')
-                f_type = f_dict[0]
-                f_name = f_dict[1]
-                f_name = f_name[1:-1]
-
+            for field in fields:
+                f_name = field.name
                 #Check if field is encrypted
                 f_type = f_type.split('.')
                 f_type = f_type[-1]
@@ -339,7 +332,7 @@ class BaseController(BaseProducer):
             crypt_objs_instance = Crypt.objects.filter(hash=h_key)
             crypt_objs_instances.append(crypt_objs_instance)
         return crypt_objs_instances
-        
+    
     def _to_json(self, model_instance, additional_base_model_class=None, user_container=None, fk_to_skip=None):
         """Serialize model instances on source to destination.
 
@@ -357,7 +350,6 @@ class BaseController(BaseProducer):
         crypts_dispatched = self.update_model_crpts(model_instances)
         for crypts in crypts_dispatched:
             model_instances.append(crypts[0])
-        
         # check for pending transactions
         if self.has_incoming_transactions(model_instances):
             raise PendingTransactionError('One or more listed models have pending incoming transactions on \'{0}\'. Consume them first. Got \'{1}\'.'.format(self.get_using_source(), list(set(model_instances))))
