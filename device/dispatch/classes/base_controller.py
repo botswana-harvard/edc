@@ -308,6 +308,7 @@ class BaseController(BaseProducer):
         hash_keys = []
         for mld_cls_instance in mld_cls_instances: # eg plot
             #Getin model
+
             model_cls = mld_cls_instance.__class__
             mdl_cls = str(model_cls)
             mdl_cls = mdl_cls.split('\'')
@@ -316,15 +317,14 @@ class BaseController(BaseProducer):
             mdl_cls = mdl_cls[-1]
     
             fields = model_cls._meta.fields
+            print model_cls
             for f in fields:
                 f_dict = str(f)
                 f_dict = f_dict.split(':')
                 f_type = f_dict[0]
                 f_name = f_dict[1]
                 f_name = f_name[1:-1]
-                print f_name
-                
-                print f
+
                 #Check if field is encrypted
                 f_type = f_type.split('.')
                 f_type = f_type[-1]
@@ -337,7 +337,6 @@ class BaseController(BaseProducer):
         crypt_objs_instances = []
         for h_key in hash_keys:
             crypt_objs_instance = Crypt.objects.filter(hash=h_key)
-            print crypt_objs_instance
             crypt_objs_instances.append(crypt_objs_instance)
         return crypt_objs_instances
         
