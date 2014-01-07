@@ -303,8 +303,8 @@ class BaseController(BaseProducer):
         #additional_base_model_class = model_cls
         self.model_to_json(model_cls, additional_base_model_class, fk_to_skip=fk_to_skip)
 
-
     def update_model_crpts(self, mld_cls_instances):
+        """Grabs all crypt objects of models being dispatched. """
         hash_keys = []
         crypt_objs_instances = []
         for mld_cls_instance in mld_cls_instances: # eg plot
@@ -313,7 +313,6 @@ class BaseController(BaseProducer):
             fields = model_cls._meta.fields
             for f in fields:
                 if issubclass(f.__class__, BaseEncryptedField):
-                    #Initially try the RSA algorith
                     crypt = FieldCryptor('rsa', 'local')
                     hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
                     if hash_value:
@@ -346,10 +345,7 @@ class BaseController(BaseProducer):
         model_instances = []
         model_instances.append(model_instance)
         crypts_dispatched = self.update_model_crpts(model_instances)
-        #for crypts in crypts_dispatched:
         model_instances.append(crypts_dispatched)
-
-
         # check for pending transactions
         if self.has_incoming_transactions(model_instances):
             raise PendingTransactionError('One or more listed models have pending incoming transactions on \'{0}\'. Consume them first. Got \'{1}\'.'.format(self.get_using_source(), list(set(model_instances))))
