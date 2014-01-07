@@ -37,7 +37,7 @@ class RevisionField (CharField):
         kwargs.setdefault('editable', False)
         kwargs.setdefault('blank', True)
         kwargs.setdefault('null', True)
-        kwargs.setdefault('max_length', 50)
+        kwargs.setdefault('max_length', 150)
         kwargs.setdefault('verbose_name', 'Revision')
         CharField.__init__(self, *args, **kwargs)
 

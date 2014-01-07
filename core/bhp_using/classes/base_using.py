@@ -72,7 +72,6 @@ class BaseUsing(object):
 
     def is_valid_using(self, using, label):
         """Confirms an ORM `using` parameter is valid by checking :file:`settings.py`."""
-        print settings.DATABASES
         dbKey = []
         for key in settings.DATABASES.iteritems():
             if key[0] == using:

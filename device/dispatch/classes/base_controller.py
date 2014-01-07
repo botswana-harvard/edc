@@ -21,6 +21,7 @@ from edc.core.crypto_fields.classes import FieldCryptor
 from edc.core.crypto_fields.models import Crypt
 from edc.device.sync.helpers import TransactionHelper
 from edc.device.sync.exceptions import PendingTransactionError
+from edc.core.crypto_fields.fields import BaseEncryptedField
 from ..exceptions import ControllerBaseModelError
 from .controller_register import registered_controllers
 from .signal_manager import SignalManager
@@ -179,7 +180,7 @@ class BaseController(BaseProducer):
             if not isinstance(additional_base_model_class, (list, tuple)):
                 additional_base_model_class = [additional_base_model_class]
             base_model_class = base_model_class + additional_base_model_class
-        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, ScheduleGroup, StudySite, BaseHistoryModel, BaseEntryMetaData]
+        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, ScheduleGroup, StudySite, BaseHistoryModel, BaseEntryMetaData, BaseEncryptedField]
         return tuple(base_model_class)
 
     def get_allowed_base_models(self):
@@ -304,42 +305,32 @@ class BaseController(BaseProducer):
 
 
     def update_model_crpts(self, mld_cls_instances):
-        
         hash_keys = []
+        crypt_objs_instances = []
         for mld_cls_instance in mld_cls_instances: # eg plot
             #Getin model
-
             model_cls = mld_cls_instance.__class__
-            mdl_cls = str(model_cls)
-            mdl_cls = mdl_cls.split('\'')
-            mdl_cls = mdl_cls[-2]
-            mdl_cls = mdl_cls.split('.')
-            mdl_cls = mdl_cls[-1]
-    
             fields = model_cls._meta.fields
-            print model_cls
             for f in fields:
-                f_dict = str(f)
-                f_dict = f_dict.split(':')
-                f_type = f_dict[0]
-                f_name = f_dict[1]
-                f_name = f_name[1:-1]
-
-                #Check if field is encrypted
-                f_type = f_type.split('.')
-                f_type = f_type[-1]
-                f_type = f_type[:9]
-                if f_type == 'Encrypted':
+                if issubclass(f.__class__, BaseEncryptedField):
+                    #Initially try the RSA algorith
                     crypt = FieldCryptor('rsa', 'local')
-                    hash_value = crypt.get_hash(getattr(mld_cls_instance, f_name))
+                    hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
                     if hash_value:
-                        hash_keys.append(hash_value)
-        crypt_objs_instances = []
-        for h_key in hash_keys:
-            crypt_objs_instance = Crypt.objects.filter(hash=h_key)
-            crypt_objs_instances.append(crypt_objs_instance)
+                        crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
+                        if crypt_objs_instance:
+                            #Successfully pulled a crypt record using hash generated from RSA instance.
+                            crypt_objs_instances.append(crypt_objs_instance)
+                        else:
+                            #RSA hash dis not work, now we try AES generated hash
+                            crypt = FieldCryptor('aes', 'local')
+                            hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
+                            if hash_value:
+                                crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
+                                if crypt_objs_instance:
+                                        crypt_objs_instances.append(crypt_objs_instance)
         return crypt_objs_instances
-        
+
     def _to_json(self, model_instance, additional_base_model_class=None, user_container=None, fk_to_skip=None):
         """Serialize model instances on source to destination.
 
@@ -355,9 +346,10 @@ class BaseController(BaseProducer):
         model_instances = []
         model_instances.append(model_instance)
         crypts_dispatched = self.update_model_crpts(model_instances)
-        for crypts in crypts_dispatched:
-            model_instances.append(crypts[0])
-        
+        #for crypts in crypts_dispatched:
+        model_instances.append(crypts_dispatched)
+
+
         # check for pending transactions
         if self.has_incoming_transactions(model_instances):
             raise PendingTransactionError('One or more listed models have pending incoming transactions on \'{0}\'. Consume them first. Got \'{1}\'.'.format(self.get_using_source(), list(set(model_instances))))
