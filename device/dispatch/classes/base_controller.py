@@ -307,9 +307,13 @@ class BaseController(BaseProducer):
         """Grabs all crypt objects of models being dispatched. """
         hash_keys = []
         crypt_objs_instances = []
+        if not isinstance(mld_cls_instances, (list, QuerySet)):
+            mld_cls_instances = [mld_cls_instances]
         for mld_cls_instance in mld_cls_instances: # eg plot
             #Getin model
             model_cls = mld_cls_instance.__class__
+            if '_meta' not in dir(model_cls):
+                continue
             fields = model_cls._meta.fields
             for f in fields:
                 if issubclass(f.__class__, BaseEncryptedField):
@@ -319,6 +323,8 @@ class BaseController(BaseProducer):
                         crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
                         if crypt_objs_instance:
                             #Successfully pulled a crypt record using hash generated from RSA instance.
+                            hash_keys.append(hash_value)
+                            print '1--'+hash_value
                             crypt_objs_instances.append(crypt_objs_instance[0])
                         else:
                             #RSA hash dis not work, now we try AES generated hash
@@ -327,7 +333,13 @@ class BaseController(BaseProducer):
                             if hash_value:
                                 crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
                                 if crypt_objs_instance:
+                                        hash_keys.append(hash_value)
+                                        print '2---'+hash_value
                                         crypt_objs_instances.append(crypt_objs_instance[0])
+        crypt_objs_instances_unique = {}
+        for crypt in crypt_objs_instances:
+            crypt_objs_instances_unique[crypt.hash] = crypt
+        crypt_objs_instances = crypt_objs_instances_unique.values()
         return crypt_objs_instances
 
     def _to_json(self, model_instance, additional_base_model_class=None, user_container=None, fk_to_skip=None):
@@ -343,8 +355,10 @@ class BaseController(BaseProducer):
         """
         #append crypts to all dispatched items
         model_instances = []
-        model_instances.append(model_instance)
-        crypts_dispatched = self.update_model_crpts(model_instances)
+#         if not isinstance(model_instance, list):
+#             model_instance = [model_instance]
+#         #model_instances = model_instances + model_instance
+        crypts_dispatched = self.update_model_crpts(model_instance)
         for crypt in crypts_dispatched:
             model_instances.append(crypt)
         # check for pending transactions
@@ -393,6 +407,8 @@ class BaseController(BaseProducer):
                                 self.add_to_session_container(instance, 'serialized')
                                 self.update_session_container_class_counter(instance)
                         except IntegrityError as e:
+                            if e.args[1].find('Duplicate entry') != -1 and e.args[1].find('hash') != -1:
+                                saved.append(deserialized_object)
                             self._reconnect_signals()
                             continue
                     if len(saved) == len(deserialized_objects):
