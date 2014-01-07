@@ -321,8 +321,6 @@ class BaseController(BaseProducer):
                 f_dict = f_dict.split(':')
                 f_type = f_dict[0]
                 f_name = field.name
-                f_name = f_name[1:-1]
-
                 #Check if field is encrypted
                 f_type = f_type.split('.')
                 f_type = f_type[-1]
