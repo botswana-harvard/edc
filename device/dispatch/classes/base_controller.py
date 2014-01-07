@@ -323,8 +323,6 @@ class BaseController(BaseProducer):
                         crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
                         if crypt_objs_instance:
                             #Successfully pulled a crypt record using hash generated from RSA instance.
-                            hash_keys.append(hash_value)
-                            print '1--'+hash_value
                             crypt_objs_instances.append(crypt_objs_instance[0])
                         else:
                             #RSA hash dis not work, now we try AES generated hash
@@ -333,8 +331,6 @@ class BaseController(BaseProducer):
                             if hash_value:
                                 crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
                                 if crypt_objs_instance:
-                                        hash_keys.append(hash_value)
-                                        print '2---'+hash_value
                                         crypt_objs_instances.append(crypt_objs_instance[0])
         crypt_objs_instances_unique = {}
         for crypt in crypt_objs_instances:
@@ -353,25 +349,21 @@ class BaseController(BaseProducer):
         ..warning:: This method assumes you have confirmed that the model_instances are "already dispatched" or not.
 
         """
-        #append crypts to all dispatched items
         model_instances = []
-#         if not isinstance(model_instance, list):
-#             model_instance = [model_instance]
-#         #model_instances = model_instances + model_instance
+        #Get all Crypts for this list of instances
         crypts_dispatched = self.update_model_crpts(model_instance)
-        for crypt in crypts_dispatched:
-            model_instances.append(crypt)
-        # check for pending transactions
+        # convert to list if not iterable
+        if not isinstance(model_instance, (list, QuerySet)):
+            model_instance = [model_instance]
+        if isinstance(model_instance, QuerySet):
+            model_instance = [m for m in model_instance]
+        #append crypts to all instances to be dispatched
+        model_instances = crypts_dispatched + model_instance
         if self.has_incoming_transactions(model_instances):
             raise PendingTransactionError('One or more listed models have pending incoming transactions on \'{0}\'. Consume them first. Got \'{1}\'.'.format(self.get_using_source(), list(set(model_instances))))
         if model_instances:
-            # convert to list if not iterable
-            if not isinstance(model_instances, (list, QuerySet)):
-                model_instances = [model_instances]
-            if isinstance(model_instances, QuerySet):
-                model_instances = [m for m in model_instances]
-            # confirm all model_instances are of the correct base class
             for instance in model_instances:
+                # confirm all model_instances are of the correct base class
                 if self.is_allowed_base_model_instance(instance, additional_base_model_class):
                     # only need to check one as all are of the same class so jump out...
                     break
