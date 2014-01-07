@@ -297,9 +297,10 @@ class DispatchController(BaseDispatchController):
                     break
             if not any_dispatched:
                 for qs in queryset:
+                    #Calls dispatch_prep, dispatch_prep is overidden in bcpp_dispatch_controller
                     self.dispatch()
-                self.dispatch_crypt()
-                self.dispatch_registered_subjects()
+#                 self.dispatch_crypt()
+#                 self.dispatch_registered_subjects()
         return any_dispatched, any_transactions
 
 #     def dispatch_crypt(self):
