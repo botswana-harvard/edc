@@ -319,7 +319,7 @@ class BaseController(BaseProducer):
                         crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
                         if crypt_objs_instance:
                             #Successfully pulled a crypt record using hash generated from RSA instance.
-                            crypt_objs_instances.append(crypt_objs_instance)
+                            crypt_objs_instances.append(crypt_objs_instance[0])
                         else:
                             #RSA hash dis not work, now we try AES generated hash
                             crypt = FieldCryptor('aes', 'local')
@@ -327,7 +327,7 @@ class BaseController(BaseProducer):
                             if hash_value:
                                 crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
                                 if crypt_objs_instance:
-                                        crypt_objs_instances.append(crypt_objs_instance)
+                                        crypt_objs_instances.append(crypt_objs_instance[0])
         return crypt_objs_instances
 
     def _to_json(self, model_instance, additional_base_model_class=None, user_container=None, fk_to_skip=None):
@@ -345,7 +345,8 @@ class BaseController(BaseProducer):
         model_instances = []
         model_instances.append(model_instance)
         crypts_dispatched = self.update_model_crpts(model_instances)
-        model_instances.append(crypts_dispatched)
+        for crypt in crypts_dispatched:
+            model_instances.append(crypt)
         # check for pending transactions
         if self.has_incoming_transactions(model_instances):
             raise PendingTransactionError('One or more listed models have pending incoming transactions on \'{0}\'. Consume them first. Got \'{1}\'.'.format(self.get_using_source(), list(set(model_instances))))
