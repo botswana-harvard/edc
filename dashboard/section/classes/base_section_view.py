@@ -112,6 +112,7 @@ class BaseSectionView(object):
 
     def set_section_list(self, value):
         """Sets a list of section names. Called in urls.py through the controller."""
+        #print value
         self._section_list = value
 
     def get_section_list(self):
@@ -206,13 +207,13 @@ class BaseSectionView(object):
             'installed_apps': settings.INSTALLED_APPS,
             'selected_section': self.get_section_name(),
             'sections': self.get_section_list(),
+            'sections_names': [sec[0] for sec in self.get_section_list()],
             'section_name': self.get_section_name(),
 #             'search_term': search_term,
             'add_model': self.get_add_model_cls(),
             'add_model_opts': self.get_add_model_opts(),
             'add_model_name': self.get_add_model_name(),
             })
-
         # add extra values to the context dictionary
         context = self._contribute_to_context_wrapper(default_context, request, **kwargs)
         return render_to_response(self.get_template(), context, context_instance=RequestContext(request))
