@@ -76,112 +76,112 @@ class PrepareDevice(BasePrepareDevice):
             self.timer()
             logger.info("1. Running pre procedures")
             self.pre_prepare()
-#         if not step > 2:
-#             self.timer()
-#             logger.info("2. Updating content_type")
-#             self.update_content_type()
-#         if not step > 3:
-#             self.timer()
-#             logger.info("3. Updating auth...")
-#             self.update_auth()
-#         if not step > 5:
-#             self.timer()
-#             logger.info("5. Updating lists...")
-#             self.update_list_models()
-#         if not step > 6:
-#             self.timer()
-#             logger.info("6. Updating bhp variables...")
-#             self.update_app_models('bhp_variables', [BaseUuidModel])
-#         if not step > 7:
-#             self.timer()
-#             logger.info("7. Updating contenttypemap...")
-#             logger.info('    ...update')
-#             self.update_app_models('bhp_content_type_map', [BaseModel])
-#             logger.info('    ...resize')
-#             self.resize_content_type()
-#             self.update_app_models('bhp_content_type_map', [BaseModel])
-#             logger.info('    ...pop and sync')
-#             self.sync_content_type_map()
-#         if not step > 8:
-#             self.timer()
-#             logger.info("8. Updating appointment configuration...")
-#             self.update_model(("appointment", "Configuration"), [BaseSyncUuidModel])
-#         if not step > 9:
-#             self.timer()
-#             logger.info("9. Updating the Crypt table...")
-#             self.update_model(('crypto_fields', 'crypt'),[BaseModel])
-#             #logger.info('   Warning, skipping. use mysqldump for the Crypt table, bhp_crypto_crypt')
-#         if not step > 10:
-#             self.timer()
-#             logger.info("10. Updating the visit definitions...")
-#             self.update_app_models('visit_schedule', [BaseUuidModel])
-#         if not step > 11:
-#             self.timer()
-#             logger.info("11. Updating subject identifiers...")
-#             self.update_app_models('identifier', [BaseModel])
-#         if not step > 12:
-#             self.timer()
-#             logger.info("12. Updating registered subjects...")
-#             self.update_model(('registration', 'registeredsubject'), [BaseModel])
-#             logger.info('   Warning, skipping. use mysqldump for the RegisteredSubject table, registration_registeredsubject')
-#         if not step > 13:
-#             self.timer()
-#             logger.info("13. Updating consent Consent Catalogues...")
-#             signals.post_save.disconnect(add_models_to_catalogue, weak=False, dispatch_uid="add_models_to_catalogue")
-#             self.update_model(('consent', 'ConsentCatalogue'), [BaseSyncUuidModel])
-#         if not step > 14:
-#             self.timer()
-#             logger.info("14. Updating consent Attached Models...")
-#             self.update_model(('consent', 'AttachedModel'), [BaseSyncUuidModel],fk_to_skip=['content_type_map_id', 'consent_catalogue_id'])
-#             signals.post_save.connect(add_models_to_catalogue, weak=False, dispatch_uid="add_models_to_catalogue")
-#         if not step > 15:
-#             self.timer()
-#             logger.info("15. Updating lab test code groups from lab_test_code...")
-#             self.update_model(('lab_test_code', 'TestCodeGroup'), [BaseLabListModel, BaseLabModel])
-#         if not step > 16:
-#             self.timer()
-#             logger.info("16. Updating lab test codes from lab_test_code...")
-#             self.update_model(('lab_test_code', 'TestCode'), [BaseLabListModel, BaseLabModel])
-#         if not step > 17:
-#             self.timer()
-#             logger.info("17. Updating lab aliquot types from lab_aliquot_list...")
-#             self.update_model(('lab_aliquot_list', 'AliquotType'), [BaseModel])
-#         if not step > 18:
-#             self.timer()
-#             logger.info("18. Updating lab panel models from lab_panel...")
-#             self.update_app_models('lab_panel', [BaseModel])
-#         if not step > 19:
-#             self.timer()
-#             logger.info("19. Updating aliquot types from lab_clinic_api...")
-#             self.update_model(('lab_clinic_api', 'AliquotType'), [BaseLabListModel, BaseLabModel])
-#         if not step > 20:
-#             self.timer()
-#             logger.info("20. Updating test code groups from lab_clinic_api...")
-#             self.update_model(('lab_clinic_api', 'TestCodeGroup'), [BaseLabListModel, BaseLabModel])
-#         if not step > 21:
-#             self.timer()
-#             logger.info("21. Updating test codes from lab_clinic_api...")
-#             self.update_model(('lab_clinic_api', 'TestCode'), [BaseLabListModel, BaseLabModel])
-#         if not step > 22:
-#             self.timer()
-#             logger.info("22. Updating panel from lab_clinic_api...")
-#             self.update_model(('lab_clinic_api', 'Panel'), [BaseLabListModel, BaseLabModel])
-#         if not step > 23:
-#             self.timer()
-#             logger.info("23. Updating review from lab_clinic_api...")
-#             self.update_model(('lab_clinic_api', 'Review'), [BaseLabUuidModel])
-#         if not step > 24:
-#             self.timer()
-#             logger.info("24. Updating un-scheduled lab entry buckets from bhp_lab_entry...")
-#             self.update_model(('lab_entry', 'UnscheduledLabEntryBucket'))
-#         if not step > 25:
-#             self.timer()
-#             logger.info("25. Updating lab entry from bhp_lab_entry...")
-#             self.update_model(('lab_entry', 'LabEntry'), [BaseUuidModel])
-#         if not step > 26:
-#             self.timer()
-#             logger.info("26. Updating bhp_entry.models.entry...")
-#             self.update_model(('entry', 'entry'), [BaseUuidModel])
+        if not step > 2:
+            self.timer()
+            logger.info("2. Updating content_type")
+            self.update_content_type()
+        if not step > 3:
+            self.timer()
+            logger.info("3. Updating auth...")
+            self.update_auth()
+        if not step > 5:
+            self.timer()
+            logger.info("5. Updating lists...")
+            self.update_list_models()
+        if not step > 6:
+            self.timer()
+            logger.info("6. Updating bhp variables...")
+            self.update_app_models('bhp_variables', [BaseUuidModel])
+        if not step > 7:
+            self.timer()
+            logger.info("7. Updating contenttypemap...")
+            logger.info('    ...update')
+            self.update_app_models('bhp_content_type_map', [BaseModel])
+            logger.info('    ...resize')
+            self.resize_content_type()
+            self.update_app_models('bhp_content_type_map', [BaseModel])
+            logger.info('    ...pop and sync')
+            self.sync_content_type_map()
+        if not step > 8:
+            self.timer()
+            logger.info("8. Updating appointment configuration...")
+            self.update_model(("appointment", "Configuration"), [BaseSyncUuidModel])
+        if not step > 9:
+            self.timer()
+            logger.info("9. Updating the Crypt table...")
+            #self.update_model(('crypto_fields', 'crypt'),[BaseModel])
+            #logger.info('   Warning, skipping. use mysqldump for the Crypt table, bhp_crypto_crypt')
+        if not step > 10:
+            self.timer()
+            logger.info("10. Updating the visit definitions...")
+            self.update_app_models('visit_schedule', [BaseUuidModel])
+        if not step > 11:
+            self.timer()
+            logger.info("11. Updating subject identifiers...")
+            self.update_app_models('identifier', [BaseModel])
+        if not step > 12:
+            self.timer()
+            logger.info("12. Updating registered subjects...")
+            #self.update_model(('registration', 'registeredsubject'), [BaseModel])
+            #logger.info('   Warning, skipping. use mysqldump for the RegisteredSubject table, registration_registeredsubject')
+        if not step > 13:
+            self.timer()
+            logger.info("13. Updating consent Consent Catalogues...")
+            signals.post_save.disconnect(add_models_to_catalogue, weak=False, dispatch_uid="add_models_to_catalogue")
+            self.update_model(('consent', 'ConsentCatalogue'), [BaseSyncUuidModel])
+        if not step > 14:
+            self.timer()
+            logger.info("14. Updating consent Attached Models...")
+            self.update_model(('consent', 'AttachedModel'), [BaseSyncUuidModel],fk_to_skip=['content_type_map_id', 'consent_catalogue_id'])
+            signals.post_save.connect(add_models_to_catalogue, weak=False, dispatch_uid="add_models_to_catalogue")
+        if not step > 15:
+            self.timer()
+            logger.info("15. Updating lab test code groups from lab_test_code...")
+            self.update_model(('lab_test_code', 'TestCodeGroup'), [BaseLabListModel, BaseLabModel])
+        if not step > 16:
+            self.timer()
+            logger.info("16. Updating lab test codes from lab_test_code...")
+            self.update_model(('lab_test_code', 'TestCode'), [BaseLabListModel, BaseLabModel])
+        if not step > 17:
+            self.timer()
+            logger.info("17. Updating lab aliquot types from lab_aliquot_list...")
+            self.update_model(('lab_aliquot_list', 'AliquotType'), [BaseModel])
+        if not step > 18:
+            self.timer()
+            logger.info("18. Updating lab panel models from lab_panel...")
+            self.update_app_models('lab_panel', [BaseModel])
+        if not step > 19:
+            self.timer()
+            logger.info("19. Updating aliquot types from lab_clinic_api...")
+            self.update_model(('lab_clinic_api', 'AliquotType'), [BaseLabListModel, BaseLabModel])
+        if not step > 20:
+            self.timer()
+            logger.info("20. Updating test code groups from lab_clinic_api...")
+            self.update_model(('lab_clinic_api', 'TestCodeGroup'), [BaseLabListModel, BaseLabModel])
+        if not step > 21:
+            self.timer()
+            logger.info("21. Updating test codes from lab_clinic_api...")
+            self.update_model(('lab_clinic_api', 'TestCode'), [BaseLabListModel, BaseLabModel])
+        if not step > 22:
+            self.timer()
+            logger.info("22. Updating panel from lab_clinic_api...")
+            self.update_model(('lab_clinic_api', 'Panel'), [BaseLabListModel, BaseLabModel])
+        if not step > 23:
+            self.timer()
+            logger.info("23. Updating review from lab_clinic_api...")
+            self.update_model(('lab_clinic_api', 'Review'), [BaseLabUuidModel])
+        if not step > 24:
+            self.timer()
+            logger.info("24. Updating un-scheduled lab entry buckets from bhp_lab_entry...")
+            self.update_model(('lab_entry', 'UnscheduledLabEntryBucket'))
+        if not step > 25:
+            self.timer()
+            logger.info("25. Updating lab entry from bhp_lab_entry...")
+            self.update_model(('lab_entry', 'LabEntry'), [BaseUuidModel])
+        if not step > 26:
+            self.timer()
+            logger.info("26. Updating bhp_entry.models.entry...")
+            self.update_model(('entry', 'entry'), [BaseUuidModel])
         if not step > 27:
             self.timer()
             logger.info("27. Updating api keys...")
