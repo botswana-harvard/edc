@@ -5,9 +5,6 @@ from django.db.models import get_model
 
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.lab.lab_clinic_api.models import Panel
-from edc.subject.entry.models import Entry, LabEntry
-
-from ..models import MembershipForm, ScheduleGroup, VisitDefinition
 
 EntryTuple = namedtuple('EntryTuple', 'order app_label model_name')
 MembershipFormTuple = namedtuple('MembershipFormTuple', 'name model visible')
@@ -74,6 +71,8 @@ class VisitScheduleConfiguration(object):
 
     def rebuild(self):
         """Rebuild, WARNING which DELETES meta data."""
+        from ..models import MembershipForm, ScheduleGroup, VisitDefinition
+        from edc.subject.entry.models import Entry
         from edc.subject.appointment.models import Appointment
         for code in self.visit_definitions.iterkeys():
             if VisitDefinition.objects.filter(code=code):
@@ -89,6 +88,8 @@ class VisitScheduleConfiguration(object):
 
     def build(self):
         """Builds and / or updates the visit schedule models."""
+        from ..models import MembershipForm, ScheduleGroup, VisitDefinition
+        from edc.subject.entry.models import Entry, LabEntry
         for membership_form in self.membership_forms.itervalues():
             if not MembershipForm.objects.filter(category=membership_form.name):
                 MembershipForm.objects.create(
