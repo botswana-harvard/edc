@@ -57,6 +57,7 @@ class ExportAsCsv(object):
             row = self.get_row(obj)
             if self.get_include_header() and index == 0:
                 writer.writerow(self.get_header_row())
+                obj.update_mixin_fields()
             writer.writerow(row)
             self.update_export_history(obj)
         return self.get_file_obj()
