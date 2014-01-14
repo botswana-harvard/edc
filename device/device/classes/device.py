@@ -9,8 +9,12 @@ class Device(object):
 
     Tries settings.py (with DEVICE_ID settings attribute).
     Must be a number."""
-
-    SERVER_DEVICE_ID_LIST = [91, 92, 93, 94, 95, 96, 97, 99, 70, 71]  # reserved device ids. 70 is the Ranaka server, 71 Digawana server. DONT CHANGE, ASK ONE IF UNSURE.
+    #reserved device ids. DONT CHANGE, ASK ONE IF UNSURE.
+    #70 is the Ranaka server, 
+    #71 Digawana server,
+    #91 Molapowabojang serve,
+    #92 Otse server
+    SERVER_DEVICE_ID_LIST = [91, 92, 93, 94, 95, 96, 97, 99, 70, 71]  
     MIDDLEMAN_DEVICE_ID_LIST = [98]
 
     def __init__(self, device_id=None, settings_attr=None):
