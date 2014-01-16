@@ -4,7 +4,6 @@ from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.testing.classes import TestVisitSchedule
 from edc.subject.entry.models import Entry, LabEntry
 from edc.subject.appointment_helper.models import BaseAppointmentMixin
-from edc.testing.tests.factories import TestConsentWithMixinFactory
 from edc.subject.appointment.tests.factories import ConfigurationFactory
 
 from ..models import MembershipForm, ScheduleGroup, VisitDefinition
@@ -70,5 +69,6 @@ class VisitScheduleTests(TestCase):
             schedule_group = self.test_visit_schedule.schedule_groups.get(schedule_group_name)
             membership_form_model = self.test_visit_schedule.membership_forms[schedule_group.membership_form_name].model
             # i know this is a consent model in the test case
+            from edc.testing.tests.factories import TestConsentWithMixinFactory
             self.assertEqual(membership_form_model, TestConsentWithMixinFactory.FACTORY_FOR)
             self.assertIsNotNone(TestConsentWithMixinFactory(gender='M'))
