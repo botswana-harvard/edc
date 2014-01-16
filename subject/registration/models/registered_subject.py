@@ -121,8 +121,6 @@ class RegisteredSubject(BaseSubject):
 
     history = AuditTrail()
 
-    objects = RegisteredSubjectManager()
-
     def save(self, *args, **kwargs):
         self.check_max_subjects()
         super(RegisteredSubject, self).save(*args, **kwargs)
@@ -183,10 +181,6 @@ class RegisteredSubject(BaseSubject):
     def check_if_may_change_subject_identifier(self, using):
         """Allows a consent to change the subject identifier."""
         pass
-
-    def natural_key(self):
-        return (self.subject_identifier_as_pk, )
-    natural_key.dependencies = ['bhp_variables.studysite']
 
     def is_serialized(self):
         return super(RegisteredSubject, self).is_serialized(True)
