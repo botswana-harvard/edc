@@ -39,9 +39,8 @@ class BaseAppConfiguration(object):
             ConsentCatalogue.objects.all().update(**self.consent_catalogue_setup)
 
     def update_or_create_study_site(self):
-        if not StudySite.objects.filter(site_code=self.study_site_setup['site_mapper'].map_code).exists():
-            StudySite.objects.create(site_name=self.study_site_setup['site_mapper'].map_area,
-                                         site_code=self.study_site_setup['site_mapper'].map_code)
+        if self.study_site_setup and not StudySite.objects.filter(**self.study_site_setup).exists():
+            StudySite.objects.create(**self.study_site_setup)
         if StudySite.objects.all().count() > 1:
             raise ImproperlyConfigured('There has to be only one Study Site record on bhp_variables. Got {0}'.format(StudySite.objects.all().count()))
 
