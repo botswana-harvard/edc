@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext as _
+
 from datetime import date, timedelta
 
 from django.db import models
