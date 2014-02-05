@@ -2,13 +2,15 @@ import logging
 
 from datetime import datetime
 
-from apps.bcpp.utils import Conf
 from django.conf import settings
 from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 
 from edc.base.model.models import BaseUuidModel
+
+if 'edc.device.sync' in settings.INSTALLED_APPS:
+    from apps.bcpp.utils import Conf
 
 from ..classes import TransactionProducer
 
