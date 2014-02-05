@@ -122,7 +122,8 @@ def consume_transactions(request, **kwargs):
                                 #except:
                                 #    messages.add_message(request, messages.ERROR, 'Failed to decode response to JSON from %s URL %s.' % (producer.name,producer.url))
                                 if json_response:
-                                    messages.add_message(request, messages.INFO, 'Consuming %s new transactions from producer %s URL %s.' % (len(json_response['objects']), producer.name, url))
+                                    #messages.add_message(request, messages.INFO, 'Consuming %s new transactions from producer %s URL %s.' % (len(json_response['objects']), producer.name, url))
+                                    messages.add_message(request, messages.INFO, 'Consuming %s new transactions from producer %s.' % (len(json_response['objects']), producer.name))
                                     # 'outgoing_transaction' is the serialized Transaction object from the producer.
                                     # The OutgoingTransaction's object field 'tx' has the serialized
                                     # instance of the data model we are looking for
