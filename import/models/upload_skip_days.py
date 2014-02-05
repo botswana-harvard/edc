@@ -1,9 +1,50 @@
+from django.utils.translation import ugettext as _
+
 from datetime import date, timedelta
 
+from django.conf import settings
 from django.db import models
 
 from edc.base.model.models import BaseModel
-from apps.bcpp.choices import COMMUNITIES
+
+if 'apps.bcpp' in settings.INSTALLED_APPS:
+    from apps.bcpp.choices import COMMUNITIES
+
+
+COMMUNITIES = (
+        ('Bokaa', _('Bokaa')),
+        ('Digawana', _('Digawana')),
+        ('Gumare', _('Gumare')),
+        ('Gweta', _('Gweta')),
+        ('Lentsweletau', _('Lentsweletau')),
+        ('Lerala', _('Lerala')),
+        ('Letlhakeng', _('Letlhakeng')),
+        ('Mandunyane', _('Mandunyane')),
+        ('Mankgodi', _('Mankgodi')),
+        ('Mmadinare', _('Mmadinare')),
+        ('Mmathethe', _('Mmathethe')),
+        ('Masunga', _('Masunga')),
+        ('Maunatlala', _('Maunatlala')),
+        ('Mathangwane', _('Mathangwane')),
+        ('Metsimotlhabe', _('Metsimotlhabe')),
+        ('Molapowabojang', _('Molapowabojang')),
+        ('Nata', _('Nata')),
+        ('Nkange', _('Nkange')),
+        ('Oodi', _('Oodi')),
+        ('Otse', _('Otse')),
+        ('Raikops', _('Raikops')),
+        ('Ramokgonami', _('Ramokgonami')),
+        ('Ranaka', _('Ranaka')),
+        ('Sebina', _('Sebina')),
+        ('Sefare', _('Sefare')),
+        ('Sefophe', _('Sefophe')),
+        ('Shakawe', _('Shakawe')),
+        ('Shoshong', _('Shoshong')),
+        ('Tati Siding', _('Tati Siding')),
+        ('Tsetsebjwe', _('Tsetsebjwe')),
+        ('OTHER', _('Other non study community')),
+    )
+
 
 class UploadSkipDays(BaseModel):
 
