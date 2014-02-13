@@ -6,6 +6,8 @@ from datetime import datetime
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpResponse
 
+from edc.core.crypto_fields.fields import BaseEncryptedField
+
 from ..models import ExportHistory
 
 
@@ -57,8 +59,9 @@ class ExportAsCsv(object):
             row = self.get_row(obj)
             if self.get_include_header() and index == 0:
                 writer.writerow(self.get_header_row())
-                obj.update_mixin_fields()
             writer.writerow(row)
+            if 'update_export_mixin_fields' in dir(obj):
+                obj.update_export_mixin_fields()
             self.update_export_history(obj)
         return self.get_file_obj()
 
@@ -91,7 +94,7 @@ class ExportAsCsv(object):
         value = None
         value_error_placeholder = None
         try:
-            value = getattr(obj, field_name)
+            value = self.getattr_encryption(obj, field_name)
             if value:
                 value = unicode(value).encode("utf-8", "replace")
         except AttributeError:
@@ -296,7 +299,7 @@ class ExportAsCsv(object):
                 return self.recurse_getattr(getattr(obj, query_list[0]), query_list[1:])
             except:
                 return None, query_list[-1]
-        return getattr(obj, query_list[0]), None
+        return self.getattr_encryption(obj, query_list[0]), None
 
     def get_track_history(self):
         return self._track_history
@@ -311,3 +314,12 @@ class ExportAsCsv(object):
                 sent=True,
                 sent_datetime=datetime.now()
                 )
+
+    def getattr_encryption(self, obj, fieldname):
+        """ Check if fieldname is an encryption field and only return value if its not.
+        """
+        fields = obj.__class__._meta.fields
+        for f in fields:
+            if f.name == fieldname and issubclass(f.__class__, BaseEncryptedField):
+                return '<encrypted>'
+        return getattr(obj, fieldname)
