@@ -9,9 +9,6 @@ from django.db.models import get_model
 
 from edc.base.model.models import BaseUuidModel
 
-if 'edc.device.sync' in settings.INSTALLED_APPS:
-    from apps.bcpp.utils import Conf
-
 from ..classes import TransactionProducer
 
 logger = logging.getLogger(__name__)
@@ -34,7 +31,9 @@ class BaseSyncUuidModel(BaseUuidModel):
    #     return False
 
     def is_serialized(self, serialize=True):
-        return Conf.get('ALLOW_MODEL_SERIALIZATION')
+        if 'edc.device.sync' in settings.INSTALLED_APPS:
+            from apps.bcpp.utils import Conf
+            return Conf.get('ALLOW_MODEL_SERIALIZATION')
 
     def deserialize_prep(self):
         """Users may override to manipulate the incoming object before calling save()"""
