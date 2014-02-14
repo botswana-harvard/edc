@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.conf import settings
 from django.core import serializers
 from django.db.models import get_model
 
@@ -32,6 +33,8 @@ class SerializeToTransaction(object):
             if kwargs.get('created'):
                 action = 'I'
             transaction_producer = TransactionProducer()
+            if 'edc.device.sync' not in settings.INSTALLED_APPS:
+                return None
             OutgoingTransaction = get_model('sync', 'outgoingtransaction')
             use_natural_keys = False
             if 'natural_key' in dir(sender):
