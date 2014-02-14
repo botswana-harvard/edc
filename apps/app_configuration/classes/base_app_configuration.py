@@ -10,6 +10,7 @@ class BaseAppConfiguration(object):
     study_variables_setup = None
     consent_catalogue_setup = None
     study_site_setup = None
+    consent_catalogue_list = None
 
     def __init__(self):
         self.update_or_create_appointment_setup()
@@ -32,11 +33,11 @@ class BaseAppConfiguration(object):
             StudySpecific.objects.all().update(**self.study_variables_setup)
 
     def update_or_create_consent_catalogue(self):
-
-        if ConsentCatalogue.objects.all().count() == 0:
-            ConsentCatalogue.objects.create(**self.consent_catalogue_setup)
-        else:
-            ConsentCatalogue.objects.all().update(**self.consent_catalogue_setup)
+        for catalogue in self.consent_catalogue_list:
+            if not ConsentCatalogue.objects.filter(**catalogue).exists():
+                ConsentCatalogue.objects.create(**catalogue)
+            #else:
+            #    ConsentCatalogue.objects.update(**catalogue)
 
     def update_or_create_study_site(self):
         if self.study_site_setup and not StudySite.objects.filter(**self.study_site_setup).exists():
