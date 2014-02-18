@@ -2,6 +2,7 @@ from django.core.exceptions import ImproperlyConfigured
 from edc.subject.appointment.models import Configuration
 from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.subject.consent.models import ConsentCatalogue
+from edc.device.device.classes import Device
 
 
 class BaseAppConfiguration(object):
@@ -42,7 +43,7 @@ class BaseAppConfiguration(object):
     def update_or_create_study_site(self):
         if self.study_site_setup and not StudySite.objects.filter(**self.study_site_setup).exists():
             StudySite.objects.create(**self.study_site_setup)
-        if StudySite.objects.all().count() > 1:
+        if not Device().is_server() and StudySite.objects.all().count() > 1:
             raise ImproperlyConfigured('There has to be only one Study Site record on bhp_variables. Got {0}'.format(StudySite.objects.all().count()))
 
 
