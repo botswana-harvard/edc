@@ -76,6 +76,7 @@ class Entry(BaseWindowPeriodItem):
 
     class Meta:
         app_label = 'entry'
+        db_table = 'bhp_entry_entry'
         verbose_name = "Entry"
         ordering = ['visit_definition__code', 'entry_order', ]
         unique_together = ['visit_definition', 'content_type_map', ]

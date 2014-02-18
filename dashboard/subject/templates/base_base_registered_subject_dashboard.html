@@ -106,7 +106,6 @@
                            {% endif %}
                       </td>
                   </tr>
-
                   {% if additional_lab_bucket %}
                    <tr name="bottom left" >
                        <td>
@@ -121,6 +120,19 @@
                                {% block additional_lab_bucket %}{% endblock additional_lab_bucket %}
                            {% endif %}
                       </td>
+                  </tr>
+                  <tr name="bottom left" >
+                    <td>
+                        <H5>Use this link to add more PRN labs for this {{ visit_code }} visit. </H5>
+                        <form action="/admin/{{home}}_lab/{{search_name}}requisition/add/" method="get">
+                            <select name="panel" onChange="this.form.submit()">
+                                <option value="">Select an additional PRN lab</option>
+                                {% for p in panels %}
+                                    <option value="{{p.id}}">{{p.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </td>
                   </tr>
                   {% endif %}
             {% endif %}
