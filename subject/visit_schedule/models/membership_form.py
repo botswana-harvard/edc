@@ -18,7 +18,7 @@ class MembershipForm(BaseUuidModel):
         )
 
     category = models.CharField(
-        max_length=25,
+        max_length=35,
         default='subject',
         null=True,
         help_text='In lowercase, this should be a valid subject type (as in registered_subject).',
