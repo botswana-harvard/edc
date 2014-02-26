@@ -124,7 +124,7 @@
                   <tr name="bottom left" >
                     <td>
                         <H5>Use this link to add more PRN labs for this {{ visit_code }} visit. </H5>
-                        <form action="/admin/{{home}}_lab/{{search_name}}requisition/add/" method="get">
+                        <form action="/admin/{{home}}_lab/{{search_name}}requisition/add/?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}" method="get">
                             <select name="panel" onChange="this.form.submit()">
                                 <option value="">Select an additional PRN lab</option>
                                 {% for p in panels %}
