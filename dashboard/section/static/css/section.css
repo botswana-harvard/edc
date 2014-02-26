@@ -143,7 +143,7 @@ margin: 0 0.15em;
 /* SECTION TILES */
 
 #tile_wrapper {
-   width:750px;
+   width:70%;
    margin:5px auto;
    background-color:white;
    float:left;
@@ -201,8 +201,8 @@ margin: 0 0.15em;
     background:#FFFFEC;
     border: 1px solid #EEEEAA;
     padding: 2px;
-    height:auto;
-    margin:1px;
+    height:30px;
+    margin:5px;
     border-radius:5px;
 }
 
