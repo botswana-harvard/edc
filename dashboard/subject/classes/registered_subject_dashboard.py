@@ -1,7 +1,6 @@
 import re
 
 from textwrap import wrap
-from compiler.ast import flatten
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
@@ -27,6 +26,7 @@ from edc.subject.visit_schedule.classes import MembershipFormHelper
 from edc.subject.visit_schedule.exceptions import MembershipFormError
 from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc.utils import collections
 
 from .scheduled_entry_context import ScheduledEntryContext
 from .requisition_context import RequisitionContext
@@ -36,7 +36,7 @@ class RegisteredSubjectDashboard(Dashboard):
 
     view = None
     dashboard_url_name = 'subject_dashboard_url'
-    
+
 
     def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None, membership_form_category=None, visit_model=None, registered_subject=None, show=None, **kwargs):
 
@@ -269,7 +269,7 @@ class RegisteredSubjectDashboard(Dashboard):
             codes=[]
             for category in self.membership_form_category:
                 codes.append(MembershipForm.objects.codes_for_category(membership_form_category=category))
-                codes = flatten(codes)
+                codes = collections.flatten(codes)
                 self._appointments = Appointment.objects.filter(
                         registered_subject=self.registered_subject,
                         visit_definition__code__in=codes).order_by('visit_definition__code', 'visit_instance', 'appt_datetime')
@@ -355,7 +355,7 @@ class RegisteredSubjectDashboard(Dashboard):
         keyed=[]
         for member_model in self.subject_membership_models:
             keyed.append(member_model.get('keyed'))
-        keyed=flatten(keyed)
+        keyed=collections.flatten(keyed)
         return keyed
 
     @property
@@ -363,7 +363,7 @@ class RegisteredSubjectDashboard(Dashboard):
         unkeyed=[]
         for member_model in self.subject_membership_models:
             unkeyed.append(member_model.get('unkeyed'))
-        unkeyed=flatten(unkeyed)
+        unkeyed=collections.flatten(unkeyed)
         return unkeyed
 
     @property
@@ -379,7 +379,7 @@ class RegisteredSubjectDashboard(Dashboard):
         Must be a valid membership form category."""
         self._membership_form_category=[]
         self._membership_form_category.append(category)
-        self._membership_form_category=flatten(self._membership_form_category)
+        self._membership_form_category=collections.flatten(self._membership_form_category)
 #         self._membership_form_category = category
         for c in self._membership_form_category:
             if c not in self.membership_form_categories:
