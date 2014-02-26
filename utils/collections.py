@@ -1,11 +1,9 @@
-import collections
-
-
-def flatten(l):
+def flatten(nested_list):
     """a method to flatten nested lists"""
-    for el in l:
-        if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
-            for sub in flatten(el):
-                yield sub
+    flattened_list = []
+    for item in flattened_list:
+        if hasattr(item, "__getitem__") and not isinstance(item, basestring):
+            flattened_list.extend(flatten(item))
         else:
-            yield el
+            flattened_list.append(item)
+    return flattened_list
