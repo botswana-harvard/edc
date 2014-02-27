@@ -37,7 +37,6 @@ class RegisteredSubjectDashboard(Dashboard):
     view = None
     dashboard_url_name = 'subject_dashboard_url'
 
-
     def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None, membership_form_category=None, visit_model=None, registered_subject=None, show=None, **kwargs):
 
         self._appointment = None
@@ -60,7 +59,7 @@ class RegisteredSubjectDashboard(Dashboard):
         self.has_requisition_model = True
 
         self.registered_subject = registered_subject
-        self.membership_form_category=membership_form_category
+        self.membership_form_category = membership_form_category
         self.show = show
         self.set_has_requisition_model = kwargs.get('has_requisition_model')
         if visit_model:
@@ -266,7 +265,7 @@ class RegisteredSubjectDashboard(Dashboard):
         else:
             # or filter appointments for the current membership categories
             # schedule_group__membership_form
-            codes=[]
+            codes = []
             for category in self.membership_form_category:
                 codes.append(MembershipForm.objects.codes_for_category(membership_form_category=category))
                 codes = flatten(codes)
@@ -342,7 +341,7 @@ class RegisteredSubjectDashboard(Dashboard):
 
         Membership forms can also be proxy models ... see mochudi_subject.models."""
         helper = MembershipFormHelper()
-        self._subject_membership_models=[]
+        self._subject_membership_models = []
         for category in self.membership_form_category:
             self._subject_membership_models.append(helper.get_membership_models_for(
                 self.registered_subject,
@@ -352,7 +351,7 @@ class RegisteredSubjectDashboard(Dashboard):
 
     @property
     def keyed_subject_membership_models(self):
-        keyed=[]
+        keyed = []
         for member_model in self.subject_membership_models:
             keyed.append(member_model.get('keyed'))
         keyed = flatten(keyed)
@@ -360,7 +359,7 @@ class RegisteredSubjectDashboard(Dashboard):
 
     @property
     def unkeyed_subject_membership_models(self):
-        unkeyed=[]
+        unkeyed = []
         for member_model in self.subject_membership_models:
             unkeyed.append(member_model.get('unkeyed'))
         unkeyed = flatten(unkeyed)
