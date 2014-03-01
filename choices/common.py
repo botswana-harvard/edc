@@ -154,6 +154,12 @@ NORMAL_ABNORMAL_NOEXAM = (
     ('NO_EXAM', 'No Exam Performed'),
 )
 
+PLOT_LOG_STATUS = (
+    ('ABSENT', 'Household(s) Absent'),
+    ('PRESENT', 'Household(s) Present'),
+    ('INACCESSIBLE', 'Inaccessible'),
+)
+
 NORMAL_ABNORMAL_NOTEVALUATED = (
     ('NORMAL', 'Normal'),
     ('ABNORMAL', 'Abnormal'),
