@@ -142,7 +142,7 @@ class AppointmentHelper(object):
                 # visit reason implies no data will be collected, so set appointment to Done
                 appointment.appt_status = 'done'
             else:
-                ScheduledEntryMetaData = get_model('entry', 'ScheduledEntryMetaData')
+                ScheduledEntryMetaData = get_model('entry_meta_data', 'ScheduledEntryMetaData')
                 # set to in progress, if not already set
                 if appointment.appt_status in ['done', 'incomplete']:
                     # test if Done or Incomplete
