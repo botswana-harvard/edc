@@ -57,10 +57,13 @@ class BaseRequisitionModelAdmin(BaseVisitTrackingModelAdmin):
             'is_labelled',
             'is_packed',
             'is_lis',
+            'panel',
             "requisition_datetime",
             'is_receive_datetime',
             'is_labelled_datetime',
-            'hostname_created', ]
+            'hostname_created',
+            'user_modified'
+             ]
         self.search_fields = [
             '{0}__appointment__registered_subject__subject_identifier'.format(self.visit_fieldname,),
             'specimen_identifier',
