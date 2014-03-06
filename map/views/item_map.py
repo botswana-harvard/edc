@@ -43,23 +43,17 @@ def item_map(request, **kwargs):
         lmarks = []
         if request.GET.get('map'):
             map = int(request.GET.get('map'))
-            print map
             if map == 1:
                 item_map = getattr(item, mapper.map_field_attr_18)
-                print item_map
             if map == 2:
                 item_map = getattr(item, mapper.map_field_attr_17)
-                print item_map
             if map == 3:
                 item_map = getattr(item, mapper.map_field_attr_16)
-                print item_map
-        print folder, item_map
         for mark in landmark_list:
             dist = mapper.gps_distance_between_points(lat, lon, mark[1], mark[2])
             lmarks.append([dist, mark[0]])
         lmark = sorted(lmarks,key=itemgetter(0))
         markers_l = {}
-        print str(item_map) +  "   its here where u printing"
         count = 0
         for distanace, p_point in lmark:
             if count < 6:
