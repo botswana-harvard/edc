@@ -90,6 +90,7 @@ class BaseConsentUpdate(BaseSyncUuidModel):
         if not self.consent_catalogue:
             super(BaseConsentUpdate, self).save(*args, **kwargs)
         self.consent_version = ConsentHelper(self).get_current_consent_version()
+        print self.consent_version
 #         self.consent_version = ConsentHelper(self).get_current_consent_version(self.consent_catalogue.name, self.consent_datetime)
         super(BaseConsentUpdate, self).save(*args, **kwargs)
 
