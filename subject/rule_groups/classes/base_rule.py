@@ -2,52 +2,58 @@ import re
 
 from datetime import date, datetime
 
-from django.db.models import get_model, Model, IntegerField
+from django.db.models import get_model, IntegerField
 
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.consent.classes import ConsentHelper
 from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
 from .logic import Logic
 
 
 class BaseRule(object):
-    """Base class for all rules."""
+    """Base class for all rules.
+
+    Rules are class attributes of a rule group.
+
+    ..see_also: comment on :module:`ScheduledDataRule`"""
 
     operators = ['equals', 'eq', 'gt', 'gte', 'lt', 'lte', 'ne', '!=', '==', 'in', 'not in']
     action_list = ['new', 'not_required']
-    registered_subject_override_field_names = ['id', 'created', 'modified', 'hostname_created', 'hostname_modified', 'study_site', 'survival_status', 'hiv_status']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
 
-        self.target_model_list = []
         self._source_instance = None
-        self.rule_group_name = ''
+        self._predicate = None
+        self._predicate_comparative_value = None
+        self._predicate_field_value = None
+        self._visit_instance = None
+        self._target_model = None
+        self._unresolved_predicate = None
+
+        self.source_model = None
+        self.source_fk_model = None
+        self.source_fk_attr = None
+        self.target_model_list = []
+        self.filter_model_attr = None
+        self.filter_model_cls = None
+        self.target_model_names = []
 
         if 'logic' in kwargs:
             self.logic = kwargs.get('logic')
         if 'target_model' in kwargs:
             self.target_model_list = kwargs.get('target_model')
-        # these attributes usually come in thru Meta, but not always...
-        if 'source_model' in kwargs:
-            self.source_model = kwargs.get('source_model')
-        if 'filter_model' in kwargs:
-            raise AttributeError('filter_model attribute is not a valid attribute')
-#             self.filter_model_cls = kwargs.get('filter_model')[0]
-#             self.filter_fieldname = kwargs.get('filter_model')[1]
-#             self.filter_model = kwargs.get('filter_model')
 
     def __repr__(self):
-        return '{0}.{1}'.format(self.rule_group_name, self.name)
+        return self.name
 
-    def run(self, visit_instance, source_model=None):
-        """ Evaluate the rule for each target model in the target model list."""
+    def run(self, visit_instance):
+        """ Evaluate the rule for each model class in the target model list."""
         for target_model in self.target_model_list:
             self.target_model = target_model
             self.visit_instance = visit_instance
-            self.registered_subject = visit_instance.appointment.registered_subject
+            self.registered_subject = self.visit_instance.appointment.registered_subject
             self.visit_attr_name = convert_from_camel(self.visit_instance._meta.object_name)
 
             self._source_instance = None
@@ -55,7 +61,9 @@ class BaseRule(object):
 
             change_type = self.evaluate()
             if change_type:
-                # update target model's meta data, if it has not been keyed
+                # try to update target model's entry meta data, if it has not been keyed
+                # If it exists, The target model instance will be set by querying the target model on the visit instance.
+                # See instance property in entry_meta_data_manager
                 self.target_model.entry_meta_data_manager.instance = self.visit_instance
                 if not self.target_model.entry_meta_data_manager.instance:
                     self.target_model.entry_meta_data_manager.update_meta_data_from_rule(self.visit_instance, change_type)
@@ -141,11 +149,8 @@ class BaseRule(object):
     @predicate_field_value.setter
     def predicate_field_value(self, field_name):
         """ Returns a field value either by applying getattr to the source model or, if the field name matches one in RegisteredSubject, returns that value."""
-
         self._predicate_field_value = None
-        if field_name in [field.name for field in RegisteredSubject._meta.fields if field.name not in self.registered_subject_override_field_names]:
-            self._predicate_field_value = getattr(self.registered_subject, field_name)
-        elif field_name == 'consent_version':
+        if field_name == 'consent_version':
             self._predicate_field_value = ConsentHelper(self.visit_instance, suppress_exception=True).get_current_consent_version()
             if not self._predicate_field_value:
                 self._predicate_field_value = 0
@@ -200,15 +205,16 @@ class BaseRule(object):
 
     @property
     def predicate(self):
-        """Gets the predicate, but return value may be '' or None, so users should check for this.
+        """Converts the predicate to something like "value==value" that can be evaluated with eval().
 
-        Converts the predicate to something like "value==value" that can be evaluated with eval().
+        Return value may be '' or None, so users should check for this.
 
         A simple predicate would be a tuple ('field_name', 'equals', 'value') meant to resolve to 'value' == 'value'.
         A more complex one might be (('field_name', 'equals', 'value'), ('field_name', 'equals', 'value', 'or'))
         which would resolve to 'value' == 'value' or 'value' == 'value'.
         """
         self._predicate = None
+
         if self.source_instance:  # if no instance, just skip the rule
             self._predicate = ''
             self.unresolved_predicate = self.logic.predicate
@@ -271,30 +277,14 @@ class BaseRule(object):
     def target_model(self, target_model):
         """Sets a list of target models.
 
-        Target models are the models affected by the rule. For example, the entry status
-        on the meta data instance for the target model will be NOT_REQUIRED. """
+        Target models are the models for whose meta data is affected by the rule.
+
+        Target models always have an attribute pointing to the visit instance."""
         self._target_model = target_model
         if isinstance(self._target_model, basestring):
             self._target_model = get_model(self.app_label, self._target_model)
         if not self._target_model:
             raise AttributeError('Target model may not be None.')
-
-    @property
-    def source_model(self):
-        return self._source_model
-
-    @source_model.setter
-    def source_model(self, model_cls=None):
-        """Sets the source model class.
-
-        The predicate refers to an attribute of the source model class."""
-        self._source_instance = None
-        if isinstance(model_cls, tuple):
-            self._source_model = get_model(model_cls[0], model_cls[1])
-        elif model_cls:
-            self._source_model = model_cls
-        else:
-            self._source_model = RegisteredSubject  # default
 
     @property
     def visit_instance(self):
@@ -308,12 +298,17 @@ class BaseRule(object):
 
     @property
     def source_instance(self):
-        """ Set the user model instance using either a given instance or by filtering on the user model class.
+        """ Sets the source model instance.
+
+        Source model may be any model with a FK to the visit_instance, any model with a FK to registered_subject,
+        or registered_subject itself.
 
         If the source model instance does not exist (yet), value is None"""
         if not self._source_instance:
             if self.source_model._meta.object_name.lower() == 'registeredsubject':
                 self._source_instance = self.visit_instance.appointment.registered_subject
+            elif [fld.name for fld in self.source_model._meta.fields if fld.name == 'registered_subject']:
+                self._source_instance = self.source_model.objects.get(registered_subject=self.visit_instance.appointment.registered_subject)
             else:
                 if self.source_model.objects.filter(**{self.visit_attr_name: self.visit_instance}).exists():
                     self._source_instance = self.source_model.objects.get(**{self.visit_attr_name: self.visit_instance})
