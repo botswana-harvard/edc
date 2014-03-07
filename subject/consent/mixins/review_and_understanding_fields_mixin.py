@@ -38,8 +38,8 @@ class ReviewAndUnderstandingFieldsMixin(models.Model):
                       " consent"),
         max_length=3,
         choices=YES_NO_DECLINED,
-        validators=[eligible_if_yes, ],
+        #validators=[eligible_if_yes, ],
         null=True,
         blank=False,
-        help_text="If no, INELIGIBLE. If declined, return copy to the clinic with the consent",
+        help_text="If declined, return copy to the clinic with the consent",
         )

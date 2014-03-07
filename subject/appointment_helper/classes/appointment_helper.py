@@ -142,7 +142,7 @@ class AppointmentHelper(object):
                 # visit reason implies no data will be collected, so set appointment to Done
                 appointment.appt_status = 'done'
             else:
-                ScheduledEntryMetaData = get_model('entry', 'ScheduledEntryMetaData')
+                ScheduledEntryMetaData = get_model('entry_meta_data', 'ScheduledEntryMetaData')
                 # set to in progress, if not already set
                 if appointment.appt_status in ['done', 'incomplete']:
                     # test if Done or Incomplete
@@ -155,7 +155,7 @@ class AppointmentHelper(object):
                     appointment.appt_status = 'in_progress'
                     # only one appointment can be "in_progress", so look for any others in progress and change
                     # to Done or Incomplete, depending on ScheduledEntryMetaData (if any NEW => incomplete)
-                    ScheduledEntryMetaData = get_model('entry', 'ScheduledEntryMetaData')
+                    ScheduledEntryMetaData = get_model('entry_meta_data', 'ScheduledEntryMetaData')
                     for appt in appointment.__class__.objects.filter(registered_subject=appointment.registered_subject, appt_status='in_progress').exclude(pk=appointment.pk):
                         if ScheduledEntryMetaData.objects.filter(appointment=appt, entry_status='NEW').exists():
                             # there are NEW forms

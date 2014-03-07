@@ -1,5 +1,7 @@
 from datetime import datetime
 from django.contrib import messages
+from django import forms
+
 from lis.core.lab_barcode.exceptions import PrinterException
 from lis.exim.lab_export.classes import ExportDmis
 
@@ -10,9 +12,15 @@ def flag_as_received(modeladmin, request, queryset, **kwargs):
 
     for qs in queryset:
         #if not qs.specimen_identifier:
-        qs.is_receive = True
-        qs.is_receive_datetime = datetime.today()
-        qs.save()
+        if qs.is_drawn.lower() == 'yes':
+            qs.is_receive = True
+            qs.is_receive_datetime = datetime.today()
+            qs.save()
+        else:
+            mes = 'SubjectRequisition Id: \'{0}\' was not drawn, hence you cannot receive it.'.format(qs.requisition_identifier)
+            messages.add_message(request, messages.ERROR, mes)
+            break
+            #raise forms.ValidationError('Subject requisition \'{0}\' was not drawn, hence you cannot receive it.'.format(qs.requisition_identifier))
 
 flag_as_received.short_description = "RECEIVE as received against requisition"
 

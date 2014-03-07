@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -188,21 +189,34 @@ class BaseBaseRequisition (BaseUuidModel):
 
     def save(self, *args, **kwargs):
         if not kwargs.get('suppress_autocreate_on_deserialize', False):
-            if not self.requisition_identifier and self.is_drawn.lower() == 'yes':
+            if self.is_drawn.lower() == 'yes' and not self.value_is_requisition_identifier():
                 self.requisition_identifier = self.prepare_requisition_identifier()
-            if self.requisition_identifier and not self.specimen_identifier:
                 self.specimen_identifier = self.prepare_specimen_identifier()
-
+            if self.is_drawn.lower() == 'no' and not self.value_is_uuid():
+                self.requisition_identifier = self.id
+                self.specimen_identifier = self.id
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
-    
-    def requisition_identifier_as_uuid_on_post_save(self, **kwargs):
-        #TODO: you're calling save in a post-save??
-        #      why not just set to uuid4() in the save or default on the model ??
-        if self.is_drawn.lower() == 'no' and not self.specimen_identifier and not self.requisition_identifier:
-            self.requisition_identifier = self.id
-            self.specimen_identifier = self.id
-            self.save()
-                
+
+    def value_is_requisition_identifier(self):
+        #DO NOT CAHNGE THIS METHOD LITELY, ITS IMPORTANT, BE CAREFULL. MAKE SURE YOUR TESTS PASS AFTER CHAANGE.
+        if not self.requisition_identifier or not self.specimen_identifier:
+            return False
+        if len(self.requisition_identifier) == 7:
+            return True
+        return False
+
+
+    def value_is_uuid(self):
+        #DO NOT CAHNGE THIS METHOD LITELY, ITS IMPORTANT, BE CAREFULL. MAKE SURE YOUR TESTS PASS AFTER CHAANGE.
+        p = re.compile('^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$', re.IGNORECASE)
+        if not self.requisition_identifier or not self.specimen_identifier:
+            return False
+        if len(self.requisition_identifier) == 36 \
+            and len(self.specimen_identifier) == 36 \
+            and p.match(self.requisition_identifier):
+            return True
+        return False
+
     def get_site_code(self):
         site_code = ''
         try:
