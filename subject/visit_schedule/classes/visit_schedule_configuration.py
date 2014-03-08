@@ -81,7 +81,7 @@ class VisitScheduleConfiguration(object):
         from edc.subject.entry.models import Entry
         from edc.subject.appointment.models import Appointment
 
-        self.sync_content_type_map()#This will be required to be properly synced when creating entries.
+        self.sync_content_type_map()  # This will be required to be properly synced when creating entries.
 
         for code in self.visit_definitions.iterkeys():
             if VisitDefinition.objects.filter(code=code):
@@ -99,7 +99,7 @@ class VisitScheduleConfiguration(object):
         """Builds and / or updates the visit schedule models."""
         from ..models import MembershipForm, ScheduleGroup, VisitDefinition
         from edc.subject.entry.models import Entry, LabEntry
-        self.sync_content_type_map()#This will be required to be properly synced when creating entries.
+        self.sync_content_type_map()  # This will be required to be properly synced when creating entries.
         for membership_form in self.membership_forms.itervalues():
             if not MembershipForm.objects.filter(category=membership_form.name):
                 MembershipForm.objects.create(
@@ -210,4 +210,3 @@ class VisitScheduleConfiguration(object):
             for requisition in LabEntry.objects.filter(visit_definition=visit_definition_instance):
                 if (requisition.app_label, requisition.model_name) not in [(item.app_label, item.model_name) for item in visit_definition.get('requisitions')]:
                     requisition.delete()
-            
