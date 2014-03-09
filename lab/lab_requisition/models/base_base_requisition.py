@@ -205,7 +205,6 @@ class BaseBaseRequisition (BaseUuidModel):
             return True
         return False
 
-
     def value_is_uuid(self):
         #DO NOT CAHNGE THIS METHOD LITELY, ITS IMPORTANT, BE CAREFULL. MAKE SURE YOUR TESTS PASS AFTER CHAANGE.
         p = re.compile('^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$', re.IGNORECASE)
@@ -254,14 +253,25 @@ class BaseBaseRequisition (BaseUuidModel):
                                     'all are taken. Increase the length of the random string')
         return requisition_identifier
 
-    def print_label(self, request, **kwargs):
-        """ Prints a label for and flags as 'labelled' this model instance using the
-        :func:`print label` method on the :class:`RequisitionLabel` class."""
+    def print_label(self, request):
+        """ Prints a label flags this requisition as 'labeled'.
+
+        Uses :func:`print label` method on the :class:`RequisitionLabel` class.
+
+        If the specimen identifier is not set, the label will not print."""
         if self.specimen_identifier:
             requisition_label = RequisitionLabel()
-            requisition_label.print_label(request,
-                                          self, self.item_count_total,
-                                          self.specimen_identifier)
+            requisition_label.print_label(request, self, self.item_count_total, self.specimen_identifier)
+            self.is_labelled = True
+            self.modified = datetime.today()
+            self.save()
+
+    def print_labels_by_profile(self, request):
+        """ Prints a labels by profile for a received and labelled sample."""
+
+        if self.specimen_identifier and self.is_labelled:
+            requisition_label = RequisitionLabel()
+            requisition_label.print_label(request, self, self.item_count_total, self.specimen_identifier)
             self.is_labelled = True
             self.modified = datetime.today()
             self.save()
