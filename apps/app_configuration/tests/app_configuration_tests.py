@@ -4,8 +4,7 @@ from edc.subject.appointment.models import Configuration
 from edc.core.bhp_variables.models import StudySpecific
 from edc.subject.consent.models import ConsentCatalogue
 
-from apps.bcpp_survey.models import Survey
-from apps.bcpp.bcpp_app_configuration.classes import BcppAppConfiguration
+from apps.bcpp.app_configuration.classes import BcppAppConfiguration
 
 
 class AppConfigurationTests(TestCase):
