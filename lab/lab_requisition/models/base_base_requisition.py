@@ -266,5 +266,15 @@ class BaseBaseRequisition (BaseUuidModel):
             self.modified = datetime.today()
             self.save()
 
+    def print_labels_by_profile(self, request):
+        """ Prints a labels by profile for a received and labelled sample."""
+
+        if self.specimen_identifier and self.is_labelled:
+            requisition_label = RequisitionLabel()
+            requisition_label.print_label(request, self, self.item_count_total, self.specimen_identifier)
+            self.is_labelled = True
+            self.modified = datetime.today()
+            self.save()
+
     class Meta:
         abstract = True
