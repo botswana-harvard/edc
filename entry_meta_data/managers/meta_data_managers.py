@@ -36,7 +36,7 @@ class BaseMetaDataManager(models.Manager):
 
     @instance.setter
     def instance(self, instance_or_visit_instance):
-        """Sets the model instance referred to by the meta data directly or from the visit instance.
+        """Sets the model instance referred to by the entry meta data directly or by doing a lookup with the visit instance.
 
         self.instance is an instance of self.model or None"""
         self._instance = None
