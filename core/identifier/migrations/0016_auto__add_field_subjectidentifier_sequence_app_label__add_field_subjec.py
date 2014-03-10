@@ -12,12 +12,13 @@ class Migration(SchemaMigration):
         db.add_column('bhp_identifier_subjectidentifier', 'sequence_app_label',
                       self.gf('django.db.models.fields.CharField')(default='bhp_identifier', max_length=50),
                       keep_default=False)
-
+ 
         # Adding field 'SubjectIdentifier.sequence_model_name'
         db.add_column('bhp_identifier_subjectidentifier', 'sequence_model_name',
                       self.gf('django.db.models.fields.CharField')(default='sequence', max_length=50),
                       keep_default=False)
 
+        db.alter_column('bhp_identifier_subjectidentifier', 'revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True))
 
     def backwards(self, orm):
         # Deleting field 'SubjectIdentifier.sequence_app_label'
