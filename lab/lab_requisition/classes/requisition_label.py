@@ -1,5 +1,6 @@
 from edc.core.bhp_variables.models import StudySpecific
 from edc.subject.registration.models import RegisteredSubject
+
 from lis.core.lab_barcode.classes import ModelLabel
 from lis.core.lab_barcode.models import ZplTemplate
 
