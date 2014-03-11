@@ -53,7 +53,7 @@ flag_as_not_labelled.short_description = "DMIS-receive: receive sample on the dm
 def print_requisition_label(modeladmin, request, requisitions):
     """ Prints a specimen label for a received specimen using the :func:`print_label`
     method attached to the requisition model.
-    
+
     Requisitions must be 'received' before a label can be printed."""
     try:
         for requisition in requisitions:
