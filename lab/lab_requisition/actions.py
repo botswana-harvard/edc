@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.contrib import messages
 
-from lis.core.lab_barcode.exceptions import PrinterException
+from lis.labeling.exceptions import PrinterException
 from lis.exim.lab_export.classes import ExportDmis
 
 
