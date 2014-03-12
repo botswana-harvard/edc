@@ -2,25 +2,25 @@ from datetime import datetime
 
 from django.contrib import messages
 
-from lis.labeling.exceptions import PrinterException
+from edc.lab.lab_clinic_api.classes import SpecimenHelper
+
 from lis.exim.lab_export.classes import ExportDmis
+from lis.labeling.exceptions import PrinterException
 
 
 def flag_as_received(modeladmin, request, queryset, **kwargs):
-    """ Flags specimen(s) as received and generates a globally
-    specimen identifier."""
-
+    """ Flags specimen(s) as received and generates a globally specimen identifier and updates lab_clinic_api."""
+    specimen_helper = SpecimenHelper()
     for qs in queryset:
-        #if not qs.specimen_identifier:
         if qs.is_drawn.lower() == 'yes':
             qs.is_receive = True
             qs.is_receive_datetime = datetime.today()
             qs.save()
+            specimen_helper.receive(qs)
         else:
-            mes = 'SubjectRequisition Id: \'{0}\' was not drawn, hence you cannot receive it.'.format(qs.requisition_identifier)
-            messages.add_message(request, messages.ERROR, mes)
+            msg = 'Unable to receive, specimen not drawn. Got requisition \'{0}\'.'.format(qs.requisition_identifier)
+            messages.add_message(request, messages.ERROR, msg)
             break
-            #raise forms.ValidationError('Subject requisition \'{0}\' was not drawn, hence you cannot receive it.'.format(qs.requisition_identifier))
 
 flag_as_received.short_description = "RECEIVE as received against requisition"
 
