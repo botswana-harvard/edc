@@ -1,5 +1,6 @@
 from datetime import datetime
 import re
+import uuid
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -196,8 +197,8 @@ class BaseBaseRequisition (BaseUuidModel):
                 self.requisition_identifier = self.prepare_requisition_identifier()
                 self.specimen_identifier = self.prepare_specimen_identifier()
             if self.is_drawn.lower() == 'no' and not self.value_is_uuid():
-                self.requisition_identifier = self.id
-                self.specimen_identifier = self.id
+                self.requisition_identifier = str(uuid.uuid4())
+                self.specimen_identifier = self.requisition_identifier
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
 
     def value_is_requisition_identifier(self):
