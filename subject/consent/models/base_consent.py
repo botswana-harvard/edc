@@ -57,7 +57,7 @@ class BaseConsent(BaseSubject):
             ],
         blank=True,
         null=True,
-        help_text=('Required only if subject is a minor. Format is \'LASTNAME, FIRSTNAME\'. All uppercase separated by a comma'),
+        help_text=('Required only if subject is a minor. Format is \'LASTNAME, FIRSTNAME\'. All uppercase separated by a comma then followe by a space.'),
         )
 
     may_store_samples = models.CharField(
