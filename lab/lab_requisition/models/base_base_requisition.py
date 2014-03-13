@@ -13,7 +13,7 @@ except ImportError:
 
 from edc.base.model.fields import InitialsField
 from edc.choices.common import YES_NO
-from edc.core.bhp_string.classes import BaseString
+from edc.core.bhp_string.classes import StringHelper
 from edc.core.bhp_variables.models import StudySite
 from edc.device.device.classes import Device
 from edc.lab.lab_clinic_api.models import AliquotType
@@ -195,14 +195,14 @@ class BaseBaseRequisition (BaseUuidModel):
         if not kwargs.get('suppress_autocreate_on_deserialize', False):
             if self.is_drawn.lower() == 'yes' and not self.value_is_requisition_identifier():
                 self.requisition_identifier = self.prepare_requisition_identifier()
-                self.specimen_identifier = self.prepare_specimen_identifier()
             if self.is_drawn.lower() == 'no' and not self.value_is_uuid():
                 self.requisition_identifier = str(uuid.uuid4())
-                self.specimen_identifier = self.requisition_identifier
+            if self.is_receive:
+                # do not create a specimen identifier unless received
+                self.specimen_identifier = self.prepare_specimen_identifier()
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
 
     def value_is_requisition_identifier(self):
-        #DO NOT CAHNGE THIS METHOD LITELY, ITS IMPORTANT, BE CAREFULL. MAKE SURE YOUR TESTS PASS AFTER CHAANGE.
         if not self.requisition_identifier or not self.specimen_identifier:
             return False
         if len(self.requisition_identifier) == 7:
@@ -210,13 +210,12 @@ class BaseBaseRequisition (BaseUuidModel):
         return False
 
     def value_is_uuid(self):
-        #DO NOT CAHNGE THIS METHOD LITELY, ITS IMPORTANT, BE CAREFULL. MAKE SURE YOUR TESTS PASS AFTER CHAANGE.
         p = re.compile('^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$', re.IGNORECASE)
         if not self.requisition_identifier or not self.specimen_identifier:
             return False
-        if len(self.requisition_identifier) == 36 \
-            and len(self.specimen_identifier) == 36 \
-            and p.match(self.requisition_identifier):
+        if (len(self.requisition_identifier) == 36
+            and len(self.specimen_identifier) == 36
+            and p.match(self.requisition_identifier)):
             return True
         return False
 
@@ -241,7 +240,7 @@ class BaseBaseRequisition (BaseUuidModel):
         """Generate and returns a locally unique requisition identifier for a device (adds device id)"""
         device = Device()
         device_id = kwargs.get('device_id', device.device_id)
-        string = BaseString()
+        string = StringHelper()
         length = 5
         template = '{device_id}{random_string}'
         opts = {'device_id': device_id, 'random_string': string.get_safe_random_string(length=length)}
@@ -252,7 +251,7 @@ class BaseBaseRequisition (BaseUuidModel):
             while self.__class__.objects.filter(requisition_identifier=requisition_identifier):
                 requisition_identifier = template.format(**opts)
                 n += 1
-                if n == length ** len(string.safe_allowed_chars):
+                if n == len(string.safe_allowed_chars) ** length:
                     raise TypeError('Unable prepare a unique requisition identifier, '
                                     'all are taken. Increase the length of the random string')
         return requisition_identifier

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from lis.specimen.lab_aliquot.models import BaseAliquot
 
@@ -9,27 +10,40 @@ from .receive import Receive
 
 class Aliquot(BaseAliquot):
     """Stores aliquot information and is the central model in the RAORR relational model."""
+
+    primary_aliquot = models.ForeignKey('self', null=True, related_name='primary')
+
+    source_aliquot = models.ForeignKey('self', null=True, related_name='source', help_text='Aliquot from which this aliquot was created, Leave blank if this is the primary tube')
+
+    aliquot_count = models.IntegerField(default=0)
+
     aliquot_type = models.ForeignKey(AliquotType,
         verbose_name="Aliquot Type",
         null=True)
     aliquot_condition = models.ForeignKey(AliquotCondition,
         verbose_name="Aliquot Condition",
         null=True)
+
     receive = models.ForeignKey(Receive)
+
     subject_identifier = models.CharField(
         max_length=50,
         null=True,
         editable=False,
         db_index=True,
         help_text="non-user helper field to simplify search and filtering")
+
     receive_identifier = models.CharField(
         max_length=25, editable=False, null=True, db_index=True,
         help_text="non-user helper field to simplify search and filter")
+
     objects = models.Manager()
 
     def save(self, *args, **kwargs):
         self.subject_identifier = self.receive.registered_subject.subject_identifier
         self.receive_identifier = self.receive.receive_identifier
+        if self.source_aliquot and not self.primary_aliquot:
+            raise ValidationError('Primary aliquot may not be None')
         super(Aliquot, self).save(*args, **kwargs)
 
     def drawn(self):
@@ -40,7 +54,8 @@ class Aliquot(BaseAliquot):
     to_receive.allow_tags = True
 
     def __unicode__(self):
-        return '%s' % (self.aliquot_identifier)
+        return self.aliquot_identifier
 
     class Meta:
         app_label = 'lab_clinic_api'
+        unique_together = (('receive', 'aliquot_count'), )

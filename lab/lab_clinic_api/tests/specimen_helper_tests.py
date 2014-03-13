@@ -58,8 +58,7 @@ class SpecimenHelperTests(TestCase):
         """assert received if drawn."""
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.panel
-        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel)
-        obj.save()
+        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, is_drawn='Yes')
         specimen_helper = SpecimenHelper()
         self.assertTrue(specimen_helper.receive(obj))
         self.assertEqual(Receive.objects.get(requisition_identifier=obj.requisition_identifier).requisition_identifier, obj.requisition_identifier)
@@ -69,7 +68,15 @@ class SpecimenHelperTests(TestCase):
     def test_receives2(self):
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.panel
-        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel)
-        obj.save()
+        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, is_drawn='No')
         specimen_helper = SpecimenHelper()
         self.assertFalse(specimen_helper.receive(obj))
+
+    def test_receives3(self):
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.panel
+        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, is_drawn='Yes')
+        specimen_helper = SpecimenHelper()
+        specimen_helper.receive(obj)
+        receive = Receive.objects.get(requisition_identifier=obj.requisition_identifier)
+        print Aliquot.objects.get(receive=receive).__dict__
