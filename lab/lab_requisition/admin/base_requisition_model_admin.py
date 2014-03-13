@@ -1,6 +1,8 @@
 from django.contrib import admin
-from edc.subject.visit_tracking.admin import BaseVisitTrackingModelAdmin
+
 from edc.lab.lab_clinic_api.models import Panel
+from edc.subject.visit_tracking.admin import BaseVisitTrackingModelAdmin
+
 from ..actions import flag_as_received, flag_as_not_received, flag_as_not_labelled, print_requisition_label
 
 
@@ -57,10 +59,13 @@ class BaseRequisitionModelAdmin(BaseVisitTrackingModelAdmin):
             'is_labelled',
             'is_packed',
             'is_lis',
+            'panel',
             "requisition_datetime",
             'is_receive_datetime',
             'is_labelled_datetime',
-            'hostname_created', ]
+            'hostname_created',
+            'user_modified'
+             ]
         self.search_fields = [
             '{0}__appointment__registered_subject__subject_identifier'.format(self.visit_fieldname,),
             'specimen_identifier',

@@ -1,7 +1,7 @@
 from django.db import models
 
 from edc.choices import YES_NO, YES_NO_DECLINED
-from edc.base.model.validators import eligible_if_yes
+from edc.base.model.validators import eligible_if_yes, eligible_if_no
 
 
 class ReviewAndUnderstandingFieldsMixin(models.Model):
@@ -24,6 +24,24 @@ class ReviewAndUnderstandingFieldsMixin(models.Model):
         blank=False,
         help_text="If no, INELIGIBLE",
         )
+    mentally_incapacitated = models.CharField(
+        verbose_name=("[Interviewer] In your opinion, Is the participant mentally incapacitated?"),
+        max_length=10,
+        choices=YES_NO,
+        validators=[eligible_if_no, ],
+        null=True,
+        blank=False,
+        help_text=("If Yes, INELIGIBLE"),
+        )
+    involuntary_incarceration = models.CharField(
+        verbose_name=("[Interviewer] is this participant involuntarily incarcerated?"),
+        max_length=10,
+        choices=YES_NO,
+        validators=[eligible_if_no, ],
+        null=True,
+        blank=False,
+        help_text=("If Yes, INELIGIBLE"),
+        )
     assessment_score = models.CharField(
         verbose_name=("I have asked the client questions about this study and they have demonstrated understanding"),
         max_length=3,
@@ -38,8 +56,8 @@ class ReviewAndUnderstandingFieldsMixin(models.Model):
                       " consent"),
         max_length=3,
         choices=YES_NO_DECLINED,
-        validators=[eligible_if_yes, ],
+        #validators=[eligible_if_yes, ],
         null=True,
         blank=False,
-        help_text="If no, INELIGIBLE. If declined, return copy to the clinic with the consent",
+        help_text="If declined, return copy to the clinic with the consent",
         )
