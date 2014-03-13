@@ -1,20 +1,28 @@
 from datetime import datetime
+
 from django.contrib import messages
-from lis.core.lab_barcode.exceptions import PrinterException
+
+from edc.lab.lab_clinic_api.classes import SpecimenHelper
+
 from lis.exim.lab_export.classes import ExportDmis
+from lis.labeling.exceptions import PrinterException
 
 
 def flag_as_received(modeladmin, request, queryset, **kwargs):
-    """ Flags specimen(s) as received and generates a globally
-    specimen identifier."""
-
+    """ Flags specimen(s) as received and generates a globally specimen identifier and updates lab_clinic_api."""
+    specimen_helper = SpecimenHelper()
     for qs in queryset:
-        #if not qs.specimen_identifier:
-        qs.is_receive = True
-        qs.is_receive_datetime = datetime.today()
-        qs.save()
+        if qs.is_drawn.lower() == 'yes':
+            qs.is_receive = True
+            qs.is_receive_datetime = datetime.today()
+            qs.save()
+            specimen_helper.receive(qs)
+        else:
+            msg = 'Unable to receive, specimen not drawn. Got requisition \'{0}\'.'.format(qs.requisition_identifier)
+            messages.add_message(request, messages.ERROR, msg)
+            break
 
-flag_as_received.short_description = "RECEIVE as received against requisition"
+flag_as_received.short_description = "RECEIVE against requisition"
 
 
 def flag_as_not_received(modeladmin, request, queryset):
@@ -23,7 +31,7 @@ def flag_as_not_received(modeladmin, request, queryset):
         qs.is_receive = False
         qs.is_receive_datetime = datetime.today()
         qs.save()
-flag_as_not_received.short_description = "UN-RECEIVE: flag as NOT received"
+flag_as_not_received.short_description = "UNDO RECEIVE: flags as not received"
 
 
 def flag_as_not_labelled(modeladmin, request, queryset):
@@ -44,7 +52,9 @@ flag_as_not_labelled.short_description = "DMIS-receive: receive sample on the dm
 
 def print_requisition_label(modeladmin, request, requisitions):
     """ Prints a specimen label for a received specimen using the :func:`print_label`
-    method attached to the requisition model."""
+    method attached to the requisition model.
+
+    Requisitions must be 'received' before a label can be printed."""
     try:
         for requisition in requisitions:
             if requisition.is_receive:

@@ -1,10 +1,10 @@
 from django.conf.urls import patterns, url, include
-from .api import OutgoingTransactionMiddleManResource, OutgoingTransactionServerResource, MiddleManTransactionResource
+from .api import OutgoingTransactionMiddleManResource, OutgoingTransactionServerResource, MiddleManTransactionResource, OutgoingTransactionSiteServerResource
 from .views import index, view_transaction, consume_transactions, dump_to_usb, consume_from_usb
 
 outgoing_transaction_middle_man_resource = OutgoingTransactionMiddleManResource()
 outgoing_transaction_server_resource = OutgoingTransactionServerResource()
-outgoing_transaction_site_server_resource = OutgoingTransactionServerResource()
+outgoing_transaction_site_server_resource = OutgoingTransactionSiteServerResource()
 middle_man_transaction_resource = MiddleManTransactionResource()
 
 urlpatterns = patterns('',
