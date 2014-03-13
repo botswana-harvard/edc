@@ -5,9 +5,9 @@ from django.core.exceptions import ImproperlyConfigured
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.device.device.classes import Device
+from edc.lab.lab_clinic_api.models import AliquotType, ProcessingProfile, ProcessingProfileItem
 from edc.subject.appointment.models import Configuration
 from edc.subject.consent.models import ConsentCatalogue
-from edc.lab.lab_clinic_api.models import AliquotType, ProcessingProfile, ProcessingProfileItem
 
 AliquotTypeTuple = namedtuple('AliquotTypeTuple', 'name alpha_code numeric_code')
 ProfileTuple = namedtuple('ProfileItemTuple', 'profile_name alpha_code')
@@ -17,11 +17,11 @@ ProfileItemTuple = namedtuple('ProfileItemTuple', 'profile_name alpha_code volum
 class BaseAppConfiguration(object):
 
     appointment_configuration = None
-    study_variables_setup = None
-    consent_catalogue_setup = None
-    study_site_setup = None
     consent_catalogue_list = None
+    consent_catalogue_setup = None
     lab_clinic_api_setup = None
+    study_site_setup = None
+    study_variables_setup = None
 
     def __init__(self):
         ContentTypeMap.objects.populate()
@@ -77,12 +77,12 @@ class BaseAppConfiguration(object):
             StudySpecific.objects.all().update(**self.study_variables_setup)
 
     def update_or_create_consent_catalogue(self):
-        for catalogue in self.consent_catalogue_list:
-            catalogue.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue.get('content_type_map').lower())})
-            if not ConsentCatalogue.objects.filter(**catalogue).exists():
-                ConsentCatalogue.objects.create(**catalogue)
+        for catalogue_setup in self.consent_catalogue_list:
+            catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map').lower())})
+            if not ConsentCatalogue.objects.filter(**catalogue_setup).exists():
+                ConsentCatalogue.objects.create(**catalogue_setup)
             else:
-                ConsentCatalogue.objects.filter(**catalogue).update(**catalogue)
+                ConsentCatalogue.objects.filter(**catalogue_setup).update(**catalogue_setup)
 
     def update_or_create_study_site(self):
         if self.study_site_setup and not StudySite.objects.filter(**self.study_site_setup).exists():
