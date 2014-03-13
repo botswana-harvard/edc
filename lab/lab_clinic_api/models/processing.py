@@ -12,19 +12,21 @@ class Processing(BaseUuidModel):
 
     aliquot = models.ForeignKey(Aliquot,
         verbose_name='Source Aliquot',
-        help_text='Create aliquots from this one')
+        help_text='Create aliquots from this one.')
 
     processing_profile = models.ForeignKey(ProcessingProfile,
-        verbose_name='Profile')
+        verbose_name='Profile',
+        help_text='Create aliquots according to this profile.')
 
     print_labels = models.BooleanField(
         verbose_name='Print aliquot labels now',
-        default=True)
+        default=True,
+        help_text='If checked, labels will be printed immediately.')
 
     objects = models.Manager()
 
     def __unicode__(self):
-        return self.profile_name
+        return self.aliquot.aliquot_identifier
 
     def save(self, *args, **kwargs):
         # create aliquots as per profile
