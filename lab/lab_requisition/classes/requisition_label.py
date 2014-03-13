@@ -8,6 +8,7 @@ from lis.labeling.models import ZplTemplate
 class RequisitionLabel(ModelLabel):
 
     def __init__(self):
+        super(RequisitionLabel, self).__init__()
         template_name = 'requisition_label'
         if not ZplTemplate.objects.filter(name=template_name):
             template_string = ('^XA\n'
