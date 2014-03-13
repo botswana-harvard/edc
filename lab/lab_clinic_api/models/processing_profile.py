@@ -30,7 +30,9 @@ class ProcessingProfileItem(BaseUuidModel):
 
     aliquot_type = models.ForeignKey(AliquotType)
 
-    count = models.IntegerField(default=1)
+    volume = models.DecimalField(verbose_name='Volume (ml)', max_digits=10, decimal_places=1, null=True)
+
+    count = models.IntegerField(verbose_name='aliquots to create')
 
     def __unicode__(self):
         return self.aliquot_type

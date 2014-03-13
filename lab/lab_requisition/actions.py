@@ -22,7 +22,7 @@ def flag_as_received(modeladmin, request, queryset, **kwargs):
             messages.add_message(request, messages.ERROR, msg)
             break
 
-flag_as_received.short_description = "RECEIVE as received against requisition"
+flag_as_received.short_description = "RECEIVE against requisition"
 
 
 def flag_as_not_received(modeladmin, request, queryset):
@@ -31,7 +31,7 @@ def flag_as_not_received(modeladmin, request, queryset):
         qs.is_receive = False
         qs.is_receive_datetime = datetime.today()
         qs.save()
-flag_as_not_received.short_description = "UN-RECEIVE: flag as NOT received"
+flag_as_not_received.short_description = "UNDO RECEIVE: flags as not received"
 
 
 def flag_as_not_labelled(modeladmin, request, queryset):
