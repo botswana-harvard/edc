@@ -1,8 +1,10 @@
 from django.core.exceptions import ImproperlyConfigured
-from edc.subject.appointment.models import Configuration
+
+from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
-from edc.subject.consent.models import ConsentCatalogue
 from edc.device.device.classes import Device
+from edc.subject.appointment.models import Configuration
+from edc.subject.consent.models import ConsentCatalogue
 
 
 class BaseAppConfiguration(object):
@@ -14,6 +16,8 @@ class BaseAppConfiguration(object):
     consent_catalogue_list = None
 
     def __init__(self):
+        ContentTypeMap.objects.populate()
+        ContentTypeMap.objects.sync()
         self.update_or_create_appointment_setup()
         self.update_or_create_study_variables()
         self.update_or_create_consent_catalogue()
@@ -35,6 +39,7 @@ class BaseAppConfiguration(object):
 
     def update_or_create_consent_catalogue(self):
         for catalogue in self.consent_catalogue_list:
+            catalogue.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue.get('content_type_map').lower())})
             if not ConsentCatalogue.objects.filter(**catalogue).exists():
                 ConsentCatalogue.objects.create(**catalogue)
             else:
@@ -45,5 +50,3 @@ class BaseAppConfiguration(object):
             StudySite.objects.create(**self.study_site_setup)
         if not Device().is_server() and StudySite.objects.all().count() > 1:
             raise ImproperlyConfigured('There has to be only one Study Site record on bhp_variables. Got {0}'.format(StudySite.objects.all().count()))
-
-
