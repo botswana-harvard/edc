@@ -26,6 +26,7 @@ from edc.subject.visit_schedule.classes import MembershipFormHelper
 from edc.subject.visit_schedule.exceptions import MembershipFormError
 from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc.utils.collections import flatten
 
 from .scheduled_entry_context import ScheduledEntryContext
 from .requisition_context import RequisitionContext
@@ -45,7 +46,7 @@ class RegisteredSubjectDashboard(Dashboard):
 
         dashboard_models = dashboard_models or {}
         dashboard_models.update({'appointment': Appointment})
-        if visit_model:  # usually None, except in testing, usually provided by the subclass. needed now regardless since passing method for one of the dashboard models below
+        if visit_model:  # usually None, except in testing, usually proved by the subclass. needed now regardless since passing method for one of the dashboard models below
             self.visit_model = visit_model
         dashboard_models.update({'visit': self.visit_model})
 
@@ -262,12 +263,15 @@ class RegisteredSubjectDashboard(Dashboard):
         if self.show == 'forms':
             self._appointments = [self.appointment]
         else:
-            # or filter appointments for the current membership category
+            # or filter appointments for the current membership categories
             # schedule_group__membership_form
-            codes = MembershipForm.objects.codes_for_category(membership_form_category=self.membership_form_category)
-            self._appointments = Appointment.objects.filter(
-                registered_subject=self.registered_subject,
-                visit_definition__code__in=codes).order_by('visit_definition__code', 'visit_instance', 'appt_datetime')
+            codes = []
+            for category in self.membership_form_category:
+                codes.append(MembershipForm.objects.codes_for_category(membership_form_category=category))
+                codes = flatten(codes)
+                self._appointments = Appointment.objects.filter(
+                        registered_subject=self.registered_subject,
+                        visit_definition__code__in=codes).order_by('visit_definition__code', 'visit_instance', 'appt_datetime')
         return self._appointments
 
     @property
@@ -337,19 +341,29 @@ class RegisteredSubjectDashboard(Dashboard):
 
         Membership forms can also be proxy models ... see mochudi_subject.models."""
         helper = MembershipFormHelper()
-        self._subject_membership_models = helper.get_membership_models_for(
-            self.registered_subject,
-            self.membership_form_category,
-            extra_grouping_key=self.exclude_others_if_keyed_model_name)
+        self._subject_membership_models = []
+        for category in self.membership_form_category:
+            self._subject_membership_models.append(helper.get_membership_models_for(
+                self.registered_subject,
+                category,
+                extra_grouping_key=self.exclude_others_if_keyed_model_name))
         return self._subject_membership_models
 
     @property
     def keyed_subject_membership_models(self):
-        return self.subject_membership_models.get('keyed', [])
+        keyed = []
+        for member_model in self.subject_membership_models:
+            keyed.append(member_model.get('keyed'))
+        keyed = flatten(keyed)
+        return keyed
 
     @property
     def unkeyed_subject_membership_models(self):
-        return self.subject_membership_models.get('unkeyed', [])
+        unkeyed = []
+        for member_model in self.subject_membership_models:
+            unkeyed.append(member_model.get('unkeyed'))
+        unkeyed = flatten(unkeyed)
+        return unkeyed
 
     @property
     def membership_form_category(self):
@@ -362,10 +376,14 @@ class RegisteredSubjectDashboard(Dashboard):
         May come from url or from the overridden :func:`set_membership_form_category`
 
         Must be a valid membership form category."""
-        self._membership_form_category = category
-        if self._membership_form_category not in self.membership_form_categories:
-            raise ImproperlyConfigured('Invalid membership_form category. Attribute \'_membership_form_category\'=\'{0}\' not found in '
-                                       'MembershipForms. Must be one of {1}. See {2}.'.format(self._membership_form_category, self.membership_form_categories, self))
+        self._membership_form_category=[]
+        self._membership_form_category.append(category)
+        self._membership_form_category = flatten(self._membership_form_category)
+#         self._membership_form_category = category
+        for c in self._membership_form_category:
+            if c not in self.membership_form_categories:
+                raise ImproperlyConfigured('Invalid membership_form category. Attribute \'_membership_form_category\'=\'{0}\' not found in '
+                                       'MembershipForms. Must be one of {1}. See {2}.'.format(c, self.membership_form_categories, self))
 
     @property
     def membership_form_categories(self):

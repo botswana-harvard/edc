@@ -37,8 +37,8 @@ class BaseAppConfiguration(object):
         for catalogue in self.consent_catalogue_list:
             if not ConsentCatalogue.objects.filter(**catalogue).exists():
                 ConsentCatalogue.objects.create(**catalogue)
-            #else:
-            #    ConsentCatalogue.objects.update(**catalogue)
+            else:
+                ConsentCatalogue.objects.filter(**catalogue).update(**catalogue)
 
     def update_or_create_study_site(self):
         if self.study_site_setup and not StudySite.objects.filter(**self.study_site_setup).exists():

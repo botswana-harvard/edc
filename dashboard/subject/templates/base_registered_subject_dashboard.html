@@ -11,7 +11,6 @@
 {% endblock%}
 
 {% block membership_forms %} 
-
     {% for keyed_model in keyed_membership_forms %}
         <A href="{% url keyed_model|get_meta|admin_urlname:'change' keyed_model.id %}?next={{ subject_dashboard_url }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&registered_subject={{ registered_subject.pk }}{{extra_url_context}}">{{ keyed_model|get_verbose_name }} (complete)</A> |
     {% endfor %}   

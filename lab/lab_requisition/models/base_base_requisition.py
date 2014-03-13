@@ -1,4 +1,6 @@
 from datetime import datetime
+import re
+import uuid
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -188,21 +190,33 @@ class BaseBaseRequisition (BaseUuidModel):
 
     def save(self, *args, **kwargs):
         if not kwargs.get('suppress_autocreate_on_deserialize', False):
-            if not self.requisition_identifier and self.is_drawn.lower() == 'yes':
+            if self.is_drawn.lower() == 'yes' and not self.value_is_requisition_identifier():
                 self.requisition_identifier = self.prepare_requisition_identifier()
-            if self.requisition_identifier and not self.specimen_identifier:
                 self.specimen_identifier = self.prepare_specimen_identifier()
-
+            if self.is_drawn.lower() == 'no' and not self.value_is_uuid():
+                self.requisition_identifier = str(uuid.uuid4())
+                self.specimen_identifier = self.requisition_identifier
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
-    
-    def requisition_identifier_as_uuid_on_post_save(self, **kwargs):
-        #TODO: you're calling save in a post-save??
-        #      why not just set to uuid4() in the save or default on the model ??
-        if self.is_drawn.lower() == 'no' and not self.specimen_identifier and not self.requisition_identifier:
-            self.requisition_identifier = self.id
-            self.specimen_identifier = self.id
-            self.save()
-                
+
+    def value_is_requisition_identifier(self):
+        #DO NOT CAHNGE THIS METHOD LITELY, ITS IMPORTANT, BE CAREFULL. MAKE SURE YOUR TESTS PASS AFTER CHAANGE.
+        if not self.requisition_identifier or not self.specimen_identifier:
+            return False
+        if len(self.requisition_identifier) == 7:
+            return True
+        return False
+
+    def value_is_uuid(self):
+        #DO NOT CAHNGE THIS METHOD LITELY, ITS IMPORTANT, BE CAREFULL. MAKE SURE YOUR TESTS PASS AFTER CHAANGE.
+        p = re.compile('^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$', re.IGNORECASE)
+        if not self.requisition_identifier or not self.specimen_identifier:
+            return False
+        if len(self.requisition_identifier) == 36 \
+            and len(self.specimen_identifier) == 36 \
+            and p.match(self.requisition_identifier):
+            return True
+        return False
+
     def get_site_code(self):
         site_code = ''
         try:
@@ -240,14 +254,25 @@ class BaseBaseRequisition (BaseUuidModel):
                                     'all are taken. Increase the length of the random string')
         return requisition_identifier
 
-    def print_label(self, request, **kwargs):
-        """ Prints a label for and flags as 'labelled' this model instance using the
-        :func:`print label` method on the :class:`RequisitionLabel` class."""
+    def print_label(self, request):
+        """ Prints a label flags this requisition as 'labeled'.
+
+        Uses :func:`print label` method on the :class:`RequisitionLabel` class.
+
+        If the specimen identifier is not set, the label will not print."""
         if self.specimen_identifier:
             requisition_label = RequisitionLabel()
-            requisition_label.print_label(request,
-                                          self, self.item_count_total,
-                                          self.specimen_identifier)
+            requisition_label.print_label(request, self, self.item_count_total, self.specimen_identifier)
+            self.is_labelled = True
+            self.modified = datetime.today()
+            self.save()
+
+    def print_labels_by_profile(self, request):
+        """ Prints a labels by profile for a received and labelled sample."""
+
+        if self.specimen_identifier and self.is_labelled:
+            requisition_label = RequisitionLabel()
+            requisition_label.print_label(request, self, self.item_count_total, self.specimen_identifier)
             self.is_labelled = True
             self.modified = datetime.today()
             self.save()
