@@ -1,7 +1,7 @@
-from edc.core.bhp_string.classes import BaseString
+from edc.core.bhp_string.classes import StringHelper
 
 
-class BaseCryptor(BaseString):
+class BaseCryptor(StringHelper):
 
     # prefix for each segment of an encrypted value, also used to calculate
     # field length for model.
