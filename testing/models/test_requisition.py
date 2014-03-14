@@ -15,5 +15,8 @@ class TestRequisition(BaseRequisition):
 
     entry_meta_data_manager = RequisitionMetaDataManager(TestVisit)
 
+    def get_visit(self):
+        return self.test_visit
+
     class Meta:
         app_label = 'testing'

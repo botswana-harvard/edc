@@ -49,38 +49,55 @@ class Controller(object):
         self.set_registry(rule_group)
 
     def update_all(self, visit_model_instance):
-        """ Given a visit model instance, run all rules in each rule group for the app_label of the visit model."""
+        """Given a visit model instance, run all rules in each rule group for the app_label of the visit model."""
         app_label = visit_model_instance._meta.app_label
         for rule_group in self.get_registry(app_label):
             for rule in rule_group.rules:
                 rule.run(visit_model_instance)
 
     def update_for_visit_definition(self, visit_instance):
-        """ Given a visit model instance, run all rules in the rule group module for the visit definition in order of the entries (rule source model)."""
+        """Given a visit model instance, run all rules in the rule group module for the visit definition in order of the entries (rule source model)."""
         for entry in Entry.objects.filter(visit_definition__code=visit_instance.appointment.visit_definition.code).order_by('entry_order'):
             source_model = entry.get_model()
-            for rule in self.get_rules_for_source_model(source_model):
+            for rule in self.get_rules_for_source_model(source_model, visit_instance._meta.app_label):
                 rule.run(visit_instance)
 
     def update_rules_for_source_model(self, source_model, visit_instance):
-        for rule in self.get_rules_for_source_model(source_model):
+        """Runs all rules that have a reference to the given source model (rule.source_model)."""
+        for rule in self.get_rules_for_source_model(source_model, visit_instance._meta.app_label):
             rule.run(visit_instance)
 
-    def get_rules_for_source_model(self, source_model):
-        """Returns a list of rules filtered on source_model.
+    def update_rules_for_source_fk_model(self, source_fk_model, visit_instance):
+        """Runs all rules that have a reference to the given source FK model (rule.source_fk_model)."""
+        for rule in self.get_rules_for_source_fk_model(source_fk_model, visit_instance._meta.app_label):
+            rule.run(visit_instance)
 
-        Takes a list of rules for app_label=<source_model.app_label> and filters on source_model=<source_model>.
+    def get_rules_for_source_model(self, source_model, app_label):
+        """Returns a list of rules for the given source_model."""
+        rules = []
+        for rule_group in self.get_registry(app_label):
+            for rule in rule_group.rules:
+                if rule.source_model == source_model:
+                    rules.append(rule)
+        return rules
 
-        ..note:: if RuleGroup attribute Meta.source_model=None, source_model will default to RegisteredSubject."""
-        filtered_list_of_rules = []
-        registeredsubject_list_of_rules = []
-        for rule_group in self.get_registry(source_model._meta.app_label):
+    def get_rules_for_registered_subject(self, app_label):
+        """Returns a list of rules for the given source_fk_model."""
+        rules = []
+        for rule_group in self.get_registry(app_label):
             for rule in rule_group.rules:
                 if rule.source_model._meta.object_name.lower() == 'registeredsubject':
-                    registeredsubject_list_of_rules.append(rule)
-                if rule.source_model == source_model:
-                    filtered_list_of_rules.append(rule)
-        return registeredsubject_list_of_rules + filtered_list_of_rules
+                    rules.append(rule)
+        return rules
+
+    def get_rules_for_source_fk_model(self, source_fk_model, app_label):
+        """Returns a list of rules for the given source_fk_model."""
+        rules = []
+        for rule_group in self.get_registry(app_label):
+            for rule in rule_group.rules:
+                if rule.source_fk_model == source_fk_model:
+                    rules.append(rule)
+        return rules
 
     def autodiscover(self):
         """ Autodiscover rules from a rule_groups module."""
