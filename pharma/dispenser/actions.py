@@ -1,5 +1,5 @@
 from django.contrib import messages
-from lis.core.lab_barcode.exceptions import PrinterException
+from lis.labeling.exceptions import PrinterException
 from .classes import DispensingLabel
 
 

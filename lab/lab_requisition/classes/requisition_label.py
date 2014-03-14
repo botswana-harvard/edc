@@ -1,40 +1,34 @@
 from edc.core.bhp_variables.models import StudySpecific
 from edc.subject.registration.models import RegisteredSubject
 
-from lis.core.lab_barcode.classes import ModelLabel
-from lis.core.lab_barcode.models import ZplTemplate
+from lis.labeling.classes import ModelLabel
+from lis.labeling.models import ZplTemplate
 
 
 class RequisitionLabel(ModelLabel):
 
-    def get_template_prep(self):
-        """Gets or creates a label instance and returns it."""
+    def __init__(self):
+        super(RequisitionLabel, self).__init__()
         template_name = 'requisition_label'
-        template_string = ('^XA\n'
-            '^FO325,5^A0N,15,20^FD%(protocol)s Site %(site)s %(label_count)s/%(label_count_total)s^FS\n'
-            '^FO320,20^BY1,3.0^BCN,50,N,N,N\n'
-            '^BY^FD%(specimen_identifier)s^FS\n'
-            '^FO320,80^A0N,15,20^FD%(specimen_identifier)s [%(requisition_identifier)s]^FS\n'
-            '^FO325,100^A0N,15,20^FD%(panel)s %(aliquot_type)s^FS\n'
-            '^FO325,118^A0N,16,20^FD%(subject_identifier)s (%(initials)s)^FS\n'
-            '^FO325,136^A0N,16,20^FDDOB: %(dob)s %(gender)s^FS\n'
-            '^FO325,152^A0N,20^FD%(drawn_datetime)s^FS\n'
-            '^XZ')
         if not ZplTemplate.objects.filter(name=template_name):
-            zpl_template = ZplTemplate.objects.create(name=template_name,
-                                                      template=template_string,
-                                                      default=True)
+            template_string = ('^XA\n'
+                '^FO325,5^A0N,15,20^FD%(protocol)s Site %(site)s %(label_count)s/%(label_count_total)s^FS\n'
+                '^FO320,20^BY1,3.0^BCN,50,N,N,N\n'
+                '^BY^FD%(specimen_identifier)s^FS\n'
+                '^FO320,80^A0N,15,20^FD%(specimen_identifier)s [%(requisition_identifier)s]^FS\n'
+                '^FO325,100^A0N,15,20^FD%(panel)s %(aliquot_type)s^FS\n'
+                '^FO325,118^A0N,16,20^FD%(subject_identifier)s (%(initials)s)^FS\n'
+                '^FO325,136^A0N,16,20^FDDOB: %(dob)s %(gender)s^FS\n'
+                '^FO325,152^A0N,20^FD%(drawn_datetime)s^FS\n'
+                '^XZ')
+            self.zpl_template = ZplTemplate.objects.create(
+                name=template_name,
+                template=template_string)
         else:
-            zpl_template = ZplTemplate.objects.get(name=template_name)
-        return zpl_template
+            self.zpl_template = ZplTemplate.objects.get(name=template_name)
 
-    def prepare_label_context(self, **kwargs):
-        """ A label subclass with the required key,value pairs expected by the label template.
-
-        Receive the requisition instance, template and item count. Update kwargs
-        with any key, values expected by the template """
-
-        requisition = kwargs.get('instance')
+    def refresh_label_context(self):
+        requisition = self.model_instance
         subject_identifier = requisition.get_subject_identifier()
         registered_subject = RegisteredSubject.objects.get(subject_identifier=subject_identifier)
         if registered_subject.may_store_samples.lower() == 'Yes':
