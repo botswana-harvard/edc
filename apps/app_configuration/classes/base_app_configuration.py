@@ -33,6 +33,8 @@ class BaseAppConfiguration(object):
         self.update_or_create_lab_clinic_api()
 
     def update_or_create_lab_clinic_api(self):
+        if not self.lab_clinic_api_setup.get('aliquot_type'):
+            return
         for item in self.lab_clinic_api_setup.get('aliquot_type'):
             if AliquotType.objects.filter(name=item.name):
                 aliquot_type = AliquotType.objects.get(name=item.name)
