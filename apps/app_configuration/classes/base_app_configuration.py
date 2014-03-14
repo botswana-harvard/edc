@@ -8,6 +8,7 @@ from edc.device.device.classes import Device
 from edc.lab.lab_clinic_api.models import AliquotType, ProcessingProfile, ProcessingProfileItem
 from edc.subject.appointment.models import Configuration
 from edc.subject.consent.models import ConsentCatalogue
+from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 
 AliquotTypeTuple = namedtuple('AliquotTypeTuple', 'name alpha_code numeric_code')
 ProfileTuple = namedtuple('ProfileItemTuple', 'profile_name alpha_code')
@@ -24,8 +25,8 @@ class BaseAppConfiguration(object):
     study_variables_setup = None
 
     def __init__(self):
-        ContentTypeMap.objects.populate()
-        ContentTypeMap.objects.sync()
+        ContentTypeMapHelper().populate()
+        ContentTypeMapHelper().sync()
         self.update_or_create_appointment_setup()
         self.update_or_create_study_variables()
         self.update_or_create_consent_catalogue()
