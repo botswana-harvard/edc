@@ -54,7 +54,7 @@ class ReviewAndUnderstandingFieldsMixin(models.Model):
     consent_copy = models.CharField(
         verbose_name=("I have provided the client with a copy of their signed informed"
                       " consent"),
-        max_length=3,
+        max_length=20,
         choices=YES_NO_DECLINED,
         #validators=[eligible_if_yes, ],
         null=True,
