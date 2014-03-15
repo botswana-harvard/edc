@@ -44,7 +44,7 @@
 {% endif %}
 
 {% if 'edc.device.inspector' in installed_apps %}
-<H5>Node Inspection Of Synced Trasanctions</H5>
+<H5>Node Inspection Of Synced Transactions</H5>
 <ul>
 <li><A href="/admin/{{app_name}}_inspector/">Inspect Models</A></li>
 </ul>
@@ -53,9 +53,15 @@
 {% if 'edc.lab.lab_clinic_api' in installed_apps %}
 <H5>Lab</H5>
 <ul>
+<li><A href="/admin/{{protocol_lab_section}}/">Requisitions, Aliquots and Packing Lists</A></li>
 <li><A href="/admin/lab_clinic_api/">Results</A></li>
+{% if 'lis.labeling' in installed_apps %}
+<li><A href="/admin/labeling/">Label Printers and Templates</A></li>
+{% endif %}
 </ul>
 {% endif %}
+
+
 
 {% if 'edc.core.ph_dispenser' in installed_apps %}
 <h5>Pharmacy</h5>

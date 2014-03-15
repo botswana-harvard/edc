@@ -8,5 +8,3 @@ from .result_admin import ResultAdmin
 from .result_item_admin import ResultItemAdmin
 from .review_admin import ReviewAdmin
 from .test_code_admin import TestCodeAdmin, TestCodeGroupAdmin
-from .processing_admin import ProcessingAdmin
-from .processing_profile_admin import ProcessingProfileAdmin, ProcessingProfileItemAdmin
