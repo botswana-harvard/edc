@@ -22,20 +22,26 @@ class BaseAppConfiguration(object):
     study_variables_setup = None
 
     def __init__(self):
+        """Updates content type maps then runs each configuration method with the corresponding class attribute.
+
+        Configuration methods update default data in supporting tables."""
         ContentTypeMapHelper().populate()
         ContentTypeMapHelper().sync()
         self.update_or_create_appointment_setup()
         self.update_or_create_study_variables()
         self.update_or_create_consent_catalogue()
-        self.update_or_create_study_site()
         self.update_or_create_lab_clinic_api()
         self.update_or_create_lab()
         self.update_or_create_labeling()
 
     def update_or_create_lab_clinic_api(self):
+        """Configure lab clinic api lsist tables.
+
+        ..note:: see visit_schedule model where Panels are updated"""
         pass
 
     def update_or_create_lab(self):
+        """Updates profiles and supporting list tables for projects lab module."""
         for profile_group_name, setup_items in self.lab_setup.iteritems():
             profile_group_models = site_lab_profiles.get_group_models(profile_group_name)
             aliquot_type_model = profile_group_models.get('aliquot_type')
@@ -71,21 +77,26 @@ class BaseAppConfiguration(object):
                     profile_item.save()
 
     def update_or_create_appointment_setup(self):
-
+        """Updates configuration in the :mod:`appointment` module."""
         if Configuration.objects.all().count() == 0:
             Configuration.objects.create(**self.appointment_configuration)
         else:
             Configuration.objects.all().update(**self.appointment_configuration)
 
     def update_or_create_study_variables(self):
-
+        """Updates configuration in the :mod:`bhp_variables` module."""
         if StudySpecific.objects.all().count() == 0:
             StudySpecific.objects.create(**self.study_variables_setup)
         else:
             StudySpecific.objects.all().update(**self.study_variables_setup)
 
-    def update_or_create_labeling(self):
+        if self.study_site_setup and not StudySite.objects.filter(**self.study_site_setup).exists():
+            StudySite.objects.create(**self.study_site_setup)
+        if not Device().is_server() and StudySite.objects.all().count() > 1:
+            raise ImproperlyConfigured('There has to be only one Study Site record on bhp_variables. Got {0}'.format(StudySite.objects.all().count()))
 
+    def update_or_create_labeling(self):
+        """Updates configuration in the :mod:`labeling` module."""
         for printer_setup in self.labeling.get('label_printer'):
             if LabelPrinter.objects.filter(cups_printer_name=printer_setup.cups_printer_name).count() == 0:
                 LabelPrinter.objects.create(
@@ -99,15 +110,10 @@ class BaseAppConfiguration(object):
             label_printer.default = printer_setup.default
 
     def update_or_create_consent_catalogue(self):
+        """Updates configuration in the :mod:`consent` module."""
         for catalogue_setup in self.consent_catalogue_list:
             catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map').lower())})
             if not ConsentCatalogue.objects.filter(**catalogue_setup).exists():
                 ConsentCatalogue.objects.create(**catalogue_setup)
             else:
                 ConsentCatalogue.objects.filter(**catalogue_setup).update(**catalogue_setup)
-
-    def update_or_create_study_site(self):
-        if self.study_site_setup and not StudySite.objects.filter(**self.study_site_setup).exists():
-            StudySite.objects.create(**self.study_site_setup)
-        if not Device().is_server() and StudySite.objects.all().count() > 1:
-            raise ImproperlyConfigured('There has to be only one Study Site record on bhp_variables. Got {0}'.format(StudySite.objects.all().count()))
