@@ -2,6 +2,7 @@ from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
 from edc.subject.visit_tracking.models import BaseVisitTracking
+
 from edc.subject.rule_groups.classes import site_rule_groups
 from edc.subject.registration.models import RegisteredSubject
 
