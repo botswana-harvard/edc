@@ -1,18 +1,14 @@
-from collections import namedtuple
-
 from django.core.exceptions import ImproperlyConfigured
 
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.device.device.classes import Device
-from edc.lab.lab_clinic_api.models import AliquotType, ProcessingProfile, ProcessingProfileItem
+from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.subject.appointment.models import Configuration
 from edc.subject.consent.models import ConsentCatalogue
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 
-AliquotTypeTuple = namedtuple('AliquotTypeTuple', 'name alpha_code numeric_code')
-ProfileTuple = namedtuple('ProfileItemTuple', 'profile_name alpha_code')
-ProfileItemTuple = namedtuple('ProfileItemTuple', 'profile_name alpha_code volume count')
+from lis.labeling.models import LabelPrinter
 
 
 class BaseAppConfiguration(object):
@@ -21,6 +17,7 @@ class BaseAppConfiguration(object):
     consent_catalogue_list = None
     consent_catalogue_setup = None
     lab_clinic_api_setup = None
+    lab_setup = None
     study_site_setup = None
     study_variables_setup = None
 
@@ -32,36 +29,46 @@ class BaseAppConfiguration(object):
         self.update_or_create_consent_catalogue()
         self.update_or_create_study_site()
         self.update_or_create_lab_clinic_api()
+        self.update_or_create_lab()
+        self.update_or_create_labeling()
 
     def update_or_create_lab_clinic_api(self):
-        for item in self.lab_clinic_api_setup.get('aliquot_type'):
-            if AliquotType.objects.filter(name=item.name):
-                aliquot_type = AliquotType.objects.get(name=item.name)
-                aliquot_type.alpha_code = item.alpha_code
-                aliquot_type.numeric_code = item.numeric_code
-                aliquot_type.save()
-            else:
-                AliquotType.objects.create(name=item.name, alpha_code=item.alpha_code, numeric_code=item.numeric_code)
-        # create profiles
-        for item in self.lab_clinic_api_setup.get('processing_profile'):
-            aliquot_type = AliquotType.objects.get(alpha_code=item.alpha_code)
-            if not ProcessingProfile.objects.filter(profile_name=item.profile_name):
-                ProcessingProfile.objects.create(profile_name=item.profile_name, aliquot_type=aliquot_type)
-            else:
-                processing_profile = ProcessingProfile.objects.get(profile_name=item.profile_name)
-                processing_profile.aliquot_type = aliquot_type
-                processing_profile.save()
-        # add profile items
-        for item in self.lab_clinic_api_setup.get('processing_profile_item'):
-            processing_profile = ProcessingProfile.objects.get(profile_name=item.profile_name)
-            aliquot_type = AliquotType.objects.get(alpha_code=item.alpha_code)
-            if not ProcessingProfileItem.objects.filter(processing_profile=processing_profile, aliquot_type=aliquot_type):
-                ProcessingProfileItem.objects.create(processing_profile=processing_profile, aliquot_type=aliquot_type, volume=item.volume, count=item.count)
-            else:
-                profile_item = ProcessingProfileItem.objects.get(processing_profile=processing_profile, aliquot_type=aliquot_type)
-                profile_item.volume = item.volume
-                profile_item.count = item.count
-                profile_item.save()
+        pass
+
+    def update_or_create_lab(self):
+        for profile_group_name, setup_items in self.lab_setup.iteritems():
+            profile_group_models = site_lab_profiles.get_group_models(profile_group_name)
+            aliquot_type_model = profile_group_models.get('aliquot_type')
+            profile_model = profile_group_models.get('profile')
+            profile_item_model = profile_group_models.get('profile_item')
+            for item in setup_items.get('aliquot_type'):
+                if aliquot_type_model.objects.filter(name=item.name):
+                    aliquot_type = aliquot_type_model.objects.get(name=item.name)
+                    aliquot_type.alpha_code = item.alpha_code
+                    aliquot_type.numeric_code = item.numeric_code
+                    aliquot_type.save()
+                else:
+                    aliquot_type_model.objects.create(name=item.name, alpha_code=item.alpha_code, numeric_code=item.numeric_code)
+            # create profiles
+            for item in setup_items.get('profile'):
+                aliquot_type = aliquot_type_model.objects.get(alpha_code=item.alpha_code)
+                if not profile_model.objects.filter(name=item.profile_name):
+                    profile_model.objects.create(name=item.profile_name, aliquot_type=aliquot_type)
+                else:
+                    profile = profile_model.objects.get(name=item.profile_name)
+                    profile.aliquot_type = aliquot_type
+                    profile.save()
+            # add profile items
+            for item in setup_items.get('profile_item'):
+                profile = profile_model.objects.get(name=item.profile_name)
+                aliquot_type = aliquot_type_model.objects.get(alpha_code=item.alpha_code)
+                if not profile_item_model.objects.filter(profile=profile, aliquot_type=aliquot_type):
+                    profile_item_model.objects.create(profile=profile, aliquot_type=aliquot_type, volume=item.volume, count=item.count)
+                else:
+                    profile_item = profile_item_model.objects.get(profile=profile, aliquot_type=aliquot_type)
+                    profile_item.volume = item.volume
+                    profile_item.count = item.count
+                    profile_item.save()
 
     def update_or_create_appointment_setup(self):
 
@@ -76,6 +83,20 @@ class BaseAppConfiguration(object):
             StudySpecific.objects.create(**self.study_variables_setup)
         else:
             StudySpecific.objects.all().update(**self.study_variables_setup)
+
+    def update_or_create_labeling(self):
+
+        for printer_setup in self.labeling.get('label_printer'):
+            if LabelPrinter.objects.filter(cups_printer_name=printer_setup.cups_printer_name).count() == 0:
+                LabelPrinter.objects.create(
+                    cups_printer_name=printer_setup.cups_printer_name,
+                    cups_server_ip=printer_setup.cups_server_ip,
+                    default=printer_setup.default,
+                    )
+        else:
+            label_printer = LabelPrinter.objects.get(cups_printer_name=printer_setup.cups_printer_name)
+            label_printer.cups_server_ip = printer_setup.cups_server_ip
+            label_printer.default = printer_setup.default
 
     def update_or_create_consent_catalogue(self):
         for catalogue_setup in self.consent_catalogue_list:
