@@ -16,10 +16,10 @@ from edc.subject.visit_schedule.models import VisitDefinition
 from edc.testing.classes import TestVisitSchedule
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestRequisitionFactory
 
-from ..classes import SpecimenHelper
+from ..classes import LabProfile
 
 
-class SpecimenHelperTests(TestCase):
+class LabProfileTests(TestCase):
 
     app_label = 'testing'
     consent_catalogue_name = 'v1'
@@ -59,8 +59,8 @@ class SpecimenHelperTests(TestCase):
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.panel
         obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, is_drawn='Yes')
-        specimen_helper = SpecimenHelper()
-        self.assertTrue(specimen_helper.receive(obj))
+        lab_profile = LabProfile()()
+        self.assertTrue(lab_profile.receive(obj))
         self.assertEqual(Receive.objects.get(requisition_identifier=obj.requisition_identifier).requisition_identifier, obj.requisition_identifier)
         receive = Receive.objects.get(requisition_identifier=obj.requisition_identifier)
         self.assertEqual(Aliquot.objects.get(receive=receive).receive, receive)
@@ -69,14 +69,14 @@ class SpecimenHelperTests(TestCase):
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.panel
         obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, is_drawn='No')
-        specimen_helper = SpecimenHelper()
-        self.assertFalse(specimen_helper.receive(obj))
+        lab_profile = LabProfile()()
+        self.assertFalse(lab_profile.receive(obj))
 
     def test_receives3(self):
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.panel
         obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, is_drawn='Yes')
-        specimen_helper = SpecimenHelper()
-        specimen_helper.receive(obj)
+        lab_profile = LabProfile()()
+        lab_profile.receive(obj)
         receive = Receive.objects.get(requisition_identifier=obj.requisition_identifier)
         print Aliquot.objects.get(receive=receive).__dict__

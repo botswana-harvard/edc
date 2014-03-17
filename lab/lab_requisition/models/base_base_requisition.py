@@ -64,11 +64,6 @@ class BaseBaseRequisition (BaseUuidModel):
         blank=True,
         )
 
-    aliquot_type = models.ForeignKey(AliquotType,
-        help_text='Note: Lists only those types associated with the Panel.')
-
-    panel = models.ForeignKey(Panel)
-
     priority = models.CharField(
         verbose_name='Priority',
         max_length=25,

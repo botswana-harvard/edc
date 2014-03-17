@@ -5,6 +5,7 @@ class LabProfile(object):
     name = None
     profile_group_name = None  # controller uses this to register the aliquot, receive, ... models so they can be referenced by the group name
     receive_model = None
+    panel_model = None
     aliquot_model = None
     aliquot_type_model = None
     profile_model = None

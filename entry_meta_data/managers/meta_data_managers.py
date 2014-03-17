@@ -186,10 +186,10 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
         return {'appointment': self.appointment_zero,
                 '{0}__app_label'.format(self.entry_attr): self.model._meta.app_label,
                 '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower(),
-                '{0}__panel'.format(self.entry_attr): self.instance.panel}
+                '{0}__requisition_panel__name'.format(self.entry_attr): self.instance.panel.name}
 
     def create_meta_data(self):
-        """Creates one meta_data instance for each panel for the requisition model at the time point (appointment) for the given registered_subject.
+        """Creates one meta_data instance for each requisition_panel for the requisition model at the time point (appointment) for the given registered_subject.
 
         might NOT be created based on visit reason."""
         meta_data_instances = []
@@ -216,16 +216,18 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                     meta_data_instance = self.meta_data_model.objects.create(**options)
                 meta_data_instances.append(meta_data_instance)
         if meta_data_instances:
-            try:
-                meta_data_instance = [item for item in meta_data_instances if item.lab_entry.panel == self.instance.panel][0]
-            except AttributeError:  # 'NoneType' object has no attribute 'panel'
-                meta_data_instance = None
-            except IndexError:  # [panel][0]
-                meta_data_instance = None
+            meta_data_instance = None
+            if self.instance:
+                #try:
+                meta_data_instance = [item for item in meta_data_instances if item.lab_entry.requisition_panel == self.instance.panel][0]
+                #except AttributeError:  # 'NoneType' object has no attribute 'panel'
+                #    meta_data_instance = None
+                #except IndexError:  # [panel][0] (should never be more than one requisition metadata instance for a panel
+                #    meta_data_instance = None
         return meta_data_instance
 
     def update_meta_data(self, model_or_visit_instance, change_type=None, using=None):
-        """Updates the meta_data's instances by panel.
+        """Updates the meta_data's instances by requisition_panel.
 
         Called by the signal on post_save and pre_delete"""
         self.instance = model_or_visit_instance
