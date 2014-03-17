@@ -74,7 +74,7 @@ class BaseIdentifier(object):
         options = {'identifier_prefix': self.identifier_prefix,
                    'site_code': self.site_code,
                    }
-        options.update(device_id=device.get_device_id())
+        options.update(device_id=device.device_id)
         custom_options = self.get_identifier_prep(**kwargs)
         if not isinstance(custom_options, dict):
             raise IdentifierError('Expected a dictionary from method get_identifier_prep().')
