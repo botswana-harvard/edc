@@ -17,11 +17,11 @@ class RequisitionContext(BaseScheduledEntryContext):
         super(RequisitionContext, self).__init__(meta_data_instance, appointment, visit_model)
 
     def contribute_to_context(self, context):
-        context.update({'label': self.meta_data_instance.lab_entry.panel.edc_name})
+        context.update({'label': self.meta_data_instance.lab_entry.requisition.name})
         if self.instance:
             context.update({'requisition_identifier': self.instance.requisition_identifier})
-        context.update({'panel': self.meta_data_instance.lab_entry.panel.pk})
-        #context.update({'aliquot_type': self.meta_data_instance.lab_entry.panel.pk})
+        context.update({'panel': self.meta_data_instance.lab_entry.requisition.pk})
+        #context.update({'aliquot_type': self.meta_data_instance.lab_entry.requisition.pk})
         return context
 
     @property
@@ -32,7 +32,7 @@ class RequisitionContext(BaseScheduledEntryContext):
     def instance(self):
         """Sets to the model instance referred to by the requisition meta data."""
         if not self._instance:
-            options = {convert_from_camel(self.visit_instance._meta.object_name): self.visit_instance, 'panel': self.meta_data_instance.lab_entry.panel.pk}
+            options = {convert_from_camel(self.visit_instance._meta.object_name): self.visit_instance, 'panel': self.meta_data_instance.lab_entry.requisition.pk}
             if self.model.objects.filter(**options):
                 self._instance = self.model.objects.get(**options)
         return self._instance

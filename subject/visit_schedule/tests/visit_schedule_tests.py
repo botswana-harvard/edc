@@ -1,10 +1,12 @@
 from django.test import TestCase
 
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.testing.classes import TestVisitSchedule
-from edc.subject.entry.models import Entry, LabEntry
+from edc.lab.lab_profile.classes import site_lab_profiles
+from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc.subject.appointment_helper.models import BaseAppointmentMixin
-from edc.subject.appointment.tests.factories import ConfigurationFactory
+from edc.subject.entry.models import Entry, LabEntry
+from edc.testing.classes import TestLabProfile
+from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
 
 from ..models import MembershipForm, ScheduleGroup, VisitDefinition
 
@@ -14,10 +16,15 @@ from ..classes import MembershipFormTuple, ScheduleGroupTuple
 class VisitScheduleTests(TestCase):
 
     def setUp(self):
-        ConfigurationFactory()
         content_type_map_helper = ContentTypeMapHelper()
         content_type_map_helper.populate()
         content_type_map_helper.sync()
+
+        try:
+            site_lab_profiles.register(TestLabProfile())
+        except AlreadyRegisteredLabProfile:
+            pass
+        TestAppConfiguration()
 
         self.test_visit_schedule = TestVisitSchedule()
         self.test_visit_schedule.build()

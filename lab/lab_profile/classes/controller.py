@@ -4,13 +4,7 @@ from django.conf import settings
 from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
 
-
-class AlreadyRegistered(Exception):
-    pass
-
-
-class NotRegistered(Exception):
-    pass
+from ..exceptions import AlreadyRegistered
 
 
 class ProfileController(object):
@@ -34,6 +28,7 @@ class ProfileController(object):
         group_models = {}
         group_models.update({'receive': lab_profile.receive_model})
         group_models.update({'aliquot': lab_profile.aliquot_model})
+        group_models.update({'panel': lab_profile.panel_model})
         group_models.update({'aliquot_type': lab_profile.aliquot_type_model})
         group_models.update({'profile': lab_profile.profile_model})
         group_models.update({'profile_item': lab_profile.profile_item_model})

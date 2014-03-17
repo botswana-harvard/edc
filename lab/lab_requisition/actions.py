@@ -16,7 +16,7 @@ def flag_as_received(modeladmin, request, queryset, **kwargs):
             qs.is_receive_datetime = datetime.today()
             qs.save()
             lab_profile = site_lab_profiles.get(qs._meta.object_name)
-            lab_profile.receive(qs)
+            lab_profile().receive(qs)
         else:
             msg = 'Unable to receive, specimen not drawn. Got requisition \'{0}\'.'.format(qs.requisition_identifier)
             messages.add_message(request, messages.ERROR, msg)
