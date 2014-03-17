@@ -20,3 +20,4 @@ from .encrypted_test_model import EncryptedTestModel
 from .test_dispatch import TestDspItem, TestDspItemTwo, TestDspItemThree, TestDspList, TestDspItemM2M, TestDspItemBypass, TestDspContainer
 from .export_test import ExportTest
 from .test_profile import TestProfile, TestProfileItem
+from .test_receive import TestReceive
