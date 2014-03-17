@@ -198,7 +198,7 @@ class BaseBaseRequisition (BaseUuidModel):
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
 
     def value_is_requisition_identifier(self):
-        if not self.requisition_identifier or not self.specimen_identifier:
+        if not self.requisition_identifier:
             return False
         if len(self.requisition_identifier) == 7:
             return True
@@ -206,10 +206,9 @@ class BaseBaseRequisition (BaseUuidModel):
 
     def value_is_uuid(self):
         p = re.compile('^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$', re.IGNORECASE)
-        if not self.requisition_identifier or not self.specimen_identifier:
+        if not self.requisition_identifier:
             return False
         if (len(self.requisition_identifier) == 36
-            and len(self.specimen_identifier) == 36
             and p.match(self.requisition_identifier)):
             return True
         return False

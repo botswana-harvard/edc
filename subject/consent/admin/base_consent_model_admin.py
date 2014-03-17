@@ -60,7 +60,6 @@ class BaseConsentModelAdmin(BaseModelAdmin):
             "study_site": admin.VERTICAL,
             "is_dob_estimated": admin.VERTICAL,
             "identity_type": admin.VERTICAL,
-            "is_incarcerated": admin.VERTICAL,
             "may_store_samples": admin.VERTICAL,
             "consent_reviewed": admin.VERTICAL,
             "study_questions": admin.VERTICAL,
