@@ -1,14 +1,17 @@
+from django.core.exceptions import ImproperlyConfigured
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.core.validators import RegexValidator
-from django.core.exceptions import ImproperlyConfigured
-from edc.device.sync.models import BaseSyncUuidModel
-from edc.choices.common import YES_NO
-from edc.core.crypto_fields.fields import EncryptedLastnameField, EncryptedTextField
+
 from edc.base.model.validators import datetime_not_future, datetime_not_before_study_start
+from edc.choices.common import YES_NO
 from edc.core.bhp_variables.models import StudySite
+from edc.core.crypto_fields.fields import EncryptedLastnameField, EncryptedTextField
+from edc.device.sync.models import BaseSyncUuidModel
+
 from ..classes import ConsentHelper
 from ..managers import BaseConsentUpdateManager
+
 from .base_consent import BaseConsent
 from .consent_catalogue import ConsentCatalogue
 
@@ -86,7 +89,9 @@ class BaseConsentUpdate(BaseSyncUuidModel):
     def save(self, *args, **kwargs):
         if not self.consent_catalogue:
             super(BaseConsentUpdate, self).save(*args, **kwargs)
-        self.consent_version = ConsentHelper(self).get_current_consent_version(self.consent_catalogue.name, self.consent_datetime)
+        self.consent_version = ConsentHelper(self).get_current_consent_version()
+        print self.consent_version
+#         self.consent_version = ConsentHelper(self).get_current_consent_version(self.consent_catalogue.name, self.consent_datetime)
         super(BaseConsentUpdate, self).save(*args, **kwargs)
 
     class Meta:

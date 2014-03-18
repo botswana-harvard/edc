@@ -103,7 +103,7 @@ class BaseSubjectConsentForm(BaseModelForm):
         if 'assessment_score' in cleaned_data:
             if not cleaned_data.get('assessment_score', None) or cleaned_data.get('assessment_score', None) == 'No':
                 raise forms.ValidationError('Client assessment should at least be a passing score. If No, patient cannot be enrolled')
-        if not cleaned_data.get('consent_copy', None) or cleaned_data.get('consent_copy', None) == 'No':
+        if not self.accepted_consent_copy(cleaned_data):
             raise forms.ValidationError('If patient has not been given consent copy and/or None, patient cannot be enrolled')
 
         if cleaned_data.get('is_literate', None) == 'No' and not cleaned_data.get('witness_name', None):
@@ -112,3 +112,9 @@ class BaseSubjectConsentForm(BaseModelForm):
             raise forms.ValidationError('You wrote subject is literate. The name of a witness is NOT required.')
         # Always return the full collection of cleaned data.
         return super(BaseSubjectConsentForm, self).clean()
+
+    def accepted_consent_copy(self, cleaned_data):
+        if not cleaned_data.get('consent_copy', None) or cleaned_data.get('consent_copy', None) == 'No':
+            return False
+        else:
+            return True

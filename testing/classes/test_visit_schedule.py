@@ -1,14 +1,17 @@
 from collections import OrderedDict
 
-from edc.subject.visit_schedule.classes import VisitScheduleConfiguration, EntryTuple, RequisitionTuple, MembershipFormTuple, ScheduleGroupTuple
+from edc.subject.visit_schedule.classes import VisitScheduleConfiguration, EntryTuple, RequisitionPanelTuple, MembershipFormTuple, ScheduleGroupTuple
 
-from ..models import TestVisit, TestConsentWithMixin
+from ..models import TestVisit, TestConsentWithMixin, TestAliquotType, TestPanel
 
 
 class TestVisitSchedule(VisitScheduleConfiguration):
     """A visit schedule class for tests."""
     name = 'Test Visit Schedule'
     app_label = 'testing'
+    panel_model = TestPanel
+    aliquot_type_model = TestAliquotType
+
     # membership forms
     # see edc.subject.visit_schedule.models.membership_forms
     membership_forms = OrderedDict({
@@ -39,10 +42,10 @@ class TestVisitSchedule(VisitScheduleConfiguration):
             'schedule_group': 'schedule-group-1',
             'instructions': None,
             'requisitions': (
-                # (entry_order, app_label, model_name, panel.name, panel.edc_name, panel.panel_type, aliquot_type)
-                RequisitionTuple(10L, u'testing', u'testrequisition', 'Research Blood Draw', 'Research Blood Draw', 'TEST', 'WB'),
-                RequisitionTuple(20L, u'testing', u'testrequisition', 'Viral Load', 'Viral Load', 'TEST', 'WB'),
-                RequisitionTuple(30L, u'testing', u'testrequisition', 'Microtube', 'Microtube', 'STORAGE', 'WB'),
+                # (entry_order, app_label, model_name, panel.name, panel.panel_type, aliquot_type)
+                RequisitionPanelTuple(10L, u'testing', u'testrequisition', 'Research Blood Draw', 'TEST', 'WB'),
+                RequisitionPanelTuple(20L, u'testing', u'testrequisition', 'Viral Load', 'TEST', 'WB'),
+                RequisitionPanelTuple(30L, u'testing', u'testrequisition', 'Microtube', 'STORAGE', 'WB'),
                 ),
             'entries': (
                 EntryTuple(10L, u'testing', u'TestScheduledModel1'),

@@ -34,11 +34,11 @@ class EntryInline (BaseTabularInline):
 
 class LabEntryAdmin(BaseModelAdmin):
 
-    search_fields = ('visit_definition__code', 'panel__name')
+    search_fields = ('visit_definition__code', 'requisition_panel__name')
 
-    list_display = ('panel', 'visit_definition', 'entry_order', 'required', 'entry_category')
+    list_display = ('requisition_panel', 'visit_definition', 'entry_order', 'required', 'entry_category')
 
-    list_filter = ('entry_category', 'visit_definition__code', 'default_entry_status', 'created', 'panel__name',)
+    list_filter = ('entry_category', 'visit_definition__code', 'default_entry_status', 'created', 'requisition_panel__name',)
 
 admin.site.register(LabEntry, LabEntryAdmin)
 
@@ -47,7 +47,7 @@ class LabEntryInline (BaseTabularInline):
     model = LabEntry
     extra = 0
     fields = (
-        'panel',
+        'requisition_panel',
         'entry_order',
         'required',
         'default_entry_status',
@@ -58,5 +58,4 @@ class LabEntryInline (BaseTabularInline):
         'lower_window_unit',
         'upper_window',
         'upper_window_unit',
-
     )

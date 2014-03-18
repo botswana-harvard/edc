@@ -1,4 +1,6 @@
 from datetime import datetime
+import re
+import uuid
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -11,7 +13,7 @@ except ImportError:
 
 from edc.base.model.fields import InitialsField
 from edc.choices.common import YES_NO
-from edc.core.bhp_string.classes import BaseString
+from edc.core.bhp_string.classes import StringHelper
 from edc.core.bhp_variables.models import StudySite
 from edc.device.device.classes import Device
 from edc.lab.lab_clinic_api.models import AliquotType
@@ -61,11 +63,6 @@ class BaseBaseRequisition (BaseUuidModel):
         null=True,
         blank=True,
         )
-
-    aliquot_type = models.ForeignKey(AliquotType,
-        help_text='Note: Lists only those types associated with the Panel.')
-
-    panel = models.ForeignKey(Panel)
 
     priority = models.CharField(
         verbose_name='Priority',
@@ -162,6 +159,9 @@ class BaseBaseRequisition (BaseUuidModel):
     def __unicode__(self):
         return '%s' % (self.requisition_identifier)
 
+    def get_visit(self):
+        raise ImproperlyConfigured('Method must be overridden')
+
     #TODO: remove this, should be get_subject_identifier
     def get_infant_identifier(self):
         return self.get_visit().appointment.registered_subject.subject_identifier
@@ -188,21 +188,31 @@ class BaseBaseRequisition (BaseUuidModel):
 
     def save(self, *args, **kwargs):
         if not kwargs.get('suppress_autocreate_on_deserialize', False):
-            if not self.requisition_identifier and self.is_drawn.lower() == 'yes':
+            if self.is_drawn.lower() == 'yes' and not self.value_is_requisition_identifier():
                 self.requisition_identifier = self.prepare_requisition_identifier()
-            if self.requisition_identifier and not self.specimen_identifier:
+            if self.is_drawn.lower() == 'no' and not self.value_is_uuid():
+                self.requisition_identifier = str(uuid.uuid4())
+            if self.is_receive:
+                # do not create a specimen identifier unless received
                 self.specimen_identifier = self.prepare_specimen_identifier()
-
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
-    
-    def requisition_identifier_as_uuid_on_post_save(self, **kwargs):
-        #TODO: you're calling save in a post-save??
-        #      why not just set to uuid4() in the save or default on the model ??
-        if self.is_drawn.lower() == 'no' and not self.specimen_identifier and not self.requisition_identifier:
-            self.requisition_identifier = self.id
-            self.specimen_identifier = self.id
-            self.save()
-                
+
+    def value_is_requisition_identifier(self):
+        if not self.requisition_identifier:
+            return False
+        if len(self.requisition_identifier) == 7:
+            return True
+        return False
+
+    def value_is_uuid(self):
+        p = re.compile('^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$', re.IGNORECASE)
+        if not self.requisition_identifier:
+            return False
+        if (len(self.requisition_identifier) == 36
+            and p.match(self.requisition_identifier)):
+            return True
+        return False
+
     def get_site_code(self):
         site_code = ''
         try:
@@ -224,7 +234,7 @@ class BaseBaseRequisition (BaseUuidModel):
         """Generate and returns a locally unique requisition identifier for a device (adds device id)"""
         device = Device()
         device_id = kwargs.get('device_id', device.device_id)
-        string = BaseString()
+        string = StringHelper()
         length = 5
         template = '{device_id}{random_string}'
         opts = {'device_id': device_id, 'random_string': string.get_safe_random_string(length=length)}
@@ -235,19 +245,20 @@ class BaseBaseRequisition (BaseUuidModel):
             while self.__class__.objects.filter(requisition_identifier=requisition_identifier):
                 requisition_identifier = template.format(**opts)
                 n += 1
-                if n == length ** len(string.safe_allowed_chars):
+                if n == len(string.safe_allowed_chars) ** length:
                     raise TypeError('Unable prepare a unique requisition identifier, '
                                     'all are taken. Increase the length of the random string')
         return requisition_identifier
 
-    def print_label(self, request, **kwargs):
-        """ Prints a label for and flags as 'labelled' this model instance using the
-        :func:`print label` method on the :class:`RequisitionLabel` class."""
+    def print_label(self, request):
+        """ Prints a label flags this requisition as 'labeled'.
+
+        Uses :func:`print label` method on the :class:`RequisitionLabel` class.
+
+        If the specimen identifier is not set, the label will not print."""
         if self.specimen_identifier:
             requisition_label = RequisitionLabel()
-            requisition_label.print_label(request,
-                                          self, self.item_count_total,
-                                          self.specimen_identifier)
+            requisition_label.print_label(request, self, self.item_count_total)
             self.is_labelled = True
             self.modified = datetime.today()
             self.save()
