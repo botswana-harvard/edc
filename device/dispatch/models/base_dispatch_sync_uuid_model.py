@@ -71,10 +71,10 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                     is_dispatched=True,
                     return_datetime__isnull=True).exists()
         return is_dispatched
-    
+
     def is_current_device_server(self):
         return Device().is_server()
-        
+
     def is_dispatched_within_user_container(self, using=None):
         """Returns True if the model class is dispatched within a user container.
 
