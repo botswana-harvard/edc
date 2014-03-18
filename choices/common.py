@@ -374,3 +374,4 @@ YES_NO_DOESNT_WORK = (
     ('No', 'No'),
     ('Doesnt_work', 'Doesnt Work'),
 )
+
