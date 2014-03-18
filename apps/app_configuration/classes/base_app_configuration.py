@@ -136,11 +136,8 @@ class BaseAppConfiguration(object):
             StudySpecific.objects.create(**self.study_variables_setup)
         else:
             StudySpecific.objects.all().update(**self.study_variables_setup)
-        for site_code, site_name in self.study_site_setup.iteritems():
-            if not StudySite.objects.filter(site_code=site_code).exists():
-                StudySite.objects.create(site_code=site_code, site_name=site_name)
-#             if not Device().is_server() and StudySite.objects.all().count() > 1: huh???erik
-#                 raise ImproperlyConfigured('There has to be only one Study Site record on bhp_variables. Got {0}'.format(StudySite.objects.all().count()))
+        if not StudySite.objects.filter(site_code=self.study_site_setup.get('site_code')).exists():
+            StudySite.objects.create(**self.study_site_setup)
 
     def update_or_create_labeling(self):
         """Updates configuration in the :mod:`labeling` module."""
