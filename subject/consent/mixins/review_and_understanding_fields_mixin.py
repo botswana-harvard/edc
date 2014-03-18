@@ -1,7 +1,7 @@
 from django.db import models
 
 from edc.choices import YES_NO, YES_NO_DECLINED
-from edc.base.model.validators import eligible_if_yes
+from edc.base.model.validators import eligible_if_yes, eligible_if_yes_or_declined
 
 
 class ReviewAndUnderstandingFieldsMixin(models.Model):
@@ -36,10 +36,10 @@ class ReviewAndUnderstandingFieldsMixin(models.Model):
     consent_copy = models.CharField(
         verbose_name=("I have provided the client with a copy of their signed informed"
                       " consent"),
-        max_length=3,
+        max_length=20,
         choices=YES_NO_DECLINED,
-        validators=[eligible_if_yes, ],
+        validators=[eligible_if_yes_or_declined, ],
         null=True,
         blank=False,
-        help_text="If no, INELIGIBLE. If declined, return copy to the clinic with the consent",
+        help_text="If declined, return copy to the clinic with the consent",
         )

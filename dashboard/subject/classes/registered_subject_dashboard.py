@@ -1,7 +1,6 @@
 import re
 
 from textwrap import wrap
-from compiler.ast import flatten
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
@@ -27,6 +26,7 @@ from edc.subject.visit_schedule.classes import MembershipFormHelper
 from edc.subject.visit_schedule.exceptions import MembershipFormError
 from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc.utils.collections import flatten
 
 from .scheduled_entry_context import ScheduledEntryContext
 from .requisition_context import RequisitionContext
@@ -36,7 +36,6 @@ class RegisteredSubjectDashboard(Dashboard):
 
     view = None
     dashboard_url_name = 'subject_dashboard_url'
-    
 
     def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None, membership_form_category=None, visit_model=None, registered_subject=None, show=None, **kwargs):
 
@@ -60,7 +59,7 @@ class RegisteredSubjectDashboard(Dashboard):
         self.has_requisition_model = True
 
         self.registered_subject = registered_subject
-        self.membership_form_category=membership_form_category
+        self.membership_form_category = membership_form_category
         self.show = show
         self.set_has_requisition_model = kwargs.get('has_requisition_model')
         if visit_model:
@@ -266,7 +265,7 @@ class RegisteredSubjectDashboard(Dashboard):
         else:
             # or filter appointments for the current membership categories
             # schedule_group__membership_form
-            codes=[]
+            codes = []
             for category in self.membership_form_category:
                 codes.append(MembershipForm.objects.codes_for_category(membership_form_category=category))
                 codes = flatten(codes)
@@ -342,7 +341,7 @@ class RegisteredSubjectDashboard(Dashboard):
 
         Membership forms can also be proxy models ... see mochudi_subject.models."""
         helper = MembershipFormHelper()
-        self._subject_membership_models=[]
+        self._subject_membership_models = []
         for category in self.membership_form_category:
             self._subject_membership_models.append(helper.get_membership_models_for(
                 self.registered_subject,
@@ -352,18 +351,18 @@ class RegisteredSubjectDashboard(Dashboard):
 
     @property
     def keyed_subject_membership_models(self):
-        keyed=[]
+        keyed = []
         for member_model in self.subject_membership_models:
             keyed.append(member_model.get('keyed'))
-        keyed=flatten(keyed)
+        keyed = flatten(keyed)
         return keyed
 
     @property
     def unkeyed_subject_membership_models(self):
-        unkeyed=[]
+        unkeyed = []
         for member_model in self.subject_membership_models:
             unkeyed.append(member_model.get('unkeyed'))
-        unkeyed=flatten(unkeyed)
+        unkeyed = flatten(unkeyed)
         return unkeyed
 
     @property
@@ -379,7 +378,7 @@ class RegisteredSubjectDashboard(Dashboard):
         Must be a valid membership form category."""
         self._membership_form_category=[]
         self._membership_form_category.append(category)
-        self._membership_form_category=flatten(self._membership_form_category)
+        self._membership_form_category = flatten(self._membership_form_category)
 #         self._membership_form_category = category
         for c in self._membership_form_category:
             if c not in self.membership_form_categories:

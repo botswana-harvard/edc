@@ -4,15 +4,17 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.lab.lab_clinic_api.models import Panel
 
 EntryTuple = namedtuple('EntryTuple', 'order app_label model_name')
 MembershipFormTuple = namedtuple('MembershipFormTuple', 'name model visible')
-RequisitionTuple = namedtuple('RequisitionTuple', 'entry_order app_label model_name panel_name panel_edc_name panel_type aliquot_type')
+RequisitionPanelTuple = namedtuple('RequisitionPanelTuple', 'entry_order app_label model_name requisition_panel_name panel_type aliquot_type_alpha_code')
 ScheduleGroupTuple = namedtuple('ScheduleTuple', 'name membership_form_name grouping_key comment')
 
 
 class VisitScheduleConfiguration(object):
+    """Creates or updates the membership_form, schedule_group, entry, lab_entry models and visit_definition.
+
+        ..note:: RequisitionPanel is needed for lab_entry but is populated in the app_configuration and not here."""
 
     name = 'unnamed visit schedule'
     app_label = None
@@ -64,16 +66,25 @@ class VisitScheduleConfiguration(object):
                     raise ImproperlyConfigured('Visit Schedule Configuration attribute entries refers '
                                                'to model {0}.{1} which does not exist.'.format(entry.app_label, entry.model_name))
         for visit_definition in self.visit_definitions.itervalues():
-            for requisition in visit_definition.get('requisitions'):
-                if not get_model(requisition.app_label, requisition.model_name):
+            for requisition_item in visit_definition.get('requisitions'):
+                if not get_model(requisition_item.app_label, requisition_item.model_name):
                     raise ImproperlyConfigured('Visit Schedule Configuration attribute requisitions '
-                                               'refers to model {0}.{1} which does not exist.'.format(requisition.app_label, requisition.model_name))
+                                               'refers to model {0}.{1} which does not exist.'.format(requisition_item.app_label, requisition_item.model_name))
+
+    def sync_content_type_map(self):
+        from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
+        content_type_map_helper = ContentTypeMapHelper()
+        content_type_map_helper.populate()
+        content_type_map_helper.sync()
 
     def rebuild(self):
         """Rebuild, WARNING which DELETES meta data."""
         from ..models import MembershipForm, ScheduleGroup, VisitDefinition
         from edc.subject.entry.models import Entry
         from edc.subject.appointment.models import Appointment
+
+        self.sync_content_type_map()  # This will be required to be properly synced when creating entries.
+
         for code in self.visit_definitions.iterkeys():
             if VisitDefinition.objects.filter(code=code):
                 obj = VisitDefinition.objects.get(code=code)
@@ -89,7 +100,8 @@ class VisitScheduleConfiguration(object):
     def build(self):
         """Builds and / or updates the visit schedule models."""
         from ..models import MembershipForm, ScheduleGroup, VisitDefinition
-        from edc.subject.entry.models import Entry, LabEntry
+        from edc.subject.entry.models import Entry, LabEntry, RequisitionPanel
+        self.sync_content_type_map()  # This will be required to be properly synced when creating entries.
         for membership_form in self.membership_forms.itervalues():
             if not MembershipForm.objects.filter(category=membership_form.name):
                 MembershipForm.objects.create(
@@ -177,26 +189,19 @@ class VisitScheduleConfiguration(object):
             for entry in Entry.objects.filter(visit_definition=visit_definition_instance):
                 if (entry.app_label.lower(), entry.model_name.lower()) not in [(item.app_label.lower(), item.model_name.lower()) for item in visit_definition.get('entries')]:
                     entry.delete()
-            for requisition in visit_definition.get('requisitions'):
-                if not Panel.objects.filter(name=requisition.panel_name):
-                    panel = Panel.objects.create(name=requisition.panel_name, edc_name=requisition.panel_edc_name, panel_type=requisition.panel_type)
-                    #panel.aliquot_type.add(requisition.aliquot_type)
-                else:
-                    Panel.objects.filter(name=requisition.panel_name).update(name=requisition.panel_name, edc_name=requisition.panel_edc_name, panel_type=requisition.panel_type)
-                    panel = Panel.objects.get(name=requisition.panel_name)
-                    panel.aliquot_type.clear()
-                    #panel.aliquot_type.add(requisition.aliquot_type)
-
-                if not LabEntry.objects.filter(panel=panel, app_label=requisition.app_label, model_name=requisition.model_name, visit_definition=visit_definition_instance):
+            for requisition_item in visit_definition.get('requisitions'):
+                # requisition panel must exist, see app_configuration
+                requisition_panel = RequisitionPanel.objects.get(name=requisition_item.requisition_panel_name)
+                if not LabEntry.objects.filter(requisition_panel=requisition_panel, app_label=requisition_item.app_label, model_name=requisition_item.model_name, visit_definition=visit_definition_instance):
                     LabEntry.objects.create(
-                        app_label=requisition.app_label,
-                        model_name=requisition.model_name,
-                        panel=panel,
+                        app_label=requisition_item.app_label,
+                        model_name=requisition_item.model_name,
+                        requisition_panel=requisition_panel,
                         visit_definition=visit_definition_instance,
-                        entry_order=requisition.entry_order,
+                        entry_order=requisition_item.entry_order,
                         )
                 else:
-                    LabEntry.objects.filter(panel=panel, app_label=requisition.app_label, model_name=requisition.model_name, visit_definition=visit_definition_instance).update(entry_order=requisition.entry_order)
-            for requisition in LabEntry.objects.filter(visit_definition=visit_definition_instance):
-                if (requisition.app_label, requisition.model_name) not in [(item.app_label, item.model_name) for item in visit_definition.get('requisitions')]:
-                    requisition.delete()
+                    LabEntry.objects.filter(requisition_panel=requisition_panel, app_label=requisition_item.app_label, model_name=requisition_item.model_name, visit_definition=visit_definition_instance).update(entry_order=requisition_item.entry_order)
+            for lab_entry in LabEntry.objects.filter(visit_definition=visit_definition_instance):
+                if (lab_entry.app_label, lab_entry.model_name) not in [(item.app_label, item.model_name) for item in visit_definition.get('requisitions')]:
+                    lab_entry.delete()

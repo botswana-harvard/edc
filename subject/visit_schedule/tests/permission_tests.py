@@ -21,12 +21,16 @@ class PermissionTests(TestCase):
         visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model='testvisit')
         visit_definition = VisitDefinitionFactory(code='T0', visit_tracking_content_type_map=visit_tracking_content_type_map)
         for index, content_type in enumerate(ContentType.objects.filter(app_label='testing')):
-            content_type_map = ContentTypeMap.objects.get(content_type=content_type)
-            Entry.objects.create(visit_definition=visit_definition, content_type_map=content_type_map, entry_order=index)
+            model = content_type.model_class()
+            if 'entry_meta_data_manager' in dir(model):
+                content_type_map = ContentTypeMap.objects.get(content_type=content_type)
+                Entry.objects.create(visit_definition=visit_definition, content_type_map=content_type_map, entry_order=index)
         visit_definition = VisitDefinitionFactory(code='T1', visit_tracking_content_type_map=visit_tracking_content_type_map)
         for index, content_type in enumerate(ContentType.objects.filter(app_label='testing')[2:]):
-            content_type_map = ContentTypeMap.objects.get(content_type=content_type)
-            Entry.objects.create(visit_definition=visit_definition, content_type_map=content_type_map, entry_order=index)
+            model = content_type.model_class()
+            if 'entry_meta_data_manager' in dir(model):
+                content_type_map = ContentTypeMap.objects.get(content_type=content_type)
+                Entry.objects.create(visit_definition=visit_definition, content_type_map=content_type_map, entry_order=index)
 
         self.group = Group.objects.create(name='field_staff')
 
