@@ -1,22 +1,18 @@
-from datetime import datetime
-
 from django.test import TestCase
 
-from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-# from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper
 from edc.entry_meta_data.models import ScheduledEntryMetaData
+from edc.lab.lab_profile.classes import site_lab_profiles
+from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc.subject.appointment.models import Appointment
-from edc.subject.appointment.tests.factories import ConfigurationFactory
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.rule_groups.classes import site_rule_groups
 from edc.subject.visit_schedule.models import VisitDefinition
-from edc.testing.classes import TestVisitSchedule
+from edc.testing.classes import TestLabProfile
+from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
 from edc.testing.models import TestVisit, TestScheduledModel1, TestScheduledModel2, TestConsentWithMixin
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
+from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory
+from edc.core.bhp_variables.models import StudySite
 
 from ..classes import RuleGroup, BaseRule, ScheduledDataRule, Logic
 
@@ -27,7 +23,14 @@ class RuleTests(TestCase):
     consent_catalogue_name = 'v1'
 
     def setUp(self):
-        from edc.testing.tests.factories import TestVisitFactory
+
+        try:
+            site_lab_profiles.register(TestLabProfile())
+        except AlreadyRegisteredLabProfile:
+            pass
+        TestAppConfiguration()
+        site_lab_tracker.autodiscover()
+        TestVisitSchedule().build()
 
         # a test rule group where the source model is RegisteredSubject
         # the rules in this rule group will be only evaluated when the visit instance
@@ -87,29 +90,10 @@ class RuleTests(TestCase):
         self.test_rule_group_consent_cls = TestRuleGroupConsent
 
         self.test_visit_factory = TestVisitFactory
-        site_lab_tracker.autodiscover()
-        study_specific = StudySpecificFactory()
-        StudySiteFactory()
-        ConfigurationFactory()
-        content_type_map_helper = ContentTypeMapHelper()
-        content_type_map_helper.populate()
-        content_type_map_helper.sync()
-        content_type_map = ContentTypeMap.objects.get(content_type__model='TestConsentWithMixin'.lower())
-        ConsentCatalogueFactory(
-            name=self.app_label,
-            consent_type='study',
-            content_type_map=content_type_map,
-            version=1,
-            start_datetime=study_specific.study_start_datetime,
-            end_datetime=datetime(datetime.today().year + 5, 1, 1),
-            add_for_app=self.app_label)
-
-        test_visit_schedule = TestVisitSchedule()
-        test_visit_schedule.rebuild()
 
         self.visit_definition = VisitDefinition.objects.get(code='1000')
 
-        self.test_consent = TestConsentWithMixinFactory(gender='M', may_store_samples='No')
+        self.test_consent = TestConsentWithMixinFactory(gender='M', study_site=StudySite.objects.all()[0], may_store_samples='No')
 
         self.registered_subject = RegisteredSubject.objects.get(subject_identifier=self.test_consent.subject_identifier)
         self.appointment = Appointment.objects.get(registered_subject=self.registered_subject)
