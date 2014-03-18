@@ -13,6 +13,8 @@ from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
 from edc.testing.models import TestVisit, TestRequisition, TestScheduledModel1, TestConsentWithMixin
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory
 from edc.core.bhp_variables.models import StudySite
+from edc.subject.entry.models import RequisitionPanel
+from edc.testing.models import TestPanel, TestAliquotType
 
 from ..classes import RuleGroup, BaseRule, RequisitionRule, Logic
 
@@ -106,7 +108,7 @@ class RequisitionRuleTests(TestCase):
                     consequence='not_required',
                     alternative='new'),
                 target_model=['testscheduledmodel1'],
-                target_requisition_panel_name=['microtube'])
+                target_requisition_panel=['microtube'])
 
             class Meta:
                 app_label = 'testing'
@@ -122,13 +124,41 @@ class RequisitionRuleTests(TestCase):
                     consequence='not_required',
                     alternative='new'),
                 target_model=['testrequisition'],
-                target_requisition_panel_name=['microtube'])
+                target_requisition_panel=['microtube'])
 
             class Meta:
                 app_label = 'testing'
                 source_fk = (RegisteredSubject, 'registered_subject')
                 source_model = TestConsentWithMixin
-        self.assertTrue(GoodRule().target_models, [TestRequisition])
+        self.assertTrue(GoodRule().target_model, [TestRequisition])
+
+    def test_target_is_requisition3(self):
+        # create the meta data
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        # get the requisition panel (used on lab_entry)
+        requisition_panel = RequisitionPanel.objects.get(name__iexact='microtube')
+        # create a panel and aliquot_type in the site lab (used by the requisition)
+        panel = TestPanel.objects.get(name=requisition_panel.name)
+        aliquot_type = TestAliquotType.objects.get(alpha_code=requisition_panel.aliquot_type_alpha_code)
+
+        class GoodRule(RuleGroup):
+            test_rule = RequisitionRule(
+                logic=Logic(
+                    predicate=(('may_store_samples', 'equals', 'No')),
+                    consequence='not_required',
+                    alternative='new'),
+                target_model=['testrequisition'],
+                target_requisition_panel=['microtube'])
+
+            class Meta:
+                app_label = 'testing'
+                source_fk = (RegisteredSubject, 'registered_subject')
+                source_model = TestConsentWithMixin
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 3)
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, lab_entry__panel=requisition_panel).count(), 1)
+#         test_requisition = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type)
+#         test_requisition.save()
+
 
 
     def test_rule_updates_meta_data_with_rs(self):

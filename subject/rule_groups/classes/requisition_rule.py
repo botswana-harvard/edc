@@ -2,6 +2,7 @@ from django.db.models import get_model
 
 from edc.entry_meta_data.classes import RequisitionMetaDataHelper
 from edc.entry_meta_data.models import RequisitionMetaData
+from edc.core.bhp_common.utils import convert_from_camel
 
 from .base_rule import BaseRule
 
@@ -14,28 +15,26 @@ class RequisitionRule(BaseRule):
     def __init__(self, *args, **kwargs):
         self.entry_class = RequisitionMetaDataHelper
         self.meta_data_model = RequisitionMetaData
+        self.target_requisition_panels = kwargs.get('target_requisition_panels')
         super(RequisitionRule, self).__init__(*args, **kwargs)
 
     def run(self, visit_instance):
-        """ Evaluate the rule for each model class in the target model list."""
-        for target_requisition_panel in self.target_requisition_panels:
-            self.target_model = target_model
-            self.visit_instance = visit_instance
-            self.registered_subject = self.visit_instance.appointment.registered_subject
-            self.visit_attr_name = convert_from_camel(self.visit_instance._meta.object_name)
-
-            self._source_instance = None
-            self._target_instance = None
-
-            change_type = self.evaluate()
-            if change_type:
-                # try to update target model's entry meta data, if it has not been keyed
-                # If it exists, The target model instance will be set by querying the target model on the visit instance.
-                # See instance property in entry_meta_data_manager
-                self.target_model.entry_meta_data_manager.instance = self.visit_instance
-                if not self.target_model.entry_meta_data_manager.instance:
-                    self.target_model.entry_meta_data_manager.update_meta_data_from_rule(self.visit_instance, change_type)
-
+        """ Evaluate the rule for the requisition model for each requisition panel."""
+        for target_model in self.target_model_list:  # is a requisition model(s)
+            for target_requisition_panel in self.target_requisition_panels:
+                self.target_model = target_model
+                self.visit_instance = visit_instance
+                self.registered_subject = self.visit_instance.appointment.registered_subject
+                self.visit_attr_name = convert_from_camel(self.visit_instance._meta.object_name)
+                self._source_instance = None
+                self._target_instance = None
+                change_type = self.evaluate()
+                if change_type:
+                    self.target_model.entry_meta_data_manager.instance = self.visit_instance
+                    if not self.target_model.entry_meta_data_manager.instance:
+                        self.target_model.entry_meta_data_manager.update_meta_data_from_rule(self.visit_instance,
+                                                                                             change_type,
+                                                                                             target_requisition_panel)
 
     def evaluate(self):
         """ Evaluates the predicate and returns an action.
@@ -54,17 +53,17 @@ class RequisitionRule(BaseRule):
             action = action.upper()
         return action
 
-    @property
-    def target_requisition_panels(self):
-        return self._target_requisition_panel
-
-    @target_requisition_panels.setter
-    def target_requisition_panels(self, target_requisition_panels):
-        """Sets a list of target requisition models.
-
-        Target requisition panels are the panels for whose meta data is affected by the rule."""
-        self._target_requisition_panel = target_requisition_panels
-        if isinstance(self._target_model, basestring):
-            self._target_requisition_panel = get_model(self.app_label, self._target_requisition_panel)
-        if not self._target_requisition_panel:
-            raise AttributeError('Target requisition model may not be None.')
+#     @property
+#     def target_requisition_panels(self):
+#         return self._target_requisition_panel
+# 
+#     @target_requisition_panels.setter
+#     def target_requisition_panels(self, target_requisition_panels):
+#         """Sets a list of target requisition models.
+# 
+#         Target requisition panels are the panels for whose meta data is affected by the rule."""
+#         self._target_requisition_panel = target_requisition_panels
+#         if isinstance(self._target_requisition_panel, basestring):
+#             self._target_requisition_panel = get_model(self.app_label, self._target_requisition_panel)
+#         if not self._target_requisition_panel:
+#             raise AttributeError('Target requisition model may not be None.')
