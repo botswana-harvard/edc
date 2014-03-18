@@ -180,6 +180,10 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
     entry_model = LabEntry
     entry_attr = 'lab_entry'
 
+    def __init__(self, visit_model, visit_attr_name=None):
+        self.target_requisition_panel = None
+        super(RequisitionMetaDataManager, self).__init__(visit_model, visit_attr_name)
+
     @property
     def meta_data_query_options(self):
         """Returns the options used to query the meta data model for the meta_data_instance."""
@@ -216,23 +220,13 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                     meta_data_instance = self.meta_data_model.objects.create(**options)
                 meta_data_instances.append(meta_data_instance)
         if meta_data_instances:
-            meta_data_instance = None
-            if self.instance:
-                #try:
-                meta_data_instance = [item for item in meta_data_instances if item.lab_entry.requisition_panel == self.instance.panel][0]
-                #except AttributeError:  # 'NoneType' object has no attribute 'panel'
-                #    meta_data_instance = None
-                #except IndexError:  # [panel][0] (should never be more than one requisition metadata instance for a panel
-                #    meta_data_instance = None
+            meta_data_instance = [item for item in meta_data_instances if item.lab_entry.requisition_panel == self.target_requisition_panel][0]
         return meta_data_instance
 
-    def update_meta_data(self, model_or_visit_instance, change_type=None, using=None):
+    def update_meta_data(self, model_or_visit_instance, change_type=None, using=None, target_requisition_panel=None):
         """Updates the meta_data's instances by requisition_panel.
 
         Called by the signal on post_save and pre_delete"""
         self.instance = model_or_visit_instance
-        # only call update if you have an instance, because we need instance.panel.
-        if self.instance:
-            super(RequisitionMetaDataManager, self).update_meta_data(model_or_visit_instance, change_type, using)
-        else:
-            self.create_meta_data()
+        self.target_requisition_panel = target_requisition_panel
+        super(RequisitionMetaDataManager, self).update_meta_data(model_or_visit_instance, change_type, using)
