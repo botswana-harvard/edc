@@ -32,6 +32,7 @@ class BaseRule(object):
         self._target_model = None
         self._unresolved_predicate = None
 
+        self.name = None
         self.source_model = None
         self.source_fk_model = None
         self.source_fk_attr = None
@@ -46,7 +47,7 @@ class BaseRule(object):
             self.target_model_list = kwargs.get('target_model')
 
     def __repr__(self):
-        return self.name
+        return self.name or self.source_model or self.__class__.__name__
 
     def run(self, visit_instance):
         """ Evaluate the rule for each model class in the target model list."""

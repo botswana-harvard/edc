@@ -1,8 +1,7 @@
-from django.db.models import get_model
-
+from edc.core.bhp_common.utils import convert_from_camel
 from edc.entry_meta_data.classes import RequisitionMetaDataHelper
 from edc.entry_meta_data.models import RequisitionMetaData
-from edc.core.bhp_common.utils import convert_from_camel
+from edc.lab.lab_requisition.models import BaseRequisition
 
 from .base_rule import BaseRule
 
@@ -10,13 +9,13 @@ from .base_rule import BaseRule
 class RequisitionRule(BaseRule):
     """A RequisitionRule is instantiated as a class attribute of a rule group."""
 
-    target_requisition_panel = []
-
     def __init__(self, *args, **kwargs):
+        super(RequisitionRule, self).__init__(*args, **kwargs)
+        if not 'target_requisition_panels' in kwargs:
+            raise KeyError('{0} is missing required attribute \'target_requisition_panels\''.format(self.__class__.__name__))
         self.entry_class = RequisitionMetaDataHelper
         self.meta_data_model = RequisitionMetaData
         self.target_requisition_panels = kwargs.get('target_requisition_panels')
-        super(RequisitionRule, self).__init__(*args, **kwargs)
 
     def run(self, visit_instance):
         """ Evaluate the rule for the requisition model for each requisition panel."""
@@ -53,17 +52,9 @@ class RequisitionRule(BaseRule):
             action = action.upper()
         return action
 
-#     @property
-#     def target_requisition_panels(self):
-#         return self._target_requisition_panel
-# 
-#     @target_requisition_panels.setter
-#     def target_requisition_panels(self, target_requisition_panels):
-#         """Sets a list of target requisition models.
-# 
-#         Target requisition panels are the panels for whose meta data is affected by the rule."""
-#         self._target_requisition_panel = target_requisition_panels
-#         if isinstance(self._target_requisition_panel, basestring):
-#             self._target_requisition_panel = get_model(self.app_label, self._target_requisition_panel)
-#         if not self._target_requisition_panel:
-#             raise AttributeError('Target requisition model may not be None.')
+#     @BaseRule.target_model.setter
+#     def target_model(self, target_model):
+#         """Sets target model and ensures it is a requisition model."""
+#         super(RequisitionRule, self).target_model = target_model
+#         if not issubclass(self.target_model, BaseRequisition):
+#             raise TypeError('{0} attribute \'target_model\' must be a Requisition.'.format(self.__class__.__name__))
