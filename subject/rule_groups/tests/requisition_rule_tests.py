@@ -10,13 +10,12 @@ from edc.subject.rule_groups.classes import site_rule_groups
 from edc.subject.visit_schedule.models import VisitDefinition
 from edc.testing.classes import TestLabProfile
 from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.models import TestVisit, TestRequisition, TestScheduledModel1, TestConsentWithMixin
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory
+from edc.testing.models import TestVisit, TestRequisition, TestScheduledModel1, TestConsentWithMixin, TestPanel, TestAliquotType
+from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory, TestRequisitionFactory
 from edc.core.bhp_variables.models import StudySite
 from edc.subject.entry.models import RequisitionPanel
-from edc.testing.models import TestPanel, TestAliquotType
 
-from ..classes import RuleGroup, BaseRule, RequisitionRule, Logic
+from ..classes import RuleGroup, RequisitionRule, Logic
 
 
 class RequisitionRuleTests(TestCase):
@@ -34,52 +33,14 @@ class RequisitionRuleTests(TestCase):
         site_lab_tracker.autodiscover()
         TestVisitSchedule().build()
 
-        # a test rule group where the source model is RegisteredSubject
-        # the rules in this rule group will be only evaluated when the visit instance
-        # is created or saved. Note source_fk is None.
-        class TestRuleGroupRs(RuleGroup):
-            test_rule = RequisitionRule(
-                logic=Logic(
-                    predicate=(('gender', 'equals', 'M')),
-                    consequence='not_required',
-                    alternative='new'),
-                target_model=['testrequisition'])
-
-            class Meta:
-                app_label = 'testing'
-                source_fk = None
-                source_model = RegisteredSubject
-        site_rule_groups.register(TestRuleGroupRs)
-
-        # a test rule group where the source model is a scheduled model.
-        # a scheduled model has a FK to the visit instance (source_fk).
-        # the rules in this rule group will be evaluated when the source instance
-        # is created or saved.
-        class TestRuleGroupSched(RuleGroup):
-            test_rule = RequisitionRule(
-                logic=Logic(
-                    predicate=(('f1', 'equals', 'No')),
-                    consequence='not_required',
-                    alternative='new'),
-                target_model=['testrequisition'])
-
-            class Meta:
-                app_label = 'testing'
-                source_fk = (TestVisit, 'test_visit')
-                source_model = TestScheduledModel1
-        site_rule_groups.register(TestRuleGroupSched)
-
-        # a test rule group where the source model is a consent or membership model.
-        # these models have a FK to registered subject (source_fk).
-        # the rules in this rule group will only evaluated when the visit instance
-        # is created or saved.
         class TestRuleGroupConsent(RuleGroup):
             test_rule = RequisitionRule(
                 logic=Logic(
                     predicate=(('may_store_samples', 'equals', 'No')),
                     consequence='not_required',
                     alternative='new'),
-                target_model=['testrequisition'])
+                target_model=['testrequisition'],
+                target_requisition_panels=['research blood draw'])
 
             class Meta:
                 app_label = 'testing'
@@ -87,36 +48,50 @@ class RequisitionRuleTests(TestCase):
                 source_model = TestConsentWithMixin
         site_rule_groups.register(TestRuleGroupConsent)
 
-        self.test_rule_group_rs_cls = TestRuleGroupRs
+        class TestRuleGroupSched(RuleGroup):
+            test_rule = RequisitionRule(
+                logic=Logic(
+                    predicate=(('f1', 'equals', 'No')),
+                    consequence='not_required',
+                    alternative='new'),
+                target_model=['testrequisition'],
+                target_requisition_panels=['microtube', 'viral load'])
+
+            class Meta:
+                app_label = 'testing'
+                source_fk = (TestVisit, 'test_visit')
+                source_model = TestScheduledModel1
+        site_rule_groups.register(TestRuleGroupSched)
+
         self.test_rule_group_sched_cls = TestRuleGroupSched
-        self.test_rule_group_consent_cls = TestRuleGroupConsent
 
         self.test_visit_factory = TestVisitFactory
 
         self.visit_definition = VisitDefinition.objects.get(code='1000')
 
-        self.test_consent = TestConsentWithMixinFactory(gender='M', study_site=StudySite.objects.all()[0], may_store_samples='No')
+        self.test_consent = TestConsentWithMixinFactory(gender='M', study_site=StudySite.objects.all()[0], may_store_samples='Yes')
 
         self.registered_subject = RegisteredSubject.objects.get(subject_identifier=self.test_consent.subject_identifier)
         self.appointment = Appointment.objects.get(registered_subject=self.registered_subject)
 
-    def test_target_is_requisition1(self):
-        class BadRule(RuleGroup):
-            test_rule = RequisitionRule(
-                logic=Logic(
-                    predicate=(('may_store_samples', 'equals', 'No')),
-                    consequence='not_required',
-                    alternative='new'),
-                target_model=['testscheduledmodel1'],
-                target_requisition_panel=['microtube'])
-
-            class Meta:
-                app_label = 'testing'
-                source_fk = (RegisteredSubject, 'registered_subject')
-                source_model = TestConsentWithMixin
-        self.assertRaisesRegexp(TypeError, 'target model', BadRule)
+#     def test_target_is_requisition1(self):
+#         class BadRule(RuleGroup):
+#             test_rule = RequisitionRule(
+#                 logic=Logic(
+#                     predicate=(('may_store_samples', 'equals', 'No')),
+#                     consequence='not_required',
+#                     alternative='new'),
+#                 target_model=['testscheduledmodel1'],
+#                 target_requisition_panels=['microtube'])
+# 
+#             class Meta:
+#                 app_label = 'testing'
+#                 source_fk = (RegisteredSubject, 'registered_subject')
+#                 source_model = TestConsentWithMixin
+#         self.assertRaisesRegexp(TypeError, 'target model', BadRule)
 
     def test_target_is_requisition2(self):
+        """Assert converts the target model name to a model."""
         class GoodRule(RuleGroup):
             test_rule = RequisitionRule(
                 logic=Logic(
@@ -124,115 +99,90 @@ class RequisitionRuleTests(TestCase):
                     consequence='not_required',
                     alternative='new'),
                 target_model=['testrequisition'],
-                target_requisition_panel=['microtube'])
+                target_requisition_panels=['microtube'])
 
             class Meta:
                 app_label = 'testing'
                 source_fk = (RegisteredSubject, 'registered_subject')
                 source_model = TestConsentWithMixin
-        self.assertTrue(GoodRule().target_model, [TestRequisition])
+        self.assertTrue(GoodRule().test_rule.target_model in [TestRequisition])
 
-    def test_target_is_requisition3(self):
+    def test_rule(self):
+        """Assert sets the target_requisition_panels."""
+        test_rule = RequisitionRule(
+            logic=Logic(
+                predicate=(('may_store_samples', 'equals', 'No')),
+                consequence='not_required',
+                alternative='new'),
+            target_model=['testrequisition'],
+            target_requisition_panels=['microtube'])
+        self.assertEqual(test_rule.target_requisition_panels, ['microtube'])
+
+    def test_target_is_requisition1(self):
+        """Assert sets the target_requisition_panels."""
+        self.test_consent.may_store_samples = 'No'
+        self.test_consent.save()
         # create the meta data
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         # get the requisition panel (used on lab_entry)
         requisition_panel = RequisitionPanel.objects.get(name__iexact='microtube')
-        # create a panel and aliquot_type in the site lab (used by the requisition)
-        panel = TestPanel.objects.get(name=requisition_panel.name)
-        aliquot_type = TestAliquotType.objects.get(alpha_code=requisition_panel.aliquot_type_alpha_code)
-
-        class GoodRule(RuleGroup):
-            test_rule = RequisitionRule(
-                logic=Logic(
-                    predicate=(('may_store_samples', 'equals', 'No')),
-                    consequence='not_required',
-                    alternative='new'),
-                target_model=['testrequisition'],
-                target_requisition_panel=['microtube'])
-
-            class Meta:
-                app_label = 'testing'
-                source_fk = (RegisteredSubject, 'registered_subject')
-                source_model = TestConsentWithMixin
         self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 3)
-        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, lab_entry__panel=requisition_panel).count(), 1)
-#         test_requisition = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type)
-#         test_requisition.save()
-
-
-
-    def test_rule_updates_meta_data_with_rs(self):
-        """Assert updates meta data if source is RegisteredSubject."""
-        rg = self.test_rule_group_rs_cls()
-        self.assertEquals(self.registered_subject.gender, 'M')
-        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
-        self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-
-    def test_rule_updates_meta_data_on_update_with_rs(self):
-        """Assert updates meta data when the source model is updated."""
-        rg = self.test_rule_group_rs_cls()
-        self.assertEquals(self.registered_subject.gender, 'M')
-        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
-        self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        self.registered_subject.gender = 'F'
-        self.registered_subject.save()
-        self.test_visit = TestVisit.objects.get(appointment=self.appointment)
-        self.test_visit.save()
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-
-    def test_rule_updates_meta_data_with_consent(self):
-        """Assert updates meta data if source is RegisteredSubject and override fields knocked out."""
-        rg = self.test_rule_group_consent_cls()
-        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
-        self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-
-    def test_rule_updates_meta_data_on_update_with_consent(self):
-        """Assert updates meta data when the source model is updated."""
-        rg = self.test_rule_group_consent_cls()
-        self.assertEquals(self.test_consent.may_store_samples, 'No')
-        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
-        self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        self.test_consent.may_store_samples = 'Yes'
-        self.test_consent.save()
-        self.test_visit = TestVisit.objects.get(appointment=self.appointment)
-        self.test_visit.save()
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-
-    def test_rule_updates_meta_data(self):
-        """Assert updates meta data when source model is created, if criteria met."""
-        rg = self.test_rule_group_sched_cls()
-        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
-        self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, entry_status='NOT_REQUIRED').count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel, entry_status='NOT_REQUIRED').count(), 1)
 
     def test_rule_updates_meta_data2(self):
-        """Assert does not update meta data when source model is created, if criteria is not met."""
+        """Assert all required if source model instance does not exist."""
         rg = self.test_rule_group_sched_cls()
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        # set f1=No which is the rule for not required.
-        test_scheduled_model1 = TestScheduledModel1Factory(test_visit=self.test_visit, f1='No')
-        # meta data for target, testscheduledmodel2, should be updated as not required
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        test_scheduled_model1.f1 = 'Yes'
-        test_scheduled_model1.save()
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 3)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 3)
 
-    def test_rule_updates_meta_data_on_update(self):
+    def test_rule_updates_meta_data3(self):
+        """Assert updates meta data when the source model is created."""
+        rg = self.test_rule_group_sched_cls()
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 3)
+        TestScheduledModel1Factory(test_visit=self.test_visit, f1='No')
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject).count(), 2)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).exclude(lab_entry__requisition_panel__name__in=['Microtube', 'Viral Load']).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, lab_entry__requisition_panel__name__in=['Microtube', 'Viral Load']).count(), 2)
+
+    def test_rule_updates_meta_data4(self):
         """Assert updates meta data when the source model is updated."""
         rg = self.test_rule_group_sched_cls()
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
         test_scheduled_model1 = TestScheduledModel1Factory(test_visit=self.test_visit, f1='No')
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
         test_scheduled_model1.f1 = 'Yes'
         test_scheduled_model1.save()
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 3)
+
+    def test_rule_updates_meta_data5(self):
+        """Assert updates meta data if target model is KEYED."""
+        requisition_panel = RequisitionPanel.objects.get(name='Microtube')
+        test_panel = TestPanel.objects.get(name=requisition_panel.name)
+        test_aliquot_type = TestAliquotType.objects.get(alpha_code='WB')
+        test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        TestRequisitionFactory(test_visit=test_visit, panel=test_panel, aliquot_type=test_aliquot_type)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+
+    def test_rule_updates_meta_data6(self):
+        """Assert updates meta data if target model is KEYED."""
+        test_panel = TestPanel.objects.get(name='Microtube')
+        test_aliquot_type = TestAliquotType.objects.get(alpha_code='WB')
+        rg = self.test_rule_group_sched_cls()
+        test_visit = self.test_visit_factory(appointment=self.appointment)
+        TestRequisitionFactory(test_visit=test_visit, panel=test_panel, aliquot_type=test_aliquot_type)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, lab_entry__requisition_panel__name=test_panel.name).count(), 1)
+        test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1='No')
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        test_scheduled_model1.f1 = 'Yes'
+        test_scheduled_model1.save()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 3)
