@@ -90,23 +90,6 @@ class RequisitionRuleTests(TestCase):
 #                 source_model = TestConsentWithMixin
 #         self.assertRaisesRegexp(TypeError, 'target model', BadRule)
 
-    def test_target_is_requisition2(self):
-        """Assert converts the target model name to a model."""
-        class GoodRule(RuleGroup):
-            test_rule = RequisitionRule(
-                logic=Logic(
-                    predicate=(('may_store_samples', 'equals', 'No')),
-                    consequence='not_required',
-                    alternative='new'),
-                target_model=['testrequisition'],
-                target_requisition_panels=['microtube'])
-
-            class Meta:
-                app_label = 'testing'
-                source_fk = (RegisteredSubject, 'registered_subject')
-                source_model = TestConsentWithMixin
-        self.assertTrue(GoodRule().test_rule.target_model in [TestRequisition])
-
     def test_rule(self):
         """Assert sets the target_requisition_panels."""
         test_rule = RequisitionRule(
@@ -125,7 +108,7 @@ class RequisitionRuleTests(TestCase):
         # create the meta data
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         # get the requisition panel (used on lab_entry)
-        requisition_panel = RequisitionPanel.objects.get(name__iexact='microtube')
+        requisition_panel = RequisitionPanel.objects.get(name__iexact='Research Blood Draw')
         self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 3)
         self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
         self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, entry_status='NOT_REQUIRED').count(), 1)
@@ -153,13 +136,15 @@ class RequisitionRuleTests(TestCase):
 
     def test_rule_updates_meta_data4(self):
         """Assert updates meta data when the source model is updated."""
-        rg = self.test_rule_group_sched_cls()
+        requisition_panels = []
+        requisition_panels.append(RequisitionPanel.objects.get(name='Microtube'))
+        requisition_panels.append(RequisitionPanel.objects.get(name='Viral Load'))
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         test_scheduled_model1 = TestScheduledModel1Factory(test_visit=self.test_visit, f1='No')
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, lab_entry__requisition_panel__in=requisition_panels).count(), 2)
         test_scheduled_model1.f1 = 'Yes'
         test_scheduled_model1.save()
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 3)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__requisition_panel__in=requisition_panels).count(), 2)
 
     def test_rule_updates_meta_data5(self):
         """Assert updates meta data if target model is KEYED."""
@@ -170,19 +155,31 @@ class RequisitionRuleTests(TestCase):
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
         TestRequisitionFactory(test_visit=test_visit, panel=test_panel, aliquot_type=test_aliquot_type)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
 
     def test_rule_updates_meta_data6(self):
         """Assert updates meta data if target model is KEYED."""
-        test_panel = TestPanel.objects.get(name='Microtube')
-        test_aliquot_type = TestAliquotType.objects.get(alpha_code='WB')
-        rg = self.test_rule_group_sched_cls()
+        requisition_panel = RequisitionPanel.objects.get(name='Microtube')
+#         test_panel = TestPanel.objects.get(name=requisition_panel.name)
+#         test_aliquot_type = TestAliquotType.objects.get(alpha_code='WB')
         test_visit = self.test_visit_factory(appointment=self.appointment)
-        TestRequisitionFactory(test_visit=test_visit, panel=test_panel, aliquot_type=test_aliquot_type)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, lab_entry__requisition_panel__name=test_panel.name).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
         test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1='No')
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
         test_scheduled_model1.f1 = 'Yes'
         test_scheduled_model1.save()
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 3)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+
+    def test_rule_updates_meta_data7(self):
+        """Assert updates meta data if target model is KEYED, but ignores the rule."""
+        requisition_panel = RequisitionPanel.objects.get(name='Microtube')
+        test_panel = TestPanel.objects.get(name=requisition_panel.name)
+        test_aliquot_type = TestAliquotType.objects.get(alpha_code='WB')
+        test_visit = self.test_visit_factory(appointment=self.appointment)
+        TestRequisitionFactory(test_visit=test_visit, panel=test_panel, aliquot_type=test_aliquot_type)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1='No')
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        test_scheduled_model1.f1 = 'Yes'
+        test_scheduled_model1.save()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)

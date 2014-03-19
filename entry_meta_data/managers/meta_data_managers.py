@@ -19,16 +19,17 @@ class BaseMetaDataManager(models.Manager):
     may_delete_entry_status = ['NEW', 'NOT_REQUIRED']
 
     def __init__(self, visit_model, visit_attr_name=None):
+        self.name = None
         self.visit_model = visit_model
         self.visit_attr_name = visit_attr_name or convert_from_camel(self.visit_model._meta.object_name)
         super(BaseMetaDataManager, self).__init__()
 
     def __repr__(self):
         if self._instance:
-            name = self._instance
+            self.name = self._instance
         else:
-            name = 'model with {0}'.self._visit_instance
-        return '{0}.{1}'.format(self.model._meta.object_name, name)
+            self.name = 'model with {0}'.self._visit_instance
+        return '{0}.{1}'.format(self.model._meta.object_name, self.name)
 
     @property
     def instance(self):
@@ -78,7 +79,6 @@ class BaseMetaDataManager(models.Manager):
             except self.meta_data_model.DoesNotExist:
                 self._meta_data_instance = self.create_meta_data()
             except AttributeError:
-                # 'NoneType' object has no attribute 'panel'
                 pass
         return self._meta_data_instance
 
@@ -187,6 +187,7 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
     @property
     def meta_data_query_options(self):
         """Returns the options used to query the meta data model for the meta_data_instance."""
+        self.target_requisition_panel = self.target_requisition_panel  # force setter to inspect the instance if it exists
         return {'appointment': self.appointment_zero,
                 '{0}__app_label'.format(self.entry_attr): self.model._meta.app_label,
                 '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower(),
