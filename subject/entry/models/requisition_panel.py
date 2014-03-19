@@ -11,10 +11,19 @@ class RequisitionPanel(BaseUuidModel):
 
     aliquot_type_alpha_code = models.CharField(max_length=4)
 
+    rule_group_name = models.CharField(
+        max_length=25,
+        help_text='reference used on rule groups. Defaults to name.')
+
     objects = models.Manager()
 
     def __unicode__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.rule_group_name:
+            self.rule_group_name = self.name
+        super(RequisitionPanel, self).save(*args, **kwargs)
 
     class Meta:
         app_label = 'entry'
