@@ -1,14 +1,11 @@
-from django.core.exceptions import ImproperlyConfigured
-
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
-from edc.subject.entry.models import RequisitionPanel
-from edc.device.device.classes import Device
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.subject.appointment.models import Configuration
 from edc.subject.consent.models import ConsentCatalogue
+from edc.subject.entry.models import RequisitionPanel
 
 from lis.labeling.models import LabelPrinter
 
@@ -68,12 +65,11 @@ class BaseAppConfiguration(object):
         The supporting model classes Panel, AliquotType, Profile and ProfileItem
         are fetched from the global site_lab_profiles."""
 
-        for profile_group_name, setup_items in self.lab_setup.iteritems():
-            profile_group_models = site_lab_profiles.get_group_models(profile_group_name)
-            aliquot_type_model = profile_group_models.get('aliquot_type')
-            panel_model = profile_group_models.get('panel')
-            profile_model = profile_group_models.get('profile')
-            profile_item_model = profile_group_models.get('profile_item')
+        for setup_items in self.lab_setup.itervalues():
+            aliquot_type_model = site_lab_profiles.group_models.get('aliquot_type')
+            panel_model = site_lab_profiles.group_models.get('panel')
+            profile_model = site_lab_profiles.group_models.get('profile')
+            profile_item_model = site_lab_profiles.group_models.get('profile_item')
             # update / create aliquot_types
             for item in setup_items.get('aliquot_type'):
                 if aliquot_type_model.objects.filter(name=item.name):

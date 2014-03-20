@@ -1,7 +1,6 @@
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.entry_meta_data.classes import RequisitionMetaDataHelper
 from edc.entry_meta_data.models import RequisitionMetaData
-from edc.lab.lab_requisition.models import BaseRequisition
 
 from .base_rule import BaseRule
 
@@ -51,10 +50,3 @@ class RequisitionRule(BaseRule):
         if action:
             action = action.upper()
         return action
-
-#     @BaseRule.target_model.setter
-#     def target_model(self, target_model):
-#         """Sets target model and ensures it is a requisition model."""
-#         super(RequisitionRule, self).target_model = target_model
-#         if not issubclass(self.target_model, BaseRequisition):
-#             raise TypeError('{0} attribute \'target_model\' must be a Requisition.'.format(self.__class__.__name__))

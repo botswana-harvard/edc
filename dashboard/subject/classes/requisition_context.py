@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.entry_meta_data.models import RequisitionMetaData
+from edc.lab.lab_profile.classes import site_lab_profiles
 
 from .base_scheduled_entry_context import BaseScheduledEntryContext
 
@@ -17,11 +18,12 @@ class RequisitionContext(BaseScheduledEntryContext):
         super(RequisitionContext, self).__init__(meta_data_instance, appointment, visit_model)
 
     def contribute_to_context(self, context):
-        context.update({'label': self.meta_data_instance.lab_entry.requisition.name})
+        context.update({'label': self.meta_data_instance.lab_entry.requisition_panel.name})
         if self.instance:
             context.update({'requisition_identifier': self.instance.requisition_identifier})
-        context.update({'panel': self.meta_data_instance.lab_entry.requisition.pk})
-        #context.update({'aliquot_type': self.meta_data_instance.lab_entry.requisition.pk})
+        context.update({'panel': self.meta_data_instance.lab_entry.requisition_panel.pk})
+        if site_lab_profiles.group_models.get('aliquot_type').objects.filter(alpha_code=self.meta_data_instance.lab_entry.requisition_panel.aliquot_type_alpha_code):
+            context.update({'aliquot_type': site_lab_profiles.group_models.get('aliquot_type').objects.get(alpha_code=self.meta_data_instance.lab_entry.requisition_panel.aliquot_type_alpha_code).pk})
         return context
 
     @property
@@ -32,7 +34,7 @@ class RequisitionContext(BaseScheduledEntryContext):
     def instance(self):
         """Sets to the model instance referred to by the requisition meta data."""
         if not self._instance:
-            options = {convert_from_camel(self.visit_instance._meta.object_name): self.visit_instance, 'panel': self.meta_data_instance.lab_entry.requisition.pk}
+            options = {convert_from_camel(self.visit_instance._meta.object_name): self.visit_instance, 'panel': self.meta_data_instance.lab_entry.requisition_panel.pk}
             if self.model.objects.filter(**options):
                 self._instance = self.model.objects.get(**options)
         return self._instance

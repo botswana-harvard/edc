@@ -1,9 +1,9 @@
 from django.db import models
 
-from edc.base.model.models import BaseUuidModel
+from edc.base.model.models import BaseModel
 
 
-class RequisitionPanel(BaseUuidModel):
+class RequisitionPanel(BaseModel):
     """Relates to 'lab_entry' to indicate the requisition panel.
 
     This is usually kept in line with the protocol specific panel model data."""

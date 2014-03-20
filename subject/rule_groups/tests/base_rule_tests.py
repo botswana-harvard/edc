@@ -238,6 +238,9 @@ class RuleTests(TestCase):
     def test_rule_updates_meta_data3(self):
         """Asserts repeatedly save visit is harmless."""
         self.test_visit_factory(appointment=self.appointment)
+        self.appointment = Appointment.objects.get(registered_subject=self.registered_subject)
         test_visit = TestVisit.objects.get(appointment=self.appointment)
         self.assertIsNone(test_visit.save())
+        self.appointment = Appointment.objects.get(registered_subject=self.registered_subject)
+        test_visit = TestVisit.objects.get(appointment=self.appointment)
         self.assertIsNone(test_visit.save())

@@ -46,10 +46,5 @@ class BaseRequisition (BaseBaseRequisition):
         return """<a href="{url}" />dashboard</a>""".format(url=url)
     dashboard.allow_tags = True
 
-    def aliquot(self):
-        url = reverse('admin:lab_clinic_api_aliquot_changelist')
-        return """<a href="{url}?q={requisition_identifier}" />aliquot</a>""".format(url=url, requisition_identifier=self.requisition_identifier)
-    aliquot.allow_tags = True
-
     class Meta:
         abstract = True
