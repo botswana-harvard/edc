@@ -18,8 +18,8 @@ class BaseProcessing(BaseUuidModel):
         return self.aliquot.aliquot_identifier
 
     def save(self, *args, **kwargs):
-        profile = site_lab_profiles.registry(self.aliquot.receive.requisition_model_name)
-        profile.aliquot_by_profile(self.aliquot, self.profile)
+        lab_profile = site_lab_profiles.registry.get(self.aliquot.receive.requisition_model_name)
+        lab_profile().aliquot_by_profile(self.aliquot, self.profile)
         super(BaseProcessing, self).save(*args, **kwargs)
 
     class Meta:
