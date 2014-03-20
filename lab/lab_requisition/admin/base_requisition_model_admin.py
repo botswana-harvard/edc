@@ -62,8 +62,9 @@ class BaseRequisitionModelAdmin(BaseVisitTrackingModelAdmin):
             "requisition_datetime",
             'is_receive_datetime',
             'is_labelled_datetime',
+            'user_created',
             'hostname_created',
-            'user_modified'
+            'user_modified',
              ]
         self.search_fields = [
             '{0}__appointment__registered_subject__subject_identifier'.format(self.visit_fieldname,),
