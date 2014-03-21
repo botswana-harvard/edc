@@ -45,14 +45,18 @@ class BaseMetaDataManager(models.Manager):
             self._instance = instance_or_visit_instance
             self.visit_instance = getattr(self.instance, self.visit_attr_name)
         elif isinstance(instance_or_visit_instance, BaseVisitTracking):
-            if super(BaseMetaDataManager, self).filter(**{self.visit_attr_name: instance_or_visit_instance}):
-                self._instance = super(BaseMetaDataManager, self).get(**{self.visit_attr_name: instance_or_visit_instance})
+            options = self.instance_query_options(instance_or_visit_instance)
+            if super(BaseMetaDataManager, self).filter(**options):
+                self._instance = super(BaseMetaDataManager, self).get(**options)
             self.visit_instance = instance_or_visit_instance
         self.appointment_zero = self.visit_instance.appointment
         # reset meta data instance
         self._meta_data_instance = None
         # reset status
         self.status = None
+
+    def instance_query_options(self, instance_or_visit_instance):
+        return {self.visit_attr_name: instance_or_visit_instance}
 
     @property
     def appointment_zero(self):
@@ -256,3 +260,6 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
             self._target_requisition_panel = self.instance.panel
         except:
             self._target_requisition_panel = target_requisition_panel
+
+    def instance_query_options(self, instance_or_visit_instance):
+        return {self.visit_attr_name: instance_or_visit_instance, 'panel__name': self.target_requisition_panel}
