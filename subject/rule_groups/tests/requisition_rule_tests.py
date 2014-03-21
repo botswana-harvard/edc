@@ -10,7 +10,7 @@ from edc.subject.rule_groups.classes import site_rule_groups
 from edc.subject.visit_schedule.models import VisitDefinition
 from edc.testing.classes import TestLabProfile
 from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.models import TestVisit, TestRequisition, TestScheduledModel1, TestConsentWithMixin, TestPanel, TestAliquotType
+from edc.testing.models import TestVisit, TestScheduledModel1, TestConsentWithMixin, TestPanel, TestAliquotType
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory, TestRequisitionFactory
 from edc.core.bhp_variables.models import StudySite
 from edc.subject.entry.models import RequisitionPanel
