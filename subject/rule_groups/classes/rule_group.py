@@ -1,5 +1,7 @@
 from django.db.models import get_model
 
+from edc.base.model.models import BaseModel
+
 from .base_rule import BaseRule
 
 
@@ -39,12 +41,18 @@ class BaseRuleGroup(type):
                     if meta:
                         rule.app_label = meta.app_label
                         for item in rule.target_model_list:
-                            if isinstance(item, basestring):
+                            if isinstance(item, (basestring, tuple)):
                                 rule.target_model_names.append(item)
                                 model_name = rule.target_model_list.pop(rule.target_model_list.index(item))
-                                model_cls = get_model(meta.app_label, model_name)
+                                if isinstance(model_name, tuple):
+                                    model_cls = get_model(model_name[0], model_name[1])
+                                else:
+                                    model_cls = get_model(meta.app_label, model_name)
                                 if not model_cls:
                                     raise AttributeError('Attribute \'target_model\' in rule \'{0}.{1}\' contains a model_name that does not exist. app_label=\'{2}\', model_name=\'{3}\'.'.format(name, rule_name, meta.app_label, model_name))
+                                if not issubclass(model_cls, BaseModel):
+                                    raise AttributeError('Invalid value in target model list. Must be a model name class or tuple (app_label, model_name). Got {0}'.format(model_cls))
+
                                 rule.target_model_list.append(model_cls)
                         rule.source_model = source_model
                         rule.source_fk_model = source_fk_model
