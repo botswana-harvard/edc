@@ -257,7 +257,7 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
     def target_requisition_panel(self, target_requisition_panel):
         """Sets the target_requisition_panel to that of the instance otherwise the passed parameter"""
         try:
-            self._target_requisition_panel = self.instance.panel
+            self._target_requisition_panel = self.instance.panel.name
         except:
             self._target_requisition_panel = target_requisition_panel
 
