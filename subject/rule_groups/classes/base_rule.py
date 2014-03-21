@@ -20,7 +20,7 @@ class BaseRule(object):
     ..see_also: comment on :module:`ScheduledDataRule`"""
 
     operators = ['equals', 'eq', 'gt', 'gte', 'lt', 'lte', 'ne', '!=', '==', 'in', 'not in']
-    action_list = ['new', 'not_required']
+    action_list = ['new', 'not_required', 'none']
 
     def __init__(self, **kwargs):
 
@@ -93,9 +93,10 @@ class BaseRule(object):
 
     def is_valid_action(self, action):
         """Returns true if the action is in the list of valid actions or, if invalid action, raises an error."""
-        if action.lower() not in self.action_list:
-            raise TypeError('Encountered an invalid action \'{0}\' when parsing additional rule. '
-                            'Valid actions are \'{1}\'.'.format(action, ', '.join(self.action_list)))
+        if action:
+            if action.lower() not in self.action_list:
+                raise TypeError('Encountered an invalid action \'{0}\' when parsing additional rule. '
+                                'Valid actions are \'{1}\'.'.format(action, ', '.join(self.action_list)))
         return action
 
     def get_operator_from_word(self, word, a, b):
@@ -127,8 +128,8 @@ class BaseRule(object):
             else:
                 operator = '!='
         if word.lower() == 'in' or word.lower() == 'not in':
-            if not isinstance(b, (list, tuple)):
-                raise TypeError('Invalid combination. Rule predicate expects [in, not in] when comparing to a list or tuple.')
+#             if not isinstance(b, (list, tuple)):
+#                 raise TypeError('Invalid combination. Rule predicate expects [in, not in] when comparing to a list or tuple.')
             operator = word.lower()
         if not operator:
             raise TypeError('Unrecognized operator in rule predicate. Valid options are equals, eq, gt, gte, lt, lte, ne, in, not in. Options are not case sensitive')
@@ -235,6 +236,8 @@ class BaseRule(object):
                                    'Valid options are {2}'.format(self, logical_operator, ', '.join(['and', 'or', 'and not', 'or not'])))
                 else:
                     logical_operator = ''
+                if isinstance(self.predicate_comparative_value, list):
+                    self.predicate_comparative_value = ';'.join([x.lower() for x in self.predicate_comparative_value])
                 if self.predicate_comparative_value == 'None':
                     self.predicate_comparative_value = None
                 # check type of field value and comparative value, must be the same or <Some>Type to NoneType
@@ -261,7 +264,8 @@ class BaseRule(object):
                     if isinstance(self.predicate_field_value, (date, datetime)) and self.predicate_comparative_value is None:
                         raise TypeError('In a rule predicate, may not compare a date or datetime to None. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
                     else:
-                        raise TypeError('Rule predicate values must be of the same data type and be either strings, dates or numbers. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
+                        pass
+                        #raise TypeError('Rule predicate values must be of the same data type and be either strings, dates or numbers. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
                 self._predicate += predicate_template.format(
                        logical_operator=logical_operator,
                        field_value=self.predicate_field_value,
