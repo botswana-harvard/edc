@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 
 
 class LabProfile(object):
@@ -12,17 +13,28 @@ class LabProfile(object):
     profile_item_model = None
     requisition_model = None
 
+    def __init__(self):
+        self.profile_group_name = self.requisition_model._meta.object_name
+
     def receive(self, requisition):
         """Receives a specimen and creates the primary aliqout based on the requisition."""
         received = False
         if requisition.is_drawn.lower() == 'yes':
             if not self.receive_model.objects.filter(receive_identifier=requisition.specimen_identifier):
+                # get phlebotomists instials
+                try:
+                    user = User.objects.get(username=requisition.user_created)
+                    clinician_initials = '{0}{1}'.format(user.first_name[:1].upper(), user.last_name[:1].upper())
+                except User.DoesNotExist:
+                    clinician_initials = 'XX'
                 # capture basic info on specimen
                 receive = self.receive_model.objects.create(
                     registered_subject=requisition.get_visit().appointment.registered_subject,
                     receive_identifier=requisition.specimen_identifier,
                     requisition_identifier=requisition.requisition_identifier,
+                    requisition_model_name=requisition._meta.object_name,
                     drawn_datetime=requisition.drawn_datetime,
+                    clinician_initials=clinician_initials,
                     visit=requisition.get_visit().appointment.visit_definition.code)
             else:
                 receive = self.receive_model.objects.get(receive_identifier=requisition.specimen_identifier)

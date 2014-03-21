@@ -14,6 +14,7 @@ class ProfileController(object):
     def __init__(self):
         self.registry = {}
         self.group_model_registry = {}
+        self.group_models = {}  # group models for each profile are the same!
 
     def add_registry_item(self, lab_profile):
         if lab_profile.name in self.registry:
@@ -25,14 +26,14 @@ class ProfileController(object):
         """Updates the group model registry allowing for convenient access to shared models.
 
         Grouped lab profiles share these models on the profile_group_name."""
-        group_models = {}
-        group_models.update({'receive': lab_profile.receive_model})
-        group_models.update({'aliquot': lab_profile.aliquot_model})
-        group_models.update({'panel': lab_profile.panel_model})
-        group_models.update({'aliquot_type': lab_profile.aliquot_type_model})
-        group_models.update({'profile': lab_profile.profile_model})
-        group_models.update({'profile_item': lab_profile.profile_item_model})
-        self.group_model_registry.update({lab_profile.profile_group_name: group_models})
+        if not self.group_models:
+            self.group_models.update({'receive': lab_profile.receive_model})
+            self.group_models.update({'aliquot': lab_profile.aliquot_model})
+            self.group_models.update({'panel': lab_profile.panel_model})
+            self.group_models.update({'aliquot_type': lab_profile.aliquot_type_model})
+            self.group_models.update({'profile': lab_profile.profile_model})
+            self.group_models.update({'profile_item': lab_profile.profile_item_model})
+        self.group_model_registry.update({lab_profile.profile_group_name: self.group_models})
 
     def get(self, name):
         return self.registry.get(name)
