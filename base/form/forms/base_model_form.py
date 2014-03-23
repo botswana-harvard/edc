@@ -41,6 +41,11 @@ class BaseModelForm(forms.ModelForm):
                     RegisteredSubject = get_model('registration', 'RegisteredSubject')
                     self.fields['registered_subject'].queryset = RegisteredSubject.objects.none()
 
+    def populated_instance(self):
+        if not self.instance.id:
+            return self.instance.__class__(**self.cleaned_data)
+        return self.instance
+
     def get_subject_identifier(self, cleaned_data):
         subject_identifier = None
         if 'subject_identifier' in cleaned_data:
