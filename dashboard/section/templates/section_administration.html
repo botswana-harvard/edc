@@ -76,12 +76,19 @@
         <li><A href="{% url 'admin:visit_schedule_membershipform_changelist' %}">Membership forms</A>
         <li><A href="{% url 'admin:visit_schedule_schedulegroup_changelist' %}">Schedule groups</A>
         <li><A href="{% url 'admin:visit_schedule_visitdefinition_changelist' %}">Visit definitions</A>
-        <li><A href="{% url 'admin:entry_meta_data_scheduledentrymetadata_changelist' %}">Scheduled Entry meta data</A>
-        <li><A href="{% url 'admin:entry_meta_data_requisitionmetadata_changelist' %}">Requisition meta data</A>
-        <li><A href="{% url 'admin:entry_entry_changelist' %}">Entry</A>
-        <li><A href="{% url 'admin:entry_labentry_changelist' %}">Lab Entry</A> and <A href="{% url 'admin:lab_clinic_api_panel_changelist' %}">Panels</A>
+        <li><A href="{% url 'admin:entry_entry_changelist' %}">Entry</A>, <A href="{% url 'admin:entry_labentry_changelist' %}">Lab Entry</A> and <A href="{% url 'admin:entry_requisitionpanel_changelist' %}">Requisition Panels</A>
+        <li><A href="{% url 'admin:entry_meta_data_scheduledentrymetadata_changelist' %}">Scheduled Meta Data</A> and <A href="{% url 'admin:entry_meta_data_requisitionmetadata_changelist' %}">Requisition Meta Data</A>
     </ul>
 {% endif %}
+
+{% if 'edc.entry_meta_data' in installed_apps%}
+    <h5>Metadata</h5>
+    <ul>
+        <li><A href="{% url 'admin:entry_meta_data_scheduledentrymetadata_changelist' %}">Scheduled CRFs</A>
+        <li><A href="{% url 'admin:entry_meta_data_requisitionmetadata_changelist' %}">Requisitions</A>
+    </ul>
+{% endif %}
+
 
 {% if 'edc.import' in installed_apps%}
     <h5>Import Data</h5>

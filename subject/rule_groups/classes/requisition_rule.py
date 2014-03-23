@@ -45,7 +45,8 @@ class RequisitionRule(BaseRule):
             if eval(predicate):
                 action = self.consequent_action
             else:
-                action = self.alternative_action
+                if self.alternative_action != 'none':
+                    action = self.alternative_action
             action = self.is_valid_action(action)
         if action:
             action = action.upper()
