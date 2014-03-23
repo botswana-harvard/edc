@@ -1,5 +1,5 @@
 from django.db import models
-
+# from django.template.defaultfilters import slugify
 from edc.base.model.models import BaseModel
 
 
