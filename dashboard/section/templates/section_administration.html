@@ -30,11 +30,14 @@
   {% if 'edc.map' in installed_apps %}
     <li><A href="{% url 'map_index_url' %}">Dispatch data to devices by Map</A>
   {% endif %}
-  {%if 'apps.bcpp_household' in installed_apps%}
+</ul>
+{% endif %}
+<H5>Replacement</H5>
+<ul>
+{%if 'apps.bcpp_household' in installed_apps%}
   	<li><A href="{% url "replace_data_url" %}">Replace data on netbooks</A>
   {% endif %}
 </ul>
-{% endif %}
 
 {% if 'edc.core.bhp_birt_reports' in installed_apps %}
 <H5>Reports</H5>
