@@ -1,0 +1,2 @@
+SHOW_FORM = 'SHOW'
+HIDE_FORM = 'HIDE'

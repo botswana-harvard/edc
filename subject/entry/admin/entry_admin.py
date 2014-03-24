@@ -8,7 +8,7 @@ from ..models import Entry
 class EntryAdmin(BaseModelAdmin):
 
     search_fields = ('visit_definition__code', 'content_type_map__model', 'id')
-    list_display = ('content_type_map', 'visit_definition', 'entry_order', 'required', 'entry_category', 'group_title')
+    list_display = ('content_type_map', 'visit_definition', 'entry_order', 'required', 'entry_category', 'group_title', 'form_visible')
     list_filter = ('entry_category', 'group_title', 'visit_definition__code', 'default_entry_status', 'created', 'content_type_map__model',)
 admin.site.register(Entry, EntryAdmin)
 
