@@ -1,8 +1,11 @@
 from django.contrib import admin
+
 from edc.base.admin.admin import BaseModelAdmin
 from edc.subject.registration.models import RegisteredSubject
-from ..models import Appointment
+
 from ..forms import AppointmentForm
+from ..models import Appointment
+
 from .pre_appointment_contact_admin import PreAppointmentContactInlineAdmin
 
 
@@ -14,14 +17,11 @@ class AppointmentAdmin(BaseModelAdmin):
     date_hierarchy = 'appt_datetime'
     inlines = [PreAppointmentContactInlineAdmin, ]
 
-    #override, limit dropdown in add_view to id passed in the URL
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         """Limits the dropdown for 'registered_subject'"""
         if db_field.name == "registered_subject":
             if request.GET.get('registered_subject'):
                 kwargs["queryset"] = RegisteredSubject.objects.filter(pk=request.GET.get('registered_subject'))
-            #else:
-            #    kwargs["queryset"] = RegisteredSubject.objects.none()
         return super(AppointmentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     fields = (
