@@ -71,6 +71,12 @@ class LabEntry(BaseWindowPeriodItem):
     def __unicode__(self):
         return '{0}.{1}'.format(self.visit_definition.code, self.requisition_panel.name)
 
+    def is_visible(self):
+        return self.default_entry_status != 'NOT_REQUIRED'
+
+    def is_hidden(self):
+        return not self.is_visible()
+
     class Meta:
         app_label = 'entry'
         verbose_name = "Lab Entry"
