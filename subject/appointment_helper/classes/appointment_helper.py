@@ -6,6 +6,8 @@ from edc.subject.appointment.models import Configuration
 from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 
+from edc.subject.appointment.constants import IN_PROGRESS, DONE, INCOMPLETE, NEW, CANCELLED
+
 from .appointment_date_helper import AppointmentDateHelper
 
 
@@ -131,8 +133,8 @@ class AppointmentHelper(object):
             raise ImproperlyConfigured('Unable to determine the visit tracking model. Update bhp_visit.visit_definition {0} and select the correct visit model.'.format(appointment.visit_definition))
         if not appointment.visit_definition.visit_tracking_content_type_map.model_class().objects.filter(appointment=appointment):
             # no visit tracking, can only be New or Cqncelled
-            if appointment.appt_status not in ['new', 'cancelled']:
-                appointment.appt_status = 'new'
+            if appointment.appt_status not in [NEW, CANCELLED]:
+                appointment.appt_status = NEW
         else:
             # have visit tracking, can only be Done, Incomplete, In Progress
             visit_model_instance = appointment.visit_definition.visit_tracking_content_type_map.model_class().objects.get(appointment=appointment)
@@ -140,33 +142,36 @@ class AppointmentHelper(object):
             scheduled_entry_helper = ScheduledEntryMetaDataHelper(appointment, visit_model_instance.__class__)
             if not scheduled_entry_helper.show_scheduled_entries():
                 # visit reason implies no data will be collected, so set appointment to Done
-                appointment.appt_status = 'done'
+                appointment.appt_status = DONE
             else:
                 ScheduledEntryMetaData = get_model('entry_meta_data', 'ScheduledEntryMetaData')
+                RequisitionMetaData = get_model('entry_meta_data', 'RequisitionMetaData')
                 # set to in progress, if not already set
-                if appointment.appt_status in ['done', 'incomplete']:
+                if appointment.appt_status in [DONE, INCOMPLETE]:
                     # test if Done or Incomplete
-                    if ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status='NEW').exists():
+
+                    if ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status__iexact=NEW).exists() or RequisitionMetaData.objects.filter(appointment=appointment, entry_status__iexact=NEW).exists():
                         #objs = ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status='NEW')
-                        appointment.appt_status = 'incomplete'
+                        appointment.appt_status = INCOMPLETE
                     else:
-                        appointment.appt_status = 'done'
-                elif appointment.appt_status in ['new', 'cancelled', 'in_progress']:
-                    appointment.appt_status = 'in_progress'
+                        appointment.appt_status = DONE
+                elif appointment.appt_status in [NEW, CANCELLED, IN_PROGRESS]:
+                    appointment.appt_status = IN_PROGRESS
                     # only one appointment can be "in_progress", so look for any others in progress and change
                     # to Done or Incomplete, depending on ScheduledEntryMetaData (if any NEW => incomplete)
                     ScheduledEntryMetaData = get_model('entry_meta_data', 'ScheduledEntryMetaData')
-                    for appt in appointment.__class__.objects.filter(registered_subject=appointment.registered_subject, appt_status='in_progress').exclude(pk=appointment.pk):
-                        if ScheduledEntryMetaData.objects.filter(appointment=appt, entry_status='NEW').exists():
+                    RequisitionMetaData = get_model('entry_meta_data', 'RequisitionMetaData')
+                    for appt in appointment.__class__.objects.filter(registered_subject=appointment.registered_subject, appt_status=IN_PROGRESS).exclude(pk=appointment.pk):
+                        if ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status__iexact=NEW).exists() or RequisitionMetaData.objects.filter(appointment=appointment, entry_status__iexact=NEW).exists():
                             # there are NEW forms
-                            if appt.appt_status != 'incomplete':
-                                appt.appt_status = 'incomplete'
+                            if appt.appt_status != INCOMPLETE:
+                                appt.appt_status = INCOMPLETE
                                 # call raw_save to avoid coming back to this method.
                                 appt.raw_save(using)
                         else:
                             # all forms are KEYED or NOT REQUIRED
-                            if appt.appt_status != 'done':
-                                appt.appt_status = 'done'
+                            if appt.appt_status != DONE:
+                                appt.appt_status = DONE
                                 # call raw_save to avoid coming back to this method.
                                 appt.raw_save(using)
                 else:

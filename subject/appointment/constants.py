@@ -1,0 +1,5 @@
+CANCELLED = 'cancelled'
+DONE = 'done'
+INCOMPLETE = 'incomplete'
+IN_PROGRESS = 'in_progress'
+NEW = 'new'
