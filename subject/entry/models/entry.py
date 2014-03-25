@@ -3,7 +3,6 @@ from django.db import models
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.choices.common import YES_NO_OPTIONAL
 from edc.subject.visit_schedule.models import BaseWindowPeriodItem, VisitDefinition
-from edc.utils.constants import SHOW_FORM
 
 from ..choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
 from ..managers import EntryManager
@@ -49,9 +48,6 @@ class Entry(BaseWindowPeriodItem):
 
     model_name = models.CharField(max_length=50, null=True)
 
-    form_visible = models.CharField(
-        max_length=25)
-
     objects = EntryManager()
 
     def save(self, *args, **kwargs):
@@ -79,10 +75,7 @@ class Entry(BaseWindowPeriodItem):
         return '{0}: {1}'.format(self.visit_definition.code, self.content_type_map.content_type)
 
     def is_visible(self):
-        if self.form_visible == SHOW_FORM:
-            return True
-        else:
-            return False
+        return self.default_entry_status != 'NOT_REQUIRED'
 
     class Meta:
         app_label = 'entry'

@@ -5,9 +5,9 @@ from django.db.models import get_model
 
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 
-EntryTuple = namedtuple('EntryTuple', 'order app_label model_name form_visible')
+EntryTuple = namedtuple('EntryTuple', 'order app_label model_name default_entry_status')
 MembershipFormTuple = namedtuple('MembershipFormTuple', 'name model visible')
-RequisitionPanelTuple = namedtuple('RequisitionPanelTuple', 'entry_order app_label model_name requisition_panel_name panel_type aliquot_type_alpha_code form_visible')
+RequisitionPanelTuple = namedtuple('RequisitionPanelTuple', 'entry_order app_label model_name requisition_panel_name panel_type aliquot_type_alpha_code default_entry_status')
 ScheduleGroupTuple = namedtuple('ScheduleTuple', 'name membership_form_name grouping_key comment')
 
 
@@ -180,13 +180,13 @@ class VisitScheduleConfiguration(object):
                         entry_order=entry.order,
                         app_label=entry.app_label.lower(),
                         model_name=entry.model_name.lower(),
-                        form_visible=entry.form_visible)
+                        default_entry_status=entry.default_entry_status)
                 else:
                     obj = Entry.objects.get(app_label=entry.app_label, model_name=entry.model_name.lower(), visit_definition=visit_definition_instance)
                     obj.entry_order = entry.order
                     obj.app_label = entry.app_label.lower()
                     obj.model_name = entry.model_name.lower()
-                    obj.form_visible = entry.form_visible
+                    obj.default_entry_status = entry.default_entry_status
                     obj.save()
             for entry in Entry.objects.filter(visit_definition=visit_definition_instance):
                 if (entry.app_label.lower(), entry.model_name.lower()) not in [(item.app_label.lower(), item.model_name.lower()) for item in visit_definition.get('entries')]:
@@ -201,7 +201,7 @@ class VisitScheduleConfiguration(object):
                         requisition_panel=requisition_panel,
                         visit_definition=visit_definition_instance,
                         entry_order=requisition_item.entry_order,
-                        form_visible=requisition_item.form_visible,
+                        default_entry_status=requisition_item.default_entry_status,
                         )
                 else:
                     LabEntry.objects.filter(requisition_panel=requisition_panel, app_label=requisition_item.app_label, model_name=requisition_item.model_name, visit_definition=visit_definition_instance).update(entry_order=requisition_item.entry_order)

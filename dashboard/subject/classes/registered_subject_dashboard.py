@@ -629,10 +629,10 @@ class RegisteredSubjectDashboard(Dashboard):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
             requisitions.append(requisition_context.get_context())
         hidden_requisitions = [req for req in requisitions if req['lab_entry'].is_hidden()]
-        hidden_requisitions, added_requisitions = self.process_additional_requisitions(hidden_requisitions, self.appointment)
+#         hidden_requisitions, added_requisitions = self.process_additional_requisitions(hidden_requisitions, self.appointment)
         render_requisitions = render_to_string(template, {
             'scheduled_requisitions': requisitions,
-            'added_requisitions': added_requisitions,
+#             'added_requisitions': added_requisitions,
             'hidden_requisitions': hidden_requisitions,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
@@ -645,21 +645,21 @@ class RegisteredSubjectDashboard(Dashboard):
             'show': self.show})
         return render_requisitions
 
-    def process_additional_requisitions(self, hidden_requisitions, appointment):
-        from edc.subject.appointment.models.additional_appointment_lab_entry import AdditionalAppointmentLabEntry
-        from edc.subject.entry.models.lab_entry import LabEntry
-        additional_entry = AdditionalAppointmentLabEntry.objects.filter(appointment=appointment)
-        added_requisitions = []
-        hidden_reqns = hidden_requisitions
-        for additional_entries in additional_entry:
-            label = additional_entries.panel_edc_name
-            lab_entry = LabEntry.objects.get(pk=additional_entries.lab_entry_id)
-            meta_data_instance = RequisitionMetaData.objects.get(appointment=appointment, lab_entry=lab_entry)
-            status = lab_entry.default_entry_status
-            requisition_context = RequisitionContext(meta_data_instance, appointment, self.visit_model, self.requisition_model)
-            added_requisitions.append(requisition_context.get_context())
-            hidden_reqns = [req for req in hidden_reqns if req['label'] != label]
-        return (hidden_reqns, added_requisitions)
+#     def process_additional_requisitions(self, hidden_requisitions, appointment):
+#         from edc.subject.appointment.models.additional_appointment_lab_entry import AdditionalAppointmentLabEntry
+#         from edc.subject.entry.models.lab_entry import LabEntry
+#         additional_entry = AdditionalAppointmentLabEntry.objects.filter(appointment=appointment)
+#         added_requisitions = []
+#         hidden_reqns = hidden_requisitions
+#         for additional_entries in additional_entry:
+#             label = additional_entries.panel_edc_name
+#             lab_entry = LabEntry.objects.get(pk=additional_entries.lab_entry_id)
+#             meta_data_instance = RequisitionMetaData.objects.get(appointment=appointment, lab_entry=lab_entry)
+#             status = lab_entry.default_entry_status
+#             requisition_context = RequisitionContext(meta_data_instance, appointment, self.visit_model, self.requisition_model)
+#             added_requisitions.append(requisition_context.get_context())
+#             hidden_reqns = [req for req in hidden_reqns if req['label'] != label]
+#         return (hidden_reqns, added_requisitions)
 
     def render_subject_hiv_status(self):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""

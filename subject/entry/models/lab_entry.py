@@ -4,7 +4,6 @@ from edc.choices.common import YES_NO
 from edc.subject.entry.choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
 from edc.subject.visit_schedule.models import BaseWindowPeriodItem
 from edc.subject.visit_schedule.models import VisitDefinition
-from edc.utils.constants import SHOW_FORM, HIDE_FORM
 
 from ..exceptions import EntryManagerError
 from ..managers import LabEntryManager
@@ -48,9 +47,6 @@ class LabEntry(BaseWindowPeriodItem):
         default='NEW',
         )
 
-    form_visible = models.CharField(
-        max_length=25)
-
     objects = LabEntryManager()
 
     def save(self, *args, **kwargs):
@@ -76,16 +72,10 @@ class LabEntry(BaseWindowPeriodItem):
         return '{0}.{1}'.format(self.visit_definition.code, self.requisition_panel.name)
 
     def is_visible(self):
-        if self.form_visible == SHOW_FORM:
-            return True
-        else:
-            return False
+        return self.default_entry_status != 'NOT_REQUIRED'
 
     def is_hidden(self):
-        if self.form_visible == HIDE_FORM:
-            return True
-        else:
-            return False
+        return not self.is_visible()
 
     class Meta:
         app_label = 'entry'
