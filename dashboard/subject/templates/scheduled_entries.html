@@ -21,7 +21,7 @@
     <tr class="{% cycle 'row1' 'row2' %}"><td colspan="12"></td></tr>
 {% else %}
     {% for scheduled_entry in scheduled_entries %}
-        {% if scheduled_entry.entry.is_visible %}
+        {% if scheduled_entry.entry.is_required %}
             <tr class="{% cycle 'row1' 'row2' %}">
                 <td><span {% if scheduled_entry.status == 'NEW'%}style="background:red;"{% endif %}>&nbsp;</span></td>
                 <td>{{ forloop.counter }}</td>

@@ -22,7 +22,7 @@
     <tr class="{% cycle 'row1' 'row2' %}"><td colspan="12"></td></tr>
 {% else %}
     {% for scheduled_requisition in scheduled_requisitions %}
-        {% if scheduled_requisition.lab_entry.is_visible %}
+        {% if scheduled_requisition.lab_entry.is_required %}
             <tr class="{% cycle 'row1' 'row2' %}">
                 <td><span {% if scheduled_requisition.status == 'NEW'%}style="background:red;"{% endif %}>&nbsp;</span></td>
                 <td>{{ forloop.counter }}</td>
@@ -63,7 +63,7 @@
 </tbody>
 </table>
 
-{% if xhidden_requisitions %}
+{% if hidden_requisitions %}
 <table>
     <tbody>
         <tr name="bottom left">

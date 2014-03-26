@@ -7,7 +7,6 @@ from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_profile.classes import site_lab_profiles
-from edc.subject.appointment.models import Configuration
 from edc.subject.consent.models import ConsentCatalogue
 from edc.subject.entry.models import RequisitionPanel
 

@@ -74,7 +74,7 @@ class Entry(BaseWindowPeriodItem):
     def __unicode__(self):
         return '{0}: {1}'.format(self.visit_definition.code, self.content_type_map.content_type)
 
-    def is_visible(self):
+    def is_required(self):
         return self.default_entry_status != 'NOT_REQUIRED'
 
     class Meta:
