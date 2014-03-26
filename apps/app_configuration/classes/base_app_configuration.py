@@ -1,7 +1,3 @@
-from dateutil import parser
-
-from django.utils.encoding import force_text
-
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
@@ -9,6 +5,7 @@ from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.subject.consent.models import ConsentCatalogue
 from edc.subject.entry.models import RequisitionPanel
+from edc.utils import datatype_to_string
 
 from lis.labeling.models import LabelPrinter
 
@@ -172,31 +169,8 @@ class BaseAppConfiguration(object):
         for configuration in configurations:
             for category_name, category_configuration in configuration.iteritems():
                 for attr, value in category_configuration.iteritems():
-                    string_value = None
-                    if value == True:  # store booleans, None as a text string
-                        string_value = 'True'
-                    if value == False:
-                        string_value = 'False'
-                    if value == None:
-                        string_value = 'None'
-                    else:
-                        try:
-                            string_value = value.strftime('%Y-%m-%d')
-                            if not parser.parse(string_value) == value:
-                                raise ValueError
-                        except ValueError:
-                            pass
-                        except AttributeError:
-                            pass
-                        try:
-                            string_value = value.strftime('%Y-%m-%d %H:%M')
-                            if not parser.parse(string_value) == value:
-                                raise ValueError
-                        except ValueError:
-                            pass
-                        except AttributeError:
-                            pass
-                    string_value = string_value or force_text(value)
+                    string_value = datatype_to_string(value)
+                    string_value = string_value.strip(' "')
                     try:
                         global_configuration = GlobalConfiguration.objects.get(attribute=attr)
                         global_configuration.value = string_value
