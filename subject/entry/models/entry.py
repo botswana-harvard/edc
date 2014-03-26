@@ -43,7 +43,7 @@ class Entry(BaseWindowPeriodItem):
         max_length=25,
         choices=ENTRY_STATUS,
         default='NEW')
-
+    additional = models.BooleanField(default=False, help_text='If True lists the entry in additional entries')
     app_label = models.CharField(max_length=50, null=True)
 
     model_name = models.CharField(max_length=50, null=True)
