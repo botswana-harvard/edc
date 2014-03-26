@@ -1,13 +1,20 @@
+from dateutil import parser
+
+from django.utils.encoding import force_text
+
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_profile.classes import site_lab_profiles
-from edc.subject.appointment.models import Configuration
 from edc.subject.consent.models import ConsentCatalogue
 from edc.subject.entry.models import RequisitionPanel
 
 from lis.labeling.models import LabelPrinter
+
+from ..models import GlobalConfiguration
+
+from .defaults import default_global_configuration
 
 
 class BaseAppConfiguration(object):
@@ -26,7 +33,7 @@ class BaseAppConfiguration(object):
         Configuration methods update default data in supporting tables."""
         ContentTypeMapHelper().populate()
         ContentTypeMapHelper().sync()
-        self.update_or_create_appointment_setup()
+        self.update_global()
         self.update_or_create_study_variables()
         self.update_or_create_consent_catalogue()
         self.update_or_create_lab_clinic_api()
@@ -119,13 +126,6 @@ class BaseAppConfiguration(object):
                     profile_item.count = item.count
                     profile_item.save()
 
-    def update_or_create_appointment_setup(self):
-        """Updates configuration in the :mod:`appointment` module."""
-        if Configuration.objects.all().count() == 0:
-            Configuration.objects.create(**self.appointment_configuration)
-        else:
-            Configuration.objects.all().update(**self.appointment_configuration)
-
     def update_or_create_study_variables(self):
         """Updates configuration in the :mod:`bhp_variables` module."""
         if StudySpecific.objects.all().count() == 0:
@@ -159,3 +159,47 @@ class BaseAppConfiguration(object):
             else:
                 ConsentCatalogue.objects.filter(**catalogue_setup).update(**catalogue_setup)
             catalogue_setup.update({'content_type_map': content_type_map_string})
+
+    def update_global(self):
+        """Creates or updates global configuration options in app_configuration.
+
+        First ensures defaults exist, then, if user specification exists, overwrites the defaults or adds new."""
+        configurations = [default_global_configuration]
+        try:
+            configurations.append(self.global_configuration)
+        except AttributeError:
+            pass   # maybe attribute does not exist
+        for configuration in configurations:
+            for category_name, category_configuration in configuration.iteritems():
+                for attr, value in category_configuration.iteritems():
+                    string_value = None
+                    if value == True:  # store booleans, None as a text string
+                        string_value = 'True'
+                    if value == False:
+                        string_value = 'False'
+                    if value == None:
+                        string_value = 'None'
+                    else:
+                        try:
+                            string_value = value.strftime('%Y-%m-%d')
+                            if not parser.parse(string_value) == value:
+                                raise ValueError
+                        except ValueError:
+                            pass
+                        except AttributeError:
+                            pass
+                        try:
+                            string_value = value.strftime('%Y-%m-%d %H:%M')
+                            if not parser.parse(string_value) == value:
+                                raise ValueError
+                        except ValueError:
+                            pass
+                        except AttributeError:
+                            pass
+                    string_value = string_value or force_text(value)
+                    try:
+                        global_configuration = GlobalConfiguration.objects.get(attribute=attr)
+                        global_configuration.value = string_value
+                        global_configuration.save()
+                    except GlobalConfiguration.DoesNotExist:
+                        GlobalConfiguration.objects.create(category=category_name, attribute=attr, value=string_value)
