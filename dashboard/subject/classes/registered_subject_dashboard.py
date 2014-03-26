@@ -628,11 +628,11 @@ class RegisteredSubjectDashboard(Dashboard):
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
             requisitions.append(requisition_context.get_context())
-        hidden_requisitions = [req for req in requisitions if req['lab_entry'].is_hidden()]
+        #hidden_requisitions = [req for req in requisitions if req['lab_entry'].is_hidden()]
+        hidden_requisitions = self.filter_hidden_requisitions(requisitions)
 #         hidden_requisitions, added_requisitions = self.process_additional_requisitions(hidden_requisitions, self.appointment)
         render_requisitions = render_to_string(template, {
             'scheduled_requisitions': requisitions,
-#             'added_requisitions': added_requisitions,
             'hidden_requisitions': hidden_requisitions,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
@@ -644,6 +644,17 @@ class RegisteredSubjectDashboard(Dashboard):
             'subject_dashboard_url': self.dashboard_url_name,
             'show': self.show})
         return render_requisitions
+
+    def filter_hidden_requisitions(self, requisitions):
+        hidden_requisitions = []
+        for requisition in requisitions:
+            lab_entry = requisition['lab_entry']
+            if lab_entry.is_visible():
+                continue
+            req_metadata = RequisitionMetaData.objects.get(appointment=self.appointment, lab_entry=lab_entry)
+            if req_metadata.should_be_hidden():
+                hidden_requisitions.append(requisition)
+        return hidden_requisitions
 
 #     def process_additional_requisitions(self, hidden_requisitions, appointment):
 #         from edc.subject.appointment.models.additional_appointment_lab_entry import AdditionalAppointmentLabEntry

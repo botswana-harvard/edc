@@ -34,6 +34,12 @@ class BaseEntryMetaData(BaseUuidModel):
         null=True,
         blank=True)
 
+    def should_be_visible(self):
+        return self.entry_status != 'NOT_REQUIRED'
+
+    def should_be_hidden(self):
+        return not self.should_be_visible()
+
     def include_for_dispatch(self):
         return True
 
