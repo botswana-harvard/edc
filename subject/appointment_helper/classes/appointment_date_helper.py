@@ -113,14 +113,14 @@ class AppointmentDateHelper(object):
                 raise TypeError('Appt_datetime cannot be None')
         return appt_datetime
 
-    def _move_on_appt_max_exceeded(self, original_appt_datetime, site, appointments_per_day_max=None, days_forward=None):
+    def _move_on_appt_max_exceeded(self, original_appt_datetime, site, appointments_per_day_max=None, appointments_days_formard=None):
         """Moves appointment date to another date if the appointments_per_day_max is exceeded."""
         from edc.subject.appointment.models import Appointment
         appt_datetime = copy.deepcopy(original_appt_datetime)
         if not appointments_per_day_max:
             appointments_per_day_max = self.appointments_per_day_max
-        if not days_forward:
-            days_forward = self.days_forward
+        if not appointments_days_formard:
+            appointments_days_formard = self.appointments_days_formard
         my_appt_date = appt_datetime.date()
         # get a list of appointments in the date range from 'appt_datetime' to 'appt_datetime'+days_forward
         # use model field appointment.best_appt_datetime not appointment.appt_datetime
@@ -128,7 +128,7 @@ class AppointmentDateHelper(object):
         appointments = Appointment.objects.filter(
             study_site=site,
             best_appt_datetime__gte=appt_datetime,
-            best_appt_datetime__lte=appt_datetime + timedelta(days=self.days_forward))
+            best_appt_datetime__lte=appt_datetime + timedelta(days=self.appointments_days_formard))
         if appointments:
             # looking for appointments per day
             # create dictionary of { day: count, ... }
