@@ -111,7 +111,7 @@ class BaseBaseRequisition (BaseUuidModel):
     estimated_volume = models.DecimalField(
         verbose_name='Estimated volume in mL',
         max_digits=7,
-        decimal_places=1,
+        decimal_places=2,
         default=5.0,
         help_text='If applicable, estimated volume of sample for this test/order. This is the total volume if number of "tubes" above is greater than 1'
         )
