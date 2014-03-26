@@ -41,8 +41,8 @@ class ConfigurationManager(models.Manager):
         try:
             value = parser.parse(string_value)
             if value.strftime('%Y-%m-%d') == string_value:
-                retval = value
-        except:
+                retval = value.date()
+        except ValueError:
             pass
         # try to return as datetime
         try:
