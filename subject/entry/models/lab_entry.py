@@ -47,6 +47,8 @@ class LabEntry(BaseWindowPeriodItem):
         default='NEW',
         )
 
+    additional = models.BooleanField(default=False, help_text='If True lists the lab_entry in additional requisitions')
+
     objects = LabEntryManager()
 
     def save(self, *args, **kwargs):

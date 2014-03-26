@@ -5,6 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.visit_schedule.models import VisitDefinition
+from edc.apps.app_configuration.models import GlobalConfiguration
 
 
 class AppointmentDateHelper(object):
@@ -23,10 +24,8 @@ class AppointmentDateHelper(object):
         # not used
         self.allow_backwards = False
         # True if appointments should land on the same day for a subject
-        Configuration = get_model('appointment', 'configuration')
-        config = Configuration.objects.get_configuration()
-        self.use_same_weekday = config.use_same_weekday
-        self.allowed_iso_weekdays = config.allowed_iso_weekdays
+        self.use_same_weekday = GlobalConfiguration.objects.get_attr_value(attribute='use_same_weekday')
+        self.allowed_iso_weekdays = GlobalConfiguration.objects.get_attr_value(attribute='allowed_iso_weekdays')
 
     def get_best_datetime(self, appt_datetime, site, weekday=None, exception_cls=None):
         """ Gets the appointment datetime on insert.
