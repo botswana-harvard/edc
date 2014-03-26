@@ -47,6 +47,8 @@ class LabEntry(BaseWindowPeriodItem):
         default='NEW',
         )
 
+    additional = models.BooleanField(default=False, help_text='If True lists the lab_entry in additional requisitions')
+
     objects = LabEntryManager()
 
     def save(self, *args, **kwargs):
@@ -70,6 +72,12 @@ class LabEntry(BaseWindowPeriodItem):
 
     def __unicode__(self):
         return '{0}.{1}'.format(self.visit_definition.code, self.requisition_panel.name)
+
+    def is_visible(self):
+        return self.default_entry_status != 'NOT_REQUIRED'
+
+    def is_hidden(self):
+        return not self.is_visible()
 
     class Meta:
         app_label = 'entry'

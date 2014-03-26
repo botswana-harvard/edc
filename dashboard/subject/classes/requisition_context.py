@@ -19,7 +19,8 @@ class RequisitionContext(BaseScheduledEntryContext):
         super(RequisitionContext, self).__init__(meta_data_instance, appointment, visit_model)
 
     def contribute_to_context(self, context):
-        context.update({'label': self.meta_data_instance.lab_entry.requisition_panel.name})
+        context.update({'label': self.meta_data_instance.lab_entry.requisition_panel.name,
+                        'lab_entry': self.meta_data_instance.lab_entry})
         if self.instance:
             context.update({'requisition_identifier': self.instance.requisition_identifier})
         context.update({'panel': self.meta_data_instance.lab_entry.requisition_panel.pk})

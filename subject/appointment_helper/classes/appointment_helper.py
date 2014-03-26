@@ -2,7 +2,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model, Max
 
 from edc.subject.appointment.exceptions import AppointmentStatusError
-from edc.subject.appointment.models import Configuration
+from edc.apps.app_configuration.models import GlobalConfiguration
 from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 
@@ -183,5 +183,5 @@ class AppointmentHelper(object):
         if SubjectConfiguration.objects.filter(subject_identifier=registered_subject.subject_identifier):
             default_appt_type = SubjectConfiguration.objects.get(subject_identifier=registered_subject.subject_identifier).default_appt_type
         if not default_appt_type:
-            default_appt_type = Configuration.objects.get_configuration().default_appt_type
+            default_appt_type = GlobalConfiguration.objects.get_attr_value(attribute='default_appt_type')
         return default_appt_type

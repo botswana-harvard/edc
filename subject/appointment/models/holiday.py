@@ -1,11 +1,9 @@
 from django.db import models
 from edc.device.sync.models import BaseSyncUuidModel
-from .configuration import Configuration
 
 
 class Holiday(BaseSyncUuidModel):
 
-    configuration = models.ForeignKey(Configuration)
     holiday_name = models.CharField(
         max_length=25,
         default='holiday')
