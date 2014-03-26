@@ -628,10 +628,11 @@ class RegisteredSubjectDashboard(Dashboard):
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
             requisitions.append(requisition_context.get_context())
-        hidden_requisitions = self.filter_hidden_requisitions(requisitions)
+        hidden_requisitions, added_requisitions = self.filter_hidden_requisitions(requisitions)
         render_requisitions = render_to_string(template, {
             'scheduled_requisitions': requisitions,
             'hidden_requisitions': hidden_requisitions,
+            'added_requisitions': added_requisitions,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
             'registered_subject': self.registered_subject.pk,
@@ -645,6 +646,7 @@ class RegisteredSubjectDashboard(Dashboard):
 
     def filter_hidden_requisitions(self, requisitions):
         hidden_requisitions = []
+        added_requisitions = []
         for requisition in requisitions:
             lab_entry = requisition['lab_entry']
             if lab_entry.is_required():
@@ -654,7 +656,9 @@ class RegisteredSubjectDashboard(Dashboard):
             req_metadata = RequisitionMetaData.objects.get(appointment=self.appointment, lab_entry=lab_entry)
             if req_metadata.is_not_required():
                 hidden_requisitions.append(requisition)
-        return hidden_requisitions
+            if req_metadata.is_required():
+                added_requisitions.append(requisition)
+        return (hidden_requisitions, added_requisitions)
 
     def render_subject_hiv_status(self):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""
