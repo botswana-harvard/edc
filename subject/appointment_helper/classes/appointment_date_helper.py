@@ -1,29 +1,22 @@
 import copy
+
 from datetime import datetime, timedelta
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
+
 from django.db.models import get_model
+
+from edc.apps.app_configuration.models import GlobalConfiguration
 from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.visit_schedule.models import VisitDefinition
-from edc.apps.app_configuration.models import GlobalConfiguration
 
 
 class AppointmentDateHelper(object):
     """ """
     def __init__(self):
-        if not "APPOINTMENTS_PER_DAY_MAX" in dir(settings):
-            raise ImproperlyConfigured('Appointment requires settings attribute APPOINTMENTS_PER_DAY_MAX. Please add to your settings.py')
-        # number of appointments to set per day before moving to an alternative appointment date
-        self.appointments_per_day_max = settings.APPOINTMENTS_PER_DAY_MAX
-        # number of days to look forward for an alternative appointment date
-        if 'APPOINTMENTS_DAYS_FORWARD' in dir(settings):
-            self.days_forward = settings.APPOINTMENTS_DAYS_FORWARD
-        else:
-            self.days_forward = 8
         self.window_delta = None
         # not used
         self.allow_backwards = False
-        # True if appointments should land on the same day for a subject
+        self.appointments_days_formard = GlobalConfiguration.objects.get_attr_value(attribute='appointments_days_forward')
+        self.appointments_per_day_max = GlobalConfiguration.objects.get_attr_value(attribute='appointments_per_day_max')
         self.use_same_weekday = GlobalConfiguration.objects.get_attr_value(attribute='use_same_weekday')
         self.allowed_iso_weekdays = GlobalConfiguration.objects.get_attr_value(attribute='allowed_iso_weekdays')
 
