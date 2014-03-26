@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+
 from edc.device.sync.models import BaseSyncUuidModel
+
 from ..managers import ConfigurationManager
 
 
