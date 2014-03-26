@@ -1,12 +1,12 @@
 from dateutil import parser
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django.db import models
 
 
 class ConfigurationManager(models.Manager):
 
-    def get_attr_value(self, *kwargs):
+    def get_attr_value(self, **kwargs):
         """Returns the attribute value in its original datatype assuming it can be converted."""
         obj = self.get(**kwargs)
         string_value = obj.value.strip(' "')
@@ -27,6 +27,8 @@ class ConfigurationManager(models.Manager):
             if str(value) == string_value:
                 retval = value
         except ValueError:
+            pass
+        except InvalidOperation:
             pass
         # try to return as an integer
         try:
