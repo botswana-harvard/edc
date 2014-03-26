@@ -182,12 +182,12 @@ class VisitScheduleConfiguration(object):
                         model_name=entry.model_name.lower(),
                         default_entry_status=entry.default_entry_status)
                 else:
-                    obj = Entry.objects.get(app_label=entry.app_label, model_name=entry.model_name.lower(), visit_definition=visit_definition_instance)
-                    obj.entry_order = entry.order
-                    obj.app_label = entry.app_label.lower()
-                    obj.model_name = entry.model_name.lower()
-                    obj.default_entry_status = entry.default_entry_status
-                    obj.save()
+                    Entry.objects.filter(
+                        app_label=entry.app_label,
+                        model_name=entry.model_name.lower(),
+                        visit_definition=visit_definition_instance
+                        ).update(entry_order=entry.order,
+                                 default_entry_status=entry.default_entry_status)
             for entry in Entry.objects.filter(visit_definition=visit_definition_instance):
                 if (entry.app_label.lower(), entry.model_name.lower()) not in [(item.app_label.lower(), item.model_name.lower()) for item in visit_definition.get('entries')]:
                     entry.delete()
@@ -204,7 +204,13 @@ class VisitScheduleConfiguration(object):
                         default_entry_status=requisition_item.default_entry_status,
                         )
                 else:
-                    LabEntry.objects.filter(requisition_panel=requisition_panel, app_label=requisition_item.app_label, model_name=requisition_item.model_name, visit_definition=visit_definition_instance).update(entry_order=requisition_item.entry_order)
+                    LabEntry.objects.filter(
+                        requisition_panel=requisition_panel, 
+                        app_label=requisition_item.app_label,
+                        model_name=requisition_item.model_name,
+                        visit_definition=visit_definition_instance
+                        ).update(entry_order=requisition_item.entry_order,
+                                 default_entry_status=requisition_item.default_entry_status)
             for lab_entry in LabEntry.objects.filter(visit_definition=visit_definition_instance):
                 if (lab_entry.app_label, lab_entry.model_name) not in [(item.app_label, item.model_name) for item in visit_definition.get('requisitions')]:
                     lab_entry.delete()
