@@ -1,4 +1,3 @@
-from .additional_appointment_lab_entry import AdditionalAppointmentLabEntry
 from .appointment import Appointment
 from .base_appointment import BaseAppointment
 from .holiday import Holiday
