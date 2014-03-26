@@ -14,6 +14,8 @@ from lis.labeling.models import LabelPrinter
 
 from ..models import GlobalConfiguration
 
+from .defaults import default_global_configuration
+
 
 class BaseAppConfiguration(object):
 
@@ -162,10 +164,7 @@ class BaseAppConfiguration(object):
         """Creates or updates global configuration options in app_configuration.
 
         First ensures defaults exist, then, if user specification exists, overwrites the defaults or adds new."""
-        default_configuration = {'dashboard': {'show_not_required_metadata': True, 'allow_additional_requisitions': False},
-                                 'appointment': {'allowed_iso_weekdays': '1234567', 'use_same_weekday': True, 'default_appt_type': 'default'},
-                                 }
-        configurations = [default_configuration]
+        configurations = [default_global_configuration]
         try:
             configurations.append(self.global_configuration)
         except AttributeError:
