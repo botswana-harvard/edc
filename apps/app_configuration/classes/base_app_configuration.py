@@ -13,6 +13,8 @@ from edc.subject.entry.models import RequisitionPanel
 
 from lis.labeling.models import LabelPrinter
 
+from ..models import GlobalConfiguration
+
 
 class BaseAppConfiguration(object):
 
@@ -185,14 +187,17 @@ class BaseAppConfiguration(object):
                     if value == None:
                         string_value = 'None'
                     try:
-                        configuration = Configuration.objects.get_attr_value(attribute=attr).value = string_value
-                        configuration.save()
-                    except:
+                        global_configuration = GlobalConfiguration.objects.get(attribute=attr)
+                        global_configuration.value = string_value
+                        global_configuration.save()
+                    except GlobalConfiguration.DoesNotExist:
                         try:
                             string_value = value.strftime('%Y-%m-%d')
                             if not parser.parse(string_value) == value:
                                 raise ValueError
                         except ValueError:
+                            pass
+                        except AttributeError:
                             pass
                         try:
                             string_value = value.strftime('%Y-%m-%d %H:%M')
@@ -200,5 +205,7 @@ class BaseAppConfiguration(object):
                                 raise ValueError
                         except ValueError:
                             pass
+                        except AttributeError:
+                            pass
                         string_value = force_text(value)
-                        Configuration.objects.create(category=category_name, attribute=attr, value=string_value)
+                        GlobalConfiguration.objects.create(category=category_name, attribute=attr, value=string_value)
