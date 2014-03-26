@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
-from edc.subject.appointment.models.additional_appointment_lab_entry import AdditionalAppointmentLabEntry
 from edc.subject.appointment.models import Appointment
 from edc.subject.entry.models.lab_entry import LabEntry
+from edc.entry_meta_data.models import RequisitionMetaData
 
 
 def additional_requisition(request):
@@ -10,12 +10,9 @@ def additional_requisition(request):
 
     appointment = Appointment.objects.get(pk=appointment_id)
     lab_entry = LabEntry.objects.get(pk=lab_entry_id)
-    panel = lab_entry.panel
-    AdditionalAppointmentLabEntry.objects.create(
-        appointment=appointment,
-        lab_entry_id=lab_entry_id,
-        panel_edc_name=panel.edc_name
-    )
+    requisition_meta_data = RequisitionMetaData.objects.get(appointment=appointment, lab_entry=lab_entry)
+    requisition_meta_data.entry_status = 'NEW'
+    requisition_meta_data.save()
 
     dashboard_type = _get_param(request, 'dashboard_type')
     dashboard_model = _get_param(request, 'dashboard_model')
