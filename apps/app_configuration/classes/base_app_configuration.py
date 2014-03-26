@@ -33,7 +33,6 @@ class BaseAppConfiguration(object):
         ContentTypeMapHelper().populate()
         ContentTypeMapHelper().sync()
         self.update_global()
-        self.update_or_create_appointment_setup()
         self.update_or_create_study_variables()
         self.update_or_create_consent_catalogue()
         self.update_or_create_lab_clinic_api()
@@ -125,13 +124,6 @@ class BaseAppConfiguration(object):
                     profile_item.volume = item.volume
                     profile_item.count = item.count
                     profile_item.save()
-
-    def update_or_create_appointment_setup(self):
-        """Updates configuration in the :mod:`appointment` module."""
-        if Configuration.objects.all().count() == 0:
-            Configuration.objects.create(**self.appointment_configuration)
-        else:
-            Configuration.objects.all().update(**self.appointment_configuration)
 
     def update_or_create_study_variables(self):
         """Updates configuration in the :mod:`bhp_variables` module."""
