@@ -171,7 +171,9 @@ class BaseAppConfiguration(object):
         """Creates or updates global configuration options in app_configuration.
 
         First ensures defaults exist, then, if user specification exists, overwrites the defaults or adds new."""
-        default_configuration = {'dashboard': {'show_not_required_metadata': True, 'allow_additional_requisitions': False}}
+        default_configuration = {'dashboard': {'show_not_required_metadata': True, 'allow_additional_requisitions': False},
+                                 'appointment': {'allowed_iso_weekdays': '1234567', 'use_same_weekday': True, 'default_appt_type': 'default'},
+                                 }
         configurations = [default_configuration]
         try:
             configurations.append(self.global_configuration)
@@ -180,17 +182,14 @@ class BaseAppConfiguration(object):
         for configuration in configurations:
             for category_name, category_configuration in configuration.iteritems():
                 for attr, value in category_configuration.iteritems():
+                    string_value = None
                     if value == True:  # store booleans, None as a text string
                         string_value = 'True'
                     if value == False:
                         string_value = 'False'
                     if value == None:
                         string_value = 'None'
-                    try:
-                        global_configuration = GlobalConfiguration.objects.get(attribute=attr)
-                        global_configuration.value = string_value
-                        global_configuration.save()
-                    except GlobalConfiguration.DoesNotExist:
+                    else:
                         try:
                             string_value = value.strftime('%Y-%m-%d')
                             if not parser.parse(string_value) == value:
@@ -207,5 +206,10 @@ class BaseAppConfiguration(object):
                             pass
                         except AttributeError:
                             pass
-                        string_value = force_text(value)
+                    string_value = string_value or force_text(value)
+                    try:
+                        global_configuration = GlobalConfiguration.objects.get(attribute=attr)
+                        global_configuration.value = string_value
+                        global_configuration.save()
+                    except GlobalConfiguration.DoesNotExist:
                         GlobalConfiguration.objects.create(category=category_name, attribute=attr, value=string_value)
