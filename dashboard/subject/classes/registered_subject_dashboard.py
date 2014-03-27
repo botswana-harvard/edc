@@ -28,6 +28,8 @@ from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.utils.collections import flatten
 
+from edc.entry_meta_data.models.requisition_meta_data import RequisitionMetaData
+
 from .scheduled_entry_context import ScheduledEntryContext
 from .requisition_context import RequisitionContext
 
@@ -626,8 +628,11 @@ class RegisteredSubjectDashboard(Dashboard):
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
             requisitions.append(requisition_context.get_context())
+        hidden_requisitions, added_requisitions = self.filter_hidden_requisitions(requisitions)
         render_requisitions = render_to_string(template, {
             'scheduled_requisitions': requisitions,
+            'hidden_requisitions': hidden_requisitions,
+            'added_requisitions': added_requisitions,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
             'registered_subject': self.registered_subject.pk,
@@ -638,6 +643,22 @@ class RegisteredSubjectDashboard(Dashboard):
             'subject_dashboard_url': self.dashboard_url_name,
             'show': self.show})
         return render_requisitions
+
+    def filter_hidden_requisitions(self, requisitions):
+        hidden_requisitions = []
+        added_requisitions = []
+        for requisition in requisitions:
+            lab_entry = requisition['lab_entry']
+            if lab_entry.is_required():
+                continue
+            if not lab_entry.additional:
+                continue
+            req_metadata = RequisitionMetaData.objects.get(appointment=self.appointment, lab_entry=lab_entry)
+            if req_metadata.is_not_required():
+                hidden_requisitions.append(requisition)
+            if req_metadata.is_required():
+                added_requisitions.append(requisition)
+        return (hidden_requisitions, added_requisitions)
 
     def render_subject_hiv_status(self):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""

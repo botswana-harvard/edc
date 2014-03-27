@@ -30,11 +30,14 @@
   {% if 'edc.map' in installed_apps %}
     <li><A href="{% url 'map_index_url' %}">Dispatch data to devices by Map</A>
   {% endif %}
-  {%if 'apps.bcpp_household' in installed_apps%}
+</ul>
+{% endif %}
+<H5>Replacement</H5>
+<ul>
+{%if 'apps.bcpp_household' in installed_apps%}
   	<li><A href="{% url "replace_data_url" %}">Replace data on netbooks</A>
   {% endif %}
 </ul>
-{% endif %}
 
 {% if 'edc.core.bhp_birt_reports' in installed_apps %}
 <H5>Reports</H5>
@@ -44,7 +47,7 @@
 {% endif %}
 
 {% if 'edc.device.inspector' in installed_apps %}
-<H5>Node Inspection Of Synced Trasanctions</H5>
+<H5>Node Inspection Of Synced Transactions</H5>
 <ul>
 <li><A href="/admin/{{app_name}}_inspector/">Inspect Models</A></li>
 </ul>
@@ -53,9 +56,15 @@
 {% if 'edc.lab.lab_clinic_api' in installed_apps %}
 <H5>Lab</H5>
 <ul>
+<li><A href="/admin/{{protocol_lab_section}}/">Requisitions, Aliquots and Packing Lists</A></li>
 <li><A href="/admin/lab_clinic_api/">Results</A></li>
+{% if 'lis.labeling' in installed_apps %}
+<li><A href="/admin/labeling/">Label Printers and Templates</A></li>
+{% endif %}
 </ul>
 {% endif %}
+
+
 
 {% if 'edc.core.ph_dispenser' in installed_apps %}
 <h5>Pharmacy</h5>
@@ -70,12 +79,19 @@
         <li><A href="{% url 'admin:visit_schedule_membershipform_changelist' %}">Membership forms</A>
         <li><A href="{% url 'admin:visit_schedule_schedulegroup_changelist' %}">Schedule groups</A>
         <li><A href="{% url 'admin:visit_schedule_visitdefinition_changelist' %}">Visit definitions</A>
-        <li><A href="{% url 'admin:entry_meta_data_scheduledentrymetadata_changelist' %}">Scheduled Entry meta data</A>
-        <li><A href="{% url 'admin:entry_meta_data_requisitionmetadata_changelist' %}">Requisition meta data</A>
-        <li><A href="{% url 'admin:entry_entry_changelist' %}">Entry</A>
-        <li><A href="{% url 'admin:entry_labentry_changelist' %}">Lab Entry</A> and <A href="{% url 'admin:lab_clinic_api_panel_changelist' %}">Panels</A>
+        <li><A href="{% url 'admin:entry_entry_changelist' %}">Entry</A>, <A href="{% url 'admin:entry_labentry_changelist' %}">Lab Entry</A> and <A href="{% url 'admin:entry_requisitionpanel_changelist' %}">Requisition Panels</A>
+        <li><A href="{% url 'admin:entry_meta_data_scheduledentrymetadata_changelist' %}">Scheduled Meta Data</A> and <A href="{% url 'admin:entry_meta_data_requisitionmetadata_changelist' %}">Requisition Meta Data</A>
     </ul>
 {% endif %}
+
+{% if 'edc.entry_meta_data' in installed_apps%}
+    <h5>Metadata</h5>
+    <ul>
+        <li><A href="{% url 'admin:entry_meta_data_scheduledentrymetadata_changelist' %}">Scheduled CRFs</A>
+        <li><A href="{% url 'admin:entry_meta_data_requisitionmetadata_changelist' %}">Requisitions</A>
+    </ul>
+{% endif %}
+
 
 {% if 'edc.import' in installed_apps%}
     <h5>Import Data</h5>

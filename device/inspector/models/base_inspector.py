@@ -20,6 +20,9 @@ class BaseInspector(BaseUuidModel):
 
     specimen_identifier = models.CharField(
         max_length=50,
+        default='',
+        null=True,
+        blank=True,
         verbose_name='Specimen Identifier'
         )
 

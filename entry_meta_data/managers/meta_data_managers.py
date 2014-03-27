@@ -19,16 +19,17 @@ class BaseMetaDataManager(models.Manager):
     may_delete_entry_status = ['NEW', 'NOT_REQUIRED']
 
     def __init__(self, visit_model, visit_attr_name=None):
+        self.name = None
         self.visit_model = visit_model
         self.visit_attr_name = visit_attr_name or convert_from_camel(self.visit_model._meta.object_name)
         super(BaseMetaDataManager, self).__init__()
 
     def __repr__(self):
         if self._instance:
-            name = self._instance
+            self.name = self._instance
         else:
-            name = 'model with {0}'.self._visit_instance
-        return '{0}.{1}'.format(self.model._meta.object_name, name)
+            self.name = 'model with {0}'.self._visit_instance
+        return '{0}.{1}'.format(self.model._meta.object_name, self.name)
 
     @property
     def instance(self):
@@ -44,14 +45,18 @@ class BaseMetaDataManager(models.Manager):
             self._instance = instance_or_visit_instance
             self.visit_instance = getattr(self.instance, self.visit_attr_name)
         elif isinstance(instance_or_visit_instance, BaseVisitTracking):
-            if super(BaseMetaDataManager, self).filter(**{self.visit_attr_name: instance_or_visit_instance}):
-                self._instance = super(BaseMetaDataManager, self).get(**{self.visit_attr_name: instance_or_visit_instance})
+            options = self.instance_query_options(instance_or_visit_instance)
+            if super(BaseMetaDataManager, self).filter(**options):
+                self._instance = super(BaseMetaDataManager, self).get(**options)
             self.visit_instance = instance_or_visit_instance
         self.appointment_zero = self.visit_instance.appointment
         # reset meta data instance
         self._meta_data_instance = None
         # reset status
         self.status = None
+
+    def instance_query_options(self, instance_or_visit_instance):
+        return {self.visit_attr_name: instance_or_visit_instance}
 
     @property
     def appointment_zero(self):
@@ -78,7 +83,6 @@ class BaseMetaDataManager(models.Manager):
             except self.meta_data_model.DoesNotExist:
                 self._meta_data_instance = self.create_meta_data()
             except AttributeError:
-                # 'NoneType' object has no attribute 'panel'
                 pass
         return self._meta_data_instance
 
@@ -180,20 +184,29 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
     entry_model = LabEntry
     entry_attr = 'lab_entry'
 
+    def __init__(self, visit_model, visit_attr_name=None):
+        self._target_requisition_panel = None
+        super(RequisitionMetaDataManager, self).__init__(visit_model, visit_attr_name)
+
     @property
     def meta_data_query_options(self):
         """Returns the options used to query the meta data model for the meta_data_instance."""
+        self.target_requisition_panel = self.target_requisition_panel  # force setter to inspect the instance if it exists
         return {'appointment': self.appointment_zero,
                 '{0}__app_label'.format(self.entry_attr): self.model._meta.app_label,
                 '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower(),
-                '{0}__panel'.format(self.entry_attr): self.instance.panel}
+                '{0}__requisition_panel__name__iexact'.format(self.entry_attr): self.target_requisition_panel}
 
     def create_meta_data(self):
-        """Creates one meta_data instance for each panel for the requisition model at the time point (appointment) for the given registered_subject.
+        """Creates one meta_data instance for each requisition_panel for the requisition model at the time point (appointment) for the given registered_subject.
 
         might NOT be created based on visit reason."""
         meta_data_instances = []
         meta_data_instance = None
+
+        if self.instance:
+            self.target_requisition_panel = self.instance.panel
+
         if self.visit_instance.reason not in self.skip_create_visit_reasons:
             lab_entries = self.entry_model.objects.filter(
                 app_label=self.model._meta.app_label.lower(),
@@ -209,7 +222,7 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                     registered_subject=self.appointment_zero.registered_subject,
                     due_datetime=lab_entry.visit_definition.get_upper_window_datetime(self.visit_instance.report_datetime),
                     lab_entry=lab_entry,
-                    entry_status=self.status)
+                    entry_status=lab_entry.default_entry_status)
                 try:
                     meta_data_instance = self.meta_data_model.objects.get(**options)
                 except self.meta_data_model.DoesNotExist:
@@ -217,20 +230,36 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                 meta_data_instances.append(meta_data_instance)
         if meta_data_instances:
             try:
-                meta_data_instance = [item for item in meta_data_instances if item.lab_entry.panel == self.instance.panel][0]
-            except AttributeError:  # 'NoneType' object has no attribute 'panel'
-                meta_data_instance = None
-            except IndexError:  # [panel][0]
-                meta_data_instance = None
+                meta_data_instance = [item for item in meta_data_instances if item.lab_entry.requisition_panel == self.target_requisition_panel][0]
+            except IndexError:
+                pass
         return meta_data_instance
 
     def update_meta_data(self, model_or_visit_instance, change_type=None, using=None):
-        """Updates the meta_data's instances by panel.
+        """Updates the meta_data's instances by requisition_panel.
 
         Called by the signal on post_save and pre_delete"""
         self.instance = model_or_visit_instance
-        # only call update if you have an instance, because we need instance.panel.
         if self.instance:
             super(RequisitionMetaDataManager, self).update_meta_data(model_or_visit_instance, change_type, using)
         else:
             self.create_meta_data()
+
+    def update_meta_data_from_rule(self, model_or_visit_instance, change_type, target_requisition_panel, using=None):
+        self.target_requisition_panel = target_requisition_panel
+        super(RequisitionMetaDataManager, self).update_meta_data_from_rule(model_or_visit_instance, change_type, using)
+
+    @property
+    def target_requisition_panel(self):
+        return self._target_requisition_panel
+
+    @target_requisition_panel.setter
+    def target_requisition_panel(self, target_requisition_panel):
+        """Sets the target_requisition_panel to that of the instance otherwise the passed parameter"""
+        try:
+            self._target_requisition_panel = self.instance.panel.name
+        except:
+            self._target_requisition_panel = target_requisition_panel
+
+    def instance_query_options(self, instance_or_visit_instance):
+        return {self.visit_attr_name: instance_or_visit_instance, 'panel__name': self.target_requisition_panel}

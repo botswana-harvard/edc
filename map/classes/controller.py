@@ -57,7 +57,7 @@ class Controller(object):
     def get_current_mapper(self):
         if settings.CURRENT_COMMUNITY_CHECK:
             if not 'CURRENT_COMMUNITY' in dir(settings) or not settings.CURRENT_COMMUNITY:
-                raise MapperError('Ensure settings.CURRENT_MAPPER exists and is not \'None\'.')
+                raise MapperError('Ensure settings.CURRENT_COMMUNITY exists and is not \'None\'.')
             if not settings.DEVICE_ID == '99':
                 mapper_class = self.get_registry(settings.CURRENT_COMMUNITY)()
                 items = mapper_class.get_item_model_cls().objects.all()
