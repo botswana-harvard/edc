@@ -13,8 +13,8 @@ class GlobalConfiguration(BaseUuidModel):
     original datatype unless told not to (convert=False).
 
     Usage::
-        GlobalConfiguration.objects.create(category=category_name, attribute=attr, value=string_value)
-        value = GlobalConfiguration.objects.get_attr_value(attribute=attr)
+        GlobalConfiguration.objects.create(category=category_name, attribute=attribute_name, value=string_value)
+        value = GlobalConfiguration.objects.get_attr_value(attribute_name)
 
     ..seealso:: func:`base_app_configuration.update_global`
 

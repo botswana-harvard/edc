@@ -183,5 +183,5 @@ class AppointmentHelper(object):
         if SubjectConfiguration.objects.filter(subject_identifier=registered_subject.subject_identifier):
             default_appt_type = SubjectConfiguration.objects.get(subject_identifier=registered_subject.subject_identifier).default_appt_type
         if not default_appt_type:
-            default_appt_type = GlobalConfiguration.objects.get_attr_value(attribute='default_appt_type')
+            default_appt_type = GlobalConfiguration.objects.get_attr_value('default_appt_type')
         return default_appt_type

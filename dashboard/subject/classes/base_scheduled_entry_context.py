@@ -3,7 +3,7 @@ import copy
 from django.db.models import get_model
 from django.core.urlresolvers import reverse
 
-from edc.constants import NOT_REQUIRED
+from edc.constants import NOT_REQUIRED, ADDITIONAL
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.appointment.constants import IN_PROGRESS
 
@@ -80,6 +80,10 @@ class BaseScheduledEntryContext(object):
     @property
     def not_required(self):
         return self.meta_data_instance.entry_status == NOT_REQUIRED
+
+    @property
+    def additional(self):
+        return self.meta_data_instance.entry.additional == ADDITIONAL
 
     @property
     def model(self):

@@ -8,6 +8,8 @@ from django.db import models
 from django.db.models import TextField, Count
 from django.template.loader import render_to_string
 
+from edc.apps.app_configuration.models.global_configuration import GlobalConfiguration
+from edc.constants import NEW, NOT_REQUIRED
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.core.bhp_data_manager.models import ActionItem
 from edc.core.crypto_fields.fields import EncryptedTextField
@@ -16,8 +18,8 @@ from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper, Requisitio
 from edc.lab.lab_clinic_api.classes import EdcLabResults
 from edc.lab.lab_packing.models import BasePackingList
 from edc.lab.lab_requisition.models import BaseBaseRequisition
-from edc.subject.appointment.models import Appointment
 from edc.subject.appointment.constants import IN_PROGRESS
+from edc.subject.appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.locator.models import BaseLocator
 from edc.subject.registration.models import RegisteredSubject
@@ -28,8 +30,6 @@ from edc.subject.visit_schedule.exceptions import MembershipFormError
 from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.utils.collections import flatten
-
-from edc.entry_meta_data.models.requisition_meta_data import RequisitionMetaData
 
 from .scheduled_entry_context import ScheduledEntryContext
 from .requisition_context import RequisitionContext
@@ -73,6 +73,8 @@ class RegisteredSubjectDashboard(Dashboard):
     def add_to_context(self):
         self.context.add(
             IN_PROGRESS=IN_PROGRESS,
+            NEW=NEW,
+            NOT_REQUIRED=NOT_REQUIRED,
             appointment=self.appointment,
             appointment_meta=Appointment._meta,
             appointment_row_template=self.appointment_row_template,
@@ -628,18 +630,20 @@ class RegisteredSubjectDashboard(Dashboard):
         scheduled_requisitions = []
         not_required_requisitions = []
         additional_requisitions = []
+        show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
+        allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
         requisition_helper = RequisitionMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
-            if not requisition_context.required and not requisition_context.additional:
+            if not show_not_required_requisitions and not requisition_context.required and not requisition_context.additional:
                 not_required_requisitions.append(requisition_context.context)
-            elif not requisition_context.required and requisition_context.additional:
+            elif allow_additional_requisitions and not requisition_context.required and requisition_context.additional:
                 additional_requisitions.append(requisition_context.context)  # TODO: is there a difference between added and additional?
             else:
                 scheduled_requisitions.append(requisition_context.context)
         render_requisitions = render_to_string(template, {
             'scheduled_requisitions': scheduled_requisitions,
-            'hidden_requisitions': not_required_requisitions,
+            #'not_required_requisitions': not_required_requisitions,
             'additional_requisitions': additional_requisitions,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
