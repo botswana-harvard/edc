@@ -1,6 +1,5 @@
 from django.test import TestCase
 # from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-# from edc.subject.appointment.tests.factories import ConfigurationFactory
 # # from edc.core.bhp_content_type_map.models import ContentTypeMap
 # from edc.testing.tests.factories import TestRequisitionFactory
 # from lab_clinic_api.tests.factories import AliquotTypeFactory
@@ -23,7 +22,6 @@ class FactoryTests(TestCase):
 
     def test_p1(self):
         print 'NO lab_requisition TESTS'
-#         ConfigurationFactory()
 #         aliquot_type = AliquotTypeFactory()
 #         self.assertIsNotNone(TestRequisitionFactory(aliquot_type=aliquot_type))
 #         aliquot_type = AliquotTypeFactory()

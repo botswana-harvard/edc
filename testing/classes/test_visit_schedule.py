@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from edc.subject.visit_schedule.classes import VisitScheduleConfiguration, EntryTuple, RequisitionPanelTuple, MembershipFormTuple, ScheduleGroupTuple
-from edc.utils.constants import SHOW_FORM
+from edc.utils.constants import REQUIRED, NOT_ADDITIONAL
 
 from ..models import TestVisit, TestConsentWithMixin, TestAliquotType, TestPanel
 
@@ -44,14 +44,14 @@ class TestVisitSchedule(VisitScheduleConfiguration):
             'instructions': None,
             'requisitions': (
                 # (entry_order, app_label, model_name, panel.name, panel.panel_type, aliquot_type)
-                RequisitionPanelTuple(10L, u'testing', u'testrequisition', 'Research Blood Draw', 'TEST', 'WB', SHOW_FORM),
-                RequisitionPanelTuple(20L, u'testing', u'testrequisition', 'Viral Load', 'TEST', 'WB', SHOW_FORM),
-                RequisitionPanelTuple(30L, u'testing', u'testrequisition', 'Microtube', 'STORAGE', 'WB', SHOW_FORM),
+                RequisitionPanelTuple(10L, u'testing', u'testrequisition', 'Research Blood Draw', 'TEST', 'WB', REQUIRED, NOT_ADDITIONAL),
+                RequisitionPanelTuple(20L, u'testing', u'testrequisition', 'Viral Load', 'TEST', 'WB', REQUIRED, NOT_ADDITIONAL),
+                RequisitionPanelTuple(30L, u'testing', u'testrequisition', 'Microtube', 'STORAGE', 'WB', REQUIRED, NOT_ADDITIONAL),
                 ),
             'entries': (
-                EntryTuple(10L, u'testing', u'TestScheduledModel1', SHOW_FORM),
-                EntryTuple(20L, u'testing', u'TestScheduledModel2', SHOW_FORM),
-                EntryTuple(30L, u'testing', u'TestScheduledModel3', SHOW_FORM),
+                EntryTuple(10L, u'testing', u'TestScheduledModel1', REQUIRED, NOT_ADDITIONAL),
+                EntryTuple(20L, u'testing', u'TestScheduledModel2', REQUIRED, NOT_ADDITIONAL),
+                EntryTuple(30L, u'testing', u'TestScheduledModel3', REQUIRED, NOT_ADDITIONAL),
             )}
         }
     )

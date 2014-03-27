@@ -1,5 +1,7 @@
 from django.test import TestCase
 
+from edc.constants import NOT_REQUIRED, NEW
+from edc.core.bhp_variables.models import StudySite
 from edc.entry_meta_data.models import ScheduledEntryMetaData
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
@@ -12,7 +14,6 @@ from edc.testing.classes import TestLabProfile
 from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
 from edc.testing.models import TestVisit, TestScheduledModel1, TestScheduledModel2, TestConsentWithMixin
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory
-from edc.core.bhp_variables.models import StudySite
 
 from ..classes import RuleGroup, BaseRule, ScheduledDataRule, Logic
 
@@ -161,7 +162,7 @@ class RuleTests(TestCase):
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
         self.test_visit_factory(appointment=self.appointment)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
 
     def test_rule_updates_meta_data_on_update_with_rs(self):
         """Assert updates meta data when the source model is updated."""
@@ -169,7 +170,7 @@ class RuleTests(TestCase):
         self.assertEquals(self.registered_subject.gender, 'M')
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
         test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
         pk = self.registered_subject.pk
         self.registered_subject.gender = 'F'
         self.registered_subject.save()
@@ -178,14 +179,14 @@ class RuleTests(TestCase):
         pk = test_visit.pk
         test_visit = TestVisit.objects.get(pk=pk)
         test_visit.save()  # registered subject does not use a meta data entry manager so you need to re-save the visit
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
 
     def test_rule_updates_meta_data_with_consent(self):
         """Assert updates meta data if source is RegisteredSubject and override fields knocked out."""
         rg = self.test_rule_group_consent_cls()
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
         self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
 
     def test_rule_updates_meta_data_on_update_with_consent(self):
         """Assert updates meta data when the source model is updated."""
@@ -193,13 +194,13 @@ class RuleTests(TestCase):
         self.assertEquals(self.test_consent.may_store_samples, 'No')
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
         test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
         self.test_consent.may_store_samples = 'Yes'
         self.test_consent.save()
         pk = test_visit.pk
         test_visit = TestVisit.objects.get(pk=pk)
         test_visit.save()  # consent does not use a meta data entry manager so you need to re-save the visit
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
 
     def test_rule_updates_meta_data(self):
         """Assert updates meta data when source model is created, if criteria met."""
@@ -207,33 +208,33 @@ class RuleTests(TestCase):
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
         self.test_visit_factory(appointment=self.appointment)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
 
     def test_rule_updates_meta_data2(self):
         """Assert does not update meta data when source model is created, if criteria is not met."""
         rg = self.test_rule_group_sched_cls()
         test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
         # set f1=No which is the rule for not required.
         test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1='No')
         # meta data for target, testscheduledmodel2, should be updated as not required
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
         test_scheduled_model1.f1 = 'Yes'
         test_scheduled_model1.save()
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
 
     def test_rule_updates_meta_data_on_update(self):
         """Assert updates meta data when the source model is updated."""
         rg = self.test_rule_group_sched_cls()
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
         test_visit = self.test_visit_factory(appointment=self.appointment)
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
         test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1='No')
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
         test_scheduled_model1.f1 = 'Yes'
         test_scheduled_model1.save()
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
 
     def test_rule_updates_meta_data3(self):
         """Asserts repeatedly save visit is harmless."""
