@@ -111,8 +111,8 @@ class RequisitionRuleTests(TestCase):
         requisition_panel = RequisitionPanel.objects.get(name__iexact='Research Blood Draw')
         self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject).count(), 3)
         self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
-        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, entry_status='NOT_REQUIRED').count(), 1)
-        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel, entry_status='NOT_REQUIRED').count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, entry_status=NOT_REQUIRED).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel, entry_status=NOT_REQUIRED).count(), 1)
 
     def test_rule_updates_meta_data2(self):
         """Assert all required if source model instance does not exist."""
@@ -130,9 +130,9 @@ class RequisitionRuleTests(TestCase):
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 3)
         TestScheduledModel1Factory(test_visit=self.test_visit, f1='No')
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject).count(), 2)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject).count(), 2)
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).exclude(lab_entry__requisition_panel__name__in=['Microtube', 'Viral Load']).count(), 1)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, lab_entry__requisition_panel__name__in=['Microtube', 'Viral Load']).count(), 2)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, lab_entry__requisition_panel__name__in=['Microtube', 'Viral Load']).count(), 2)
 
     def test_rule_updates_meta_data4(self):
         """Assert updates meta data when the source model is updated."""
@@ -141,7 +141,7 @@ class RequisitionRuleTests(TestCase):
         requisition_panels.append(RequisitionPanel.objects.get(name='Viral Load'))
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
         test_scheduled_model1 = TestScheduledModel1Factory(test_visit=self.test_visit, f1='No')
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, lab_entry__requisition_panel__in=requisition_panels).count(), 2)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, lab_entry__requisition_panel__in=requisition_panels).count(), 2)
         test_scheduled_model1.f1 = 'Yes'
         test_scheduled_model1.save()
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__requisition_panel__in=requisition_panels).count(), 2)
@@ -165,7 +165,7 @@ class RequisitionRuleTests(TestCase):
         test_visit = self.test_visit_factory(appointment=self.appointment)
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
         test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1='No')
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NOT_REQUIRED', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
         test_scheduled_model1.f1 = 'Yes'
         test_scheduled_model1.save()
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)

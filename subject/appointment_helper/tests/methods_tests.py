@@ -1,14 +1,12 @@
 from datetime import timedelta, datetime
 from dateutil.relativedelta import relativedelta
 from django.test import TestCase
-from edc.subject.appointment.tests.factories import ConfigurationFactory
 from ..classes import AppointmentDateHelper
 
 
 class MethodsTests(TestCase):
 
     def test_check_if_allowed_isoweekday(self):
-        configuration = ConfigurationFactory()
         configuration.allowed_iso_weekdays = '12345'
         date_helper = AppointmentDateHelper()
 
@@ -32,7 +30,6 @@ class MethodsTests(TestCase):
 
     def test_move_to_same_weekday(self):
         """Test _move_to_same_weekday."""
-        configuration = ConfigurationFactory()
         configuration.allowed_iso_weekdays = '12345'
         configuration.use_same_weekday = True
         weekday = 1
