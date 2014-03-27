@@ -17,6 +17,7 @@ from edc.lab.lab_clinic_api.classes import EdcLabResults
 from edc.lab.lab_packing.models import BasePackingList
 from edc.lab.lab_requisition.models import BaseBaseRequisition
 from edc.subject.appointment.models import Appointment
+from edc.subject.appointment.constants import IN_PROGRESS
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.locator.models import BaseLocator
 from edc.subject.registration.models import RegisteredSubject
@@ -71,31 +72,32 @@ class RegisteredSubjectDashboard(Dashboard):
 
     def add_to_context(self):
         self.context.add(
-            subject_dashboard_url=self.dashboard_url_name,
-            show=self.show,
+            IN_PROGRESS=IN_PROGRESS,
+            appointment=self.appointment,
+            appointment_meta=Appointment._meta,
+            appointment_row_template=self.appointment_row_template,
+            appointment_visit_attr=self.visit_model._meta.object_name.lower(),
+            appointments=self.appointments,
+            extra_url_context=self.extra_url_context,
+            form_language_code=self.language,
+            keyed_membership_forms=self.keyed_subject_membership_models,
+            membership_forms=self.subject_membership_models,
             registered_subject=self.registered_subject,
-            subject_identifier=self.subject_identifier,
+            show=self.show,
+            subject_configuration=self.subject_configuration,
+            subject_configuration_meta=SubjectConfiguration._meta,
+            subject_dashboard_url=self.dashboard_url_name,
             subject_hiv_history=self.subject_hiv_history,
             subject_hiv_status=self.render_subject_hiv_status(),
-            subject_configuration=self.subject_configuration,
-            appointment_meta=Appointment._meta,
-            subject_configuration_meta=SubjectConfiguration._meta,
-            appointment_row_template=self.appointment_row_template,
-            appointment=self.appointment,
-            appointments=self.appointments,
-            appointment_visit_attr=self.visit_model._meta.object_name.lower(),
+            subject_identifier=self.subject_identifier,
+            unkeyed_membership_forms=self.unkeyed_subject_membership_models,
             visit_attr=convert_from_camel(self.visit_model._meta.object_name),
+            visit_code=self.appointment_code,
+            visit_instance=self.appointment_continuation_count,
+            visit_messages=self.visit_messages,
             visit_model=self.visit_model,
             visit_model_instance=self.visit_model_instance,
-            visit_instance=self.appointment_continuation_count,
-            visit_code=self.appointment_code,
             visit_model_meta=self.visit_model._meta,
-            visit_messages=self.visit_messages,
-            membership_forms=self.subject_membership_models,
-            keyed_membership_forms=self.keyed_subject_membership_models,
-            unkeyed_membership_forms=self.unkeyed_subject_membership_models,
-            form_language_code=self.language,
-            extra_url_context=self.extra_url_context,
             )
         if self.show == 'forms':
             self.context.add(
@@ -606,7 +608,7 @@ class RegisteredSubjectDashboard(Dashboard):
         scheduled_entry_helper = ScheduledEntryMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
         for meta_data_instance in scheduled_entry_helper.get_entries_for('clinic'):
             scheduled_entry_context = ScheduledEntryContext(meta_data_instance, self.appointment, self.visit_model)
-            scheduled_entries.append(scheduled_entry_context.get_context())
+            scheduled_entries.append(scheduled_entry_context.context)
         rendered_scheduled_forms = render_to_string(template, {
             'scheduled_entries': scheduled_entries,
             'visit_attr': self.visit_model_attrname,
@@ -623,16 +625,22 @@ class RegisteredSubjectDashboard(Dashboard):
     def render_requisitions(self):
         """Renders the Scheduled Requisitions section of the dashboard using the context class RequisitionContext."""
         template = 'scheduled_requisitions.html'
-        requisitions = []
+        scheduled_requisitions = []
+        not_required_requisitions = []
+        additional_requisitions = []
         requisition_helper = RequisitionMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
-            requisitions.append(requisition_context.get_context())
-        hidden_requisitions, added_requisitions = self.filter_hidden_requisitions(requisitions)
+            if not requisition_context.required and not requisition_context.additional:
+                not_required_requisitions.append(requisition_context.context)
+            elif not requisition_context.required and requisition_context.additional:
+                additional_requisitions.append(requisition_context.context)  # TODO: is there a difference between added and additional?
+            else:
+                scheduled_requisitions.append(requisition_context.context)
         render_requisitions = render_to_string(template, {
-            'scheduled_requisitions': requisitions,
-            'hidden_requisitions': hidden_requisitions,
-            'added_requisitions': added_requisitions,
+            'scheduled_requisitions': scheduled_requisitions,
+            'hidden_requisitions': not_required_requisitions,
+            'additional_requisitions': additional_requisitions,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
             'registered_subject': self.registered_subject.pk,
@@ -643,17 +651,6 @@ class RegisteredSubjectDashboard(Dashboard):
             'subject_dashboard_url': self.dashboard_url_name,
             'show': self.show})
         return render_requisitions
-
-    def filter_hidden_requisitions(self, requisitions):
-        hidden_requisitions = []
-        added_requisitions = []
-        for requisition in requisitions:
-            lab_entry = requisition['lab_entry']
-            if lab_entry.is_required() or not lab_entry.additional:
-                continue
-            req_metadata = RequisitionMetaData.objects.get(appointment=self.appointment, lab_entry=lab_entry)
-            hidden_requisitions.append(requisition) if req_metadata.is_not_required() else added_requisitions.append(requisition)
-        return (hidden_requisitions, added_requisitions)
 
     def render_subject_hiv_status(self):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""

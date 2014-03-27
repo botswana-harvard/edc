@@ -1,12 +1,12 @@
 from django.db import models
 
-from edc.choices.common import YES_NO
 from edc.subject.entry.choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
 from edc.subject.visit_schedule.models import BaseWindowPeriodItem
 from edc.subject.visit_schedule.models import VisitDefinition
 
 from ..exceptions import EntryManagerError
 from ..managers import LabEntryManager
+from edc.constants import NOT_REQUIRED
 
 from .requisition_panel import RequisitionPanel
 
@@ -22,11 +22,6 @@ class LabEntry(BaseWindowPeriodItem):
     model_name = models.CharField(max_length=50, null=True, help_text='requisition_panel model_name')
 
     entry_order = models.IntegerField()
-
-    required = models.CharField(
-        max_length=10,
-        choices=YES_NO,
-        default='YES')
 
     entry_category = models.CharField(
         max_length=25,
@@ -73,11 +68,13 @@ class LabEntry(BaseWindowPeriodItem):
     def __unicode__(self):
         return '{0}.{1}'.format(self.visit_definition.code, self.requisition_panel.name)
 
-    def is_required(self):
-        return self.default_entry_status != 'NOT_REQUIRED'
+    @property
+    def required(self):
+        return self.default_entry_status != NOT_REQUIRED
 
-    def is_not_required(self):
-        return not self.is_required()
+    @property
+    def not_required(self):
+        return not self.required
 
     class Meta:
         app_label = 'entry'

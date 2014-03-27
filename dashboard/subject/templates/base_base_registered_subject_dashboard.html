@@ -84,7 +84,7 @@
                    <tr name="bottom left" >
                        <td>
                            <H5>Scheduled Forms {% if visit_code %} for Visit '{{ visit_code }}'{% endif %}</H5>
-                           {% if appointment.appt_status != 'in_progress' %}
+                           {% if appointment.appt_status != IN_PROGRESS %}
                                <I> Hint: To edit the forms below, change the selected appointment's status to 'In Progress'</I> 
                            {% endif %}    
 
@@ -99,7 +99,7 @@
                            {% if not visit_code %}                
                               To see scheduled labs for a visit, select the appointment with the correct visit report and click 'show entry forms' in the Action column.
                            {% else %}
-                                {% if appointment.appt_status != 'in_progress' %}
+                                {% if appointment.appt_status != IN_PROGRESS %}
                                    <I> Hint: To edit the labs below, change the selected appointment's status to 'In Progress'</I> 
                                {% endif %}    
                                {% block scheduled_requisitions %}{% endblock scheduled_requisitions %}
@@ -114,7 +114,7 @@
                            {% if not visit_code %}                
                                To see additional labs for a visit, select the appointment with the correct visit report and click 'show entry forms' in the Action column.
                            {% else %}
-                               {% if appointment.appt_status != 'in_progress' %}
+                               {% if appointment.appt_status != IN_PROGRESS %}
                                    <I> Hint: To edit the labs below, change the selected appointment's status to 'In Progress'</I> 
                                {% endif %}    
                                {% block additional_lab_bucket %}{% endblock additional_lab_bucket %}

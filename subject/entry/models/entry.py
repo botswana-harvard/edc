@@ -1,8 +1,8 @@
 from django.db import models
 
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.choices.common import YES_NO_OPTIONAL
 from edc.subject.visit_schedule.models import BaseWindowPeriodItem, VisitDefinition
+from edc.constants import NOT_REQUIRED
 
 from ..choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
 from ..managers import EntryManager
@@ -25,10 +25,6 @@ class Entry(BaseWindowPeriodItem):
         null=True,
         blank=True,
         help_text='for example, may be used to add to the form title on the change form to group serveral forms')
-    required = models.CharField(
-        max_length=10,
-        choices=YES_NO_OPTIONAL,
-        default='Yes')
     entry_category = models.CharField(
         max_length=25,
         choices=ENTRY_CATEGORY,
@@ -74,8 +70,13 @@ class Entry(BaseWindowPeriodItem):
     def __unicode__(self):
         return '{0}: {1}'.format(self.visit_definition.code, self.content_type_map.content_type)
 
-    def is_required(self):
-        return self.default_entry_status != 'NOT_REQUIRED'
+    @property
+    def required(self):
+        return self.default_entry_status != NOT_REQUIRED
+
+    @property
+    def not_required(self):
+        return not self.required
 
     class Meta:
         app_label = 'entry'
