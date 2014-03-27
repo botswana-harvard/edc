@@ -649,15 +649,10 @@ class RegisteredSubjectDashboard(Dashboard):
         added_requisitions = []
         for requisition in requisitions:
             lab_entry = requisition['lab_entry']
-            if lab_entry.is_required():
-                continue
-            if not lab_entry.additional:
+            if lab_entry.is_required() or not lab_entry.additional:
                 continue
             req_metadata = RequisitionMetaData.objects.get(appointment=self.appointment, lab_entry=lab_entry)
-            if req_metadata.is_not_required():
-                hidden_requisitions.append(requisition)
-            if req_metadata.is_required():
-                added_requisitions.append(requisition)
+            hidden_requisitions.append(requisition) if req_metadata.is_not_required() else added_requisitions.append(requisition)
         return (hidden_requisitions, added_requisitions)
 
     def render_subject_hiv_status(self):
