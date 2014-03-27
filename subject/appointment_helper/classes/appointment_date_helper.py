@@ -15,10 +15,10 @@ class AppointmentDateHelper(object):
         self.window_delta = None
         # not used
         self.allow_backwards = False
-        self.appointments_days_formard = GlobalConfiguration.objects.get_attr_value(attribute='appointments_days_forward')
-        self.appointments_per_day_max = GlobalConfiguration.objects.get_attr_value(attribute='appointments_per_day_max')
-        self.use_same_weekday = GlobalConfiguration.objects.get_attr_value(attribute='use_same_weekday')
-        self.allowed_iso_weekdays = GlobalConfiguration.objects.get_attr_value(attribute='allowed_iso_weekdays')
+        self.appointments_days_formard = GlobalConfiguration.objects.get_attr_value('appointments_days_forward')
+        self.appointments_per_day_max = GlobalConfiguration.objects.get_attr_value('appointments_per_day_max')
+        self.use_same_weekday = GlobalConfiguration.objects.get_attr_value('use_same_weekday')
+        self.allowed_iso_weekdays = GlobalConfiguration.objects.get_attr_value('allowed_iso_weekdays')
 
     def get_best_datetime(self, appt_datetime, site, weekday=None, exception_cls=None):
         """ Gets the appointment datetime on insert.
