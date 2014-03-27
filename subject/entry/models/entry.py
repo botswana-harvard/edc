@@ -43,7 +43,7 @@ class Entry(BaseWindowPeriodItem):
         max_length=25,
         choices=ENTRY_STATUS,
         default='NEW')
-
+    additional = models.BooleanField(default=False, help_text='If True lists the entry in additional entries')
     app_label = models.CharField(max_length=50, null=True)
 
     model_name = models.CharField(max_length=50, null=True)
@@ -73,6 +73,9 @@ class Entry(BaseWindowPeriodItem):
 
     def __unicode__(self):
         return '{0}: {1}'.format(self.visit_definition.code, self.content_type_map.content_type)
+
+    def is_required(self):
+        return self.default_entry_status != 'NOT_REQUIRED'
 
     class Meta:
         app_label = 'entry'
