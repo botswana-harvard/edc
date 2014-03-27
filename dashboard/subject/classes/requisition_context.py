@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 
 from edc.core.bhp_common.utils import convert_from_camel
+from edc.constants import NOT_REQUIRED, ADDITIONAL
 from edc.entry_meta_data.models import RequisitionMetaData
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.subject.appointment.constants import IN_PROGRESS
@@ -33,6 +34,10 @@ class RequisitionContext(BaseScheduledEntryContext):
         return self.requisition_model
 
     @property
+    def additional(self):
+        return self.meta_data_instance.lab_entry.additional == ADDITIONAL
+
+    @property
     def instance(self):
         """Sets to the model instance referred to by the requisition meta data."""
         if not self._instance:
@@ -46,7 +51,7 @@ class RequisitionContext(BaseScheduledEntryContext):
         """Returns the URL to the model referred to by the scheduled entry meta data if the current appointment is 'in progress'."""
         model_url = None
         if self.appointment.appt_status == IN_PROGRESS:
-            if self.meta_data_instance.entry_status == 'NOT_REQUIRED':
+            if self.meta_data_instance.entry_status == NOT_REQUIRED:
                 model_url = None
             elif not self.instance:
                 model_url = reverse('admin:{app_label}_{model_name}_add'.format(app_label=self.model._meta.app_label,
