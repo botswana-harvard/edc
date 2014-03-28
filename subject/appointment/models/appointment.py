@@ -12,6 +12,7 @@ from edc.subject.visit_schedule.models import VisitDefinition
 
 from ..managers import AppointmentManager
 from ..choices import APPT_TYPE
+from ..constants import DONE
 
 from .base_appointment import BaseAppointment
 
@@ -157,6 +158,10 @@ class Appointment(BaseAppointment):
 
     def get_report_datetime(self):
         return self.appt_datetime
+
+    @property
+    def complete(self):
+        return self.appt_status == DONE
 
     class Meta:
         app_label = 'appointment'
