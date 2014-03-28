@@ -628,23 +628,25 @@ class RegisteredSubjectDashboard(Dashboard):
         """Renders the Scheduled Requisitions section of the dashboard using the context class RequisitionContext."""
         template = 'scheduled_requisitions.html'
         scheduled_requisitions = []
-        not_required_requisitions = []
-        additional_requisitions = []
-        show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
-        allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
+#         not_required_requisitions = []
+#         additional_requisitions = []
+#         show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
+#         allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
         requisition_helper = RequisitionMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
-            if not show_not_required_requisitions and not requisition_context.required and not requisition_context.additional:
-                not_required_requisitions.append(requisition_context.context)
-            elif allow_additional_requisitions and not requisition_context.required and requisition_context.additional:
-                additional_requisitions.append(requisition_context.context)  # TODO: is there a difference between added and additional?
-            else:
-                scheduled_requisitions.append(requisition_context.context)
+            scheduled_requisitions.append(requisition_context.context)
+#             if not show_not_required_requisitions and not requisition_context.required and not requisition_context.additional:
+#                 not_required_requisitions.append(requisition_context.context)
+#             elif allow_additional_requisitions and not requisition_context.required and requisition_context.additional:
+#                 additional_requisitions.append(requisition_context.context)  # TODO: is there a difference between added and additional?
+#             else:
+#                 scheduled_requisitions.append(requisition_context.context)
+        not_required_requisitions = self.filter_not_required_requisitions(scheduled_requisitions)
         render_requisitions = render_to_string(template, {
             'scheduled_requisitions': scheduled_requisitions,
-            #'not_required_requisitions': not_required_requisitions,
-            'additional_requisitions': additional_requisitions,
+            'not_required_requisitions': not_required_requisitions,
+#             'additional_requisitions': additional_requisitions,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
             'registered_subject': self.registered_subject.pk,
@@ -655,6 +657,9 @@ class RegisteredSubjectDashboard(Dashboard):
             'subject_dashboard_url': self.dashboard_url_name,
             'show': self.show})
         return render_requisitions
+
+    def filter_not_required_requisitions(self, scheduled_requisitions):
+        return None
 
     def render_subject_hiv_status(self):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""
