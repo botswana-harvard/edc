@@ -5,14 +5,21 @@ from django.core import serializers
 
 from edc.core.crypto_fields.classes import FieldCryptor
 
-from ..models import ExportHistory, ExportTransaction
+from ..models import ExportTransaction
 
 
 class ExportHistoryManager(models.Manager):
 
-    def get_queryset(self):
-        """Returns a queryset with the export history of this model."""
-        return ExportHistory.objects.all()
+# see https://github.com/treyhunner/django-simple-history/ for some ideas to improve this
+#     def __init__(self, model, instance=None):
+#         super(ExportHistoryManager, self).__init__()
+#         self.model = model
+#         self.instance = instance
+# 
+#     def get_query_set(self):
+#         if self.instance is None:
+#             return super(ExportHistoryManager, self).get_query_set()
+#         return super(ExportHistoryManager, self).get_query_set().filter(**{'instance_pk': self.instance.pk})
 
     def serialize_to_export_transaction(self, instance, change_type, using, encrypt=True):
         """Serialize this instance to the export transaction model."""
