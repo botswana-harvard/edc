@@ -7,7 +7,6 @@ from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 from edc.dashboard.subject.classes import ScheduledEntryContext
 from edc.subject.appointment.models import Appointment
-from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.entry_meta_data.models import ScheduledEntryMetaData
 from edc.subject.entry.tests.factories import EntryFactory, LabEntryFactory
@@ -28,7 +27,6 @@ class ScheduledEntryContextTests(TestCase):
         site_lab_tracker.autodiscover()
         study_specific = StudySpecificFactory()
         StudySiteFactory()
-        ConfigurationFactory()
         content_type_map_helper = ContentTypeMapHelper()
         content_type_map_helper.populate()
         content_type_map_helper.sync()

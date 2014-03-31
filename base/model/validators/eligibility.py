@@ -6,6 +6,11 @@ def eligible_if_yes(value):
         raise ValidationError('Participant is NOT ELIGIBLE. Registration cannot continue.')
 
 
+def eligible_if_yes_or_declined(value):
+    if value not in ['Yes', 'Declined']:
+        raise ValidationError('Please provide the subject with a copy of the consent.')
+
+
 def eligible_if_no(value):
     if value != 'No':
         raise ValidationError('Participant is NOT ELIGIBLE. Registration cannot continue.')

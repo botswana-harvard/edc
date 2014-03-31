@@ -8,7 +8,6 @@
 # from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 # from edc.dashboard.subject.classes import RegisteredSubjectDashboard
 # from edc.subject.appointment.models import Appointment
-# from edc.subject.appointment.tests.factories import ConfigurationFactory
 # from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 # from edc.subject.entry.tests.factories import EntryFactory
 # from edc.subject.lab_entry.tests.factories import LabEntryFactory
@@ -31,7 +30,6 @@
 #         site_lab_tracker.autodiscover()
 #         study_specific = StudySpecificFactory()
 #         StudySiteFactory()
-#         ConfigurationFactory()
 #         content_type_map_helper = ContentTypeMapHelper()
 #         content_type_map_helper.populate()
 #         content_type_map_helper.sync()

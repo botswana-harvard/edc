@@ -7,7 +7,6 @@ from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.tests.factories import StudySiteFactory
 from edc.subject.appointment.models import Appointment
-from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.subject.consent.models import AttachedModel
 from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
@@ -26,7 +25,6 @@ class OffStudyMethodsTests(TestCase):
         self.create_study_variables()
 
         study_site = StudySiteFactory(site_code='10', site_name='TESTSITE')
-        ConfigurationFactory()
         content_type_map_helper = ContentTypeMapHelper()
         content_type_map_helper.populate()
         content_type_map_helper.sync()

@@ -34,6 +34,12 @@ class BaseEntryMetaData(BaseUuidModel):
         null=True,
         blank=True)
 
+    def is_required(self):
+        return self.entry_status != 'NOT_REQUIRED'
+
+    def is_not_required(self):
+        return not self.is_required()
+
     def include_for_dispatch(self):
         return True
 
