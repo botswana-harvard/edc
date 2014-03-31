@@ -1,9 +1,10 @@
+from django.conf import settings
 from django.conf.urls import patterns, url
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
-from django.conf import settings
+
 from .most_recent_query import MostRecentQuery
 
 
@@ -46,6 +47,13 @@ class BaseSectionView(object):
         """Updates the template context."""
         for k, v in kwargs.iteritems():
             self._context[k] = v
+
+    @property
+    def protocol_lab_section(self):
+        if 'LAB_SECTION' in dir(settings):
+            return settings.LAB_SECTION
+        else:
+            return ''
 
     def set_section_name(self):
         """Sets the name for this section."""
@@ -213,6 +221,7 @@ class BaseSectionView(object):
             'add_model': self.get_add_model_cls(),
             'add_model_opts': self.get_add_model_opts(),
             'add_model_name': self.get_add_model_name(),
+            'protocol_lab_section': self.protocol_lab_section,
             })
         # add extra values to the context dictionary
         context = self._contribute_to_context_wrapper(default_context, request, **kwargs)

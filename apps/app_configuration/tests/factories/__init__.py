@@ -1,4 +1,2 @@
-from .appointment_configuration_factory import AppointmentConfigurationFactory
 from .catalogue_configuration_factory import CatalogueConfigurationFactory
-from .survey_configuration_factory import SurveyConfigurationFactory
 from .variables_configuration_factory import VariblesConfigurationFactory

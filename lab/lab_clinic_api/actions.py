@@ -1,8 +1,3 @@
-from django.contrib import messages
-
-from lis.labeling.exceptions import PrinterException
-
-from .classes import SpecimenHelper
 from .models import Result, ResultItem, Order
 
 
@@ -65,16 +60,3 @@ def refresh_order_status(modeladmin, request, queryset):
         else:
             modeladmin.message_user(request, 'Checked status on {0} orders. - updated {1}.'.format(tot, updated))
 refresh_order_status.short_description = "Orders: refresh status"
-
-
-def print_aliquot_label(modeladmin, request, aliquots):
-    """ Prints a specimen label for a received specimen using the :func:`print_label`
-    method attached to the requisition model."""
-    specimen_helper = SpecimenHelper()
-    try:
-        for aliquot in aliquots:
-            specimen_helper.print_aliquot_label(request, aliquot)
-    except PrinterException as e:
-        messages.add_message(request, messages.ERROR, e.value)
-
-print_aliquot_label.short_description = "LABEL: print aliquot label"

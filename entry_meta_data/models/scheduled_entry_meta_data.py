@@ -24,6 +24,6 @@ class ScheduledEntryMetaData(BaseEntryMetaData):
 
     class Meta:
         app_label = 'entry_meta_data'
-        verbose_name = "Subject Scheduled Entry Bucket"
+        verbose_name = "Scheduled Entry Metadata"
         ordering = ['registered_subject', 'entry', 'appointment']
         unique_together = ['registered_subject', 'entry', 'appointment']

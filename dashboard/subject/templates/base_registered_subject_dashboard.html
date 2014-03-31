@@ -70,14 +70,6 @@
         
     {% endblock scheduled_requisitions %}
 
-{% if additional_lab_bucket %}   
-    {% block additional_lab_bucket %}
-
-        {% include 'additional_lab_bucket_include.html' %}
-        
-    {% endblock additional_lab_bucket %}
-{% endif %}
-
 {% block top_links %}
   {{ block.super }}
   <BR>

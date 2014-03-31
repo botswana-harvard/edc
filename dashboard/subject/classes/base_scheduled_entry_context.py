@@ -3,7 +3,9 @@ import copy
 from django.db.models import get_model
 from django.core.urlresolvers import reverse
 
+from edc.constants import NOT_REQUIRED, ADDITIONAL
 from edc.core.bhp_common.utils import convert_from_camel
+from edc.subject.appointment.constants import IN_PROGRESS
 
 
 class BaseScheduledEntryContext(object):
@@ -20,7 +22,8 @@ class BaseScheduledEntryContext(object):
         self.visit_model = visit_model
         self.meta_data_instance = meta_data_instance
 
-    def get_context(self):
+    @property
+    def context(self):
         """Returns a dictionary for the template context including all fields from ScheduledEntryMetaData, URLs, etc.
 
         .. note:: The main purpose of this class is to return the template context."""
@@ -71,6 +74,18 @@ class BaseScheduledEntryContext(object):
         return self.visit_model.objects.get(appointment=self.appointment)
 
     @property
+    def required(self):
+        return self.meta_data_instance.entry_status != NOT_REQUIRED
+
+    @property
+    def not_required(self):
+        return self.meta_data_instance.entry_status == NOT_REQUIRED
+
+    @property
+    def additional(self):
+        return self.meta_data_instance.entry.additional == ADDITIONAL
+
+    @property
     def model(self):
         """Returns the model class of the model referred to by the scheduled entry."""
         app_label = self.meta_data_instance.entry.app_label
@@ -81,8 +96,8 @@ class BaseScheduledEntryContext(object):
     def model_url(self):
         """Returns the URL to the model referred to by the scheduled entry meta data if the current appointment is 'in progress'."""
         model_url = None
-        if self.appointment.appt_status == 'in_progress':
-            if self.meta_data_instance.entry_status == 'NOT_REQUIRED':
+        if self.appointment.appt_status == IN_PROGRESS:
+            if self.meta_data_instance.entry_status == NOT_REQUIRED:
                 model_url = None
             elif not self.instance:
                 model_url = reverse('admin:{app_label}_{model_name}_add'.format(app_label=self.model._meta.app_label,
@@ -96,7 +111,7 @@ class BaseScheduledEntryContext(object):
     @property
     def meta_data_model_change_url(self):
         """Returns the admin change URL for the scheduled entry meta data instance if the current appointment is 'in progress'."""
-        if self.appointment.appt_status == 'in_progress':
+        if self.appointment.appt_status == IN_PROGRESS:
             return reverse('admin:{app_label}_{model_name}_change'.format(app_label=self.meta_data_model._meta.app_label,
                                                                           model_name=self.meta_data_model._meta.object_name.lower()
                                                                           ), args=(self.meta_data_instance.pk, ))

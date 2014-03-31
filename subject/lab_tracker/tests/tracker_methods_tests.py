@@ -4,7 +4,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 from edc.lab.lab_clinic_api.models import ResultItem
 from edc.lab.lab_clinic_api.tests.factories import ResultItemFactory, AliquotConditionFactory, AliquotFactory, OrderFactory, ReceiveFactory, ResultFactory, TestCodeFactory
-from edc.subject.appointment.tests.factories import ConfigurationFactory
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory
 from edc.testing.models import TestSubjectResultModel
 from edc.testing.tests.factories import TestSubjectResultModelFactory
@@ -18,7 +17,6 @@ class TrackerMethodsTests(TestCase):
 
     def test_p1(self):
         StudySpecificFactory()
-        ConfigurationFactory()
         print 'assert not yet autodiscovered'
         site_lab_tracker._registry = []
         self.assertEqual(site_lab_tracker._registry, [])

@@ -17,7 +17,6 @@ from edc.testing.models import TestConsent, TestScheduledModel
 from ..choices import APPT_STATUS
 from ..models import Appointment
 
-from .factories import ConfigurationFactory
 from .base_appointment_tests import BaseAppointmentTests
 
 
@@ -64,7 +63,6 @@ class AppointmentMethodTests(BaseAppointmentTests):
         site_lab_tracker.autodiscover()
         StudySpecificFactory()
         StudySiteFactory()
-        ConfigurationFactory()
         content_type_map_helper = ContentTypeMapHelper()
         content_type_map_helper.populate()
         content_type_map_helper.sync()
