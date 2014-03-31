@@ -10,9 +10,10 @@ from edc.core.crypto_fields.classes import FieldCryptor
 @login_required
 def view_transaction(request, **kwargs):
     cryptor = FieldCryptor('aes', 'local')
+    app_label = kwargs.get('app_label', 'sync')
     model_name = kwargs.get('model_name')
     pk = kwargs.get('pk')
-    model = get_model('sync', model_name)
+    model = get_model(app_label, model_name)
     model_instance = model.objects.get(pk=pk)
     textfields = {}
     charfields = {}

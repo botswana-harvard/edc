@@ -15,8 +15,9 @@ class ExportAsCsv(object):
     # TODO: maybe instead of separate lists for row values and column names, make this use an OrderedDict
     def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None, header=True, track_history=False, show_all_fields=True, delimiter=None, encrypt=True):
         self._field_names = []
-        self._modeladmin = modeladmin
         self._model = None
+        self.modeladmin = modeladmin
+        self.model = model
         self._file_obj = None
         self._delimiter = ','
         self._header_row = []
@@ -24,39 +25,32 @@ class ExportAsCsv(object):
         self._header_from_m2m_complete = False
         self._extra_fields = None
         self._track_history = track_history
-        self._queryset = queryset
+        self.queryset = queryset
         if delimiter:
             self._delimiter = delimiter
         self.encrypt = encrypt
-        self.set_model(model)
         if show_all_fields:
             self.set_field_names_from_model()  # set initial field name list
         self._include_header = header  # writer to include a header row
         self.append_field_names(fields)  # a list of names
         self.append_field_names(extra_fields)  # Extra fields is a list of dictionaries of [{'label': 'django_style__query_string'}, {}...].
         self.delete_field_names(exclude)  # a list of names
-        self.set_export_filename()
+        self.export_filename = '{0}.csv'.format(unicode(self.model._meta).replace('.', '_'), datetime.now().strftime('%Y%m%d'))
 
-    def get_queryset(self):
-        """Returns the queryset to be exported."""
-        return self._queryset
-
-    def set_file_obj(self):
-        self._file_obj = HttpResponse(mimetype='text/csv')
-        self._file_obj['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=self.get_export_filename())
-
-    def get_file_obj(self):
+    @property
+    def file_obj(self):
         """Returns a file object for the writer."""
-        return self._file_obj
+        file_obj = HttpResponse(mimetype='text/csv')
+        file_obj['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=self.export_filename)
+        return file_obj
 
     def write_to_file(self):
         """Writes the export file and returns the file object.
 
         The header row column names are collected on the first pass of the for loop."""
-        self.set_file_obj()
-        writer = csv.writer(self.get_file_obj(), delimiter=self.get_field_delimiter())
+        writer = csv.writer(self.file_obj, delimiter=self.get_field_delimiter())
         self.reorder_field_names()
-        for index, obj in enumerate(self.get_queryset()):
+        for index, obj in enumerate(self.queryset):
             row = self.get_row(obj)
             if self.get_include_header() and index == 0:
                 writer.writerow(self.get_header_row())
@@ -64,7 +58,7 @@ class ExportAsCsv(object):
             if 'update_export_mixin_fields' in dir(obj):
                 obj.update_export_mixin_fields()
             self.update_export_history(obj)
-        return self.get_file_obj()
+        return self.file_obj
 
     def get_row(self, obj):
         """Returns a one row for the writer."""
@@ -132,37 +126,37 @@ class ExportAsCsv(object):
     def get_include_header(self):
         return self._include_header
 
-    def get_modeladmin(self):
-        return self._modeladmin
-
-    def set_model(self, model=None):
-        """Sets model to that from modeladmin or model."""
-        if self.get_modeladmin():
-            self._model = self.get_modeladmin().model
-        else:
-            self._model = model
-        if not self._model:
-            raise AttributeError('Attribute model may not be None.')
-
-    def get_model(self):
+    @property
+    def model(self):
         return self._model
 
-    def set_field_names(self, value):
+    @model.setter
+    def model(self, model=None):
+        """Sets model to that from modeladmin or model."""
+        if not self._model:
+            if self.modeladmin:
+                self._model = self.modeladmin.model
+            else:
+                self._model = model
+            if not self._model:
+                raise AttributeError('Attribute model may not be None.')
+
+    @property
+    def field_names(self):
+        return self._field_names
+
+    @field_names.setter
+    def field_names(self, value):
         """Sets the field names list."""
         self._field_names = list(OrderedDict.fromkeys(value))
 
-    def update_field_names(self, value):
+    def update_field_names(self, value_or_list):
         """Updates the field_names list by either appending or extending."""
-        if not self._field_names:
-            self._field_names = []
-        if isinstance(value, list):
-            self._field_names.extend(value)
-        else:
-            self._field_names.append(value)
-        self._field_names = list(OrderedDict.fromkeys(self._field_names))  # remove dups, preserve order
-
-    def get_field_names(self):
-        return self._field_names
+        try:
+            self.field_names.extend(value_or_list)
+        except TypeError:
+            self.field_names.append(value_or_list)
+        self.field_names = list(OrderedDict.fromkeys(self.field_names))  # remove dups, preserve order
 
     def get_simple_field_names(self):
         """Returns a list of field names with tuples and __ parsed out."""
@@ -202,7 +196,7 @@ class ExportAsCsv(object):
 
     def set_field_names_from_model(self):
         """Sets field names by inspecting the model class for its field names."""
-        self.update_field_names([field.name for field in self.get_model()._meta.fields])
+        self.update_field_names([field.name for field in self.model._meta.fields])
 
     def append_field_names(self, fields):
         """Appends field names to the list given a dictionary or list."""
@@ -280,13 +274,6 @@ class ExportAsCsv(object):
     def get_m2m_value_delimiter(self):
         """Returns the delimiter for m2m values (for fields with a list of values)."""
         return ';'
-
-    def set_export_filename(self):
-        self._export_filename = '{0}.csv'.format(unicode(self.get_model()._meta).replace('.', '_'), datetime.now().strftime('%Y%m%d'))
-
-    def get_export_filename(self):
-        """Returns the filename."""
-        return self._export_filename
 
     def recurse_getattr(self, obj, query_list):
         """ Recurse on result of getattr() with a given query string as a list.
