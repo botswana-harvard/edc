@@ -47,7 +47,7 @@
             <td>{{ scheduled_requisition.entry_comment|default:'' }}</td>        
             <td>
             {% if scheduled_requisition.databrowse_url %}
-                <A href="{{ scheduled_requisition.databrowse_url }}">Browse</A>
+                <A href="{{ scheduled_requisition.databrowse_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms">Browse</A>
             {% endif %}
             </td>
             <td>
