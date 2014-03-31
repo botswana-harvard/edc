@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.encoding import force_unicode
 
-from edc.core.bhp_data_manager.models import ModelHelpText
+#from edc.core.bhp_data_manager.models import ModelHelpText
 from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper
 from edc.subject.rule_groups.classes import site_rule_groups
 
@@ -57,8 +57,8 @@ class BaseModelAdmin (admin.ModelAdmin):
         if request.GET.get('group_title'):
             extra_context.update(title=('{group_title}: Add {title}').format(group_title=request.GET.get('group_title'), title=force_unicode(self.model._meta.verbose_name)))
         extra_context.update(self.get_dashboard_context(request))
-        model_help_text = self.get_model_help_text(self.model._meta.app_label, self.model._meta.object_name)
-        extra_context.update(model_help_text_meta=model_help_text[META], model_help_text=model_help_text[DCT])
+        #model_help_text = '' #self.get_model_help_text(self.model._meta.app_label, self.model._meta.object_name)
+        #extra_context.update(model_help_text_meta=model_help_text[META], model_help_text=model_help_text[DCT])
         return super(BaseModelAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
@@ -321,12 +321,12 @@ class BaseModelAdmin (admin.ModelAdmin):
             del kwargs['csrfmiddlewaretoken']
         return kwargs
 
-    def get_model_help_text(self, app_label=None, module_name=None):
-        # TODO: and this does what?
-        mht = dict()
-        for model_help_text in ModelHelpText.objects.filter(app_label=app_label, module_name=module_name.lower()):
-            mht.update({model_help_text.field_name: model_help_text})
-        return (ModelHelpText._meta, mht)
+#     def get_model_help_text(self, app_label=None, module_name=None):
+#         # TODO: and this does what?
+#         mht = dict()
+#         for model_help_text in ModelHelpText.objects.filter(app_label=app_label, module_name=module_name.lower()):
+#             mht.update({model_help_text.field_name: model_help_text})
+#         return (ModelHelpText._meta, mht)
 
     def next_url_in_scheduled_entry_meta_data(self, obj, visit_attr, entry_order):
         """Returns a tuple with the reverse of the admin url for the next model listed in scheduled_entry_meta_data.
