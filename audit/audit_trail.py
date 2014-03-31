@@ -14,12 +14,28 @@ from edc.core.crypto_fields.fields import BaseEncryptedField
 from edc.base.model.fields import UUIDAutoField
 
 from .__init__ import GLOBAL_TRACK_FIELDS
+from edc.core.bhp_common.utils.convert_from_camel import convert_from_camel
 
 value_error_re = re.compile("^.+'(.+)'$")
 
 
+class BaseAuditModelAdmin(admin.ModelAdmin):
+
+    def __init__(self, *args, **kwargs):
+        model_cls = args[0]
+        super(BaseAuditModelAdmin, self).__init__(*args, **kwargs)
+        if 'visit_model' in dir(model_cls):
+            self.search_fields = ('{0}__appointment__registered_subject__subject_identifier'.format(convert_from_camel(model_cls._meta.object_name)), 'id', )
+        self.readonly_fields = [field.name for field in model_cls._meta.fields]
+            
+    date_hierarchy = '_audit_timestamp'
+#     search_fields = ('_audit_subject_identifier', 'id')
+    list_display = ('_audit_id', '_audit_change_type', '_audit_timestamp', 'created', 'modified', 'user_created', 'user_modified', 'hostname_created', 'hostname_modified')
+    list_filter = ('_audit_change_type', '_audit_timestamp', 'created', 'modified', 'user_created', 'user_modified', 'hostname_created', 'hostname_modified')
+
+
 class AuditTrail(object):
-    def __init__(self, show_in_admin=False, save_change_type=True, audit_deletes=True,
+    def __init__(self, show_in_admin=True, save_change_type=True, audit_deletes=True,
                  track_fields=None):
         self.opts = {}
         self.opts['show_in_admin'] = show_in_admin
@@ -38,11 +54,11 @@ class AuditTrail(object):
                 # Enable admin integration
                 # If ModelAdmin needs options or different base class, find
                 # some way to make the commented code work
-                # cls_admin_name = cls.__name__ + 'Admin'
-                # clsAdmin = type(cls_admin_name, (admin.ModelAdmin,),{})
-                # admin.site.register(cls, clsAdmin)
+                cls_admin_name = model.__name__ + 'Admin'
+                clsAdmin = type(cls_admin_name, (BaseAuditModelAdmin, ), {model: model})
+                admin.site.register(model, clsAdmin)
                 # Otherwise, register class with default ModelAdmin
-                admin.site.register(model, admin.ModelAdmin)
+                #admin.site.register(model, AuditModelAdmin)
             descriptor = AuditTrailDescriptor(model._default_manager, sender._meta.pk.attname)
             setattr(sender, name, descriptor)
 
@@ -50,7 +66,7 @@ class AuditTrail(object):
                 field_name = field_arr[0]
                 try:
                     return getattr(instance, field_name)
-                except:
+                except AttributeError:
                     if len(field_arr) > 2:
                         if callable(field_arr[2]):
                             fn = field_arr[2]
@@ -261,17 +277,18 @@ def _build_track_field(track_item):
 
 def _track_fields(track_fields=None, unprocessed=False):
     # Add in the fields from the Audit class "track" attribute.
-    tracks_found = []
-    global_track_fields = getattr(GLOBAL_TRACK_FIELDS, 'GLOBAL_TRACK_FIELDS', [])
+    track_fields_found = []
+#     global_track_fields = getattr(GLOBAL_TRACK_FIELDS, 'GLOBAL_TRACK_FIELDS', [])
+    global_track_fields = GLOBAL_TRACK_FIELDS or []
     for track_item in global_track_fields:
         if unprocessed:
-            tracks_found.append(track_item)
+            track_fields_found.append(track_item)
         else:
-            tracks_found.append(_build_track_field(track_item))
+            track_fields_found.append(_build_track_field(track_item))
     if track_fields:
         for track_item in track_fields:
             if unprocessed:
-                tracks_found.append(track_item)
+                track_fields_found.append(track_item)
             else:
-                tracks_found.append(_build_track_field(track_item))
-    return tracks_found
+                track_fields_found.append(_build_track_field(track_item))
+    return track_fields_found
