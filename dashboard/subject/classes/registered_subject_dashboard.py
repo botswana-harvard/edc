@@ -632,6 +632,7 @@ class RegisteredSubjectDashboard(Dashboard):
         additional_requisitions = []
         show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
         allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
+        show_drop_down = GlobalConfiguration.objects.get_attr_value('show_drop_down')
         requisition_helper = RequisitionMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
@@ -643,8 +644,10 @@ class RegisteredSubjectDashboard(Dashboard):
                 scheduled_requisitions.append(requisition_context.context)
         render_requisitions = render_to_string(template, {
             'scheduled_requisitions': scheduled_requisitions,
-            #'not_required_requisitions': not_required_requisitions,
+#             'not_required_requisitions': not_required_requisitions,
             'additional_requisitions': additional_requisitions,
+            'drop_down_list_requisitions': self.drop_down_list_requisitions(scheduled_requisitions),
+            'show_drop_down': show_drop_down,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
             'registered_subject': self.registered_subject.pk,
@@ -655,6 +658,15 @@ class RegisteredSubjectDashboard(Dashboard):
             'subject_dashboard_url': self.dashboard_url_name,
             'show': self.show})
         return render_requisitions
+
+    def drop_down_list_requisitions(self, scheduled_requisitions):
+        drop_down_list_requisitions = []
+        for requisition in scheduled_requisitions:
+            status = requisition['status']
+            required = status != 'NOT_REQUIRED'
+            if not required:
+                drop_down_list_requisitions.append(requisition)
+        return drop_down_list_requisitions
 
     def render_subject_hiv_status(self):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""

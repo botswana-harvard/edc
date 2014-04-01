@@ -1,4 +1,8 @@
+from django.conf import settings
+
 from .classes import section_index_view, site_sections
+
+APP_NAME = settings.APP_NAME
 
 section_index_view.setup()
 urlpatterns = []
