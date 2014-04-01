@@ -11,12 +11,12 @@ class MiddleManTests(BaseSyncDeviceTests):
 
         
     def test_middleman_settings(self):
-        #if not Device().is_middleman():
+        #if not Device().is_middleman:
         self.device.set_device_id(99)
         self.assertRaises(TypeError, lambda: MiddleManTransactionFactory())
 
     def test_requisition_inspector(self):
-        #if Device().is_middleman():
+        #if Device().is_middleman:
         settings.DEVICE_ID = '98'
         wb_requisition = MiddleManTransactionFactory()#default middle man transaction is wb requisition.
         
@@ -41,7 +41,7 @@ class MiddleManTests(BaseSyncDeviceTests):
         producer = 'bcpp039-bhp066'
         app_name = 'bcpp'
         producer_instance = ProducerFactory(name=producer, settings_key=producer, url='http://localhost:8000/')
-        #if Device().is_middleman():
+        #if Device().is_middleman:
         self.device.set_device_id(98)
         self.assertEqual(User.objects.all().count(),1)
         self.assertEqual(ApiKey.objects.all().count(),1)

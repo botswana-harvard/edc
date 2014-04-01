@@ -36,7 +36,7 @@ class Consumer(object):
         self.pre_sync(using, lock_name, **kwargs)
         if not using:
             using = None
-        if not self.get_device().is_server():
+        if not self.get_device().is_server:
             raise TypeError('Cannot consume in a device thats not a server. Got settings DEVICE_ID==\'{0}\' instead of 99'.format(self.get_device()))
         IncomingTransaction = get_model('sync', 'IncomingTransaction')
         check_hostname = kwargs.get('check_hostname', True)
