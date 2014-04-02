@@ -662,8 +662,11 @@ class RegisteredSubjectDashboard(Dashboard):
     def drop_down_list_requisitions(self, scheduled_requisitions):
         drop_down_list_requisitions = []
         for requisition in scheduled_requisitions:
+            lab_entry = requisition['lab_entry']
             status = requisition['status']
             required = status != 'NOT_REQUIRED'
+            if lab_entry.not_required and not lab_entry.additional:
+                continue
             if not required:
                 drop_down_list_requisitions.append(requisition)
         return drop_down_list_requisitions
