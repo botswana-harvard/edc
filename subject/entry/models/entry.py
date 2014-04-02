@@ -59,7 +59,7 @@ class Entry(BaseWindowPeriodItem):
         super(Entry, self).save(*args, **kwargs)
 
     def natural_key(self):
-        return (self.visit_definition, ) + self.content_type_map.natural_key()
+        return self.visit_definition.natural_key() + self.content_type_map.natural_key()
 
     def get_model(self):
         return models.get_model(self.app_label, self.model_name)

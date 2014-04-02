@@ -7,7 +7,7 @@ class RequisitionPanel(BaseModel):
     """Relates to 'lab_entry' to indicate the requisition panel.
 
     This is usually kept in line with the protocol specific panel model data."""
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=25, unique=True)
 
     aliquot_type_alpha_code = models.CharField(max_length=4)
 
@@ -19,6 +19,9 @@ class RequisitionPanel(BaseModel):
 
     def __unicode__(self):
         return self.name
+
+    def natural_key(self):
+        return (self.name,)
 
     def save(self, *args, **kwargs):
         if not self.rule_group_name:
