@@ -31,21 +31,7 @@ class DeserializeFromTransaction(object):
         check_hostname = kwargs.get('check_hostname', True)
         is_success = False
         tr = FieldCryptor('aes', 'local').decrypt(incoming_transaction.tx)
-        #if tr.find('"permanent_resident": "Yes"') != -1:
-        #    tr = tr.replace('"permanent_resident": "Yes"', '"permanent_resident": "True"')
-        #if tr.find('"permanent_resident": "No"') != -1:
-        #    tr = tr.replace('"permanent_resident": "No"', '"permanent_resident": "False"')
-        #if tr.find('"permanent_resident": "Not Sure"') != -1:
-        #    tr = tr.replace('"permanent_resident": "Not Sure"', '"permanent_resident": "False"')
-        #if tr.find('"intend_residency": "Yes"') != -1:
-        #    tr = tr.replace('"intend_residency": "Yes"', '"intend_residency": "True"')
-        #if tr.find('"intend_residency": "No"') != -1:
-        #    tr = tr.replace('"intend_residency": "No"', '"intend_residency": "False"')
-        #if tr.find('"intend_residency": "Not Sure"') != -1:
-        #    tr = tr.replace('"intend_residency": "Not Sure"', '"intend_residency": "False"')    
-        #if tr.find('"cd4_result": "1358.00"') != -1:
-        #    tr = tr.replace('"cd4_result": "1358.00"', '"cd4_result": "1358"')
-               
+
         for obj in serializers.deserialize("json", tr):
             # if you get an error deserializing a datetime, confirm dev version of json.py
             if incoming_transaction.action == 'I' or incoming_transaction.action == 'U':
