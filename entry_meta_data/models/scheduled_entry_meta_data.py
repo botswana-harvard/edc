@@ -3,6 +3,7 @@ from django.db import models
 from edc.subject.appointment.models import Appointment
 from edc.subject.entry.models import Entry
 
+from ..managers import NaturalKeyEntryMetaDataManager
 from .base_entry_meta_data import BaseEntryMetaData
 
 
@@ -13,6 +14,8 @@ class ScheduledEntryMetaData(BaseEntryMetaData):
 
     entry = models.ForeignKey(Entry)
 
+    objects = NaturalKeyEntryMetaDataManager()
+
     def __unicode__(self):
         return self.current_entry_title
 
@@ -21,6 +24,9 @@ class ScheduledEntryMetaData(BaseEntryMetaData):
 # 
 #         See example in registered_subject_dashboard.py"""
 #         return False
+
+    def natural_key(self):
+        return self.appointment.natural_key() + self.entry.natural_key()
 
     def deserialize_get_missing_fk(self, attrname):
         retval = None

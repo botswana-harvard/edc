@@ -1,1 +1,2 @@
 from .meta_data_managers import EntryMetaDataManager, RequisitionMetaDataManager
+from .natural_key_managers import NaturalKeyRequisitionMetaDataManager, NaturalKeyEntryMetaDataManager

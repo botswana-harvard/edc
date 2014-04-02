@@ -2,6 +2,8 @@ from django.db import models
 # from django.template.defaultfilters import slugify
 from edc.base.model.models import BaseModel
 
+from ..managers import RequisitionPanelManager
+
 
 class RequisitionPanel(BaseModel):
     """Relates to 'lab_entry' to indicate the requisition panel.
@@ -15,7 +17,7 @@ class RequisitionPanel(BaseModel):
         max_length=25,
         help_text='reference used on rule groups. Defaults to name.')
 
-    objects = models.Manager()
+    objects = RequisitionPanelManager()
 
     def __unicode__(self):
         return self.name
