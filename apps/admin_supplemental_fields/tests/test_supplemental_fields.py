@@ -2,23 +2,22 @@ from datetime import datetime
 from uuid import uuid4
 
 from django.contrib import admin
-from django.contrib.auth.models import User
 from django.db import models
 from django.test import TestCase
-from django.test.client import RequestFactory
 
-from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from edc.core.bhp_variables.models import StudySite
 from edc.subject.appointment.models import Appointment
-from edc.subject.appointment.tests.factories import ConfigurationFactory
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
+from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc.subject.registration.models import RegisteredSubject
-from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+from edc.testing.models import TestConsentWithMixin
+from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
+from edc.testing.classes import TestLabProfile
+from edc.testing.tests.factories import TestConsentWithMixinFactory
+from edc.lab.lab_profile.classes import site_lab_profiles
+
 from edc.subject.visit_tracking.admin import BaseVisitTrackingModelAdmin
 from edc.testing.forms import TestScheduledModelForm
-from edc.testing.models import TestConsentWithMixin
 from edc.testing.tests.factories import TestScheduledModelFactory
 
 from ..admin import SupplementalModelAdminMixin
@@ -46,32 +45,18 @@ class TestSupplementalFields(TestCase):
     app_label = 'testing'
 
     def setUp(self):
-        from edc.testing.tests.factories import TestVisitFactory, TestConsentWithMixinFactory
-        self.test_visit_factory = TestVisitFactory
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username='erikvw', email='erik@doghouse.com', password='bad_dog')
+        from edc.testing.tests.factories import TestVisitFactory
+        try:
+            site_lab_profiles.register(TestLabProfile())
+        except AlreadyRegisteredLabProfile:
+            pass
+        TestAppConfiguration()
         site_lab_tracker.autodiscover()
-        study_specific = StudySpecificFactory()
-        StudySiteFactory()
-        ConfigurationFactory()
-        content_type_map_helper = ContentTypeMapHelper()
-        content_type_map_helper.populate()
-        content_type_map_helper.sync()
-        content_type_map = ContentTypeMap.objects.get(content_type__model='TestConsentWithMixin'.lower())
-        ConsentCatalogueFactory(
-            name=self.app_label,
-            consent_type='study',
-            content_type_map=content_type_map,
-            version=1,
-            start_datetime=study_specific.study_start_datetime,
-            end_datetime=datetime(datetime.today().year + 5, 1, 1),
-            add_for_app=self.app_label)
-        membership_form = MembershipFormFactory(content_type_map=content_type_map)
-        schedule_group = ScheduleGroupFactory(membership_form=membership_form, group_name='test', grouping_key='TEST')
-        visit_tracking_content_type_map = ContentTypeMap.objects.get(content_type__model='testvisit')
-        visit_definition = VisitDefinitionFactory(code='T0', title='T0', grouping='subject', visit_tracking_content_type_map=visit_tracking_content_type_map)
-        visit_definition.schedule_group.add(schedule_group)
-        subject_consent = TestConsentWithMixinFactory()
+        TestVisitSchedule().rebuild()
+
+        self.test_visit_factory = TestVisitFactory
+        study_site = StudySite.objects.all()[0]
+        subject_consent = TestConsentWithMixinFactory(study_site=study_site)
         self.registered_subject = RegisteredSubject.objects.get(subject_identifier=subject_consent.subject_identifier)
         self.consent = TestConsentWithMixin.objects.get(registered_subject=self.registered_subject)
         appointment = Appointment.objects.get(registered_subject=self.registered_subject)

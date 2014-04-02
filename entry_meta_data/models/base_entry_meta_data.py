@@ -1,10 +1,10 @@
 from django.db import models
-from edc.base.model.models import BaseUuidModel
+from edc.device.sync.models import BaseSyncUuidModel
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.entry.choices import ENTRY_STATUS
 
 
-class BaseEntryMetaData(BaseUuidModel):
+class BaseEntryMetaData(BaseSyncUuidModel):
 
     """ Base model for list of required entries by registered_subject. """
 
