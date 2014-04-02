@@ -22,6 +22,13 @@ class RequisitionMetaData(BaseEntryMetaData):
 # 
 #         See example in registered_subject_dashboard.py"""
 #         return False
+    def deserialize_get_missing_fk(self, attrname):
+        retval = None
+        if attrname == 'registered_subject':
+            return self.registered_subject
+        if attrname == 'appointment':
+            return self.appointment
+        return retval
 
     class Meta:
         app_label = 'entry_meta_data'
