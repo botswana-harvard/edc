@@ -60,7 +60,7 @@ class ExportHistory(BaseSyncUuidModel):
             raise ValidationError('Model not found using {0}.{1}'.format(self.app_label, self.object_name))
         if not target_model_cls.objects.filter(pk=self.instance_pk):
             raise ValidationError('Instance not found for {0}.{1} pk={2}'.format(self.app_label, self.object_name, self.instance_pk))
-        target_model_cls.objects.filter(pk=self.instance_pk).update(exported=True, exported_datetime=datetime.today())
+        target_model_cls.objects.filter(pk=self.instance_pk).update(exported=True, exported_datetime=datetime.today(), export_uuid=self.export_uuid)
 
     class Meta:
         app_label = 'export'
