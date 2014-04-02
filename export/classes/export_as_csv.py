@@ -221,7 +221,8 @@ class ExportAsCsv(object):
                 try:
                     self.get_field_names().pop(self.get_field_names().index(field_name))
                 except ValueError:
-                    raise ValueError('Invalid field name in exclude. Got {0}'.format(field_name))
+                    pass
+                    #raise ValueError('Invalid field name in exclude. Got {0}'.format(field_name))
                 # delete from header row
                 try:
                     self.get_header_row().pop(self.get_header_row().index(field_name))
