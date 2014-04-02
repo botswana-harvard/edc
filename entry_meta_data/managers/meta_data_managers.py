@@ -1,5 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
+from django.db.models import get_model
 
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.appointment.models import Appointment
@@ -7,7 +8,7 @@ from edc.subject.entry.models import Entry
 from edc.subject.entry.models import LabEntry
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
-#from ..models import RequisitionMetaData, ScheduledEntryMetaData
+from ..models import RequisitionMetaData, ScheduledEntryMetaData
 
 
 class BaseMetaDataManager(models.Manager):
@@ -152,7 +153,7 @@ class BaseMetaDataManager(models.Manager):
 
 class EntryMetaDataManager(BaseMetaDataManager):
 
-    meta_data_model = models.get_model('entry_meta_data', 'ScheduledEntryMetaData')
+    meta_data_model = ScheduledEntryMetaData
     entry_model = Entry
     entry_attr = 'entry'
 
@@ -182,7 +183,7 @@ class EntryMetaDataManager(BaseMetaDataManager):
 
 class RequisitionMetaDataManager(BaseMetaDataManager):
 
-    meta_data_model = models.get_model('entry_meta_data', 'RequisitionMetaData')
+    meta_data_model = RequisitionMetaData
     entry_model = LabEntry
     entry_attr = 'lab_entry'
 
