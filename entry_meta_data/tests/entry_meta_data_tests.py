@@ -1,17 +1,13 @@
-from datetime import datetime
-
 from django.test import TestCase
 
 from edc.core.bhp_variables.models import StudySite
 from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
 from edc.subject.appointment.models import Appointment
-# from edc.subject.entry.exceptions import EntryManagerError
 from edc.subject.entry.models import LabEntry
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.models import VisitDefinition
-# from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 from edc.testing.models import TestPanel, TestAliquotType
 from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
 from edc.testing.classes import TestLabProfile
