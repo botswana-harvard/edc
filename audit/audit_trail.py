@@ -35,7 +35,7 @@ class BaseAuditModelAdmin(admin.ModelAdmin):
 
 
 class AuditTrail(object):
-    def __init__(self, show_in_admin=True, save_change_type=True, audit_deletes=True,
+    def __init__(self, show_in_admin=False, save_change_type=True, audit_deletes=True,
                  track_fields=None):
         self.opts = {}
         self.opts['show_in_admin'] = show_in_admin
