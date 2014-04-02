@@ -5,10 +5,9 @@ from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.appointment.models import Appointment
 from edc.subject.entry.models import Entry
 from edc.subject.entry.models import LabEntry
-from edc.subject.rule_groups.classes import site_rule_groups
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
-from ..models import RequisitionMetaData, ScheduledEntryMetaData
+#from ..models import RequisitionMetaData, ScheduledEntryMetaData
 
 
 class BaseMetaDataManager(models.Manager):
@@ -147,12 +146,13 @@ class BaseMetaDataManager(models.Manager):
 
     def run_rule_groups(self):
         """Runs rule groups that use the data in this instance; that is, the model is a rule source model."""
+        from edc.subject.rule_groups.classes import site_rule_groups
         return site_rule_groups.update_rules_for_source_model(self.model, self.visit_instance)
 
 
 class EntryMetaDataManager(BaseMetaDataManager):
 
-    meta_data_model = ScheduledEntryMetaData
+    meta_data_model = models.get_model('entry_meta_data', 'ScheduledEntryMetaData')
     entry_model = Entry
     entry_attr = 'entry'
 
@@ -182,7 +182,7 @@ class EntryMetaDataManager(BaseMetaDataManager):
 
 class RequisitionMetaDataManager(BaseMetaDataManager):
 
-    meta_data_model = RequisitionMetaData
+    meta_data_model = models.get_model('entry_meta_data', 'RequisitionMetaData')
     entry_model = LabEntry
     entry_attr = 'lab_entry'
 
