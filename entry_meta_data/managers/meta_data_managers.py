@@ -82,6 +82,8 @@ class BaseMetaDataManager(models.Manager):
                 self._meta_data_instance = self.meta_data_model.objects.get(**self.meta_data_query_options)
             except self.meta_data_model.DoesNotExist:
                 self._meta_data_instance = self.create_meta_data()
+            except ValueError:  # Cannot use None as a query value
+                pass
             except AttributeError:
                 pass
         return self._meta_data_instance
