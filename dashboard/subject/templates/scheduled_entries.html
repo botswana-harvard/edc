@@ -58,3 +58,30 @@
 {% endif %}
 </tbody>
 </table>
+
+
+{% if drop_down_list_entries and show_drop_down_entries %}
+<table>
+    <tbody>
+        <tr name="bottom left">
+          <td>
+            <H5>Use this drop down menu to add ADDITIONAL forms for this {{ visit_code }} visit. </H5>
+            <form action="{% url 'add_additional_form' %}" method="get">
+                 <input type="hidden" name="appointment_id" value="{{appointment}}" >
+                 <input type="hidden" name="dashboard_type" value="{{dashboard_type}}" >
+                 <input type="hidden" name="dashboard_model" value="{{dashboard_model}}" >
+                 <input type="hidden" name="dashboard_id" value="{{dashboard_id}}" >
+                 <input type="hidden" name="url" value="{{subject_dashboard_url}}" >
+                 <input type="hidden" name="show" value="forms" >
+                 <select name="entries" onChange="this.form.submit()">
+                   <option value="">Select an Additional form</option>
+                      {% for entry in drop_down_list_entries %}
+                         <option value="{{entry.entry_id}}">{{entry.model_name}}</option>
+                      {% endfor %}
+                </select>
+            </form>
+          </td>
+        </tr>
+    </tbody>
+</table>
+{% endif %}
