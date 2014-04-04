@@ -10,8 +10,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.encoding import force_unicode
 
-#from edc.core.bhp_data_manager.models import ModelHelpText
-from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper
+from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper
 from edc.subject.rule_groups.classes import site_rule_groups
 
 from ..exceptions import NextUrlError
