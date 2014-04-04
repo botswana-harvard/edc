@@ -1,5 +1,5 @@
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.entry_meta_data.classes import RequisitionMetaDataHelper
+from edc.entry_meta_data.helpers import RequisitionMetaDataHelper
 from edc.entry_meta_data.models import RequisitionMetaData
 
 from .base_rule import BaseRule
