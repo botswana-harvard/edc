@@ -9,7 +9,7 @@ from edc.subject.registration.models import RegisteredSubject
 
 @receiver(post_save, weak=False, dispatch_uid="entry_meta_data_on_post_save")
 def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_fields, **kwargs):
-    from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
+    from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
     if isinstance(instance, BaseVisitTracking):
         scheduled_entry_helper = ScheduledEntryMetaDataHelper(instance.appointment, sender)
         scheduled_entry_helper.add_or_update_for_visit()
@@ -37,7 +37,7 @@ def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_f
 @receiver(pre_delete, weak=False, dispatch_uid="entry_meta_data_on_pre_delete")
 def entry_meta_data_on_pre_delete(sender, instance, using, **kwargs):
     """Delete metadata if the visit tracking instance is deleted."""
-    from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
+    from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
     if isinstance(instance, BaseVisitTracking):
         scheduled_entry_helper = ScheduledEntryMetaDataHelper(instance.appointment, sender)
         scheduled_entry_helper.delete_for_visit()
