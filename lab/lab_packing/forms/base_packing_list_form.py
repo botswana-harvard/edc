@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import FieldError
 from edc.base.form.forms import BaseModelForm
 from edc.lab.lab_requisition.forms import BaseRequisitionForm
 
@@ -42,9 +43,14 @@ class BasePackingListForm(BaseRequisitionForm):
                 if specimen_identifier:
                     found = False
                     for requisition in self.requisition:
-                        if requisition.objects.filter(specimen_identifier=specimen_identifier):
-                            found = True
-                            break
+                        try:
+                            if requisition.objects.filter(specimen_identifier=specimen_identifier):
+                                found = True
+                                break
+                        except FieldError:
+                            if requisition.objects.filter(aliquot_identifier=specimen_identifier):
+                                found = True
+                                break
                     if not found:
                         raise forms.ValidationError('%s specimen identifier \'%s\' not found' % (requisition._meta.verbose_name, specimen_identifier,))
         return cleaned_data

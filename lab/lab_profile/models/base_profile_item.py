@@ -9,8 +9,5 @@ class BaseProfileItem(BaseUuidModel):
 
     count = models.IntegerField(verbose_name='aliquots to create')
 
-    def __unicode__(self):
-        return self.aliquot_type
-
     class Meta:
         abstract = True
