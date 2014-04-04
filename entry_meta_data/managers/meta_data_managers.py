@@ -259,10 +259,10 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
     @target_requisition_panel.setter
     def target_requisition_panel(self, target_requisition_panel):
         """Sets the target_requisition_panel to that of the instance otherwise the passed parameter"""
-        try:
-            self._target_requisition_panel = self.instance.panel.name
-        except:
-            self._target_requisition_panel = target_requisition_panel
+        #try:
+        #    self._target_requisition_panel = self.instance.panel.name
+        #except:
+        self._target_requisition_panel = target_requisition_panel
 
     def instance_query_options(self, instance_or_visit_instance):
         return {self.visit_attr_name: instance_or_visit_instance, 'panel__name': self.target_requisition_panel}
