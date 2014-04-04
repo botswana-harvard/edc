@@ -104,7 +104,7 @@ class RegisteredSubjectDashboard(Dashboard):
         if self.show == 'forms':
             self.context.add(
                 requisition_model=self.requisition_model,
-                rendered_scheduled_forms=self.render_scheduled_forms()
+                rendered_scheduled_forms=self.render_scheduled_forms(),
                 )
             if self.requisition_model:
                 self.context.add(requisition_model_meta=self.requisition_model._meta)
@@ -608,11 +608,15 @@ class RegisteredSubjectDashboard(Dashboard):
         template = 'scheduled_entries.html'
         scheduled_entries = []
         scheduled_entry_helper = ScheduledEntryMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
+#         show_not_required_entries = GlobalConfiguration.objects.get_attr_value('show_not_required_entries')
+        show_drop_down_entries = GlobalConfiguration.objects.get_attr_value('show_drop_down_entries')
         for meta_data_instance in scheduled_entry_helper.get_entries_for('clinic'):
             scheduled_entry_context = ScheduledEntryContext(meta_data_instance, self.appointment, self.visit_model)
             scheduled_entries.append(scheduled_entry_context.context)
         rendered_scheduled_forms = render_to_string(template, {
             'scheduled_entries': scheduled_entries,
+            'show_drop_down_entries': show_drop_down_entries,
+            'drop_down_list_entries': self.drop_down_list_entries(scheduled_entries),
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
             'registered_subject': self.registered_subject.pk,
@@ -624,6 +628,18 @@ class RegisteredSubjectDashboard(Dashboard):
             'show': self.show})
         return rendered_scheduled_forms
 
+    def drop_down_list_entries(self, scheduled_requisitions):
+        drop_down_list_entries = []
+        for entries in scheduled_requisitions:
+            entry = entries['entry']
+            meta_data_status = entries['status']
+            meta_data_required = meta_data_status != 'NOT_REQUIRED'
+            if entry.not_required and not entry.additional:
+                continue
+            if not meta_data_required:
+                drop_down_list_entries.append(entries)
+        return drop_down_list_entries
+
     def render_requisitions(self):
         """Renders the Scheduled Requisitions section of the dashboard using the context class RequisitionContext."""
         template = 'scheduled_requisitions.html'
@@ -632,7 +648,7 @@ class RegisteredSubjectDashboard(Dashboard):
         additional_requisitions = []
         show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
         allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
-        show_drop_down = GlobalConfiguration.objects.get_attr_value('show_drop_down')
+        show_drop_down_requisitions = GlobalConfiguration.objects.get_attr_value('show_drop_down_requisitions')
         requisition_helper = RequisitionMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
@@ -647,7 +663,7 @@ class RegisteredSubjectDashboard(Dashboard):
 #             'not_required_requisitions': not_required_requisitions,
             'additional_requisitions': additional_requisitions,
             'drop_down_list_requisitions': self.drop_down_list_requisitions(scheduled_requisitions),
-            'show_drop_down': show_drop_down,
+            'show_drop_down_requisitions': show_drop_down_requisitions,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
             'registered_subject': self.registered_subject.pk,
@@ -663,11 +679,11 @@ class RegisteredSubjectDashboard(Dashboard):
         drop_down_list_requisitions = []
         for requisition in scheduled_requisitions:
             lab_entry = requisition['lab_entry']
-            status = requisition['status']
-            required = status != 'NOT_REQUIRED'
+            meta_data_status = requisition['status']
+            meta_data_required = meta_data_status != 'NOT_REQUIRED'
             if lab_entry.not_required and not lab_entry.additional:
                 continue
-            if not required:
+            if not meta_data_required:
                 drop_down_list_requisitions.append(requisition)
         return drop_down_list_requisitions
 
