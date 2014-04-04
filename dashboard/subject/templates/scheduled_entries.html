@@ -73,7 +73,7 @@
                  <input type="hidden" name="dashboard_id" value="{{dashboard_id}}" >
                  <input type="hidden" name="url" value="{{subject_dashboard_url}}" >
                  <input type="hidden" name="show" value="forms" >
-                 <select name="entries" onChange="this.form.submit()">
+                 <select name="entry" onChange="this.form.submit()">
                    <option value="">Select an Additional form</option>
                       {% for entry in drop_down_list_entries %}
                          <option value="{{entry.entry_id}}">{{entry.model_name}}</option>
