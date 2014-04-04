@@ -1,6 +1,6 @@
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.entry_meta_data.classes import RequisitionMetaDataHelper
-from edc.entry_meta_data.models import RequisitionMetaData
+# from edc.entry_meta_data.classes import RequisitionMetaDataHelper
+# from edc.entry_meta_data.models import RequisitionMetaData
 
 from .base_rule import BaseRule
 
@@ -12,6 +12,8 @@ class RequisitionRule(BaseRule):
         super(RequisitionRule, self).__init__(*args, **kwargs)
         if not 'target_requisition_panels' in kwargs:
             raise KeyError('{0} is missing required attribute \'target_requisition_panels\''.format(self.__class__.__name__))
+        from edc.entry_meta_data.classes import RequisitionMetaDataHelper
+        from edc.entry_meta_data.models import RequisitionMetaData
         self.entry_class = RequisitionMetaDataHelper
         self.meta_data_model = RequisitionMetaData
         self.target_requisition_panels = kwargs.get('target_requisition_panels')
