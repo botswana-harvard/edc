@@ -110,11 +110,13 @@ class BasePackingListItem(BaseSyncUuidModel):
 
     def priority(self):
         style = ''
-        priority = self.item_priority.lower()
-        if priority == 'urgent':
-            style = 'color:red;font-weight:700'
-        if priority == 'normal':
-            priority = ''
+        priority = ''
+        if self.item_priority:
+            priority = self.item_priority.lower()
+            if priority == 'urgent':
+                style = 'color:red;font-weight:700'
+            if priority == 'normal':
+                priority = ''
         return '<span style="{style}">{priority}</span>'.format(style=style, priority=priority)
     priority.allow_tags = True
 
