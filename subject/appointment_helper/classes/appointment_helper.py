@@ -7,6 +7,7 @@ from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 
 from edc.subject.appointment.constants import IN_PROGRESS, DONE, INCOMPLETE, NEW, CANCELLED
+from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper
 
 from .appointment_date_helper import AppointmentDateHelper
 
@@ -126,8 +127,6 @@ class AppointmentHelper(object):
     def check_appt_status(self, appointment, using):
         """Checks the appt_status relative to the visit tracking form and ScheduledEntryMetaData.
         """
-        from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper
-
         # for an existing appointment, check if there is a visit tracking form already on file
         if not appointment.visit_definition.visit_tracking_content_type_map:
             raise ImproperlyConfigured('Unable to determine the visit tracking model. Update bhp_visit.visit_definition {0} and select the correct visit model.'.format(appointment.visit_definition))
