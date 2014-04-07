@@ -13,7 +13,7 @@ from ..models import ExportHistory
 
 class ExportAsCsv(object):
     # TODO: maybe instead of separate lists for row values and column names, make this use an OrderedDict
-    def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None, header=True, track_history=False, show_all_fields=True, delimiter=None):
+    def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None, header=True, track_history=False, show_all_fields=True, delimiter=None, encrypt=True):
         self._field_names = []
         self._modeladmin = modeladmin
         self._model = None
@@ -27,6 +27,7 @@ class ExportAsCsv(object):
         self._queryset = queryset
         if delimiter:
             self._delimiter = delimiter
+        self.encrypt = encrypt
         self.set_model(model)
         if show_all_fields:
             self.set_field_names_from_model()  # set initial field name list
@@ -220,7 +221,8 @@ class ExportAsCsv(object):
                 try:
                     self.get_field_names().pop(self.get_field_names().index(field_name))
                 except ValueError:
-                    raise ValueError('Invalid field name in exclude. Got {0}'.format(field_name))
+                    pass
+                    #raise ValueError('Invalid field name in exclude. Got {0}'.format(field_name))
                 # delete from header row
                 try:
                     self.get_header_row().pop(self.get_header_row().index(field_name))
@@ -320,6 +322,6 @@ class ExportAsCsv(object):
         """
         fields = obj.__class__._meta.fields
         for f in fields:
-            if f.name == fieldname and issubclass(f.__class__, BaseEncryptedField):
+            if f.name == fieldname and issubclass(f.__class__, BaseEncryptedField) and self.encrypt:
                 return '<encrypted>'
         return getattr(obj, fieldname)
