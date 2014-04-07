@@ -16,62 +16,56 @@ class BaseVisitTrackingModelAdmin(BaseModelAdmin):
 
     visit_model = None
     date_hierarchy = 'report_datetime'
+    visit_model_foreign_key = None
 
     def __init__(self, *args, **kwargs):
-        self._visit_model_attr = None
-        self._visit_model_pk = None
         super(BaseVisitTrackingModelAdmin, self).__init__(*args, **kwargs)
-        self.set_visit_model()
-        self.set_visit_model_fk_name()
+        if not self.visit_model:
+            raise ImproperlyConfigured("Class attribute \'visit model\' on BaseVisitModelAdmin for model {0} may not be None. Please correct.".format(self.model))
+        if not self.visit_model_foreign_key:
+            # TODO: rather remove this, user needs to specify this as a class attribute, no need to help out
+            self.visit_model_foreign_key = [fk for fk in [f for f in self.model._meta.fields if isinstance(f, ForeignKey)] if fk.rel.to._meta.module_name == self.visit_model._meta.module_name]
+            if not self.visit_model_foreign_key:
+                raise ValueError("The model for {0} requires a foreign key to visit model {1}. None found. Either correct the model or change the ModelAdmin class.".format(self, self.visit_model))
+            else:
+                self.visit_model_foreign_key = self.visit_model_foreign_key[0].name
         self.extend_list_display()
         self.extend_list_filter()
         self.extend_search_fields()
 
-    def set_visit_model(self):
-        """Checks that visit model attribute is set"""
-        if not self.visit_model:
-            raise ImproperlyConfigured("Class attribute \'visit model\' on BaseVisitModelAdmin for model {0} may not be None. Please correct.".format(self.model))
-
-    def set_visit_model_fk_name(self):
-        """Determine name of field that points to the visit model on this model"""
-        self.visit_model_foreign_key = [fk for fk in [f for f in self.model._meta.fields if isinstance(f, ForeignKey)] if fk.rel.to._meta.module_name == self.visit_model._meta.module_name]
-        if not self.visit_model_foreign_key:
-            raise ValueError("The model for {0} requires a foreign key to visit model {1}. None found. Either correct the model or change the ModelAdmin class.".format(self, self.visit_model))
-        else:
-            self.visit_model_foreign_key = self.visit_model_foreign_key[0].name
-
     def extend_search_fields(self):
-        if isinstance(self.search_fields, list):
-            for item in ['id', self.visit_model_foreign_key + '__appointment__registered_subject__subject_identifier', self.visit_model_foreign_key + '__pk']:
-                if item not in self.search_fields:
-                    self.search_fields.append(item)
+        self.search_fields = list(self.search_fields)
+        for item in ['id', self.visit_model_foreign_key + '__appointment__registered_subject__subject_identifier', self.visit_model_foreign_key + '__pk']:
+            if item not in self.search_fields:
+                self.search_fields.append(item)
+        self.search_fields = tuple(self.search_fields)
 
     def extend_list_display(self):
         """Extends list display with additional values if passed as a list."""
-        if isinstance(self.list_display, list):
-            for item in [self.visit_model_foreign_key, 'created', 'modified', 'user_created', 'user_modified', ]:
-                if item not in self.list_display:
-                    self.list_display.append(item)
-            self.list_display = tuple(self.list_display)
+        self.list_display = list(self.list_display)
+        for item in [self.visit_model_foreign_key, 'created', 'modified', 'user_created', 'user_modified', ]:
+            if item not in self.list_display:
+                self.list_display.append(item)
+        self.list_display = tuple(self.list_display)
 
     def extend_list_filter(self):
         """Extends list filter with additional values if passed as a list."""
-        if isinstance(self.list_filter, list):
-            extended_list_filter = [
-                self.visit_model_foreign_key + '__report_datetime',
-                self.visit_model_foreign_key + '__reason',
-                self.visit_model_foreign_key + '__appointment__appt_status',
-                self.visit_model_foreign_key + '__appointment__visit_definition__code',
-                self.visit_model_foreign_key + '__appointment__registered_subject__study_site__site_code',
-                'created',
-                'modified',
-                'user_created',
-                'user_modified',
-                'hostname_created']
-            for item in extended_list_filter:
-                if item not in self.list_filter:
-                    self.list_filter.append(item)
-            self.list_filter = tuple(self.list_filter)
+        self.list_filter = list(self.list_filter)
+        extended_list_filter = [
+            self.visit_model_foreign_key + '__report_datetime',
+            self.visit_model_foreign_key + '__reason',
+            self.visit_model_foreign_key + '__appointment__appt_status',
+            self.visit_model_foreign_key + '__appointment__visit_definition__code',
+            self.visit_model_foreign_key + '__appointment__registered_subject__study_site__site_code',
+            'created',
+            'modified',
+            'user_created',
+            'user_modified',
+            'hostname_created']
+        for item in extended_list_filter:
+            if item not in self.list_filter:
+                self.list_filter.append(item)
+        self.list_filter = tuple(self.list_filter)
 
     def get_actions(self, request):
         actions = super(BaseVisitTrackingModelAdmin, self).get_actions(request)
@@ -93,32 +87,20 @@ class BaseVisitTrackingModelAdmin(BaseModelAdmin):
                     "Export to CSV with visit and demographics")
         return actions
 
-    def set_visit_model_attr(self, value):
-        self._visit_model_attr = value
-
-    def get_visit_model_attr(self):
-        return self._visit_model_attr
-
-    def set_visit_model_pk(self, value):
-        self._visit_model_pk = value
-
-    def get_visit_model_pk(self):
-        return self._visit_model_pk
-
     def add_view(self, request, form_url='', extra_context=None):
         """Sets the values for the visit model object name and the visit model pk.
 
         To be used by supplemental fields, etc."""
-        self.set_visit_model_attr(request.GET.get('visit_attr'))
-        self.set_visit_model_pk(request.GET.get(self.get_visit_model_attr()))
+        self.visit_model_attr = request.GET.get('visit_attr')
+        self.visit_model_pk = request.GET.get(self.visit_model_attr)
         return super(BaseVisitTrackingModelAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         """Sets the values for the visit model object name and the visit model pk.
 
         To be used by supplemental fields, etc."""
-        self.set_visit_model_attr(request.GET.get('visit_attr'))
-        self.set_visit_model_pk(request.GET.get(self.get_visit_model_attr()))
+        self.visit_model_attr = request.GET.get('visit_attr')
+        self.visit_model_pk = request.GET.get(self.visit_model_attr)
         return super(BaseVisitTrackingModelAdmin, self).change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
