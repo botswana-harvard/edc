@@ -1,11 +1,11 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
+from django.db.models import get_model
 
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.appointment.models import Appointment
 from edc.subject.entry.models import Entry
 from edc.subject.entry.models import LabEntry
-from edc.subject.rule_groups.classes import site_rule_groups
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
 from ..models import RequisitionMetaData, ScheduledEntryMetaData
@@ -82,6 +82,8 @@ class BaseMetaDataManager(models.Manager):
                 self._meta_data_instance = self.meta_data_model.objects.get(**self.meta_data_query_options)
             except self.meta_data_model.DoesNotExist:
                 self._meta_data_instance = self.create_meta_data()
+            except ValueError:  # Cannot use None as a query value
+                pass
             except AttributeError:
                 pass
         return self._meta_data_instance
@@ -145,6 +147,7 @@ class BaseMetaDataManager(models.Manager):
 
     def run_rule_groups(self):
         """Runs rule groups that use the data in this instance; that is, the model is a rule source model."""
+        from edc.subject.rule_groups.classes import site_rule_groups
         return site_rule_groups.update_rules_for_source_model(self.model, self.visit_instance)
 
 
@@ -222,7 +225,7 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                     registered_subject=self.appointment_zero.registered_subject,
                     due_datetime=lab_entry.visit_definition.get_upper_window_datetime(self.visit_instance.report_datetime),
                     lab_entry=lab_entry,
-                    entry_status=lab_entry.default_entry_status)
+                    entry_status=self.status)
                 try:
                     meta_data_instance = self.meta_data_model.objects.get(**options)
                 except self.meta_data_model.DoesNotExist:
@@ -256,10 +259,10 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
     @target_requisition_panel.setter
     def target_requisition_panel(self, target_requisition_panel):
         """Sets the target_requisition_panel to that of the instance otherwise the passed parameter"""
-        try:
-            self._target_requisition_panel = self.instance.panel.name
-        except:
-            self._target_requisition_panel = target_requisition_panel
+        #try:
+        #    self._target_requisition_panel = self.instance.panel.name
+        #except:
+        self._target_requisition_panel = target_requisition_panel
 
     def instance_query_options(self, instance_or_visit_instance):
         return {self.visit_attr_name: instance_or_visit_instance, 'panel__name': self.target_requisition_panel}
