@@ -24,7 +24,7 @@ def consume_transactions(request, **kwargs):
     remote_is_middleman = False
     remote_is_site_server = False
     #if 'MIDDLE_MAN' in dir(settings) and settings.MIDDLE_MAN:
-    if device.is_middleman():
+    if device.is_middleman:
         middle_man = True
     else:
         middle_man = False

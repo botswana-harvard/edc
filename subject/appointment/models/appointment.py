@@ -5,13 +5,13 @@ from django.core.exceptions import ValidationError
 
 from edc.audit.audit_trail import AuditTrail
 from edc.core.bhp_variables.models import StudySite
-from edc.subject.appointment_helper.classes import AppointmentHelper
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.visit_schedule.models import VisitDefinition
 
 from ..managers import AppointmentManager
 from ..choices import APPT_TYPE
+from ..constants import DONE
 
 from .base_appointment import BaseAppointment
 
@@ -123,6 +123,7 @@ class Appointment(BaseAppointment):
                 raise exception_cls(window_period.error_message)
 
     def save(self, *args, **kwargs):
+        from edc.subject.appointment_helper.classes import AppointmentHelper
         using = kwargs.get('using')
         self.appt_datetime, self.best_appt_datetime = self.validate_appt_datetime()
         self.check_window_period()
@@ -157,6 +158,10 @@ class Appointment(BaseAppointment):
 
     def get_report_datetime(self):
         return self.appt_datetime
+
+    @property
+    def complete(self):
+        return self.appt_status == DONE
 
     class Meta:
         app_label = 'appointment'

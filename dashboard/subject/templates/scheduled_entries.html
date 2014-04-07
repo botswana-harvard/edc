@@ -23,7 +23,7 @@
     {% for scheduled_entry in scheduled_entries %}
         {% if scheduled_entry.entry.required %}
             <tr class="{% cycle 'row1' 'row2' %}">
-                <td><span {% if scheduled_entry.status == NEW %}style="background:red;"{% endif %}>&nbsp;</span></td>
+                <td><span {% if scheduled_entry.status == 'NEW' %}style="background:red;"{% endif %}>&nbsp;</span></td>
                 <td>{{ forloop.counter }}</td>
                 <td>
                 {% if scheduled_entry.model_url %}
@@ -44,7 +44,7 @@
                 <td>{{ scheduled_entry.entry_comment|default:'' }}</td>        
                 <td>
                 {% if scheduled_entry.databrowse_url %}
-                    <A href="{{ scheduled_entry.databrowse_url }}">Browse</A>
+                    <A href="{{ scheduled_entry.databrowse_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms">Browse</A>
                 {% endif %}
                 </td>
                 <td>

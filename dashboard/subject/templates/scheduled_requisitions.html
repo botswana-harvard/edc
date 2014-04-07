@@ -23,7 +23,7 @@
 {% else %}
     {% for scheduled_requisition in scheduled_requisitions %}
         <tr class="{% cycle 'row1' 'row2' %}">
-            <td><span {% if scheduled_requisition.status == NEW %}style="background:red;"{% endif %}>&nbsp;</span></td>
+            <td><span {% if scheduled_requisition.status == 'NEW' %}style="background:red;"{% endif %}>&nbsp;</span></td>
             <td>{{ forloop.counter }}</td>
             <td>
             {% if scheduled_requisition.model_url %}
@@ -47,7 +47,7 @@
             <td>{{ scheduled_requisition.entry_comment|default:'' }}</td>        
             <td>
             {% if scheduled_requisition.databrowse_url %}
-                <A href="{{ scheduled_requisition.databrowse_url }}">Browse</A>
+                <A href="{{ scheduled_requisition.databrowse_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms">Browse</A>
             {% endif %}
             </td>
             <td>
