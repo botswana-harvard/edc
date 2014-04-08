@@ -237,10 +237,11 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                     registered_subject=self.appointment_zero.registered_subject,
                     due_datetime=lab_entry.visit_definition.get_upper_window_datetime(self.visit_instance.report_datetime),
                     lab_entry=lab_entry,
-                    entry_status=self.status)
+                    )
                 try:
                     meta_data_instance = self.meta_data_model.objects.get(**options)
                 except self.meta_data_model.DoesNotExist:
+                    options.update({'entry_status': lab_entry.default_entry_status})
                     meta_data_instance = self.meta_data_model.objects.create(**options)
                 meta_data_instances.append(meta_data_instance)
         if meta_data_instances:

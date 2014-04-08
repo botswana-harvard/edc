@@ -608,14 +608,11 @@ class RegisteredSubjectDashboard(Dashboard):
         template = 'scheduled_entries.html'
         scheduled_entries = []
         scheduled_entry_helper = ScheduledEntryMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
-        show_drop_down_entries = GlobalConfiguration.objects.get_attr_value('show_drop_down_entries')
         for meta_data_instance in scheduled_entry_helper.get_entries_for('clinic'):
             scheduled_entry_context = ScheduledEntryContext(meta_data_instance, self.appointment, self.visit_model)
             scheduled_entries.append(scheduled_entry_context.context)
         rendered_scheduled_forms = render_to_string(template, {
             'scheduled_entries': scheduled_entries,
-            'show_drop_down_entries': show_drop_down_entries,
-            'drop_down_list_entries': self.drop_down_list_entries(scheduled_entries),
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
             'registered_subject': self.registered_subject.pk,
@@ -626,18 +623,6 @@ class RegisteredSubjectDashboard(Dashboard):
             'subject_dashboard_url': self.dashboard_url_name,
             'show': self.show})
         return rendered_scheduled_forms
-
-    def drop_down_list_entries(self, scheduled_entries):
-        drop_down_list_entries = []
-        for entries in scheduled_entries:
-            entry = entries['entry']
-            meta_data_status = entries['status']
-            meta_data_required = meta_data_status != 'NOT_REQUIRED'
-            if entry.not_required and not entry.additional:
-                continue
-            if not meta_data_required:
-                drop_down_list_entries.append(entries)
-        return drop_down_list_entries
 
     def render_requisitions(self):
         """Renders the Scheduled Requisitions section of the dashboard using the context class RequisitionContext."""
