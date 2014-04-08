@@ -49,6 +49,11 @@ class BaseMetaDataManager(models.Manager):
             if super(BaseMetaDataManager, self).filter(**options):
                 self._instance = super(BaseMetaDataManager, self).get(**options)
             self.visit_instance = instance_or_visit_instance
+        elif isinstance(instance_or_visit_instance, tuple):
+            options = self.instance_query_options(instance_or_visit_instance)
+            self.visit_instance, target_requisition_panel = instance_or_visit_instance
+            if super(BaseMetaDataManager, self).filter(**options):
+                self._instance = super(BaseMetaDataManager, self).get(**options)#self.model()
         self.appointment_zero = self.visit_instance.appointment
         # reset meta data instance
         self._meta_data_instance = None
@@ -200,6 +205,13 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                 '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower(),
                 '{0}__requisition_panel__name__iexact'.format(self.entry_attr): self.target_requisition_panel}
 
+    def instance_query_options(self, instance_or_visit_instance):
+        try:
+            instance_visit, panel = instance_or_visit_instance
+            return {self.visit_attr_name: instance_visit, 'panel__name': panel}
+        except:
+            return {self.visit_attr_name: instance_or_visit_instance, 'panel__name': self.target_requisition_panel}
+
     def create_meta_data(self):
         """Creates one meta_data instance for each requisition_panel for the requisition model at the time point (appointment) for the given registered_subject.
 
@@ -259,10 +271,10 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
     @target_requisition_panel.setter
     def target_requisition_panel(self, target_requisition_panel):
         """Sets the target_requisition_panel to that of the instance otherwise the passed parameter"""
-        #try:
-        #    self._target_requisition_panel = self.instance.panel.name
-        #except:
-        self._target_requisition_panel = target_requisition_panel
+        try:
+            self._target_requisition_panel = self.instance.panel.name
+        except:
+            self._target_requisition_panel = target_requisition_panel
 
-    def instance_query_options(self, instance_or_visit_instance):
-        return {self.visit_attr_name: instance_or_visit_instance, 'panel__name': self.target_requisition_panel}
+#     def instance_query_options(self, instance_or_visit_instance):
+#         return {self.visit_attr_name: instance_or_visit_instance, 'panel__name': self.target_requisition_panel}
