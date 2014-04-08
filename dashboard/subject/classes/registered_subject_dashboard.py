@@ -14,7 +14,7 @@ from edc.core.bhp_common.utils import convert_from_camel
 from edc.core.bhp_data_manager.models import ActionItem
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.dashboard.base.classes import Dashboard
-from edc.entry_meta_data.classes import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
+from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
 from edc.lab.lab_clinic_api.classes import EdcLabResults
 from edc.lab.lab_packing.models import BasePackingList
 from edc.lab.lab_requisition.models import BaseBaseRequisition
