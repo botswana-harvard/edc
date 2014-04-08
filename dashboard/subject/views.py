@@ -34,7 +34,7 @@ def _get_param(request, param_key):
 
 def additional_entry_form(request):
     appointment_id = _get_param(request, 'appointment_id')
-    entry_id = _get_param(request, 'entry')
+    entry_id = _get_param(request, 'entry_order')
 
     appointment = Appointment.objects.get(pk=appointment_id)
     entry = Entry.objects.get(pk=entry_id)

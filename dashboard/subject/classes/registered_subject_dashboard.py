@@ -631,7 +631,7 @@ class RegisteredSubjectDashboard(Dashboard):
         drop_down_list_entries = []
         for entries in scheduled_entries:
             entry = entries['entry']
-            meta_data_status = entries['entry_status']
+            meta_data_status = entries['status']
             meta_data_required = meta_data_status != 'NOT_REQUIRED'
             if entry.not_required and not entry.additional:
                 continue
@@ -677,11 +677,11 @@ class RegisteredSubjectDashboard(Dashboard):
     def drop_down_list_requisitions(self, scheduled_requisitions):
         drop_down_list_requisitions = []
         for requisition in scheduled_requisitions:
-#             lab_entry = requisition['lab_entry']
+            lab_entry = requisition['lab_entry']
             meta_data_status = requisition['status']
             meta_data_required = meta_data_status != 'NOT_REQUIRED'
-#             if lab_entry.not_required and not lab_entry.additional:
-#                 continue
+            if lab_entry.not_required and not lab_entry.additional:
+                continue
             if not meta_data_required:
                 drop_down_list_requisitions.append(requisition)
         return drop_down_list_requisitions
