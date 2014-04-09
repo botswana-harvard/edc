@@ -129,11 +129,13 @@ class EntryMetaDataTests(TestCase):
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
 
     def test_creates_meta_data3(self):
-        """Meta data is not re-created when visit tracking form is updated."""
-        self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        TestScheduledModel1Factory(test_visit=self.test_visit)
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 2)
+        """ """
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
+        test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 3)
+        TestScheduledModel1Factory(test_visit=test_visit)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 2)
 
     def test_creates_meta_data4(self):
         """Meta data is deleted when visit tracking form is deleted."""
