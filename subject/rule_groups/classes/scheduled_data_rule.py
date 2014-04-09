@@ -38,19 +38,34 @@ class ScheduledDataRule(BaseRule):
     def __init__(self, *args, **kwargs):
         from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper
         from edc.entry_meta_data.models import ScheduledEntryMetaData
+        super(ScheduledDataRule, self).__init__(*args, **kwargs)
         self.entry_class = ScheduledEntryMetaDataHelper
         self.meta_data_model = ScheduledEntryMetaData
-        super(ScheduledDataRule, self).__init__(*args, **kwargs)
+        self.helper_class_instance = kwargs.get('helper_class') if kwargs.get('helper_class', None) else None
+        self.helper_class_attr = kwargs.get('helper_class_attr')
 
     def evaluate(self):
         """ Evaluates the predicate and returns an action.
 
         ..note:: if the source model instance does not exist (has not been keyed yet) the predicate will be None
         and the rule will not be evaluated."""
+#         try:
+#             #Try instantiate helper_class, if its already instantiated from other rules, then ou will  get a TypeError, Ignore it.
+#             self.helper_class_instance = self.helper_class_instance(self.visit_instance) if self.helper_class_instance else None
+#         except TypeError as e:
+#             pass
+        helper_class_instance = None
+        helper_class_instance = self.helper_class_instance(self.visit_instance) if self.helper_class_instance else None
         action = None
-        predicate = self.predicate
-        if predicate:
-            if eval(predicate):
+        predicate = None
+        method_result = None
+        if helper_class_instance:
+            method_result = str(getattr(helper_class_instance, self.helper_class_attr))
+        else:
+            predicate = self.predicate
+        to_evaluate = predicate or method_result
+        if to_evaluate:
+            if eval(to_evaluate):
                 action = self.consequent_action
             else:
                 if self.alternative_action != 'none':

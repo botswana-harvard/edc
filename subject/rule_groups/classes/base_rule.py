@@ -26,6 +26,7 @@ class BaseRule(object):
 
         self._source_instance = None
         self._predicate = None
+        self._method_result = None
         self._predicate_comparative_value = None
         self._predicate_field_value = None
         self._visit_instance = None
@@ -33,13 +34,16 @@ class BaseRule(object):
         self._unresolved_predicate = None
 
         self.name = None
-        self.source_model = None
+        #self.source_model = kwargs.get('source_model', None)
         self.source_fk_model = None
         self.source_fk_attr = None
         self.target_model_list = []
         self.filter_model_attr = None
         self.filter_model_cls = None
+        self.visit_attr_name = None
         self.target_model_names = []
+        self.helper_class_instance  = None
+        self.helper_class_attr = None
 
         if 'logic' in kwargs:
             self.logic = kwargs.get('logic')
@@ -144,6 +148,14 @@ class BaseRule(object):
         if (a is None or b is None) and word not in ('equals', 'eq', 'ne'):
             raise TypeError('Invalid predicate operator in rule for value None. Must be (equals, ea or ne). Got \'{0}\'.'.format(word))
         return operator
+
+    @property
+    def method_result(self):
+        return self._method_result
+
+    @method_result.setter
+    def method_result(self, result):
+        self._method_result = result
 
     @property
     def predicate_field_value(self):
