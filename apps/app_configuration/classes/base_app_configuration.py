@@ -1,3 +1,7 @@
+import json
+
+from django.db.models import get_model
+
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
@@ -6,6 +10,7 @@ from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.subject.consent.models import ConsentCatalogue
 from edc.subject.entry.models import RequisitionPanel
 from edc.utils import datatype_to_string
+from edc.export.models import ExportPlan
 
 from lis.labeling.models import LabelPrinter
 
@@ -23,6 +28,7 @@ class BaseAppConfiguration(object):
     lab_setup = None
     study_site_setup = None
     study_variables_setup = None
+    export_plan_setup = None
 
     def __init__(self):
         """Updates content type maps then runs each configuration method with the corresponding class attribute.
@@ -36,6 +42,7 @@ class BaseAppConfiguration(object):
         self.update_or_create_lab_clinic_api()
         self.update_or_create_lab()
         self.update_or_create_labeling()
+        self.update_export_plan_setup()
 
     def update_or_create_lab_clinic_api(self):
         """Configure lab clinic api list models."""
@@ -177,3 +184,37 @@ class BaseAppConfiguration(object):
                         global_configuration.save()
                     except GlobalConfiguration.DoesNotExist:
                         GlobalConfiguration.objects.create(category=category_name, attribute=attr, value=string_value)
+
+    def update_export_plan_setup(self):
+        if self.export_plan_setup:
+            for model_config, export_plan in self.export_plan_setup.iteritems():
+                app_label, model_name = model_config.split('.')
+                model = get_model(app_label, model_name)
+                try:
+                    export_plan_instance = ExportPlan.objects.get(app_label=model._meta.app_label, object_name=model._meta.object_name)
+                    export_plan_instance.fields = json.dumps(export_plan.get('fields'))
+                    export_plan_instance.extra_fields = json.dumps(export_plan.get('extra_fields'))
+                    export_plan_instance.exclude = json.dumps(export_plan.get('exclude'))
+                    export_plan_instance.header = export_plan.get('header')
+                    export_plan_instance.track_history = export_plan.get('track_history')
+                    export_plan_instance.show_all_fields = export_plan.get('show_all_fields')
+                    export_plan_instance.delimiter = export_plan.get('delimiter')
+                    export_plan_instance.encrypt = export_plan.get('encrypt')
+                    export_plan_instance.strip = export_plan.get('strip')
+                    export_plan_instance.target_path = export_plan.get('target_path')
+                    export_plan_instance.save()
+                except ExportPlan.DoesNotExist:
+                    ExportPlan.objects.create(
+                        app_label=model._meta.app_label,
+                        object_name=model._meta.object_name,
+                        fields=json.dumps(export_plan.get('fields')),
+                        extra_fields=json.dumps(export_plan.get('extra_fields')),
+                        exclude=json.dumps(export_plan.get('exclude')),
+                        header=export_plan.get('header'),
+                        track_history=export_plan.get('track_history'),
+                        show_all_fields=export_plan.get('show_all_fields'),
+                        delimiter=export_plan.get('delimiter'),
+                        encrypt=export_plan.get('encrypt'),
+                        strip=export_plan.get('strip'),
+                        target_path=export_plan.get('target_path'),
+                        )

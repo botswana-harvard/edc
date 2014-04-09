@@ -55,19 +55,20 @@ class BaseRule(object):
             self.target_model = target_model
             self.visit_instance = visit_instance
             self.registered_subject = self.visit_instance.appointment.registered_subject
-            self.visit_attr_name = convert_from_camel(self.visit_instance._meta.object_name)
-
+            self.visit_attr_name = convert_from_camel(self.visit_instance._meta.object_name)  # not necessarily
             self._source_instance = None
             self._target_instance = None
-
             change_type = self.evaluate()
             if change_type:
                 # try to update target model's entry meta data, if it has not been keyed
                 # If it exists, The target model instance will be set by querying the target model on the visit instance.
                 # See instance property in entry_meta_data_manager
-                self.target_model.entry_meta_data_manager.instance = self.visit_instance
-                if not self.target_model.entry_meta_data_manager.instance:
-                    self.target_model.entry_meta_data_manager.update_meta_data_from_rule(self.visit_instance, change_type)
+                self.target_model.entry_meta_data_manager.visit_instance = self.visit_instance
+                try:
+                    self.target_model.entry_meta_data_manager.instance = self.target_model.objects.get(**self.target_model.entry_meta_data_manager.query_options)
+                except self.target_model.DoesNotExist:
+                    pass
+                self.target_model.entry_meta_data_manager.update_meta_data_from_rule(change_type)
 
     def evaluate(self):
         raise AttributeError('Evaluate should be overridden. Nothing to do.')

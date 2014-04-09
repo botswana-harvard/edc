@@ -76,3 +76,5 @@ class TestAppConfiguration(BaseAppConfiguration):
                 }
 
     consent_catalogue_list = [consent_catalogue_setup]
+
+    export_plan_setup = {}
