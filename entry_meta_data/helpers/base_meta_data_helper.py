@@ -95,9 +95,9 @@ class BaseMetaDataHelper(object):
             if model.entry_meta_data_manager.instance:
                 model.entry_meta_data_manager.run_rule_groups()
 
-    def delete_for_visit(self):
-        """Deletes meta data if visit is deleted."""
-        self.meta_data_model.objects.filter(appointment=self.visit_instance.appointment).delete()
+#     def delete_for_visit(self):
+#         """Deletes meta data if visit is deleted."""
+#         self.meta_data_model.objects.filter(appointment=self.visit_instance.appointment).delete()
 
     def get_next_entry_for(self, entry_order):
         """Gets next meta data instance based on the given entry order, used with the save_next button on a form."""
