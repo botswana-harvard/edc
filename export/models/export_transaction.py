@@ -2,8 +2,10 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from edc.base.model.models import BaseUuidModel
 
+from .export_tracking_fields_mixin import ExportTrackingFieldsMixin
 
-class ExportTransaction(BaseUuidModel):
+
+class ExportTransaction(BaseUuidModel, ExportTrackingFieldsMixin):
 
     tx = models.TextField()
 
@@ -19,12 +21,6 @@ class ExportTransaction(BaseUuidModel):
 
     tx_pk = models.CharField(
         max_length=36,
-        )
-
-    change_type = models.CharField(
-        max_length=1,
-        default='I',
-        choices=(('I', 'Insert'), ('U', 'Update'), ('D', 'Delete')),
         )
 
     timestamp = models.CharField(
