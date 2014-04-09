@@ -35,16 +35,8 @@ class BaseMetaDataManager(models.Manager):
 
     @instance.setter
     def instance(self, instance):
-        if instance:
-            self._instance = instance
-#         else:
-#             try:
-#                 self._instance = super(BaseMetaDataManager, self).get(**self.query_options)
-#             except self.model.DoesNotExist:
-#                 self._instance = None
-        self._meta_data_instance = None
-        self.status = None  # this is weird
-        return self._instance
+        self._instance = instance
+#         self.status = None  # this is weird
 
     @property
     def query_options(self):
@@ -58,6 +50,7 @@ class BaseMetaDataManager(models.Manager):
     def visit_instance(self, visit_instance):
         self._visit_instance = visit_instance
         self.appointment_zero = visit_instance.appointment
+        self._meta_data_instance = None
 
     @property
     def appointment_zero(self):
@@ -141,9 +134,9 @@ class BaseMetaDataManager(models.Manager):
             raise ValueError('Change type must be any of {0}. Got {1}'.format(change_types, change_type))
         self.update_meta_data(change_type)
 
-    def delete_meta_data(self):
-        if self.meta_data_instance and not self.instance and self.status in self.may_delete_entry_status:
-            self.meta_data_instance.delete()
+#     def delete_meta_data(self):
+#         if not self.instance and self.meta_data_instance.entry_status in self.may_delete_entry_status:
+#             self.meta_data_instance.delete()
 
     def run_rule_groups(self):
         """Runs rule groups that use the data in this instance; that is, the model is a rule source model."""

@@ -36,7 +36,7 @@ class RequisitionRule(BaseRule):
                     try:
                         self.target_model.entry_meta_data_manager.instance = self.target_model.objects.get(**self.target_model.entry_meta_data_manager.query_options)
                     except self.target_model.DoesNotExist:
-                        pass
+                        self.target_model.entry_meta_data_manager.instance = None
                     self.target_model.entry_meta_data_manager.update_meta_data_from_rule(change_type)
 
     def evaluate(self):

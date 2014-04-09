@@ -33,9 +33,12 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
         self._meta_data_instance = None
 
     @property
+    def query_options(self):
+        return {self.visit_attr_name: self.visit_instance, 'panel__name': self.target_requisition_panel}
+
+    @property
     def meta_data_query_options(self):
         """Returns the options used to query the meta data model for the meta_data_instance."""
-        self.target_requisition_panel = self.target_requisition_panel  # force setter to inspect the instance if it exists
         return {'appointment': self.appointment_zero,
                 '{0}__app_label'.format(self.entry_attr): self.model._meta.app_label,
                 '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower(),
