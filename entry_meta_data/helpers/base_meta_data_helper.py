@@ -58,7 +58,7 @@ class BaseMetaDataHelper(object):
             self._appointment_zero = Appointment.objects.get(
                 registered_subject=self.appointment.registered_subject,
                 visit_definition=self.appointment.visit_definition,
-                visit_instance=0)
+                visit_instance='0')
         else:
             self._appointment_zero = self.appointment
         return self._appointment_zero
