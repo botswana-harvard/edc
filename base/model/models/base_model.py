@@ -8,13 +8,33 @@ class BaseModel(TimeStampedModel):
 
     """Base model class for all models. Adds created and modified values for user, date and hostname (computer). """
 
-    user_created = models.CharField(max_length=250, verbose_name='user created', editable=False, default="", db_index=True)
+    user_created = models.CharField(
+        max_length=250,
+        verbose_name='user created',
+        editable=False,
+        default="",
+        db_index=True,
+        help_text="system field."
+        )
 
-    user_modified = models.CharField(max_length=250, verbose_name='user modified', editable=False, default="", db_index=True)
+    user_modified = models.CharField(
+        max_length=250,
+        verbose_name='user modified',
+        editable=False,
+        default="",
+        db_index=True,
+        help_text="system field.",
+        )
 
-    hostname_created = HostnameCreationField(db_index=True)
+    hostname_created = HostnameCreationField(
+        db_index=True,
+        help_text="system field.",
+        )
 
-    hostname_modified = HostnameModificationField(db_index=True)
+    hostname_modified = HostnameModificationField(
+        db_index=True,
+        help_text="system field.",
+        )
 
     def get_absolute_url(self):
         if self.id:

@@ -23,9 +23,14 @@ def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_f
             change_type = 'I'
             if not created:
                 change_type = 'U'
-            sender.entry_meta_data_manager.update_meta_data(instance, change_type, using=using)
+            sender.entry_meta_data_manager.instance = instance
+            sender.entry_meta_data_manager.visit_instance = getattr(instance, sender.entry_meta_data_manager.visit_attr_name)
+            try:
+                sender.entry_meta_data_manager.target_requisition_panel = getattr(instance, 'panel')
+            except AttributeError as e:
+                pass
+            sender.entry_meta_data_manager.update_meta_data(change_type)
             if sender.entry_meta_data_manager.instance:
-                # update rule groups through the model's entry_meta_data_manager
                 sender.entry_meta_data_manager.run_rule_groups()
         except AttributeError as e:
             if 'entry_meta_data_manager' in str(e):
@@ -45,7 +50,13 @@ def entry_meta_data_on_pre_delete(sender, instance, using, **kwargs):
         requisition_meta_data_helper.delete_for_visit()
     else:
         try:
-            sender.entry_meta_data_manager.update_meta_data(instance, 'D', using=using)
+            sender.entry_meta_data_manager.instance = instance
+            sender.entry_meta_data_manager.visit_instance = getattr(instance, sender.entry_meta_data_manager.visit_attr_name)
+            try:
+                sender.entry_meta_data_manager.target_requisition_panel = getattr(instance, 'panel')
+            except AttributeError as e:
+                pass
+            sender.entry_meta_data_manager.update_meta_data('D')
         except AttributeError as e:
             if 'entry_meta_data_manager' in str(e):
                 pass

@@ -14,6 +14,12 @@ class BaseMetaDataHelper(object):
         self.registered_subject = appointment.registered_subject
         self.visit_instance = visit_instance
 
+    def __repr__(self):
+        return 'BaseMetaDataHelper({0.instance!r})'.format(self)
+
+    def __str__(self):
+        return '({0.instance!r})'.format(self)
+
     @property
     def visit_model(self):
         return self._visit_model
@@ -80,7 +86,12 @@ class BaseMetaDataHelper(object):
         The visit definition comes instance."""
         for entry in self.entry_model.objects.filter(visit_definition=self.visit_instance.appointment.visit_definition):
             model = entry.get_model()
-            model.entry_meta_data_manager.update_meta_data(self.visit_instance)
+            model.entry_meta_data_manager.visit_instance = self.visit_instance
+            try:
+                model.entry_meta_data_manager.instance = model.objects.get(**model.entry_meta_data_manager.query_options)
+            except model.DoesNotExist:
+                pass
+            model.entry_meta_data_manager.update_meta_data()
             if model.entry_meta_data_manager.instance:
                 model.entry_meta_data_manager.run_rule_groups()
 

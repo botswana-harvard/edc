@@ -3,8 +3,17 @@ from django.db import models
 from edc.subject.appointment.models import Appointment
 from edc.subject.entry.models import LabEntry
 
-from ..managers import NaturalKeyRequisitionMetaDataManager
 from .base_entry_meta_data import BaseEntryMetaData
+
+
+class NaturalKeyRequisitionMetaDataManager(models.Manager):
+
+    def get_by_natural_key(self, visit_instance, visit_definition_code, subject_identifier_as_pk, code2, name):
+        Appointment = models.get_model('appointment', 'Appointment')
+        LabEntry = models.get_model('entry', 'LabEntry')
+        appointment = Appointment.objects.get_by_natural_key(visit_instance, visit_definition_code, subject_identifier_as_pk)
+        lab_entry = LabEntry.objects.get_by_natural_key(visit_definition_code, name)
+        return self.get(appointment=appointment, lab_entry=lab_entry)
 
 
 class RequisitionMetaData(BaseEntryMetaData):
