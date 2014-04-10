@@ -21,13 +21,13 @@ class ExportHistory(BaseSyncUuidModel):
 
     export_filename = models.CharField(max_length=250)
 
-    export_file = models.TextField(null=True)
+    export_file_contents = models.TextField(null=True)
 
     exported = models.BooleanField(default=False, help_text="exported to a file")
 
     exported_datetime = models.DateTimeField(null=True)
 
-    recipient = models.CharField(max_length=50, null=True)
+    notification_plan_name = models.CharField(max_length=50, null=True)
 
     sent = models.BooleanField(default=False, help_text='export file sent to recipient')
 
