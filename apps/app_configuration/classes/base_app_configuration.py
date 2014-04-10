@@ -202,6 +202,7 @@ class BaseAppConfiguration(object):
                     export_plan_instance.encrypt = export_plan.get('encrypt')
                     export_plan_instance.strip = export_plan.get('strip')
                     export_plan_instance.target_path = export_plan.get('target_path')
+                    export_plan_instance.recipient = export_plan.get('recipient')
                     export_plan_instance.save()
                 except ExportPlan.DoesNotExist:
                     ExportPlan.objects.create(
@@ -217,4 +218,5 @@ class BaseAppConfiguration(object):
                         encrypt=export_plan.get('encrypt'),
                         strip=export_plan.get('strip'),
                         target_path=export_plan.get('target_path'),
+                        recipient=export_plan.get('recipient'),
                         )

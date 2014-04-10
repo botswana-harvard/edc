@@ -1,3 +1,4 @@
+import json
 import string
 
 from collections import OrderedDict
@@ -14,8 +15,9 @@ TAIL_FIELDS = ['hostname_created', 'hostname_modified', 'created', 'modified', '
 
 
 class BaseExport(object):
-    # TODO: maybe instead of separate lists for row values and column names, make this use an OrderedDict
-    def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None, header=True, track_history=False, show_all_fields=True, delimiter=None, encrypt=True, strip=False):
+    def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None,
+                 header=True, track_history=False, show_all_fields=True, delimiter=None, encrypt=True,
+                 strip=False, recipient=None):
         self._file_obj = None
         self._header_from_m2m_complete = False
         self._model = None
@@ -34,6 +36,7 @@ class BaseExport(object):
         self.show_all_fields = show_all_fields
         self.strip = strip
         self.track_history = track_history
+        self.recipient = recipient
 
         self.extra_fields = extra_fields or OrderedDict({})
         self.field_names = [field.name for field in self.model._meta.fields] if self.show_all_fields else []
@@ -46,6 +49,7 @@ class BaseExport(object):
         self.exclude_field_names(exclude)  # a list of names
         self.header_row = self.field_names
         self.export_filename = '{0}_{1}.csv'.format(unicode(self.model._meta).replace('.', '_'), datetime.now().strftime('%Y%m%d%H%M%S'))
+        self.export_history = None
 
     @property
     def row(self):
@@ -173,18 +177,14 @@ class BaseExport(object):
                 pass
         self.field_names = head_fields + self.field_names + tail_fields
 
-    def update_export_history(self, row_instance=None):
-        try:
-            self.row_instance.update_export_mixin_fields()
-        except AttributeError:
-            pass
-        if self.track_history:
-            row_instance = row_instance or self.row_instance
-            ExportHistory.objects.create(
-                app_label=self.model._meta.app_label,
-                object_name=self.model._meta.object_name,
-                instance_pk=row_instance.pk,
-                change_type='NA',
-                sent=True,
-                sent_datetime=datetime.now()
-                )
+    def update_export_history(self, exported_pk_list, export_uuid_list):
+        self.export_history = ExportHistory.objects.create(
+            app_label=self.model._meta.app_label,
+            object_name=self.model._meta.object_name,
+            pk_list=json.dumps(exported_pk_list),
+            export_uuid_list=json.dumps(export_uuid_list),
+            exported=True,
+            exported_datetime=datetime.now(),
+            export_filename=self.export_filename,
+            recipient=self.recipient,
+            )

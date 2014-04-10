@@ -10,7 +10,7 @@ class ExportTransactionAdmin (admin.ModelAdmin):
     date_hierarchy = 'created'
     list_display = ('timestamp', 'render', 'status', 'app_label', 'object_name', 'export_change_type', 'created',)
     list_filter = ('status', 'app_label', 'object_name', 'export_change_type', 'created')
-    search_fields = ('tx_pk',)
+    search_fields = ('tx_pk', 'tx')
 
     def get_actions(self, request):
         actions = super(ExportTransactionAdmin, self).get_actions(request)
