@@ -63,7 +63,7 @@ class OutgoingTransactionMiddleManResource(ModelResource):
         authorization = DjangoAuthorization()
         allowed_methods = ['get', 'post', 'put', ]
         filtering = {
-            'producer': ['exact', ],
+            #'producer': ['exact', ],
         }
         serializer = Serializer()
 # http://localhost:8000/bhp_sync/api/outgoingtransaction/?format=json&username=django&api_key=1af87bd7d0c7763e7b11590c9398740f0de7678b
@@ -82,7 +82,7 @@ class OutgoingTransactionServerResource(ModelResource):
         authorization = DjangoAuthorization()
         allowed_methods = ['get', 'post', 'put', ]
         filtering = {
-            'producer': ['exact', ],
+            #'producer': ['exact', ],
         }
         serializer = Serializer()
 
