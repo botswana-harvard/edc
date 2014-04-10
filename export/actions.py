@@ -1,3 +1,5 @@
+import json
+
 from django.core import serializers
 from django.db.models import get_model
 
@@ -82,3 +84,11 @@ def export_tx_to_csv_action(description="Export transaction in each selected obj
     export.short_description = description
 
     return export
+
+
+def export_file_contents(modeladmin, request, queryset):
+
+    for qs in queryset:
+        with open(qs.export_filename, 'w') as outfile:
+            json.dump(qs.export_file_contents, outfile)
+export_file_contents.short_description = 'Export history file contents to original file name'
