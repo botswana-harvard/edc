@@ -42,7 +42,7 @@ class BaseRule(object):
         self.filter_model_cls = None
         self.visit_attr_name = None
         self.target_model_names = []
-        self.helper_class_instance  = None
+        self.helper_class_instance = None
         self.helper_class_attr = None
 
         if 'logic' in kwargs:

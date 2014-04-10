@@ -1,5 +1,6 @@
 from datetime import date
 
+from edc.constants import REQUIRED
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.subject.visit_tracking.settings import VISIT_REASON_NO_FOLLOW_UP_CHOICES
@@ -105,7 +106,7 @@ class BaseMetaDataHelper(object):
         options = {
            'registered_subject_id': self.registered_subject.pk,
            'appointment_id': self.appointment_zero.pk,
-            'entry_status': 'NEW',
+            'entry_status': REQUIRED,
             '{0}__entry_order__gt'.format(self.entry_attr): entry_order}
         if self.meta_data_model.objects.filter(**options):
             next_meta_data_instance = self.meta_data_model.objects.filter(**options)[0]

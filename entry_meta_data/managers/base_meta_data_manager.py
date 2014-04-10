@@ -1,6 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
+from edc.constants import REQUIRED, NOT_REQUIRED, KEYED
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.appointment.models import Appointment
 
@@ -10,7 +11,7 @@ class BaseMetaDataManager(models.Manager):
     """Creates, updates or deletes meta data that tracks the entry status of models for a given visit."""
     meta_data_model = None
     skip_create_visit_reasons = ['missed', 'death', 'lost']  # list of visit reasons where meta data should not be created
-    may_delete_entry_status = ['NEW', 'NOT_REQUIRED']
+    may_delete_entry_status = [REQUIRED, NOT_REQUIRED]
 
     def __init__(self, visit_model, visit_attr_name=None):
         self.name = None
@@ -95,17 +96,24 @@ class BaseMetaDataManager(models.Manager):
 
     @status.setter
     def status(self, change_type):
-        """Figures out the the current status of the user model instance, KEYED or NEW (not keyed).
+        """Figures out the the current status of the user model instance, KEYED or NEW/REQUIRED (not keyed).
 
         * Insert, Update and Delete (I, U, D) come from the signal.
         """
-        change_types = {'DoesNotExist': 'NEW', 'Exists': 'KEYED', 'I': 'KEYED', 'U': 'KEYED', 'D': 'NEW', 'NEW': 'NEW', 'KEYED': 'KEYED', 'NOT_REQUIRED': 'NOT_REQUIRED'}
+        change_types = {'DoesNotExist': REQUIRED,  # TODO: if REQUIRED is the default??
+                        'Exists': KEYED,
+                        'I': KEYED,
+                        'U': KEYED,
+                        'D': REQUIRED,  # TODO: if REQUIRED is the default??
+                        REQUIRED: REQUIRED,
+                        KEYED: KEYED,
+                        NOT_REQUIRED: NOT_REQUIRED}
         if not change_type:
             change_type = 'Exists'  # KEYED
             if not self.instance:
                 change_type = 'DoesNotExist'
-        elif change_type in ['NEW', 'NOT_REQUIRED'] and self.instance:
-            change_type = 'KEYED'
+        elif change_type in [REQUIRED, NOT_REQUIRED] and self.instance:
+            change_type = KEYED
         if change_type not in change_types:
             raise ValueError('Change type must be any of {0}. Got {1}'.format(change_types.keys(), change_type))
         self._status = change_types.get(change_type)
@@ -118,7 +126,6 @@ class BaseMetaDataManager(models.Manager):
 
         Called by the signal on post_save and pre_delete"""
         if self.meta_data_instance:
-            #if self.meta_data_instance.entry_status != 'NOT_REQUIRED':
             if change_type == 'D' or not self.instance:
                 self.meta_data_instance.report_datetime = None
             else:
@@ -129,14 +136,10 @@ class BaseMetaDataManager(models.Manager):
                 self.meta_data_instance.save()
 
     def update_meta_data_from_rule(self, change_type):
-        change_types = ['NEW', 'NOT_REQUIRED']
+        change_types = [REQUIRED, NOT_REQUIRED]
         if change_type not in change_types:
             raise ValueError('Change type must be any of {0}. Got {1}'.format(change_types, change_type))
         self.update_meta_data(change_type)
-
-#     def delete_meta_data(self):
-#         if not self.instance and self.meta_data_instance.entry_status in self.may_delete_entry_status:
-#             self.meta_data_instance.delete()
 
     def run_rule_groups(self):
         """Runs rule groups that use the data in this instance; that is, the model is a rule source model."""
