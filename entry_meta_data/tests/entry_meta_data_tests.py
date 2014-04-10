@@ -57,7 +57,11 @@ class EntryMetaDataTests(TestCase):
 
     def test_updates_requisition_meta_data(self):
         """Asserts metadata is updated if requisition model is keyed."""
+        self.assertEquals(RequisitionMetaData.objects.all().count(), 0)
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.assertEquals(RequisitionMetaData.objects.all().count(), 3)
+        self.assertEqual([obj.entry_status for obj in RequisitionMetaData.objects.all()], ['NEW', 'NEW', 'NEW'])
+        self.assertEquals(RequisitionMetaData.objects.filter(entry_status='NEW').count(), 3)
         requisition_panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.requisition_panel
         panel = TestPanel.objects.get(name=requisition_panel.name)
         aliquot_type = TestAliquotType.objects.get(alpha_code=requisition_panel.aliquot_type_alpha_code)
@@ -68,7 +72,7 @@ class EntryMetaDataTests(TestCase):
             lab_entry__model_name='testrequisition',
             lab_entry__requisition_panel__name=panel.name).count(), 1)
         obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type)
-        obj.save()
+        #obj.save()
         self.assertEqual(RequisitionMetaData.objects.filter(
             entry_status='KEYED',
             registered_subject=self.registered_subject,
