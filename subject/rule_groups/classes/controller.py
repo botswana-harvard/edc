@@ -48,6 +48,9 @@ class Controller(object):
         """ Register Rule groups to the list for the module the rule groups were declared in; which is the same module as the visit model (see update)."""
         self.set_registry(rule_group)
 
+    def unregister(self, rule_group):
+        self._registry[rule_group.app_label].pop(self._registry[rule_group.app_label].index(rule_group))
+
     def update_all(self, visit_model_instance):
         """Given a visit model instance, run all rules in each rule group for the app_label of the visit model."""
         app_label = visit_model_instance._meta.app_label
