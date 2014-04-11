@@ -25,6 +25,8 @@ class Command(BaseCommand):
         export_json_as_csv = None
         export_datetime = None
         export_filename = None
+        export_plan = None
+        exit_status = (1, 'Failed')
         try:
             json_decoder = json.decoder.JSONDecoder()
             app_label, model_name = args[0].split('.')
