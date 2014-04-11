@@ -29,7 +29,9 @@ class BaseVisitTracking (BaseConsentedUuidModel):
     Admin should change the status after ADD.
 
     """
-    appointment = models.OneToOneField(Appointment)
+    appointment = models.OneToOneField(
+        Appointment,
+        )
 
     report_datetime = models.DateTimeField(
         verbose_name="Visit Date and Time",
@@ -38,6 +40,7 @@ class BaseVisitTracking (BaseConsentedUuidModel):
             datetime_is_after_consent,
             datetime_not_future,
             ],
+        help_text='Date and time of this report'
         )
 
     reason = models.CharField(

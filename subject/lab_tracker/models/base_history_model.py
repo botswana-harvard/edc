@@ -2,7 +2,6 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 from edc.base.model.models import BaseUuidModel
-from edc.subject.registration.models import RegisteredSubject
 
 
 class BaseHistoryModel(BaseUuidModel):
@@ -24,6 +23,7 @@ class BaseHistoryModel(BaseUuidModel):
         return '{0}-{1}-{2}-{3}-{4}-{5}'.format(self.subject_type, self.subject_identifier, self.test_code, self.value, self.value_datetime, self.pk)
 
     def get_registered_subject(self):
+        from edc.subject.registration.models import RegisteredSubject
         if RegisteredSubject.objects.filter(subject_identifier=self.subject_identifier):
             return RegisteredSubject.objects.get(subject_identifier=self.subject_identifier)
         return None

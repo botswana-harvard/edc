@@ -2,8 +2,10 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from edc.base.model.models import BaseUuidModel
 
+from .export_tracking_fields_mixin import ExportTrackingFieldsMixin
 
-class ExportTransaction(BaseUuidModel):
+
+class ExportTransaction(BaseUuidModel, ExportTrackingFieldsMixin):
 
     tx = models.TextField()
 
@@ -21,12 +23,6 @@ class ExportTransaction(BaseUuidModel):
         max_length=36,
         )
 
-    change_type = models.CharField(
-        max_length=1,
-        default='I',
-        choices=(('I', 'Insert'), ('U', 'Update'), ('D', 'Delete')),
-        )
-
     timestamp = models.CharField(
         max_length=50,
         null=True,
@@ -37,8 +33,8 @@ class ExportTransaction(BaseUuidModel):
         max_length=15,
         default='new',
         choices=(
-            ('sent', 'Sent'),
             ('exported', 'Exported'),
+            ('closed', 'Closed'),
             ('new', 'New'),
             ('cancelled', 'Cancelled'),
             ),
@@ -65,7 +61,7 @@ class ExportTransaction(BaseUuidModel):
         return 'dashboard?'
 
     def render(self):
-        url = reverse('view_export_transaction_url', kwargs={'object_name': self._meta.object_name.lower(), 'pk': self.pk})
+        url = reverse('view_transaction_url', kwargs={'app_label': self._meta.app_label, 'model_name': self._meta.object_name.lower(), 'pk': self.pk})
         ret = """<a href="{url}" class="add-another" id="add_id_report" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="View transaction"/></a>""".format(url=url)
         return ret
     render.allow_tags = True

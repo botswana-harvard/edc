@@ -6,11 +6,12 @@ from edc.choices import YES_NO
 from edc.base.model.models import BaseUuidModel
 from edc.entry_meta_data.managers import EntryMetaDataManager
 from edc.export.managers import ExportHistoryManager
+from edc.export.models import ExportTrackingFieldsMixin
 
 from .test_visit import TestVisit
 
 
-class TestScheduledModel(BaseUuidModel):
+class TestScheduledModel(BaseUuidModel, ExportTrackingFieldsMixin):
 
     test_visit = models.OneToOneField(TestVisit)
 
@@ -35,7 +36,7 @@ class TestScheduledModel(BaseUuidModel):
         app_label = 'testing'
 
 
-class TestScheduledModel1(BaseUuidModel):
+class TestScheduledModel1(BaseUuidModel, ExportTrackingFieldsMixin):
 
     test_visit = models.OneToOneField(TestVisit)
 
@@ -62,7 +63,7 @@ class TestScheduledModel1(BaseUuidModel):
         app_label = 'testing'
 
 
-class TestScheduledModel2(BaseUuidModel):
+class TestScheduledModel2(BaseUuidModel, ExportTrackingFieldsMixin):
 
     test_visit = models.OneToOneField(TestVisit)
 
@@ -89,7 +90,7 @@ class TestScheduledModel2(BaseUuidModel):
         app_label = 'testing'
 
 
-class TestScheduledModel3(BaseUuidModel):
+class TestScheduledModel3(BaseUuidModel, ExportTrackingFieldsMixin):
 
     test_visit = models.OneToOneField(TestVisit)
 

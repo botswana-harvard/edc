@@ -1,7 +1,7 @@
 import copy
 
 from django.db.models import get_model
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 
 from edc.constants import NOT_REQUIRED, ADDITIONAL
 from edc.core.bhp_common.utils import convert_from_camel
@@ -120,12 +120,21 @@ class BaseScheduledEntryContext(object):
     @property
     def databrowse_url(self):
         """Returns the URL to display this model instance using databrowse."""
+        url = ''
         if self.instance:
-            return '/databrowse/{app_label}/{model_name}/objects/{pk}/'.format(
-                app_label=self.model._meta.app_label,
-                model_name=self.model._meta.object_name.lower(),
-                pk=self.instance.pk)
-        return ''
+            try:
+                url = reverse("admin:{app_label}_review_{model_name}review_change".format(
+                    app_label=self.model._meta.app_label,
+                    model_name=self.model._meta.object_name.lower(),
+                    ), args=(self.instance.pk, ))
+            except NoReverseMatch:
+                pass
+#            return '/admin/{app_label}_review/{model_name}review/{pk}/'
+#             return '/databrowse/{app_label}/{model_name}/objects/{pk}/'.format(
+#                 app_label=self.model._meta.app_label,
+#                 model_name=self.model._meta.object_name.lower(),
+#                 pk=self.instance.pk)
+        return url
 
     @property
     def audit_trail_url(self):
