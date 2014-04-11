@@ -16,6 +16,23 @@ from edc.testing.models import TestVisit, TestScheduledModel1, TestScheduledMode
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory
 
 from ..classes import RuleGroup, BaseRule, ScheduledDataRule, Logic
+from edc.subject.visit_tracking.models import BaseVisitTracking
+
+
+def func_condition_true(visit_instance):
+    if not isinstance(visit_instance, BaseVisitTracking):
+        raise TypeError('func didnt get a visit instance')
+    if visit_instance:
+        name = 'Erik'
+    return name == 'Erik'
+
+
+def func_condition_false(visit_instance):
+    if not isinstance(visit_instance, BaseVisitTracking):
+        raise TypeError('func didnt get a visit instance')
+    if visit_instance:
+        name = 'Erik'
+    return name == 'Bob'
 
 
 class RuleTests(TestCase):
@@ -86,9 +103,39 @@ class RuleTests(TestCase):
                 source_model = TestConsentWithMixin
         site_rule_groups.register(TestRuleGroupConsent)
 
+        class TestRuleGroupConsentFunc(RuleGroup):
+            test_rule = ScheduledDataRule(
+                logic=Logic(
+                    predicate=func_condition_true,
+                    consequence='not_required',
+                    alternative='new'),
+                target_model=['testscheduledmodel3'])
+
+            class Meta:
+                app_label = 'testing'
+                source_fk = (RegisteredSubject, 'registered_subject')
+                source_model = TestConsentWithMixin
+#         site_rule_groups.register(TestRuleGroupConsentFunc)
+
+#         class TestRuleGroupConsentFunc2(RuleGroup):
+#             test_rule = ScheduledDataRule(
+#                 logic=Logic(
+#                     predicate=func_condition_false,
+#                     consequence='not_required',
+#                     alternative='new'),
+#                 target_model=['testscheduledmodel3'])
+#
+#             class Meta:
+#                 app_label = 'testing'
+#                 source_fk = (RegisteredSubject, 'registered_subject')
+#                 source_model = TestConsentWithMixin
+#         site_rule_groups.register(TestRuleGroupConsentFunc2)
+
         self.test_rule_group_rs_cls = TestRuleGroupRs
         self.test_rule_group_sched_cls = TestRuleGroupSched
         self.test_rule_group_consent_cls = TestRuleGroupConsent
+        self.test_rule_group_consent_func_cls = TestRuleGroupConsentFunc
+#         self.test_rule_group_consent_func2_cls = TestRuleGroupConsentFunc2
 
         self.test_visit_factory = TestVisitFactory
 
@@ -126,6 +173,14 @@ class RuleTests(TestCase):
     def test_meta_attr_with_consent(self):
         """Assert meta attributes of the rule group are set correctly on the rule group."""
         rg = self.test_rule_group_consent_cls()
+        self.assertEquals(rg.app_label, 'testing')
+        self.assertEquals(rg.source_model, TestConsentWithMixin)
+        self.assertEquals(rg.source_fk_model, RegisteredSubject)
+        self.assertEquals(rg.source_fk_attr, 'registered_subject')
+
+    def test_meta_attr_with_consent_func(self):
+        """Assert meta attributes of the rule group are set correctly on the rule group."""
+        rg = self.test_rule_group_consent_func_cls()
         self.assertEquals(rg.app_label, 'testing')
         self.assertEquals(rg.source_model, TestConsentWithMixin)
         self.assertEquals(rg.source_fk_model, RegisteredSubject)
@@ -187,6 +242,21 @@ class RuleTests(TestCase):
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
         self.test_visit_factory(appointment=self.appointment)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+
+    def test_rule_updates_meta_data_with_consent_func(self):
+        """Assert updates meta data if source is RegisteredSubject and override fields knocked out."""
+        site_rule_groups.register(self.test_rule_group_consent_func_cls)
+        rg = self.test_rule_group_consent_func_cls()
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
+        self.test_visit_factory(appointment=self.appointment)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
+        site_rule_groups.unregister(self.test_rule_group_consent_func_cls)
+#     def test_rule_updates_meta_data_with_consent_func2(self):
+#         """Assert updates meta data if source is RegisteredSubject and override fields knocked out."""
+#         rg = self.test_rule_group_consent_func2_cls()
+#         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
+#         self.test_visit_factory(appointment=self.appointment)
+#         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
 
     def test_rule_updates_meta_data_on_update_with_consent(self):
         """Assert updates meta data when the source model is updated."""

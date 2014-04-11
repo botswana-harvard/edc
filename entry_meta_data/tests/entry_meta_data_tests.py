@@ -1,22 +1,13 @@
-from datetime import datetime
-
 from django.test import TestCase
 
-from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 from edc.core.bhp_variables.models import StudySite
 from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
 from edc.subject.appointment.models import Appointment
-from edc.subject.appointment.tests.factories import ConfigurationFactory
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-# from edc.subject.entry.exceptions import EntryManagerError
 from edc.subject.entry.models import LabEntry
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.models import VisitDefinition
-# from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
 from edc.testing.models import TestPanel, TestAliquotType
 from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
 from edc.testing.classes import TestLabProfile
@@ -66,7 +57,11 @@ class EntryMetaDataTests(TestCase):
 
     def test_updates_requisition_meta_data(self):
         """Asserts metadata is updated if requisition model is keyed."""
+        self.assertEquals(RequisitionMetaData.objects.all().count(), 0)
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.assertEquals(RequisitionMetaData.objects.all().count(), 3)
+        self.assertEqual([obj.entry_status for obj in RequisitionMetaData.objects.all()], ['NEW', 'NEW', 'NEW'])
+        self.assertEquals(RequisitionMetaData.objects.filter(entry_status='NEW').count(), 3)
         requisition_panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.requisition_panel
         panel = TestPanel.objects.get(name=requisition_panel.name)
         aliquot_type = TestAliquotType.objects.get(alpha_code=requisition_panel.aliquot_type_alpha_code)
@@ -77,7 +72,7 @@ class EntryMetaDataTests(TestCase):
             lab_entry__model_name='testrequisition',
             lab_entry__requisition_panel__name=panel.name).count(), 1)
         obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type)
-        obj.save()
+        #obj.save()
         self.assertEqual(RequisitionMetaData.objects.filter(
             entry_status='KEYED',
             registered_subject=self.registered_subject,
@@ -138,11 +133,13 @@ class EntryMetaDataTests(TestCase):
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
 
     def test_creates_meta_data3(self):
-        """Meta data is not re-created when visit tracking form is updated."""
-        self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        TestScheduledModel1Factory(test_visit=self.test_visit)
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 2)
+        """ """
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
+        test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 3)
+        TestScheduledModel1Factory(test_visit=test_visit)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject).count(), 1)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 2)
 
     def test_creates_meta_data4(self):
         """Meta data is deleted when visit tracking form is deleted."""

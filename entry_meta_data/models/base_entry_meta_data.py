@@ -1,10 +1,11 @@
 from django.db import models
-from edc.base.model.models import BaseUuidModel
+from edc.constants import NOT_REQUIRED
+from edc.device.sync.models import BaseSyncUuidModel
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.entry.choices import ENTRY_STATUS
 
 
-class BaseEntryMetaData(BaseUuidModel):
+class BaseEntryMetaData(BaseSyncUuidModel):
 
     """ Base model for list of required entries by registered_subject. """
 
@@ -35,7 +36,7 @@ class BaseEntryMetaData(BaseUuidModel):
         blank=True)
 
     def is_required(self):
-        return self.entry_status != 'NOT_REQUIRED'
+        return self.entry_status != NOT_REQUIRED
 
     def is_not_required(self):
         return not self.is_required()

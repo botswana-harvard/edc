@@ -35,7 +35,7 @@
 <H5>Replacement</H5>
 <ul>
 {%if 'apps.bcpp_household' in installed_apps%}
-  	<li><A href="{% url "replace_data_url" %}">Replace data on netbooks</A>
+  	<li><A href="{% url "replacement_index_url" %}">Replace household/plots on netbooks</A>
   {% endif %}
 </ul>
 
@@ -106,7 +106,9 @@
     <ul>
         <li><A href="{% url 'admin:export_exporthistory_changelist' %}">Export History</A>
         <li><A href="{% url 'admin:export_exporttransaction_changelist' %}">Export Transactions</A>
-        <li><A href="{% url 'admin:testing_exporttest_changelist' %}">Export Test Model</A>
+        <li><A href="{% url 'admin:export_exportplan_changelist' %}">Export Plans</A>
+        <li><A href="{% url 'admin:notification_notificationplan_changelist' %}">Notification Plans</A>
+        <li><A href="{% url 'admin:notification_notification_changelist' %}">Notifications</A>
     </ul>
 {% endif %}
 
