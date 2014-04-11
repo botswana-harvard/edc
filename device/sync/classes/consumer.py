@@ -85,7 +85,7 @@ class Consumer(object):
     def get_consume_feedback(self):
         from ..models import IncomingTransaction
         today = datetime.now()
-        margin = timedelta(days=2)
+        margin = timedelta(days=1)
         consumed_today = IncomingTransaction.objects.filter(created__range=(today - margin, today + margin), is_consumed=True)
         not_consumed_today = IncomingTransaction.objects.filter(created__range=(today - margin, today + margin), is_consumed=False)
         not_consumed_not_ignored_today = not_consumed_today.filter(is_ignored=True)
