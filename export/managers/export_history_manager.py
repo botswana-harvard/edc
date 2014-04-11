@@ -22,7 +22,7 @@ class ExportHistoryManager(models.Manager):
 #         return super(ExportHistoryManager, self).get_query_set().filter(**{'instance_pk': self.instance.pk})
 
     def serialize_to_export_transaction(self, instance, change_type, using, encrypt=True):
-        """Serialize this instance to the export transaction model."""
+        """Serialize this instance to the export transaction model if ready."""
         try:
             ready_to_export_transaction = instance.ready_to_export_transaction
         except AttributeError:

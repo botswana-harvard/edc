@@ -33,8 +33,8 @@ class ExportTransaction(BaseUuidModel, ExportTrackingFieldsMixin):
         max_length=15,
         default='new',
         choices=(
-            ('sent', 'Sent'),
             ('exported', 'Exported'),
+            ('closed', 'Closed'),
             ('new', 'New'),
             ('cancelled', 'Cancelled'),
             ),
