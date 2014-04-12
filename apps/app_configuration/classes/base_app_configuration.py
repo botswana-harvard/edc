@@ -18,6 +18,7 @@ from lis.labeling.models import LabelPrinter
 from ..models import GlobalConfiguration
 
 from .defaults import default_global_configuration
+from lis.labeling.models.zpl_template import ZplTemplate
 
 
 class BaseAppConfiguration(object):
@@ -31,6 +32,7 @@ class BaseAppConfiguration(object):
     study_variables_setup = None
     export_plan_setup = None
     notification_plan_setup = None
+    labeling_setup = None
 
     def __init__(self):
         """Updates content type maps then runs each configuration method with the corresponding class attribute.
@@ -144,17 +146,30 @@ class BaseAppConfiguration(object):
 
     def update_or_create_labeling(self):
         """Updates configuration in the :mod:`labeling` module."""
-        for printer_setup in self.labeling.get('label_printer'):
-            if LabelPrinter.objects.filter(cups_printer_name=printer_setup.cups_printer_name).count() == 0:
+        for printer_setup in self.labeling_setup.get('label_printer'):
+            try:
+                label_printer = LabelPrinter.objects.get(cups_printer_name=printer_setup.cups_printer_name)
+                label_printer.cups_server_ip = printer_setup.cups_server_ip
+                label_printer.default = printer_setup.default
+                label_printer.save()
+            except LabelPrinter.DoesNotExist:
                 LabelPrinter.objects.create(
                     cups_printer_name=printer_setup.cups_printer_name,
                     cups_server_ip=printer_setup.cups_server_ip,
                     default=printer_setup.default,
                     )
-        else:
-            label_printer = LabelPrinter.objects.get(cups_printer_name=printer_setup.cups_printer_name)
-            label_printer.cups_server_ip = printer_setup.cups_server_ip
-            label_printer.default = printer_setup.default
+        for zpl_template_setup in self.labeling.get('zpl_template'):
+            try:
+                zpl_template = ZplTemplate.objects.get(name=zpl_template_setup.name)
+                zpl_template.template = zpl_template_setup.template
+                zpl_template.default = zpl_template_setup.default
+                zpl_template.save()
+            except ZplTemplate.DoesNotExist:
+                ZplTemplate.objects.create(
+                    name=zpl_template_setup.name,
+                    template=zpl_template_setup.template,
+                    default=zpl_template_setup.default,
+                    )
 
     def update_or_create_consent_catalogue(self):
         """Updates configuration in the :mod:`consent` module."""
