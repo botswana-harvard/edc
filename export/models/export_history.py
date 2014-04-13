@@ -15,13 +15,13 @@ class ExportHistory(BaseSyncUuidModel):
 
     pk_list = models.TextField(null=True, help_text='list of pk\'s of model app_label.object_name')
 
-    exit_message = models.CharField(max_length=250)
+    exit_message = models.CharField(max_length=250, help_text='exit message from the export_transactions command')
 
-    exit_status = models.IntegerField(null=True)
+    exit_status = models.IntegerField(null=True, help_text='0=success, 1=failed from the export_transactions command')
 
-    export_filename = models.CharField(max_length=250)
+    export_filename = models.CharField(max_length=250, help_text='original filename on export')
 
-    export_file_contents = models.TextField(null=True)
+    export_file_contents = models.TextField(null=True, help_text='save contents of file as a list of rows')
 
     exported = models.BooleanField(default=False, help_text="exported to a file")
 
