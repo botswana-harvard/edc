@@ -35,6 +35,7 @@ class BaseRule(object):
         self.filter_model_attr = None
         self.filter_model_cls = None
         self.name = None
+        self.source_model = None
         self.source_fk_attr = None
         self.source_fk_model = None
         self.target_model_list = []
@@ -74,6 +75,7 @@ class BaseRule(object):
         and the rule will not be evaluated (if the predicate is not a function)."""
         try:
             condition = self.predicate(self.visit_instance)
+            # debug print condition, self.predicate, self.name
         except TypeError as e:
             if '\'str\' object is not callable' in e:
                 condition = eval(self.predicate)

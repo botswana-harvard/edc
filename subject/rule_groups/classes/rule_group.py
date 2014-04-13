@@ -1,3 +1,6 @@
+import inspect
+import copy
+
 from django.db.models import get_model
 
 from edc.base.model.models import BaseModel
@@ -14,10 +17,22 @@ class BaseRuleGroup(type):
     def __new__(cls, name, bases, attrs):
         """Add the Meta attributes to each rule."""
         rules = []
+        try:
+            abstract = attrs.get('Meta', False).abstract
+        except AttributeError:
+            abstract = False
         parents = [b for b in bases if isinstance(b, BaseRuleGroup)]
-        if not parents:
+        if not parents or abstract:
             # If this isn't a subclass of BaseRuleGroup, don't do anything special.
             return super(BaseRuleGroup, cls).__new__(cls, name, bases, attrs)
+        for parent in parents:
+            try:
+                if parent.Meta.abstract:
+                    for rule in [member for member in inspect.getmembers(parent) if isinstance(member[1], BaseRule)]:
+                        parent_rule = copy.deepcopy(rule)
+                        attrs.update({parent_rule[0]: parent_rule[1]})
+            except AttributeError as e:
+                pass
         meta = attrs.pop('Meta', None)
         # source model is the same for all rules in this group, so get it now
         if isinstance(meta.source_model, tuple):

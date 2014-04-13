@@ -1,9 +1,9 @@
 from django.db import models
 
-from edc.base.model.models import BaseUuidModel
+from edc.device.sync.models import BaseSyncUuidModel
 
 
-class Notification(BaseUuidModel):
+class Notification(BaseSyncUuidModel):
 
     notification_plan_name = models.CharField(max_length=200)
 
@@ -30,8 +30,6 @@ class Notification(BaseUuidModel):
     sent = models.BooleanField(default=False)
 
     sent_datetime = models.DateTimeField(null=True)
-
-    objects = models.Manager()
 
     class Meta:
         app_label = 'notification'

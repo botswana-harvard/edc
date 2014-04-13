@@ -12,13 +12,12 @@ from edc.notification.models import Notification, NotificationPlan
 
 from ...classes import ExportJsonAsCsv
 from ...models import ExportPlan
-from django.contrib.webdesign.lorem_ipsum import sentence
 
 
 class Command(BaseCommand):
 
     args = '<app_label>.<model_name>'
-    help = 'Export transactions for a given app_label.model_name.'
+    help = 'Export transactions for a given app_label.modelname.'
     option_list = BaseCommand.option_list
 
     def handle(self, *args, **options):
@@ -28,8 +27,12 @@ class Command(BaseCommand):
         export_plan = None
         exit_status = (1, 'Failed')
         try:
-            json_decoder = json.decoder.JSONDecoder()
             app_label, model_name = args[0].split('.')
+        except IndexError:
+            raise CommandError('Usage: export_transactions app_label.modelname, e.g. export_transactions bcpp_subject.subjectreferral')
+        tx_count = 0
+        try:
+            json_decoder = json.decoder.JSONDecoder()
             try:
                 model = get_model(app_label, model_name)
                 if not model:
@@ -65,7 +68,7 @@ class Command(BaseCommand):
         except Exception as e:
             exit_status = (1, 'Error exporting transactions for model {0}.{1}. Got "{2}"'.format(app_label, model_name, e))
         else:
-            exit_status = (0, 'Successfully exported {0} transactions to file {1} for {2}.{3}.'.format(tx_count, export_json_as_csv.export_filename, app_label, model_name))
+            exit_status = (0, 'Successfully exported {0} transactions to file {1} for {2}.{3}.'.format(tx_count, export_filename or 'NO_FILE', app_label, model_name))
         self.stdout.write(exit_status[1])
         if export_json_as_csv:
             export_json_as_csv.export_history.exit_status = exit_status[0]
