@@ -17,5 +17,8 @@ class NotificationPlan(BaseSyncUuidModel):
 
     cc_list = models.TextField()
 
+    def is_serialized(self, serialize=True):
+        return False
+
     class Meta:
         app_label = 'notification'
