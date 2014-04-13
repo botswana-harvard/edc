@@ -24,7 +24,6 @@ class Command(BaseCommand):
                 send_mail(notification.subject,
                           notification.body,
                           'edcdev@bhp.org.bw',
-                          #['ew2789@gmail.com', 'tsetsiba@bhp.org.bw', 'messex@hsph.harvard.edu', 'kpowis@partners.org', 'MPRETORI@hsph.harvard.edu'],
                           json.loads(notification.recipient_list) + json.loads(notification.cc_list),
                           fail_silently=False)
             except SMTPException as e:
