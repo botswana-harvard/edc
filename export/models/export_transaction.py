@@ -1,11 +1,18 @@
 from django.core.urlresolvers import reverse
 from django.db import models
-from edc.base.model.models import BaseUuidModel
+
+from edc.device.sync.models import BaseSyncUuidModel
 
 from .export_tracking_fields_mixin import ExportTrackingFieldsMixin
 
 
-class ExportTransaction(BaseUuidModel, ExportTrackingFieldsMixin):
+class ExportTransactionManager(models.Manager):
+
+    def get_by_natural_key(self, export_uuid):
+        return self.get(export_uuid=export_uuid)
+
+
+class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
 
     tx = models.TextField()
 
@@ -51,10 +58,10 @@ class ExportTransaction(BaseUuidModel, ExportTrackingFieldsMixin):
         db_index=True,
         )
 
-    objects = models.Manager()
+    objects = ExportTransactionManager()
 
-    def is_serialized(self):
-        return False
+    def natural_key(self):
+        return (self.export_uuid,)
 
     def dashboard(self):
         # TODO: get this dashboard url

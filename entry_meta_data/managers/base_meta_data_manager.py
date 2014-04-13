@@ -76,7 +76,7 @@ class BaseMetaDataManager(models.Manager):
             try:
                 self._meta_data_instance = self.meta_data_model.objects.get(**self.meta_data_query_options)
             except self.meta_data_model.DoesNotExist:
-                self._meta_data_instance = self.create_meta_data()
+                pass  # self._meta_data_instance = self.create_meta_data()
             except ValueError as e:  # Cannot use None as a query value
                 pass
             except AttributeError as e:
@@ -90,49 +90,40 @@ class BaseMetaDataManager(models.Manager):
                 '{0}__app_label'.format(self.entry_attr): self.model._meta.app_label,
                 '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower()}
 
-    @property
-    def status(self):
-        return self._status
-
-    @status.setter
-    def status(self, change_type):
-        """Figures out the the current status of the user model instance, KEYED or NEW/REQUIRED (not keyed).
-
-        * Insert, Update and Delete (I, U, D) come from the signal.
-        """
-        change_types = {'DoesNotExist': REQUIRED,  # TODO: if REQUIRED is the default??
-                        'Exists': KEYED,
-                        'I': KEYED,
-                        'U': KEYED,
-                        'D': REQUIRED,  # TODO: if REQUIRED is the default??
-                        REQUIRED: REQUIRED,
-                        KEYED: KEYED,
-                        NOT_REQUIRED: NOT_REQUIRED}
-        if not change_type:
-            change_type = 'Exists'  # KEYED
-            if not self.instance:
-                change_type = 'DoesNotExist'
-        elif change_type in [REQUIRED, NOT_REQUIRED] and self.instance:
-            change_type = KEYED
-        if change_type not in change_types:
-            raise ValueError('Change type must be any of {0}. Got {1}'.format(change_types.keys(), change_type))
-        self._status = change_types.get(change_type)
-
     def create_meta_data(self):
         raise ImproperlyConfigured('Method must be defined in the child class')
 
     def update_meta_data(self, change_type=None):
         """Updates the meta_data's instance.
 
+        Calls create if meta data does not exist
+
+        If change type is:
+          * None this is being called from the post-save signal on the visit form
+          * I, U, D, this is being called from the post-save signal of the model itself
+          * NEW or NOT_REQUIRED it's being called by a rule triggered by another model's post-save
+
         Called by the signal on post_save and pre_delete"""
+        new_status = None
+        if not self.meta_data_instance:
+            self.create_meta_data()  # entry status will be the default_entry_status in visit schedule, may return None (see create)
         if self.meta_data_instance:
-            if change_type == 'D' or not self.instance:
-                self.meta_data_instance.report_datetime = None
-            else:
-                self.meta_data_instance.report_datetime = self.instance.report_datetime
-            self.status = change_type
-            if not self.meta_data_instance.entry_status == self.status:
-                self.meta_data_instance.entry_status = self.status
+            if self.instance or change_type in ['I', 'U', 'D'] or self.meta_data_instance.entry_status == 'KEYED':  # U, D imply there is an instance, I implies you are currently saving the instance
+                new_status = KEYED  # (Insert, Update or no change (D or already KEYED)
+                try:
+                    self.meta_data_instance.report_datetime = self.instance.report_datetime
+                    if change_type == 'D':
+                        self.meta_data_instance.report_datetime = None
+                        new_status = self.default_entry_status
+                except AttributeError:  # instance is None
+                    self.meta_data_instance.report_datetime = None
+            elif change_type in [REQUIRED, NOT_REQUIRED]:  # coming from a rule, cannot change if KEYED
+                new_status = change_type
+            if new_status and not new_status == self.meta_data_instance.entry_status:
+                if new_status not in [REQUIRED, NOT_REQUIRED, KEYED]:
+                    raise ValueError('Expected entry status to be set to one off {0}. Got {1}'.format([REQUIRED, NOT_REQUIRED, KEYED], new_status))
+                #if not self.meta_data_instance.entry_status == status:
+                self.meta_data_instance.entry_status = new_status
                 self.meta_data_instance.save()
 
     def update_meta_data_from_rule(self, change_type):
