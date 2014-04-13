@@ -30,9 +30,9 @@ class BaseAppConfiguration(object):
     lab_setup = None
     study_site_setup = None
     study_variables_setup = None
-    export_plan_setup = None
-    notification_plan_setup = None
-    labeling_setup = None
+    export_plan_setup = {}
+    notification_plan_setup = {}
+    labeling_setup = {}
 
     def __init__(self):
         """Updates content type maps then runs each configuration method with the corresponding class attribute.
@@ -146,7 +146,8 @@ class BaseAppConfiguration(object):
 
     def update_or_create_labeling(self):
         """Updates configuration in the :mod:`labeling` module."""
-        for printer_setup in self.labeling_setup.get('label_printer'):
+
+        for printer_setup in self.labeling_setup.get('label_printer', []):
             try:
                 label_printer = LabelPrinter.objects.get(cups_printer_name=printer_setup.cups_printer_name)
                 label_printer.cups_server_ip = printer_setup.cups_server_ip
@@ -158,7 +159,7 @@ class BaseAppConfiguration(object):
                     cups_server_ip=printer_setup.cups_server_ip,
                     default=printer_setup.default,
                     )
-        for zpl_template_setup in self.labeling.get('zpl_template'):
+        for zpl_template_setup in self.labeling_setup.get('zpl_template', []):
             try:
                 zpl_template = ZplTemplate.objects.get(name=zpl_template_setup.name)
                 zpl_template.template = zpl_template_setup.template
