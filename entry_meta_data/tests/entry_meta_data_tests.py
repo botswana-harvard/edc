@@ -8,7 +8,7 @@ from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.models import VisitDefinition
-from edc.testing.models import TestPanel, TestAliquotType
+from edc.testing.models import TestPanel, TestAliquotType, TestScheduledModel1
 from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
 from edc.testing.classes import TestLabProfile
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestRequisitionFactory
@@ -209,3 +209,12 @@ class EntryMetaDataTests(TestCase):
                                                                    lab_entry__model_name='testrequisition',
                                                                    lab_entry__requisition_panel__name=panel.name).count(), 1)
             self.assertEqual(RequisitionMetaData.objects.filter(entry_status='NEW', registered_subject=self.registered_subject).count(), 3)
+
+    def test_new_meta_data_never_keyed(self):
+        """Meta data instance linked to the model is updated if model is deleted."""
+        self.assertTrue(TestScheduledModel1.objects.all().count() == 0)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
+        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        for obj in ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject):
+            print obj.entry_status, obj.entry
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject).count(), 0)
