@@ -28,7 +28,7 @@ class RequisitionMetaDataHelper(BaseMetaDataHelper):
             try:
                 model.entry_meta_data_manager.instance = model.objects.get(**model.entry_meta_data_manager.query_options)
             except model.DoesNotExist:
-                pass
+                model.entry_meta_data_manager.instance = None
             model.entry_meta_data_manager.update_meta_data()
             if model.entry_meta_data_manager.instance:
                 model.entry_meta_data_manager.run_rule_groups()

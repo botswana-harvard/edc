@@ -5,18 +5,20 @@ from django.db.models import get_model
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
+from edc.export.models import ExportPlan
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_profile.classes import site_lab_profiles
+from edc.notification.models import NotificationPlan
 from edc.subject.consent.models import ConsentCatalogue
 from edc.subject.entry.models import RequisitionPanel
 from edc.utils import datatype_to_string
-from edc.export.models import ExportPlan
 
 from lis.labeling.models import LabelPrinter
 
 from ..models import GlobalConfiguration
 
 from .defaults import default_global_configuration
+from lis.labeling.models.zpl_template import ZplTemplate
 
 
 class BaseAppConfiguration(object):
@@ -28,7 +30,9 @@ class BaseAppConfiguration(object):
     lab_setup = None
     study_site_setup = None
     study_variables_setup = None
-    export_plan_setup = None
+    export_plan_setup = {}
+    notification_plan_setup = {}
+    labeling_setup = {}
 
     def __init__(self):
         """Updates content type maps then runs each configuration method with the corresponding class attribute.
@@ -43,6 +47,7 @@ class BaseAppConfiguration(object):
         self.update_or_create_lab()
         self.update_or_create_labeling()
         self.update_export_plan_setup()
+        self.update_notification_plan_setup()
 
     def update_or_create_lab_clinic_api(self):
         """Configure lab clinic api list models."""
@@ -141,17 +146,31 @@ class BaseAppConfiguration(object):
 
     def update_or_create_labeling(self):
         """Updates configuration in the :mod:`labeling` module."""
-        for printer_setup in self.labeling.get('label_printer'):
-            if LabelPrinter.objects.filter(cups_printer_name=printer_setup.cups_printer_name).count() == 0:
+
+        for printer_setup in self.labeling_setup.get('label_printer', []):
+            try:
+                label_printer = LabelPrinter.objects.get(cups_printer_name=printer_setup.cups_printer_name)
+                label_printer.cups_server_ip = printer_setup.cups_server_ip
+                label_printer.default = printer_setup.default
+                label_printer.save()
+            except LabelPrinter.DoesNotExist:
                 LabelPrinter.objects.create(
                     cups_printer_name=printer_setup.cups_printer_name,
                     cups_server_ip=printer_setup.cups_server_ip,
                     default=printer_setup.default,
                     )
-        else:
-            label_printer = LabelPrinter.objects.get(cups_printer_name=printer_setup.cups_printer_name)
-            label_printer.cups_server_ip = printer_setup.cups_server_ip
-            label_printer.default = printer_setup.default
+        for zpl_template_setup in self.labeling_setup.get('zpl_template', []):
+            try:
+                zpl_template = ZplTemplate.objects.get(name=zpl_template_setup.name)
+                zpl_template.template = zpl_template_setup.template
+                zpl_template.default = zpl_template_setup.default
+                zpl_template.save()
+            except ZplTemplate.DoesNotExist:
+                ZplTemplate.objects.create(
+                    name=zpl_template_setup.name,
+                    template=zpl_template_setup.template,
+                    default=zpl_template_setup.default,
+                    )
 
     def update_or_create_consent_catalogue(self):
         """Updates configuration in the :mod:`consent` module."""
@@ -202,6 +221,7 @@ class BaseAppConfiguration(object):
                     export_plan_instance.encrypt = export_plan.get('encrypt')
                     export_plan_instance.strip = export_plan.get('strip')
                     export_plan_instance.target_path = export_plan.get('target_path')
+                    export_plan_instance.notification_plan_name = export_plan.get('notification_plan_name')
                     export_plan_instance.save()
                 except ExportPlan.DoesNotExist:
                     ExportPlan.objects.create(
@@ -217,4 +237,27 @@ class BaseAppConfiguration(object):
                         encrypt=export_plan.get('encrypt'),
                         strip=export_plan.get('strip'),
                         target_path=export_plan.get('target_path'),
+                        notification_plan_name=export_plan.get('notification_plan_name'),
+                        )
+
+    def update_notification_plan_setup(self):
+        if self.notification_plan_setup:
+            for notification_plan_name, notification_plan in self.notification_plan_setup.iteritems():
+                try:
+                    notification_plan_instance = NotificationPlan.objects.get(name=notification_plan_name)
+                    notification_plan_instance.name = notification_plan.get('name')
+                    notification_plan_instance.friendly_name = notification_plan.get('friendly_name')
+                    notification_plan_instance.subject_format = notification_plan.get('subject_format')
+                    notification_plan_instance.body_format = notification_plan.get('body_format')
+                    notification_plan_instance.recipient_list = json.dumps(notification_plan.get('recipient_list'))
+                    notification_plan_instance.cc_list = json.dumps(notification_plan.get('cc_list'))
+                    notification_plan_instance.save()
+                except NotificationPlan.DoesNotExist:
+                    NotificationPlan.objects.create(
+                        name=notification_plan.get('name'),
+                        friendly_name=notification_plan.get('friendly_name'),
+                        subject_format=notification_plan.get('subject_format'),
+                        body_format=notification_plan.get('body_format'),
+                        recipient_list=json.dumps(notification_plan.get('recipient_list')),
+                        cc_list=json.dumps(notification_plan.get('cc_list')),
                         )

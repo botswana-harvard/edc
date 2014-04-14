@@ -40,7 +40,8 @@ class RegisteredSubjectDashboard(Dashboard):
     view = None
     dashboard_url_name = 'subject_dashboard_url'
 
-    def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None, membership_form_category=None, visit_model=None, registered_subject=None, show=None, **kwargs):
+    def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None,
+                 membership_form_category=None, visit_model=None, registered_subject=None, show=None, **kwargs):
 
         self._appointment = None
         self._appointment_zero = None

@@ -33,9 +33,12 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
         self._meta_data_instance = None
 
     @property
+    def query_options(self):
+        return {self.visit_attr_name: self.visit_instance, 'panel__name': self.target_requisition_panel}
+
+    @property
     def meta_data_query_options(self):
         """Returns the options used to query the meta data model for the meta_data_instance."""
-        self.target_requisition_panel = self.target_requisition_panel  # force setter to inspect the instance if it exists
         return {'appointment': self.appointment_zero,
                 '{0}__app_label'.format(self.entry_attr): self.model._meta.app_label,
                 '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower(),
@@ -44,7 +47,7 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
     def create_meta_data(self):
         """Creates a meta_data instance for the model at the time point (appointment) for the given registered_subject.
 
-        might NOT be created based on visit reason."""
+        might return None and meta data not created based on visit reason (e.g. missed)."""
         if self.visit_instance.reason not in self.skip_create_visit_reasons:
             try:
                 lab_entry = self.entry_model.objects.get(
@@ -64,3 +67,7 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                 entry_status=lab_entry.default_entry_status,
                 )
         return None
+
+    @property
+    def default_entry_status(self):
+        return self.meta_data_instance.lab_entry.default_entry_status

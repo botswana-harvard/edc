@@ -38,24 +38,6 @@ class ScheduledDataRule(BaseRule):
     def __init__(self, *args, **kwargs):
         from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper
         from edc.entry_meta_data.models import ScheduledEntryMetaData
+        super(ScheduledDataRule, self).__init__(*args, **kwargs)
         self.entry_class = ScheduledEntryMetaDataHelper
         self.meta_data_model = ScheduledEntryMetaData
-        super(ScheduledDataRule, self).__init__(*args, **kwargs)
-
-    def evaluate(self):
-        """ Evaluates the predicate and returns an action.
-
-        ..note:: if the source model instance does not exist (has not been keyed yet) the predicate will be None
-        and the rule will not be evaluated."""
-        action = None
-        predicate = self.predicate
-        if predicate:
-            if eval(predicate):
-                action = self.consequent_action
-            else:
-                if self.alternative_action != 'none':
-                    action = self.alternative_action
-            action = self.is_valid_action(action)
-        if action:
-            action = action.upper()
-        return action

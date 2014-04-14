@@ -6,7 +6,7 @@ from edc.subject.visit_schedule.models import VisitDefinition
 
 from ..exceptions import EntryManagerError
 from ..managers import LabEntryManager
-from edc.constants import NOT_REQUIRED
+from edc.constants import NOT_REQUIRED, REQUIRED
 
 from .requisition_panel import RequisitionPanel
 
@@ -39,7 +39,7 @@ class LabEntry(BaseWindowPeriodItem):
     default_entry_status = models.CharField(
         max_length=25,
         choices=ENTRY_STATUS,
-        default='NEW',
+        default=REQUIRED,
         )
 
     additional = models.BooleanField(default=False, help_text='If True lists the lab_entry in additional requisitions')
