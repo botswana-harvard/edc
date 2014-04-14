@@ -29,6 +29,11 @@ class ExportPlan(BaseSyncUuidModel):
 
     target_path = models.CharField(max_length=250, default='~/export')
 
+    notification_plan_name = models.CharField(max_length=50, null=True)
+
+    def is_serialized(self, serialize=True):
+        return False
+
     class Meta:
         app_label = 'export'
         unique_together = (('app_label', 'object_name'), )

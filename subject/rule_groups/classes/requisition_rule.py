@@ -34,23 +34,5 @@ class RequisitionRule(BaseRule):
                     try:
                         self.target_model.entry_meta_data_manager.instance = self.target_model.objects.get(**self.target_model.entry_meta_data_manager.query_options)
                     except self.target_model.DoesNotExist:
-                        pass
+                        self.target_model.entry_meta_data_manager.instance = None
                     self.target_model.entry_meta_data_manager.update_meta_data_from_rule(change_type)
-
-    def evaluate(self):
-        """ Evaluates the predicate and returns an action.
-
-        ..note:: if the source model instance does not exist (has not been keyed yet) the predicate will be None
-        and the rule will not be evaluated."""
-        action = None
-        predicate = self.predicate
-        if predicate:
-            if eval(predicate):
-                action = self.consequent_action
-            else:
-                if self.alternative_action != 'none':
-                    action = self.alternative_action
-            action = self.is_valid_action(action)
-        if action:
-            action = action.upper()
-        return action

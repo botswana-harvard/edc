@@ -1,12 +1,12 @@
 from django.db import models
 
+from edc.constants import NOT_REQUIRED, REQUIRED
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.subject.visit_schedule.models import BaseWindowPeriodItem, VisitDefinition
-from edc.constants import NOT_REQUIRED
 
 from ..choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
-from ..managers import EntryManager
 from ..exceptions import EntryManagerError
+from ..managers import EntryManager
 
 
 class Entry(BaseWindowPeriodItem):
@@ -38,7 +38,7 @@ class Entry(BaseWindowPeriodItem):
     default_entry_status = models.CharField(
         max_length=25,
         choices=ENTRY_STATUS,
-        default='NEW')
+        default=REQUIRED)
     additional = models.BooleanField(default=False, help_text='If True lists the entry in additional entries')
     app_label = models.CharField(max_length=50, null=True)
 

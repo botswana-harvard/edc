@@ -1,5 +1,6 @@
 from datetime import date
 
+from edc.constants import REQUIRED
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.subject.visit_tracking.settings import VISIT_REASON_NO_FOLLOW_UP_CHOICES
@@ -58,7 +59,7 @@ class BaseMetaDataHelper(object):
             self._appointment_zero = Appointment.objects.get(
                 registered_subject=self.appointment.registered_subject,
                 visit_definition=self.appointment.visit_definition,
-                visit_instance=0)
+                visit_instance='0')
         else:
             self._appointment_zero = self.appointment
         return self._appointment_zero
@@ -95,17 +96,13 @@ class BaseMetaDataHelper(object):
             if model.entry_meta_data_manager.instance:
                 model.entry_meta_data_manager.run_rule_groups()
 
-    def delete_for_visit(self):
-        """Deletes meta data if visit is deleted."""
-        self.meta_data_model.objects.filter(appointment=self.visit_instance.appointment).delete()
-
     def get_next_entry_for(self, entry_order):
         """Gets next meta data instance based on the given entry order, used with the save_next button on a form."""
         next_meta_data_instance = None
         options = {
            'registered_subject_id': self.registered_subject.pk,
            'appointment_id': self.appointment_zero.pk,
-            'entry_status': 'NEW',
+            'entry_status': REQUIRED,
             '{0}__entry_order__gt'.format(self.entry_attr): entry_order}
         if self.meta_data_model.objects.filter(**options):
             next_meta_data_instance = self.meta_data_model.objects.filter(**options)[0]

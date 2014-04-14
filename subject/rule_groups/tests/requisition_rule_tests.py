@@ -14,6 +14,7 @@ from edc.testing.models import TestVisit, TestScheduledModel1, TestConsentWithMi
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory, TestRequisitionFactory
 from edc.core.bhp_variables.models import StudySite
 from edc.subject.entry.models import RequisitionPanel
+from edc.constants import NOT_REQUIRED, REQUIRED
 
 from ..classes import RuleGroup, RequisitionRule, Logic
 
@@ -177,9 +178,57 @@ class RequisitionRuleTests(TestCase):
         test_aliquot_type = TestAliquotType.objects.get(alpha_code='WB')
         test_visit = self.test_visit_factory(appointment=self.appointment)
         TestRequisitionFactory(test_visit=test_visit, panel=test_panel, aliquot_type=test_aliquot_type)
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(appointment=test_visit.appointment, registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', appointment=test_visit.appointment, registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
         test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1='No')
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(appointment=test_visit.appointment, registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', appointment=test_visit.appointment, registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
         test_scheduled_model1.f1 = 'Yes'
         test_scheduled_model1.save()
-        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED', appointment=test_visit.appointment, registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+
+    def test_base1(self):
+        site_rule_groups._registry = {}
+
+        class BaseTestRuleGroupSched(RuleGroup):
+            test_rule = RequisitionRule(
+                logic=Logic(
+                    predicate=(('f1', 'equals', 'No')),
+                    consequence='not_required',
+                    alternative='new'),
+                target_model=['testrequisition'],
+                target_requisition_panels=['microtube', 'viral load'])
+
+            class Meta:
+                abstract = True
+
+        class TestRuleGroupSched1(BaseTestRuleGroupSched):
+            test_rule2 = RequisitionRule(
+                logic=Logic(
+                    predicate=(('f2', 'equals', 'Yes')),
+                    consequence='not_required',
+                    alternative='none'),
+                target_model=['testrequisition'],
+                target_requisition_panels=['microtube', 'viral load'])
+
+            class Meta:
+                app_label = 'testing'
+                source_fk = (TestVisit, 'test_visit')
+                source_model = TestScheduledModel1
+        site_rule_groups.register(TestRuleGroupSched1)
+
+        requisition_panel = RequisitionPanel.objects.get(name='Microtube')
+        test_panel = TestPanel.objects.get(name=requisition_panel.name)
+        test_aliquot_type = TestAliquotType.objects.get(alpha_code='WB')
+        test_visit = self.test_visit_factory(appointment=self.appointment)
+        #TestRequisitionFactory(test_visit=test_visit, panel=test_panel, aliquot_type=test_aliquot_type)
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status=REQUIRED, registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1='No', f2='No')
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        test_scheduled_model1.f1 = 'Yes'
+        test_scheduled_model1.f2 = 'No'
+        test_scheduled_model1.save()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status=REQUIRED, registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
+        test_scheduled_model1.f1 = 'No'
+        test_scheduled_model1.save()
+        self.assertEqual(RequisitionMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, lab_entry__requisition_panel=requisition_panel).count(), 1)
