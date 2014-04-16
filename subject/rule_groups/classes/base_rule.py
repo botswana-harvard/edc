@@ -24,26 +24,23 @@ class BaseRule(object):
 
     def __init__(self, **kwargs):
 
-        self._source_instance = None
         self._predicate = None
-        self._method_result = None
         self._predicate_comparative_value = None
         self._predicate_field_value = None
-        self._visit_instance = None
+        self._source_instance = None
         self._target_model = None
         self._unresolved_predicate = None
+        self._visit_instance = None
 
-        self.name = None
-        #self.source_model = kwargs.get('source_model', None)
-        self.source_fk_model = None
-        self.source_fk_attr = None
-        self.target_model_list = []
         self.filter_model_attr = None
         self.filter_model_cls = None
-        self.visit_attr_name = None
+        self.name = None
+        self.source_model = None
+        self.source_fk_attr = None
+        self.source_fk_model = None
+        self.target_model_list = []
         self.target_model_names = []
-        self.helper_class_instance = None
-        self.helper_class_attr = None
+        self.visit_attr_name = None
 
         if 'logic' in kwargs:
             self.logic = kwargs.get('logic')
@@ -72,7 +69,28 @@ class BaseRule(object):
                 self.target_model.entry_meta_data_manager.update_meta_data_from_rule(change_type)
 
     def evaluate(self):
-        raise AttributeError('Evaluate should be overridden. Nothing to do.')
+        """ Evaluates the predicate and returns an action.
+
+        ..note:: if the source model instance does not exist (has not been keyed yet) the predicate will be None
+        and the rule will not be evaluated (if the predicate is not a function)."""
+        try:
+            condition = self.predicate(self.visit_instance)
+            # debug print condition, self.predicate, self.name
+        except TypeError as e:
+            if '\'str\' object is not callable' in e:
+                condition = eval(self.predicate)
+            elif '\'NoneType\' object is not callable' in e:
+                return None
+            else:
+                raise TypeError('{0}. See rule {1}'.format(e, self.name))
+        if condition:
+            action = self.consequent_action
+        else:
+            action = self.alternative_action if self.alternative_action != 'none' else None
+        action = self.is_valid_action(action)
+        if action:
+            action = action.upper()
+        return action
 
     @property
     def logic(self):
@@ -145,14 +163,6 @@ class BaseRule(object):
         if (a is None or b is None) and word not in ('equals', 'eq', 'ne'):
             raise TypeError('Invalid predicate operator in rule for value None. Must be (equals, ea or ne). Got \'{0}\'.'.format(word))
         return operator
-
-    @property
-    def method_result(self):
-        return self._method_result
-
-    @method_result.setter
-    def method_result(self, result):
-        self._method_result = result
 
     @property
     def predicate_field_value(self):
@@ -229,59 +239,62 @@ class BaseRule(object):
 
         if self.source_instance:  # if no instance, just skip the rule
             self._predicate = ''
-            self.unresolved_predicate = self.logic.predicate
-            n = 0
-            for item in self.unresolved_predicate:
-                if n == 0 and not len(item) == 3:
-                    raise ValueError('The logic tuple (or the first tuple of tuples) must must have three items. See {0}'.format(self))
-                if n > 0 and not len(item) == 4:
-                    raise ValueError('Additional tuples in the logic tuple must have a boolean operator as the fourth item. See {0}'.format(self))
-                self.predicate_field_value = item[0]
-                self.predicate_comparative_value = item[2]
-                # logical_operator if more than one tuple in the logic tuple
-                if len(item) == 4:
-                    logical_operator = item[3]
-                    if logical_operator not in ['and', 'or', 'and not', 'or not']:
-                        raise ValueError('Invalid logical operator in logic tuple for rule {0}. Got {1}.'
-                                   'Valid options are {2}'.format(self, logical_operator, ', '.join(['and', 'or', 'and not', 'or not'])))
-                else:
-                    logical_operator = ''
-                if isinstance(self.predicate_comparative_value, list):
-                    self.predicate_comparative_value = ';'.join([x.lower() for x in self.predicate_comparative_value])
-                if self.predicate_comparative_value == 'None':
-                    self.predicate_comparative_value = None
-                # check type of field value and comparative value, must be the same or <Some>Type to NoneType
-                # if a or b are string or None
-                if (isinstance(self.predicate_field_value, (unicode, basestring)) or self.predicate_field_value is None) and (isinstance(self.predicate_comparative_value, (unicode, basestring)) or self.predicate_comparative_value is None):
-                    predicate_template = ' {logical_operator} (\'{field_value}\' {operator} \'{comparative_value}\')'
-                    self._predicate = self._predicate.replace('\'None\'', 'None')
-                # if a or b are number or None
-                elif (isinstance(self.predicate_field_value, (int, long, float)) or self.predicate_field_value is None) and (isinstance(self.predicate_comparative_value, (int, long, float)) or self.predicate_comparative_value is None):
-                    predicate_template = ' {logical_operator} ({field_value} {operator} {comparative_value})'
-                # if a is a date and b is a date, datetime
-                elif isinstance(self.predicate_field_value, (date)) and isinstance(self.predicate_comparative_value, (date, datetime)):
-                    if isinstance(self.predicate_comparative_value, datetime):
-                        # convert b to date to match type of a
-                        self.predicate_comparative_value = date(date.year, date.month, date.day)
-                    predicate_template = ' {logical_operator} (datetime.strptime({field_value},\'%Y-%m-%d\') {operator} datetime.strptime({comparative_value},\'%Y-%m-%d\'))'
-                # if a is a datetime and b is a date, datetime
-                elif isinstance(self.predicate_field_value, (datetime)) and isinstance(self.predicate_comparative_value, (date, datetime)):
-                    if isinstance(self.predicate_comparative_value, date):
-                        # convert a to date if b is a date
-                        self.predicate_field_value = date(date.year, date.month, date.day)
-                    predicate_template = ' {logical_operator} (datetime.strptime({field_value},\'%Y-%m-%d %H:%M\') {operator} datetime.strptime({comparative_value},\'%Y-%m-%d %H:%M\'))'
-                else:
-                    if isinstance(self.predicate_field_value, (date, datetime)) and self.predicate_comparative_value is None:
-                        raise TypeError('In a rule predicate, may not compare a date or datetime to None. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
+            if hasattr(self.logic.predicate, '__call__'):
+                self._predicate = self.logic.predicate
+            else:
+                self.unresolved_predicate = self.logic.predicate
+                n = 0
+                for item in self.unresolved_predicate:
+                    if n == 0 and not len(item) == 3:
+                        raise ValueError('The logic tuple (or the first tuple of tuples) must must have three items. See {0}'.format(self))
+                    if n > 0 and not len(item) == 4:
+                        raise ValueError('Additional tuples in the logic tuple must have a boolean operator as the fourth item. See {0}'.format(self))
+                    self.predicate_field_value = item[0]
+                    self.predicate_comparative_value = item[2]
+                    # logical_operator if more than one tuple in the logic tuple
+                    if len(item) == 4:
+                        logical_operator = item[3]
+                        if logical_operator not in ['and', 'or', 'and not', 'or not']:
+                            raise ValueError('Invalid logical operator in logic tuple for rule {0}. Got {1}.'
+                                       'Valid options are {2}'.format(self, logical_operator, ', '.join(['and', 'or', 'and not', 'or not'])))
                     else:
-                        pass
-                        #raise TypeError('Rule predicate values must be of the same data type and be either strings, dates or numbers. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
-                self._predicate += predicate_template.format(
-                       logical_operator=logical_operator,
-                       field_value=self.predicate_field_value,
-                       operator=self.get_operator_from_word(item[1], self.predicate_field_value, self.predicate_comparative_value),
-                       comparative_value=self.predicate_comparative_value)
-                n += 1
+                        logical_operator = ''
+                    if isinstance(self.predicate_comparative_value, list):
+                        self.predicate_comparative_value = ';'.join([x.lower() for x in self.predicate_comparative_value])
+                    if self.predicate_comparative_value == 'None':
+                        self.predicate_comparative_value = None
+                    # check type of field value and comparative value, must be the same or <Some>Type to NoneType
+                    # if a or b are string or None
+                    if (isinstance(self.predicate_field_value, (unicode, basestring)) or self.predicate_field_value is None) and (isinstance(self.predicate_comparative_value, (unicode, basestring)) or self.predicate_comparative_value is None):
+                        predicate_template = ' {logical_operator} (\'{field_value}\' {operator} \'{comparative_value}\')'
+                        self._predicate = self._predicate.replace('\'None\'', 'None')
+                    # if a or b are number or None
+                    elif (isinstance(self.predicate_field_value, (int, long, float)) or self.predicate_field_value is None) and (isinstance(self.predicate_comparative_value, (int, long, float)) or self.predicate_comparative_value is None):
+                        predicate_template = ' {logical_operator} ({field_value} {operator} {comparative_value})'
+                    # if a is a date and b is a date, datetime
+                    elif isinstance(self.predicate_field_value, (date)) and isinstance(self.predicate_comparative_value, (date, datetime)):
+                        if isinstance(self.predicate_comparative_value, datetime):
+                            # convert b to date to match type of a
+                            self.predicate_comparative_value = date(date.year, date.month, date.day)
+                        predicate_template = ' {logical_operator} (datetime.strptime({field_value},\'%Y-%m-%d\') {operator} datetime.strptime({comparative_value},\'%Y-%m-%d\'))'
+                    # if a is a datetime and b is a date, datetime
+                    elif isinstance(self.predicate_field_value, (datetime)) and isinstance(self.predicate_comparative_value, (date, datetime)):
+                        if isinstance(self.predicate_comparative_value, date):
+                            # convert a to date if b is a date
+                            self.predicate_field_value = date(date.year, date.month, date.day)
+                        predicate_template = ' {logical_operator} (datetime.strptime({field_value},\'%Y-%m-%d %H:%M\') {operator} datetime.strptime({comparative_value},\'%Y-%m-%d %H:%M\'))'
+                    else:
+                        if isinstance(self.predicate_field_value, (date, datetime)) and self.predicate_comparative_value is None:
+                            raise TypeError('In a rule predicate, may not compare a date or datetime to None. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
+                        else:
+                            pass
+                            #raise TypeError('Rule predicate values must be of the same data type and be either strings, dates or numbers. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
+                    self._predicate += predicate_template.format(
+                           logical_operator=logical_operator,
+                           field_value=self.predicate_field_value,
+                           operator=self.get_operator_from_word(item[1], self.predicate_field_value, self.predicate_comparative_value),
+                           comparative_value=self.predicate_comparative_value)
+                    n += 1
         return self._predicate
 
     @property
