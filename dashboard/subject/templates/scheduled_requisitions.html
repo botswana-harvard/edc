@@ -33,7 +33,7 @@
             {% endif %}
             </td>       
             
-            <td><span style="font-size:18px;">{{ scheduled_requisition.requisition_identifier }}</span></td>
+            <td><span style="font-size:18px;">{{ scheduled_requisition.requisition_identifier|mask_uuid:'<span style="font-size:11px;">&lt not drawn &gt</span>' }}</span></td>
                      
             <td>
               {% if scheduled_requisition.meta_data_model_change_url %}

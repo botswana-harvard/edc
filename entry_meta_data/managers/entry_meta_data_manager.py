@@ -22,7 +22,7 @@ class EntryMetaDataManager(BaseMetaDataManager):
     def create_meta_data(self):
         """Creates a meta_data instance for the model at the time point (appointment) for the given registered_subject.
 
-        might NOT be created based on visit reason."""
+        might return None and meta data not created based on visit reason (e.g. missed)."""
         if self.visit_instance.reason not in self.skip_create_visit_reasons:
             try:
                 entry = self.entry_model.objects.get(
@@ -41,3 +41,7 @@ class EntryMetaDataManager(BaseMetaDataManager):
                 entry_status=entry.default_entry_status
                 )
         return None
+
+    @property
+    def default_entry_status(self):
+        return self.meta_data_instance.entry.default_entry_status

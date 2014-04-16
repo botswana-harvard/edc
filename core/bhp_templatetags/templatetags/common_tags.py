@@ -235,3 +235,11 @@ def divide_by(x, y):
         return 0
     else:
         return x / y
+
+
+@register.filter(name='mask_uuid')
+def mask_uuid(value, mask_string=None):
+    re_uuid = re.compile('[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}')
+    if re_uuid.match(str(value)):
+        return mask_string or '&ltuuid&gt'
+    return value
