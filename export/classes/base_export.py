@@ -81,6 +81,12 @@ class BaseExport(object):
         value = value if not value == None else ''
         return unicode(value).encode("utf-8", "replace")
 
+    def get_row_value_from_callable(self, obj, field_name):
+        func = self.extra_fields.get(field_name)
+        value = func(obj)
+        value = value if not value == None else ''
+        return unicode(value).encode("utf-8", "replace")
+
     def get_row_value_from_query_string(self, obj, field_name):
         """Gets the row value by following the query string to related instances."""
         value = None
