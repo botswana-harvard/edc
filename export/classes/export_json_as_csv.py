@@ -36,7 +36,12 @@ class ExportJsonAsCsv(BaseExport):
             if self.include_header_row:
                 writer.writerow(self.header_row)
                 export_file_contents.append(self.header_row)
+            seen = set()
             for self.row_instance in self.queryset:
+                if self.row in seen:
+                    self.update_export_transaction(self.row_instance)
+                    continue  # skip duplicates
+                seen.add(self.row)
                 writer.writerow(self.row)
                 export_file_contents.append(self.row)
                 self.update_export_transaction(self.row_instance)
