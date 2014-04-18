@@ -20,7 +20,7 @@ class Command(BaseCommand):
             ack_filename = args[0]
         except IndexError:
             raise CommandError('Usage: import_receipts <receipt filename>')
-        _, app_label1, app_label2, object_name, timestamp = ack_filename.split('_')
+        _, app_label1, app_label2, object_name, timestamp = ack_filename.split('/').pop().split('_')
         app_label = app_label1 + '_' + app_label2
         timestamp, extension = timestamp.split('.')
         header = []
