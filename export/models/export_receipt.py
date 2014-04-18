@@ -28,8 +28,8 @@ class ExportReceipt(BaseSyncUuidModel):
         null=True,
         )
 
-    received_datetime = models.BooleanField(
-        default=False,
+    received_datetime = models.DateTimeField(
+        null=True,
         help_text='date ACK received'
         )
 
