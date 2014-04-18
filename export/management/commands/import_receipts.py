@@ -68,4 +68,8 @@ class Command(BaseCommand):
             print 'Some receipts were rejected.'
             print 'See file {0} in {1}'.format(error_filename, os.path.join(os.path.expanduser(target_path)))
         else:
+            try:
+                os.remove(error_file.name)
+            except:
+                pass
             print 'Success'
