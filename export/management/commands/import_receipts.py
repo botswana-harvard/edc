@@ -20,14 +20,15 @@ class Command(BaseCommand):
             ack_filename = args[0]
         except IndexError:
             raise CommandError('Usage: import_receipts <receipt filename>')
-        print ack_filename
         _, app_label1, app_label2, object_name, timestamp = ack_filename.split('_')
         app_label = app_label1 + '_' + app_label2
         timestamp, extension = timestamp.split('.')
         header = []
+        rejects = False
         error_filename = '_'.join(['error', app_label1, app_label2, object_name, timestamp]) + '.' + extension
         export_plan = ExportPlan.objects.get(app_label=app_label, object_name=object_name)
         target_path = export_plan.target_path
+        print 'reading file...'
         with open(ack_filename, 'r') as f, open(os.path.join(os.path.expanduser(target_path) or '', error_filename), 'w') as error_file:
             rows = csv.reader(f, delimiter='|')
             writer = csv.writer(error_file, delimiter='|')
@@ -50,6 +51,14 @@ class Command(BaseCommand):
                     export_transaction.received = True
                     export_transaction.received_datetime = datetime.today()
                     export_transaction.save()
+                    print '  accepted: ' + export_uuid
 
                 except ExportTransaction.DoesNotExist:
+                    rejects = True
                     writer.writerow(row)
+                    print '  rejected: ' + export_uuid
+        if rejects:
+            print 'Some receipts were rejected.'
+            print 'See file {0} in {1}'.format(error_filename, os.path.join(os.path.expanduser(target_path)))
+        else:
+            print 'Success'
