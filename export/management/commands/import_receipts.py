@@ -36,6 +36,7 @@ class Command(BaseCommand):
             for row in rows:
                 if not header:
                     header = row
+                    writer.writerow(header)
                     continue
                 export_uuid = row[header.index('export_UUID')]
                 try:
