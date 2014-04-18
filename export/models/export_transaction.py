@@ -38,12 +38,12 @@ class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
         max_length=15,
         default='new',
         choices=(
+            ('new', 'New'),
             ('exported', 'Exported'),
             ('closed', 'Closed'),
-            ('new', 'New'),
             ('cancelled', 'Cancelled'),
             ),
-        help_text='closed if both export and received'
+        help_text='exported by export_transactions, closed by import_receipts'
         )
 
     received = models.BooleanField(
@@ -51,8 +51,8 @@ class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
         help_text='True if ACK received'
         )
 
-    received_datetime = models.BooleanField(
-        default=False,
+    received_datetime = models.DateTimeField(
+        null=True,
         help_text='date ACK received'
         )
 

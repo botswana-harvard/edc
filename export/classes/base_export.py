@@ -34,6 +34,7 @@ class BaseExport(object):
         except AttributeError:
             self.model = model
         self.queryset = queryset
+        self.row = None
         self.row_instance = None
         self.show_all_fields = show_all_fields
         self.strip = strip
@@ -53,8 +54,7 @@ class BaseExport(object):
         self.export_filename = '{0}_{1}.csv'.format(unicode(self.model._meta).replace('.', '_'), export_datetime.strftime('%Y%m%d%H%M%S') or datetime.now().strftime('%Y%m%d%H%M%S'))
         self.export_history = None
 
-    @property
-    def row(self):
+    def fetch_row(self):
         """Returns a one row for the writer."""
         row = []
         value = None
