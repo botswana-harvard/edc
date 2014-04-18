@@ -84,14 +84,14 @@ class Command(BaseCommand):
             Notification.objects.create(
                 notification_datetime=export_datetime,
                 notification_plan_name=notification_plan.name,
-                subject=notification_plan.subject_format.format(exit_status=exit_status_word, timestamp=export_datetime.strftime('%Y-%m-%d %H:%M:%S'), ),
+                subject=notification_plan.subject_format.format(exit_status=exit_status_word, timestamp=export_datetime.strftime('%Y-%m-%d'), ),
                 body=notification_plan.body_format.format(
                     notification_plan_name=notification_plan.friendly_name,
                     exit_status=exit_status_word,
                     exit_status_message=exit_status[1],
                     file_name=export_filename,
                     tx_count=len(transactions),
-                    export_datetime=export_datetime.strftime('%d %B %Y %H:%M')),
+                    export_datetime=export_datetime.strftime('%d %B %Y')),
                 recipient_list=notification_plan.recipient_list,
                 cc_list=notification_plan.cc_list,
                 )
