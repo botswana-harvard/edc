@@ -3,6 +3,7 @@ import os
 
 from datetime import datetime
 
+from django.core.exceptions import MultipleObjectsReturned
 from django.core.management.base import BaseCommand, CommandError
 
 from ...models import ExportReceipt, ExportTransaction, ExportPlan
@@ -38,20 +39,25 @@ class Command(BaseCommand):
                     continue
                 export_uuid = row[header.index('export_UUID')]
                 try:
-                    export_transaction = ExportTransaction.objects.get(export_uuid=export_uuid)
-                    ExportReceipt.objects.create(
-                        export_uuid=export_uuid,
-                        app_label=app_label,
-                        object_name=object_name,
-                        timestamp=timestamp,
-                        received_datetime=datetime.today(),
-                        tx_pk=export_transaction.tx_pk,
-                        )
-                    export_transaction.status = 'closed'
-                    export_transaction.received = True
-                    export_transaction.received_datetime = datetime.today()
-                    export_transaction.save()
-                    print '  accepted: ' + export_uuid
+                    for export_transaction in ExportTransaction.objects.filter(export_uuid=export_uuid):
+                        try:
+                            ExportReceipt.objects.get(export_uuid=export_uuid)
+                        except MultipleObjectsReturned:
+                            pass
+                        except ExportReceipt.DoesNotExist:
+                            ExportReceipt.objects.create(
+                                export_uuid=export_uuid,
+                                app_label=app_label,
+                                object_name=object_name,
+                                timestamp=timestamp,
+                                received_datetime=datetime.today(),
+                                tx_pk=export_transaction.tx_pk,
+                                )
+                        export_transaction.status = 'closed'
+                        export_transaction.received = True
+                        export_transaction.received_datetime = datetime.today()
+                        export_transaction.save()
+                        print '  accepted: ' + export_uuid
 
                 except ExportTransaction.DoesNotExist:
                     rejects = True
