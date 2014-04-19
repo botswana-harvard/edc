@@ -38,7 +38,11 @@ class Command(BaseCommand):
                     header = row
                     writer.writerow(header)
                     continue
-                export_uuid = row[header.index('export_UUID')]
+                try:
+                    export_uuid = row[header.index('export_UUID')]
+                except ValueError as e:
+                    writer.writerow('Error reading file. Got {0}'.format(e))
+                    raise ValueError(e)
                 try:
                     for export_transaction in ExportTransaction.objects.filter(export_uuid=export_uuid):
                         try:
