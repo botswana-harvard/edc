@@ -40,7 +40,10 @@ class Command(BaseCommand):
             except CommandError:
                 raise CommandError('Method get_model returned None for {0}.{1}'.format(app_label, model_name))
             export_plan = ExportPlan.objects.get(app_label=model._meta.app_label, object_name=model._meta.object_name)
-            export_transactions = ExportTransaction.objects.filter(app_label=model._meta.app_label, object_name=model._meta.object_name).exclude(status__in=['sent', 'cancelled', 'exported'], )
+            export_transactions = ExportTransaction.objects.filter(
+                app_label=model._meta.app_label,
+                object_name=model._meta.object_name,
+                ).exclude(status__in=['closed', 'cancelled'], )  # if already exported but not closed, will be sent again
             tx_count = export_transactions.count()
             transactions = []
             for export_transaction in export_transactions:
@@ -81,14 +84,14 @@ class Command(BaseCommand):
             Notification.objects.create(
                 notification_datetime=export_datetime,
                 notification_plan_name=notification_plan.name,
-                subject=notification_plan.subject_format.format(exit_status=exit_status_word, timestamp=export_datetime.strftime('%Y-%m-%d %H:%M:%S'), ),
+                subject=notification_plan.subject_format.format(exit_status=exit_status_word, timestamp=export_datetime.strftime('%Y-%m-%d'), ),
                 body=notification_plan.body_format.format(
                     notification_plan_name=notification_plan.friendly_name,
                     exit_status=exit_status_word,
                     exit_status_message=exit_status[1],
                     file_name=export_filename,
                     tx_count=len(transactions),
-                    export_datetime=export_datetime.strftime('%d %B %Y %H:%M')),
+                    export_datetime=export_datetime.strftime('%d %B %Y')),
                 recipient_list=notification_plan.recipient_list,
                 cc_list=notification_plan.cc_list,
                 )

@@ -18,7 +18,7 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list
 
     def handle(self, *args, **options):
-        for notification in Notification.objects.filter(sent=False):
+        for notification in Notification.objects.filter(status='new'):
             try:
                 print 'sending to {0}'.format(', '.join(json.loads(notification.recipient_list) + json.loads(notification.cc_list)))
                 send_mail(notification.subject,
@@ -29,5 +29,7 @@ class Command(BaseCommand):
             except SMTPException as e:
                 print 'Unable to send notification. {2}. See \'{0}\' pk={1}'.format(notification.subject, notification.pk, e)
             else:
+                notification.status = 'sent'
                 notification.sent = True
                 notification.sent_datetime = datetime.today()
+                notification.save()

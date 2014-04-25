@@ -42,5 +42,6 @@ class ExportHistoryManager(models.Manager):
                 export_uuid=instance.export_uuid,
                 status='new',
                 tx=json_tx,
-                timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
+                #timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
+                timestamp=instance.created.strftime('%Y%m%d%H%M%S%f') if change_type == 'I' else instance.modified.strftime('%Y%m%d%H%M%S%f'),
                 )
