@@ -21,13 +21,13 @@
     <tr class="{% cycle 'row1' 'row2' %}"><td colspan="12"></td></tr>
 {% else %}
     {% for scheduled_entry in scheduled_entries %}
-
+        {# if scheduled_entry.entry.required #}
             <tr class="{% cycle 'row1' 'row2' %}">
                 <td><span {% if scheduled_entry.status == 'NEW' %}style="background:red;"{% endif %}>&nbsp;</span></td>
                 <td>{{ forloop.counter }}</td>
                 <td>
                 {% if scheduled_entry.model_url %}
-                    <A href="{{ scheduled_entry.model_url }}?next={{ subject_dashboard_url }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms&{{visit_attr}}={{ visit_model_instance.pk }}&visit_attr={{visit_attr}}&entry_order={{ scheduled_entry.entry_order }}&group_title={{ scheduled_entry.group_title }}">{{ scheduled_entry.label }}</A>
+                    <A href="{{ scheduled_entry.model_url }}?next={{ subject_dashboard_url }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms&registered_subject={{ registered_subject }}&{{visit_attr}}={{ visit_model_instance.pk }}&visit_attr={{visit_attr}}&entry_order={{ scheduled_entry.entry_order }}&group_title={{ scheduled_entry.group_title }}">{{ scheduled_entry.label }}</A>
                 {% else %}                
                     {{ scheduled_entry.label }}
                 {% endif %}
@@ -53,7 +53,7 @@
                 {% endif %}
                 </td>
             </tr>
-
+         {# endif #}
     {% endfor %}
 {% endif %}
 </tbody>

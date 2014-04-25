@@ -7,7 +7,7 @@ class BaseProfile(BaseUuidModel):
 
     name = models.CharField(
         verbose_name='Profile Name',
-        max_length=25,
+        max_length=50,
         unique=True)
 
     objects = models.Manager()

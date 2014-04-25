@@ -26,7 +26,7 @@ class ScheduledEntryMetaData(BaseEntryMetaData):
     objects = NaturalKeyEntryMetaDataManager()
 
     def __unicode__(self):
-        return self.current_entry_title
+        return unicode(self.current_entry_title) or u''
 
     def natural_key(self):
         return self.appointment.natural_key() + self.entry.natural_key()
