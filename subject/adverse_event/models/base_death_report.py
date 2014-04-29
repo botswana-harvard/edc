@@ -11,7 +11,7 @@ class BaseDeathReport(BaseDeath):
     """
     illness_duration = models.IntegerField(
         verbose_name="Duration of acute illness directly causing death   ",
-        help_text="If unknown enter -1",
+        help_text="in days (If unknown enter -1)",
         )
 
     perform_autopsy = models.CharField(
