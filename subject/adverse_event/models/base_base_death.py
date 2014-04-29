@@ -65,7 +65,7 @@ class BaseBaseDeath(BaseRegisteredSubjectModel):
 
     days_hospitalized = models.IntegerField(
         verbose_name="For how many days was the participant hospitalised during the illness immediately before death? ",
-        help_text="",
+        help_text="in days",
         default=0,
         )
 
