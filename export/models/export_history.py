@@ -1,9 +1,6 @@
 from datetime import datetime
 
-from django_extensions.db.fields import UUIDField
-
 from django.db import models
-from django.core.exceptions import ValidationError
 
 from edc.device.sync.models import BaseSyncUuidModel
 
@@ -14,53 +11,41 @@ class ExportHistory(BaseSyncUuidModel):
 
     object_name = models.CharField(max_length=50)
 
-    instance_pk = models.CharField(max_length=36)
+    export_uuid_list = models.TextField(null=True, help_text='list of export_uuid\'s of model app_label.object_name')
 
-    change_type = models.CharField(
-        max_length=2,
-        choices=(('I', 'Insert'), ('U', 'Update'), ('D', 'Delete'), ('NA', 'Not applicable')),
-        help_text=''
-        )
+    pk_list = models.TextField(null=True, help_text='list of pk\'s of model app_label.object_name')
 
-    export_uuid = UUIDField()
+    exit_message = models.CharField(max_length=250, help_text='exit message from the export_transactions command')
 
-    sent = models.BooleanField(default=False)
+    exit_status = models.IntegerField(null=True, help_text='0=success, 1=failed from the export_transactions command')
+
+    export_filename = models.CharField(max_length=250, help_text='original filename on export')
+
+    export_file_contents = models.TextField(null=True, help_text='save contents of file as a list of rows')
+
+    exported = models.BooleanField(default=False, help_text="exported to a file")
+
+    exported_datetime = models.DateTimeField(null=True)
+
+    notification_plan_name = models.CharField(max_length=50, null=True)
+
+    sent = models.BooleanField(default=False, help_text='export file sent to recipient')
 
     sent_datetime = models.DateTimeField(null=True)
 
-    received = models.BooleanField(default=False)
+    received = models.BooleanField(default=False, help_text='have received an ACK from the recipient')
 
     received_datetime = models.DateTimeField(null=True)
 
-    exported = models.BooleanField(default=False, help_text="considered 'exported' if both sent and received.")
+    closed = models.BooleanField(default=False, help_text='exported, sent, received')
 
-    export_datetime = models.DateTimeField(null=True)
+    closed_datetime = models.DateTimeField(null=True)
 
     def save(self, *args, **kwargs):
-        if self.sent and self.received and not self.exported:
-            self.update_target_model()
-            self.exported = True
-            self.export_datetime = datetime.now()
-        # TODO: may also want to raise a ValidationError is received_datetime greater than sent, etc
+        if self.sent and self.received and self.exported and not self.closed:
+            self.closed = True
+            self.closed_datetime = datetime.now()
         super(ExportHistory, self).save(*args, **kwargs)
-
-    def model_class(self):
-        return models.get_model(self.app_label, self.object_name)
-
-    def model_instance(self):
-        obj = None
-        if self.model_class().objects.filter(pk=self.instance_pk):
-            obj = self.model_class().objects.get(pk=self.instance_pk)
-        return obj
-
-    def update_target_model(self):
-        """Updates the target model as exported triggered by an update to the instance."""
-        target_model_cls = models.get_model(self.app_label, self.object_name)
-        if not target_model_cls:
-            raise ValidationError('Model not found using {0}.{1}'.format(self.app_label, self.object_name))
-        if not target_model_cls.objects.filter(pk=self.instance_pk):
-            raise ValidationError('Instance not found for {0}.{1} pk={2}'.format(self.app_label, self.object_name, self.instance_pk))
-        target_model_cls.objects.filter(pk=self.instance_pk).update(exported=True, exported_datetime=datetime.today())
 
     class Meta:
         app_label = 'export'

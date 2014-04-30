@@ -1,4 +1,9 @@
+import inspect
+import copy
+
 from django.db.models import get_model
+
+from edc.base.model.models import BaseModel
 
 from .base_rule import BaseRule
 
@@ -12,10 +17,22 @@ class BaseRuleGroup(type):
     def __new__(cls, name, bases, attrs):
         """Add the Meta attributes to each rule."""
         rules = []
+        try:
+            abstract = attrs.get('Meta', False).abstract
+        except AttributeError:
+            abstract = False
         parents = [b for b in bases if isinstance(b, BaseRuleGroup)]
-        if not parents:
+        if not parents or abstract:
             # If this isn't a subclass of BaseRuleGroup, don't do anything special.
             return super(BaseRuleGroup, cls).__new__(cls, name, bases, attrs)
+        for parent in parents:
+            try:
+                if parent.Meta.abstract:
+                    for rule in [member for member in inspect.getmembers(parent) if isinstance(member[1], BaseRule)]:
+                        parent_rule = copy.deepcopy(rule)
+                        attrs.update({parent_rule[0]: parent_rule[1]})
+            except AttributeError as e:
+                pass
         meta = attrs.pop('Meta', None)
         # source model is the same for all rules in this group, so get it now
         if isinstance(meta.source_model, tuple):
@@ -39,12 +56,18 @@ class BaseRuleGroup(type):
                     if meta:
                         rule.app_label = meta.app_label
                         for item in rule.target_model_list:
-                            if isinstance(item, basestring):
+                            if isinstance(item, (basestring, tuple)):
                                 rule.target_model_names.append(item)
                                 model_name = rule.target_model_list.pop(rule.target_model_list.index(item))
-                                model_cls = get_model(meta.app_label, model_name)
+                                if isinstance(model_name, tuple):
+                                    model_cls = get_model(model_name[0], model_name[1])
+                                else:
+                                    model_cls = get_model(meta.app_label, model_name)
                                 if not model_cls:
                                     raise AttributeError('Attribute \'target_model\' in rule \'{0}.{1}\' contains a model_name that does not exist. app_label=\'{2}\', model_name=\'{3}\'.'.format(name, rule_name, meta.app_label, model_name))
+                                if not issubclass(model_cls, BaseModel):
+                                    raise AttributeError('Invalid value in target model list. Must be a model name class or tuple (app_label, model_name). Got {0}'.format(model_cls))
+
                                 rule.target_model_list.append(model_cls)
                         rule.source_model = source_model
                         rule.source_fk_model = source_fk_model

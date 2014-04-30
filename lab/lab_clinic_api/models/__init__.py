@@ -9,5 +9,3 @@ from .result import Result
 from .review import Review
 from .receive import Receive
 from .result_item import ResultItem
-from .processing_profile import ProcessingProfile, ProcessingProfileItem
-from .processing import Processing

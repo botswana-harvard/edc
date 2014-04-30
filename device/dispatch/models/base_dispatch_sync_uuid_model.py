@@ -4,6 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from edc.device.sync.models import BaseSyncUuidModel
 from edc.device.device.classes import Device
+from edc.core.bhp_using.classes import BaseUsing
 from ..exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError
 
 
@@ -35,6 +36,14 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
 
         ..note:: only use this for models that do not exist in an app listed in the settings.DISPATCH_APP_LABELS but need to be included (which should not be very often)."""
         return False
+
+    def save_instance_to_correct_db(self, instance, using):
+        #If using argument comes from dispatch, we can trust it straight away. Otherwise need todo validation on it.
+        if self.using:
+            BaseUsing('default', using) #will throw an exception if using parameter is wrong.
+            instance.save(using)
+        else:
+            instance.save()
 
     def is_dispatchable_model(self):
         if self.ignore_for_dispatch():
@@ -71,10 +80,10 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                     is_dispatched=True,
                     return_datetime__isnull=True).exists()
         return is_dispatched
-    
+
     def is_current_device_server(self):
-        return Device().is_server()
-        
+        return Device().is_server
+
     def is_dispatched_within_user_container(self, using=None):
         """Returns True if the model class is dispatched within a user container.
 

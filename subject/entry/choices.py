@@ -1,19 +1,16 @@
+from edc.constants import NEW, NOT_REQUIRED, KEYED
+
 ENTRY_CATEGORY = (
     ('CLINIC', 'Clinic'),
     ('LAB', 'Lab'),
     ('OTHER', 'Other'),
     )
 
-# careful, this tuple is coupled with the ScheduledEntryMetaDataManager
 ENTRY_STATUS = (
-    ('NEW', 'New'),
-    ('KEYED', 'Keyed'),
-    #('CHECKED', 'Checked'),
+    (NEW, 'New'),
+    (KEYED, 'Keyed'),
     ('MISSED', 'Missed'),
-    ('NOT_REQUIRED', 'Not required'),
-    #('QUERY', 'Query?'),
-    #('PENDING', 'Pending'),
-    #('OPTIONAL', 'Optional'),
+    (NOT_REQUIRED, 'Not required'),
     )
 
 ENTRY_WINDOW = (

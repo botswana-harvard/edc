@@ -9,6 +9,8 @@ from django.utils.module_loading import module_has_submodule
 from .helpers import TrackerNamedTpl
 from .history_updater import HistoryUpdater
 
+from ..exceptions import AlreadyRegistered
+
 logger = logging.getLogger(__name__)
 
 
@@ -16,14 +18,6 @@ class NullHandler(logging.Handler):
     def emit(self, record):
         pass
 nullhandler = logger.addHandler(NullHandler())
-
-
-class AlreadyRegistered(Exception):
-    pass
-
-
-class NotRegistered(Exception):
-    pass
 
 
 class Controller(object):
