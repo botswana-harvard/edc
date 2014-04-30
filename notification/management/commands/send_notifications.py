@@ -2,7 +2,7 @@ import json
 
 from datetime import datetime
 
-from smtplib import SMTPException
+from smtplib import SMTPException, SMTPRecipientsRefused, SMTPSenderRefused
 
 from django.core.management.base import BaseCommand, CommandError
 from django.core.mail import send_mail
@@ -27,7 +27,9 @@ class Command(BaseCommand):
                           json.loads(notification.recipient_list) + json.loads(notification.cc_list),
                           fail_silently=False)
             except SMTPException as e:
-                print 'Unable to send notification. {2}. See \'{0}\' pk={1}'.format(notification.subject, notification.pk, e)
+                print 'Error: Unable to send notification. {2}. See \'{0}\' pk={1}'.format(notification.subject, notification.pk, e)
+            except (SMTPRecipientsRefused, SMTPSenderRefused) as e:
+                print 'Error: Unable to send notification. {2}. See \'{0}\' pk={1}'.format(notification.subject, notification.pk, e)
             else:
                 notification.status = 'sent'
                 notification.sent = True
