@@ -24,7 +24,7 @@ def consume_transactions(request, **kwargs):
     remote_is_middleman = False
     remote_is_site_server = False
     #if 'MIDDLE_MAN' in dir(settings) and settings.MIDDLE_MAN:
-    if device.is_middleman():
+    if device.is_middleman:
         middle_man = True
     else:
         middle_man = False
@@ -58,7 +58,7 @@ def consume_transactions(request, **kwargs):
                     data = {'host': producer.url, 'producer': producer.name, 'limit': producer.json_limit, 'username': request.user.username, 'api_key': request.user.api_key.key}
                     if middle_man:
                         #I am a Middleman and pulling from a netbook, so grab eligible(i.e not Synced by Server and any MiddelMan yet) transactions from outgoingtransaction
-                        url = '{host}bhp_sync/api_otmr/outgoingtransaction/?format=json&limit={limit}&producer={producer}&username={username}&api_key={api_key}'.format(**data)
+                        url = '{host}bhp_sync/api_otmr/outgoingtransaction/?format=json&limit={limit}&username={username}&api_key={api_key}'.format(**data)
                     else:
                         if remote_is_middleman:
                             #I am a Server pulling from a MiddleMan, we dont care who the original producer was, just grab all eligible(i.e not synced by Server yet) tansanctions in MiddleManTransaction table
@@ -69,7 +69,7 @@ def consume_transactions(request, **kwargs):
                         else:
                             #I am still a Server, but now pulling from a netbook, just grab all eligible(i.e not synced by Server yet) transactions from OutgoingTransactions table
                             #however pass the producer for filtering on the other side.
-                            url = '{host}bhp_sync/api_otsr/outgoingtransaction/?format=json&limit={limit}&producer={producer}&username={username}&api_key={api_key}'.format(**data)
+                            url = '{host}bhp_sync/api_otsr/outgoingtransaction/?format=json&limit={limit}&username={username}&api_key={api_key}'.format(**data)
                     request_log = RequestLog()
                     request_log.producer = producer
                     request_log.save()

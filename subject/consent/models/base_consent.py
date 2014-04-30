@@ -18,6 +18,8 @@ from ..exceptions import ConsentError
 from ..classes import ConsentedSubjectIdentifier
 
 from .base_consent_history import BaseConsentHistory
+
+
 # allow a settings attribute to override the unique constraint on the
 # subject identifier
 try:
@@ -186,6 +188,7 @@ class BaseConsent(BaseSubject):
         # if adding, call _save_new_consent()
         if not self.id:
             self._save_new_consent(kwargs.get('using', None))
+    
         super(BaseConsent, self).save(*args, **kwargs)
 
     def formatted_age_at_consent(self):

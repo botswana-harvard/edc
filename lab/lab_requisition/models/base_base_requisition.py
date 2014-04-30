@@ -64,11 +64,6 @@ class BaseBaseRequisition (BaseUuidModel):
         blank=True,
         )
 
-    aliquot_type = models.ForeignKey(AliquotType,
-        help_text='Note: Lists only those types associated with the Panel.')
-
-    panel = models.ForeignKey(Panel)
-
     priority = models.CharField(
         verbose_name='Priority',
         max_length=25,
@@ -116,7 +111,7 @@ class BaseBaseRequisition (BaseUuidModel):
     estimated_volume = models.DecimalField(
         verbose_name='Estimated volume in mL',
         max_digits=7,
-        decimal_places=1,
+        decimal_places=2,
         default=5.0,
         help_text='If applicable, estimated volume of sample for this test/order. This is the total volume if number of "tubes" above is greater than 1'
         )
@@ -203,7 +198,7 @@ class BaseBaseRequisition (BaseUuidModel):
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
 
     def value_is_requisition_identifier(self):
-        if not self.requisition_identifier or not self.specimen_identifier:
+        if not self.requisition_identifier:
             return False
         if len(self.requisition_identifier) == 7:
             return True
@@ -211,10 +206,9 @@ class BaseBaseRequisition (BaseUuidModel):
 
     def value_is_uuid(self):
         p = re.compile('^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$', re.IGNORECASE)
-        if not self.requisition_identifier or not self.specimen_identifier:
+        if not self.requisition_identifier:
             return False
         if (len(self.requisition_identifier) == 36
-            and len(self.specimen_identifier) == 36
             and p.match(self.requisition_identifier)):
             return True
         return False
