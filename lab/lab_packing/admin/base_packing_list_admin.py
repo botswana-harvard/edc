@@ -29,16 +29,16 @@ class BasePackingListAdmin(BasePackingListModelAdmin):
                         query_options = {'aliquot_identifier': item}
                     if requisition.objects.filter(**query_options):
                         subject_requisition = requisition.objects.get(**query_options)
-                        if self.packing_list_item_model.objects.filter(packing_list=obj,
-                                                                       item_reference=getattr(subject_requisition, attr)):
-                            packing_list_item = self.packing_list_item_model.objects.get(packing_list=obj,
-                                                                                         item_reference=getattr(subject_requisition, attr))
+                        try:
+                            packing_list_item = self.packing_list_item_model.objects.get(
+                                packing_list=obj,
+                                item_reference=getattr(subject_requisition, attr))
                             packing_list_item.item_description = '{subject_identifier} ({initials}) VISIT:{visit} DOB:{dob}'.format(
-                                                                                     subject_identifier=subject_requisition.get_visit().appointment.registered_subject.subject_identifier,
-                                                                                     initials=subject_requisition.get_visit().appointment.registered_subject.initials,
-                                                                                     visit=subject_requisition.get_visit().appointment.visit_definition.code,
-                                                                                     dob=subject_requisition.get_visit().appointment.registered_subject.dob,)
-                            packing_list_item.requisition = subject_requisition._meta.object_name.lower()
+                                subject_identifier=subject_requisition.get_visit().appointment.registered_subject.subject_identifier,
+                                initials=subject_requisition.get_visit().appointment.registered_subject.initials,
+                                visit=subject_requisition.get_visit().appointment.visit_definition.code,
+                                dob=subject_requisition.get_visit().appointment.registered_subject.dob,)
+                            packing_list_item.requisition = subject_requisition.pk
                             if issubclass(requisition, BaseRequisition):
                                 packing_list_item.panel = subject_requisition.panel
                                 packing_list_item.item_priority = subject_requisition.priority
@@ -46,7 +46,7 @@ class BasePackingListAdmin(BasePackingListModelAdmin):
                             packing_list_item.save()
                             subject_requisition.is_packed = True
                             subject_requisition.save()
-                        else:
+                        except self.packing_list_item_model.DoesNotExist:
                             if issubclass(requisition, BaseRequisition):
                                 self.packing_list_item_model.objects.create(
                                     packing_list=obj,
