@@ -43,7 +43,6 @@ class Order(BaseOrder):
 
         self.subject_identifier = self.aliquot.receive.registered_subject.subject_identifier
         self.receive_identifier = self.aliquot.receive_identifier
-        #self.status = self.get_status()
         super(Order, self).save(*args, **kwargs)
 
     def get_status(self):
