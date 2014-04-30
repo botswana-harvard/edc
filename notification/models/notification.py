@@ -33,3 +33,4 @@ class Notification(BaseSyncUuidModel):
 
     class Meta:
         app_label = 'notification'
+        ordering = ('notification_datetime', )
