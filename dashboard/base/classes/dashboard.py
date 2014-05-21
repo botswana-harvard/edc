@@ -18,7 +18,6 @@ from edc.subject.registration.models import RegisteredSubject
 
 class Dashboard(object):
 
-    #context = BaseContext()
     dashboard_name = None  # e.g. 'Dashboard'
     dashboard_url_name = None   # e.g. 'dashboard_url_name'
     template = None

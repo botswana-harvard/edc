@@ -16,6 +16,7 @@ class ActionItemAdmin(BaseAdmin):
         self.search_fields.insert(0, 'registered_subject__pk')
         self.search_fields.insert(0, 'registered_subject__subject_identifier')
         self.list_display.insert(1, 'dashboard')
+        self.list_filter.append('action_group')
         # save_model expects bhp_data_manager specific user groups
 
     def save_model(self, request, obj, form, change):
