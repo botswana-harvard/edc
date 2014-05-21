@@ -15,10 +15,13 @@ $(function(){
   });
 
   $(".update-lab-result").on('click', function(){
-    $('#wait').show();
+    $(this).text('Loading....');
     var url = $(this).data('url');
-    $("#x_results").load(url);
-    $('#wait').hide();
+    $("#x_results").load(url, function(response, textStatus, xhr){
+      if(textStatus == "success"){
+        $('.update-lab-result').text('Updated!');
+      }
+    });
   });
 
 });
