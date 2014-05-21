@@ -2,6 +2,13 @@
 {% load admin_urls %}
 {% load url from future %}
 {% load i18n %}
+{% load staticfiles %}
+
+{% block customjs %}
+  <script type="text/javascript" src="{{ STATIC_URL }}js/spin.min.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.spin.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/lab_results.js" charset="utf-8"></script>
+{% endblock customjs %}
 
 {% block breadcrumbs %}
 
@@ -23,17 +30,16 @@
 
 {% block clinic_dashboard %}
 
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('.results').html( '<I>Contacting lab for results, please wait...<I>' ).load("Dajaxice.lab_clinic_api.update_result_status(Dajax.process,{'subject_identifier':'{{subject_identifier}}'});");
-        });
-</script>
-
-
 <table border=1 width=100%>
 <thead></thead>
 <tbody>
     <tr>
+      <td id="lab-results-panel" style="display: none;">
+        <div id="dashboard-link">
+          <button type="button" id="board-link">show dashboard</button>
+        </div>
+        <div id="results-space"></div>
+      </td>
         <td name="left_table" id="left_table">
             
             <table name="left" id="left" border=1 width=100%>
@@ -128,7 +134,7 @@
         </td>
 
         <td>
-            <table name="right"  border=0 width=100%>
+            <table name="right" class="right-table"  border=0 width=100%>
                 <tr><td>
                 {% block top_links %}[{{form_language_code}}]
                     {% block subject_configuration %}
@@ -182,16 +188,33 @@
                 
                 {% if scheduled_lab_bucket %}
                 <tr name="middle right" >
-                <td style="line-height: 10px; padding:0;"><table><tr>
-                <td style="font-size: 10px;line-height: 10px; padding:0;"><H4>Laboratory</H4></td>
-                <td style="font-size: 10px;line-height: 10px; padding:0;">&nbsp;&nbsp;<input name="fetch" id="fetch" value="Update" type="button" onclick="Dajaxice.lab_clinic_api.updating(Dajax.process);Dajaxice.lab_clinic_api.update_result_status(Dajax.process,{'subject_identifier':'{{ subject_identifier }}'});"></td>                
-                </td></tr></table>
+                  <td style="line-height: 10px; padding:0;">
+                    <table>
+                      <tr>
+                        <td style="font-size: 10px;line-height: 10px; padding:0;"><H4>Laboratory</H4></td>
+                        <td style="font-size: 10px;line-height: 10px; padding:0;">&nbsp;&nbsp;
+                          <button type="button" 
+                                  data-url="{% url 'update_result_status' subject_identifier=subject_identifier %}"
+                                  class="update-lab-result" style="margin-top: 8px;" >Update</button>
+                        </td>                
+                        <td>
+                          <div id="wait" 
+                            style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+                            <img src="{% static "img/ajax-loader.gif" %}" width="64" height="64" />
+                            <br>Loading..
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
                 </tr>                
                 {% endif %}
                 {% block lab_plots %}{% endblock %}
                 {% block lab_results %}
                 <tr name="middle right"><td style="font-size: 10px;line-height: 10px; padding:0;">           
-                    <span name="x_results" id="x_results">{{ local_results }}</span>
+                    <span name="x_results" id="x_results">
+                      {% include 'result_status_bar.html' with resulted=resulted ordered=ordered last_updated=last_updated %}
+                    </span>
                 </td></tr>
                 {% endblock %}
                 
