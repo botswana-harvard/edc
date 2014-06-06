@@ -217,6 +217,7 @@ class Controller(object):
         """
         self.confirm_autodiscovered()
         value = None
+        subject_type = subject_type.lower()
         is_default_value = None  # if no value is found in the classes' history model, is there a default?
         if subject_type not in settings.SUBJECT_TYPES and not subject_type == 'test_subject_type':
             raise ImproperlyConfigured('Invalid subject type \'{0}\'. Must be one of {1}. See settings.py.'.format(subject_type, settings.SUBJECT_TYPES))
