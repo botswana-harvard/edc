@@ -113,7 +113,7 @@ class RegisteredSubjectDashboard(Dashboard):
             self.render_summary_links()
         self.context.add(rendered_action_items=self.render_action_item())
         self.context.add(rendered_locator=self.render_locator())
-        self.context.add(local_results=self.render_labs())
+        self.context.add(self.lab_results_data())
 
     @classmethod
     def add_to_urlpattern_string(cls):
@@ -454,6 +454,10 @@ class RegisteredSubjectDashboard(Dashboard):
             return edc_lab_results.render(self.subject_identifier, False)
         return ''
 
+    def lab_results_data(self):
+        """Achieves almost the same end result with the render_labs method above but depends on template inclusion"""
+        return EdcLabResults().context_data(self.subject_identifier, False) if self._requisition_model else {}
+
     @property
     def locator_model(self):
         return self._locator_model
@@ -634,7 +638,7 @@ class RegisteredSubjectDashboard(Dashboard):
         show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
         allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
         show_drop_down_requisitions = GlobalConfiguration.objects.get_attr_value('show_drop_down_requisitions')
-        requisition_helper = RequisitionMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
+        requisition_helper = RequisitionMetaDataHelper(self.appointment, self.visit_model, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
             if not show_not_required_requisitions and not requisition_context.required and not requisition_context.additional:
