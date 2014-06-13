@@ -50,7 +50,7 @@ class Result(BaseResult):
         return retval
 
     def report(self):
-        url = reverse('view_result_report', kwargs={'section_name': 'specimens', 'result_identifier': self.result_identifier})
+        url = reverse('view_result_report', kwargs={'result_identifier': self.result_identifier})
         url_review = reverse('admin:lab_clinic_api_review_add')
         two = ''
         if self.review:

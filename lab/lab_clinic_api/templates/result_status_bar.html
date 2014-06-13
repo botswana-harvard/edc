@@ -1,12 +1,12 @@
-{% extends 'base_result_status_bar.html' %}
+{# extends 'base_result_status_bar.html' #}
 
-{% block resulted %}    
+{# block resulted #}    
     <table  width="100%">
     <thead>
     <th>Resulted</th>
     </thead>
     <tbody>
-    {% if resulted|length %}
+    {% if resulted %}
         {% for result in resulted %}
             {% ifchanged result.order.aliquot.receive.drawn_datetime %}
                 <tr class="{% cycle 'row2' 'row1' as rowcolors %}"> 
@@ -18,7 +18,10 @@
                 {% if result.order.aliquot.receive.receive_identifier %}
                 <table cellpadding=0>
                 <tr>
-                <td><input type="button" name="" id="" value="+" onclick="Dajaxice.lab_clinic_api.view_result_report(Dajax.process,{'result_identifier':'{{result.result_identifier}}'});"></td>
+                  <td>
+                      <button type='button' class="view-lab-report" 
+                              data-url="{% url 'view_lab_result' result_identifier=result.result_identifier %}">+</button>
+                  </td>
                 <td><table width="100%">
                     <tr><td style="font-size: 10px;line-height: 10px; padding:0;">{{ result.order.panel.edc_name|truncatechars:25 }}</td></tr>
                     {% if result.order.status != 'COMPLETE' %}
@@ -38,10 +41,10 @@
     </tbody>
     </table>
 
-{% endblock %}
+{# endblock #}
 
-{% block ordered %}
-{% if ordered|length %}
+{# block ordered #}
+{% if ordered %}
     <table  width="100%">
     <thead>
     <th>Ordered</th>
@@ -52,7 +55,7 @@
         <td style="font-size: 10px;line-height: 10px; padding:0;">
             {% if order.aliquot.receive.receive_identifier %}
             <table cellpadding=0><tr >
-            <td><input type="button" name="" id="" value="+" onclick="Dajaxice.lab_clinic_api.view_result_ajax(Dajax.process,{'receive_identifier':'{{order.aliquot.receive.receive_identifier}}'});"></td>
+                <td>{{forloop.counter}}</td>
             <td><table  width="100%">
                 <tr><td style="font-size: 10px;line-height: 10px; padding:0;">{{ order.panel.edc_name|truncatechars:25 }}</td></tr>
                     {% if order.status != 'COMPLETE' %}
@@ -71,7 +74,7 @@
     No results available
     </div>
 {% endif %}
-{% endblock %}
+{# endblock #}
 
 {% block status %}
 {% if last_updated %}
