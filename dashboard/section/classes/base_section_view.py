@@ -237,7 +237,7 @@ class BaseSectionView(object):
         return view(request, *args, **kwargs)
 
     def set_searchers(self):
-        """Sets the dictionary of search class instances.
+        """Sets the dictionary of search class instances.    
 
         Format is {search_name: search_instance} where search_name is the name attribute on the search class.
         The name is returned to this class by the search url. See also method urlpatterns"""
