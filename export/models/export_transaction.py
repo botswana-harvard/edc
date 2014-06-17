@@ -18,12 +18,10 @@ class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
 
     app_label = models.CharField(
         max_length=64,
-        db_index=True,
         )
 
     object_name = models.CharField(
         max_length=64,
-        db_index=True,
         )
 
     tx_pk = models.CharField(
@@ -40,22 +38,31 @@ class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
         max_length=15,
         default='new',
         choices=(
+            ('new', 'New'),
             ('exported', 'Exported'),
             ('closed', 'Closed'),
-            ('new', 'New'),
             ('cancelled', 'Cancelled'),
             ),
+        help_text='exported by export_transactions, closed by import_receipts'
+        )
+
+    received = models.BooleanField(
+        default=False,
+        help_text='True if ACK received'
+        )
+
+    received_datetime = models.DateTimeField(
+        null=True,
+        help_text='date ACK received'
         )
 
     is_ignored = models.BooleanField(
         default=False,
-        db_index=True,
         help_text='Ignore if update'
         )
 
     is_error = models.BooleanField(
         default=False,
-        db_index=True,
         )
 
     objects = ExportTransactionManager()

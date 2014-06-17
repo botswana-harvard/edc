@@ -18,7 +18,6 @@ from edc.subject.registration.models import RegisteredSubject
 
 class Dashboard(object):
 
-    context = BaseContext()
     dashboard_name = None  # e.g. 'Dashboard'
     dashboard_url_name = None   # e.g. 'dashboard_url_name'
     template = None
@@ -31,6 +30,7 @@ class Dashboard(object):
         self.dashboard_model = dashboard_model
         self.dashboard_model_name = dashboard_model
         self.dashboard_id = dashboard_id
+        self.context = BaseContext()
 #         self.search_type = self.section.get_search_type(self.get_section_name())
         # TODO: what about section, section name methods?
 

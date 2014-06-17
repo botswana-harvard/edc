@@ -1,4 +1,4 @@
-from datetime import datetime
+# from datetime import datetime
 
 from django.db import models
 from django.core import serializers
@@ -10,19 +10,25 @@ from ..models import ExportTransaction
 
 class ExportHistoryManager(models.Manager):
 
+    export_transaction_model = ExportTransaction
 # see https://github.com/treyhunner/django-simple-history/ for some ideas to improve this
 #     def __init__(self, model, instance=None):
 #         super(ExportHistoryManager, self).__init__()
 #         self.model = model
 #         self.instance = instance
-# 
+#
 #     def get_query_set(self):
 #         if self.instance is None:
 #             return super(ExportHistoryManager, self).get_query_set()
 #         return super(ExportHistoryManager, self).get_query_set().filter(**{'instance_pk': self.instance.pk})
 
     def serialize_to_export_transaction(self, instance, change_type, using, encrypt=True):
-        """Serialize this instance to the export transaction model if ready."""
+        """Serialize this instance to the export transaction model if ready.
+
+        Be sure to inspect model property ready_to_export_transaction. ready_to_export_transaction can
+        return True or False. If False, the tx will not be exported. 
+
+        .. note:: If change_type == 'D', entire tx is still sent."""
         try:
             ready_to_export_transaction = instance.ready_to_export_transaction
         except AttributeError:
@@ -42,5 +48,5 @@ class ExportHistoryManager(models.Manager):
                 export_uuid=instance.export_uuid,
                 status='new',
                 tx=json_tx,
-                timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
+                timestamp=instance.created.strftime('%Y%m%d%H%M%S%f') if change_type == 'I' else instance.modified.strftime('%Y%m%d%H%M%S%f'),
                 )

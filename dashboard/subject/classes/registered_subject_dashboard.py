@@ -105,7 +105,7 @@ class RegisteredSubjectDashboard(Dashboard):
         if self.show == 'forms':
             self.context.add(
                 requisition_model=self.requisition_model,
-                rendered_scheduled_forms=self.render_scheduled_forms()
+                rendered_scheduled_forms=self.render_scheduled_forms(),
                 )
             if self.requisition_model:
                 self.context.add(requisition_model_meta=self.requisition_model._meta)
@@ -113,7 +113,7 @@ class RegisteredSubjectDashboard(Dashboard):
             self.render_summary_links()
         self.context.add(rendered_action_items=self.render_action_item())
         self.context.add(rendered_locator=self.render_locator())
-        self.context.add(local_results=self.render_labs())
+        self.context.add(self.lab_results_data())
 
     @classmethod
     def add_to_urlpattern_string(cls):
@@ -454,6 +454,10 @@ class RegisteredSubjectDashboard(Dashboard):
             return edc_lab_results.render(self.subject_identifier, False)
         return ''
 
+    def lab_results_data(self):
+        """Achieves almost the same end result with the render_labs method above but depends on template inclusion"""
+        return EdcLabResults().context_data(self.subject_identifier, False) if self._requisition_model else {}
+
     @property
     def locator_model(self):
         return self._locator_model
@@ -633,7 +637,8 @@ class RegisteredSubjectDashboard(Dashboard):
         additional_requisitions = []
         show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
         allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
-        requisition_helper = RequisitionMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
+        show_drop_down_requisitions = GlobalConfiguration.objects.get_attr_value('show_drop_down_requisitions')
+        requisition_helper = RequisitionMetaDataHelper(self.appointment, self.visit_model, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
             if not show_not_required_requisitions and not requisition_context.required and not requisition_context.additional:
@@ -644,8 +649,10 @@ class RegisteredSubjectDashboard(Dashboard):
                 scheduled_requisitions.append(requisition_context.context)
         render_requisitions = render_to_string(template, {
             'scheduled_requisitions': scheduled_requisitions,
-            #'not_required_requisitions': not_required_requisitions,
+#             'not_required_requisitions': not_required_requisitions,
             'additional_requisitions': additional_requisitions,
+            'drop_down_list_requisitions': self.drop_down_list_requisitions(scheduled_requisitions),
+            'show_drop_down_requisitions': show_drop_down_requisitions,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
             'registered_subject': self.registered_subject.pk,
@@ -656,6 +663,18 @@ class RegisteredSubjectDashboard(Dashboard):
             'subject_dashboard_url': self.dashboard_url_name,
             'show': self.show})
         return render_requisitions
+
+    def drop_down_list_requisitions(self, scheduled_requisitions):
+        drop_down_list_requisitions = []
+        for requisition in scheduled_requisitions:
+            lab_entry = requisition['lab_entry']
+            meta_data_status = requisition['status']
+            meta_data_required = meta_data_status != 'NOT_REQUIRED'
+            if lab_entry.not_required and not lab_entry.additional:
+                continue
+            if not meta_data_required:
+                drop_down_list_requisitions.append(requisition)
+        return drop_down_list_requisitions
 
     def render_subject_hiv_status(self):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""
