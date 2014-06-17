@@ -7,6 +7,7 @@ from edc.subject.appointment_helper.models import prepare_appointments_on_post_s
 from edc.subject.consent.models.signals import is_consented_instance_on_pre_save, update_consent_history
 from edc.subject.lab_tracker.models.signals import tracker_on_post_save, tracker_on_post_delete
 from edc.subject.subject.models.signals import base_subject_get_or_create_registered_subject_on_post_save
+from edc.entry_meta_data.models import entry_meta_data_on_post_save, entry_meta_data_on_pre_delete
 from edc.subject.visit_tracking.models.signals import base_visit_tracking_check_in_progress_on_post_save
 
 
@@ -33,7 +34,9 @@ class SignalManager(object):
     def disconnect(self, obj):
         signals.m2m_changed.disconnect(serialize_m2m_on_save, weak=False, dispatch_uid="serialize_m2m_on_save")
         signals.post_save.disconnect(serialize_on_save, weak=False, dispatch_uid="serialize_on_save")
+        signals.post_save.disconnect(entry_meta_data_on_post_save, weak=False, dispatch_uid="entry_meta_data_on_post_save")
         signals.post_save.disconnect(tracker_on_post_save, weak=False, dispatch_uid="tracker_on_post_save")
+        signals.post_delete.disconnect(entry_meta_data_on_pre_delete, weak=False, dispatch_uid="entry_meta_data_on_pre_delete")
         signals.post_delete.disconnect(tracker_on_post_delete, weak=False, dispatch_uid="tracker_on_post_delete")
         signals.post_save.disconnect(base_visit_tracking_check_in_progress_on_post_save, weak=False, dispatch_uid="base_visit_tracking_check_in_progress_on_post_save")
         signals.post_save.disconnect(update_consent_history, weak=False, dispatch_uid="update_consent_history")
@@ -53,7 +56,9 @@ class SignalManager(object):
         signals.post_save.connect(update_consent_history, weak=False, dispatch_uid="update_consent_history")
         signals.post_save.connect(base_visit_tracking_check_in_progress_on_post_save, weak=False, dispatch_uid="base_visit_tracking_check_in_progress_on_post_save")
         signals.post_save.connect(tracker_on_post_save, weak=False, dispatch_uid="tracker_on_post_save")
+        signals.post_save.connect(entry_meta_data_on_post_save, weak=False, dispatch_uid="entry_meta_data_on_post_save")
         signals.post_delete.connect(tracker_on_post_delete, weak=False, dispatch_uid="tracker_on_post_delete")
+        signals.post_delete.connect(entry_meta_data_on_pre_delete, weak=False, dispatch_uid="entry_meta_data_on_pre_delete")
         signals.post_save.connect(serialize_on_save, weak=False, dispatch_uid="serialize_on_save")
         signals.m2m_changed.connect(serialize_m2m_on_save, weak=False, dispatch_uid="serialize_m2m_on_save")
         self.reconnect_audit_trail_signals()

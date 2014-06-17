@@ -1,17 +1,19 @@
 from django.db import models
+
 from edc.device.sync.models import BaseSyncUuidModel
 from edc.subject.registration.models import RegisteredSubject
-from edc.lab.lab_clinic_api.models import Panel
+
 from .base_packing_list import BasePackingList
 
 
 class BasePackingListItem(BaseSyncUuidModel):
 
     requisition = models.CharField(
-        max_length=35,
+        max_length=36,
         null=True,
         blank=False,
-        help_text="",
+        editable=False,
+        help_text="pk of requisition instance",
         )
 
     item_reference = models.CharField(
@@ -35,11 +37,6 @@ class BasePackingListItem(BaseSyncUuidModel):
         null=True,
         blank=False,
         help_text="",
-        )
-
-    panel = models.ForeignKey(Panel,
-        null=True,
-        blank=True,
         )
 
     old_panel_id = models.CharField(max_length=50, null=True)
