@@ -4,7 +4,7 @@ class MostRecentQuery(object):
 
     def __init__(self, model_cls, order_by=None, query_options=None, limit=None):
         self._model_cls = model_cls
-        self._limit = limit or 25
+        self._limit = limit or 50
         self._query_options = query_options or {}
         self._order_by = order_by or ('-modified', 'created')
 
