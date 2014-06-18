@@ -40,7 +40,7 @@ class BaseConsentedUuidModel(BaseSyncUuidModel):
         super(BaseConsentedUuidModel, self).save(*args, **kwargs)
 
     def raw_save(self, *args, **kwargs):
-        """For modifying models after subject is off study, mainly for data cleaning and for use backend."""
+        """For modifying models after subject is off study, mainly for data cleaning( for use backend)."""
         super(BaseConsentedUuidModel, self).save(*args, **kwargs)
 
     class Meta:
