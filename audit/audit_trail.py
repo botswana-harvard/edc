@@ -1,12 +1,15 @@
 """ https://github.com/LaundroMat/django-AuditTrail/blob/master/audit.py """
 import copy
 import re
+import datetime
+import json
 
 from django_extensions.db.fields import UUIDField
 
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
+from django.core.serializers.json import DjangoJSONEncoder
 
 from edc.device.sync.models import BaseSyncUuidModel
 from edc.device.sync.classes import SerializeToTransaction
@@ -27,7 +30,7 @@ class BaseAuditModelAdmin(admin.ModelAdmin):
         if 'visit_model' in dir(model_cls):
             self.search_fields = ('{0}__appointment__registered_subject__subject_identifier'.format(convert_from_camel(model_cls._meta.object_name)), 'id', )
         self.readonly_fields = [field.name for field in model_cls._meta.fields]
-            
+
     date_hierarchy = '_audit_timestamp'
 #     search_fields = ('_audit_subject_identifier', 'id')
     list_display = ('_audit_id', '_audit_change_type', '_audit_timestamp', 'created', 'modified', 'user_created', 'user_modified', 'hostname_created', 'hostname_modified')
@@ -83,6 +86,8 @@ class AuditTrail(object):
                         if isinstance(field, BaseEncryptedField):
                             # slip hash in to silence encryption
                             value = getattr(instance, field.name)
+                            if isinstance(value, datetime.date):
+                                value = json.dumps(value, cls=DjangoJSONEncoder)
                             if not field.field_cryptor.is_encrypted(value):
                                 kwargs[field.name] = field.field_cryptor.get_hash_with_prefix(value)
                             else:
