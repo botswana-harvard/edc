@@ -39,5 +39,9 @@ class BaseConsentedUuidModel(BaseSyncUuidModel):
                 raise SubjectOffStudyError('Model cannot be saved. Subject is off study. Perhaps catch this exception in forms clean() method.')
         super(BaseConsentedUuidModel, self).save(*args, **kwargs)
 
+    def raw_save(self, *args, **kwargs):
+        """For modifying models after subject is off study, mainly for data cleaning( for use backend)."""
+        super(BaseConsentedUuidModel, self).save(*args, **kwargs)
+
     class Meta:
         abstract = True

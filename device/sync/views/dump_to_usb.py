@@ -14,7 +14,7 @@ from edc.map.classes import site_mappers
 from ..classes import SerializeToTransaction
 from ..models import OutgoingTransaction
 
-site_mappers.autodiscover()
+#site_mappers.autodiscover()
 
 @login_required
 def dump_to_usb(request, **kwargs):
