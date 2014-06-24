@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime
 from django.core import serializers
 from django.db.models import get_model
 
@@ -38,6 +38,7 @@ def export_as_csv_action(description="Export selected objects to CSV",
                                track_history=track_history,
                                show_all_fields=show_all_fields,
                                delimiter=delimiter,
+                               export_datetime = datetime.now(),
                                encrypt=encrypt,
                                strip=strip)
         return export_as_csv.write_to_file()
