@@ -10,9 +10,10 @@
 
 <H5>Users and settings</H5>
 <ul>
-<li><A href="/admin/auth/user/">User Management</A>
-<li><A href="/admin/auth/group/">Group Management</A>
-<li><A href="/edc/bhp_variables/studyspecific/">Study Specific Variables</A>
+<li><A href="/admin/auth/user/">User Management</A></li>
+<li><A href="/admin/auth/group/">Group Management</A></li>
+<li><A href="/edc/bhp_variables/studyspecific/">Study Specific Variables</A></li>
+<li><A href="{% url 'load_producer_databases_url' %}">Load producer database settings</A>(load before dispatch)</li>
 </ul>
 
 {% if 'edc.device.sync' in installed_apps and edc.device.dispatch not in installed_apps %}
