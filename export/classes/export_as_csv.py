@@ -21,6 +21,6 @@ class ExportAsCsv(BaseExport):
         if self.include_header_row:
             writer.writerow(self.header_row)
         for self.row_instance in self.queryset:
-            writer.writerow(self.row)
-            self.update_export_history(self.row_instance)
+            writer.writerow(self.fetch_row())
+            #self.update_export_history(self.row_instance)
         return self.file_obj
