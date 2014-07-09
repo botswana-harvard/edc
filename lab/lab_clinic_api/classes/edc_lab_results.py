@@ -46,7 +46,7 @@ class EdcLabResults(object):
         self._update_result_items(resulted)
         context = {'last_updated': self._last_updated(subject_identifier, update)}
         context['ordered'] = self._query_ordered(subject_identifier, resulted)
-        context['resulted'] = resulted
+        context['resulted'] = self._query_resulted(subject_identifier)
         return context
 
     def _query_resulted(self, subject_identifier):
