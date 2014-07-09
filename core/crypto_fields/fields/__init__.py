@@ -13,3 +13,4 @@ from .encrypted_text_field import EncryptedTextField
 from .salt_field import SaltField
 from .encrypted_integer_field import EncryptedIntegerField
 from .encrypted_decimal_field import EncryptedDecimalField
+from .encrypted_date_field import EncryptedDateField
