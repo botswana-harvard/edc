@@ -1,6 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 
 from edc.subject.entry.models import LabEntry
+from edc.constants import REQUIRED, NOT_REQUIRED, KEYED
 
 from ..models import RequisitionMetaData
 
@@ -39,7 +40,7 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
     @property
     def meta_data_query_options(self):
         """Returns the options used to query the meta data model for the meta_data_instance."""
-        return {'appointment': self.appointment_zero,
+        return {'appointment': self.visit_instance.appointment,
                 '{0}__app_label'.format(self.entry_attr): self.model._meta.app_label,
                 '{0}__model_name'.format(self.entry_attr): self.model._meta.object_name.lower(),
                 '{0}__requisition_panel__name__iexact'.format(self.entry_attr): self.target_requisition_panel}
@@ -53,18 +54,22 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                 lab_entry = self.entry_model.objects.get(
                     app_label=self.model._meta.app_label.lower(),
                     model_name=self.model._meta.object_name.lower(),
-                    visit_definition=self.appointment_zero.visit_definition,
+                    visit_definition=self.visit_instance.appointment.visit_definition,
                     requisition_panel=self.target_requisition_panel,
                     )
             except self.entry_model.DoesNotExist:
                 raise ImproperlyConfigured('LabEntry matching query does not exist. Model {0}.Check your'
                                            ' visit schedule configuration or rule groups.'.format(self.model))
+            if self.visit_instance.appointment.visit_instance != '0':
+                entry_status = 'NOT_REQUIRED'
+            else:
+                entry_status = lab_entry.default_entry_status
             return self.meta_data_model.objects.create(
-                appointment=self.appointment_zero,
-                registered_subject=self.appointment_zero.registered_subject,
+                appointment=self.visit_instance.appointment,
+                registered_subject=self.visit_instance.appointment.registered_subject,
                 due_datetime=lab_entry.visit_definition.get_upper_window_datetime(self.visit_instance.report_datetime),
                 lab_entry=lab_entry,
-                entry_status=lab_entry.default_entry_status,
+                entry_status=entry_status,
                 )
         return None
 

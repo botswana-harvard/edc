@@ -131,7 +131,7 @@ def audit_trail_view(request, **kwargs):
                 status_message = 'There are no entries in the audit trail for this model.'
     else:
         app_label = request.GET.get('app_label', kwargs.get('app_label'))
-        model_name = request.GET.get('model_name', kwargs.get('model_name'))
+        model_name = request.GET.get('dashboard_model', kwargs.get('dashboard_model'))
         audit_subject_identifier = request.GET.get('audit_subject_identifier', kwargs.get('audit_subject_identifier'))
 
         form = AuditTrailForm()
@@ -148,9 +148,8 @@ def audit_trail_view(request, **kwargs):
         back_url_name = request.GET.get('back_url_name', kwargs.get('back_url_name'))
         if not back_url_name and options.get('visit_code', None) and options.get('visit_instance', None):
             back_url_name = 'dashboard_visit_url'
-
     options.update({
-        'sections': section_index_view().get_section_name_list(),
+        'sections': section_index_view.get_section_name_list(),
         'selected_section': section_name,
         'section_name': section_name,
         'report_title': report_title,
@@ -170,7 +169,7 @@ def audit_trail_view(request, **kwargs):
         'visit_code': visit_code,
         'visit_instance': visit_instance,
         'back_url_name': back_url_name,
-        'app_labels': model_selector.app_labels,
-        'model_names': model_selector.model_names,
+        'app_labels': model_selector.get_app_labels(),
+        'model_names': model_selector.get_model_names(),
         })
     return render_to_response(template, options, context_instance=RequestContext(request))
