@@ -154,7 +154,7 @@ class BaseSectionView(object):
         """Users may override to update the template context with {key, value} pairs."""
         return context
 
-    def _paginate(self, search_result, page=1, results_per_page=None):
+    def _paginate(self, search_result, page, results_per_page=None):
         """Paginates the search result queryset after which templates
         access search_result.object_list.
 
@@ -189,7 +189,10 @@ class BaseSectionView(object):
             * add_model_name: from :func:`get_add_model_name`,
         """
 #         search_term = request.GET.get('search_term', '')  # might be passed by the querystring
-        page = request.GET.get('page')
+        try:
+            page = int(request.GET.get('page', '1'))
+        except ValueError:
+            page = 1
         default_context = {}
         search_result = None
         for searcher in self.get_searchers().itervalues():
@@ -198,7 +201,6 @@ class BaseSectionView(object):
         # try to select a searcher with the POST data or URL data
         self.set_searcher(kwargs.get('search_name'), [request.POST, kwargs])
         if self.get_searcher():
-                page = 1
                 search_result = self.get_searcher().get_search_result(request, **kwargs)
                 default_context.update({
                     'search_result': self._paginate(search_result, page),
@@ -235,7 +237,7 @@ class BaseSectionView(object):
         return view(request, *args, **kwargs)
 
     def set_searchers(self):
-        """Sets the dictionary of search class instances.
+        """Sets the dictionary of search class instances.    
 
         Format is {search_name: search_instance} where search_name is the name attribute on the search class.
         The name is returned to this class by the search url. See also method urlpatterns"""
