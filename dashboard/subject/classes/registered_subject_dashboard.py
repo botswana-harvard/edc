@@ -620,6 +620,7 @@ class RegisteredSubjectDashboard(Dashboard):
             'scheduled_entries': scheduled_entries,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
+            'app_label': self.visit_model_instance._meta.app_label,
             'registered_subject': self.registered_subject.pk,
             'appointment': self.appointment.pk,
             'dashboard_type': self.dashboard_type,
@@ -638,7 +639,7 @@ class RegisteredSubjectDashboard(Dashboard):
         show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
         allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
         show_drop_down_requisitions = GlobalConfiguration.objects.get_attr_value('show_drop_down_requisitions')
-        requisition_helper = RequisitionMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
+        requisition_helper = RequisitionMetaDataHelper(self.appointment, self.visit_model, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
             if not show_not_required_requisitions and not requisition_context.required and not requisition_context.additional:

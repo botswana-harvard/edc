@@ -71,7 +71,7 @@ class EntryMetaDataTests(TestCase):
             lab_entry__app_label='testing',
             lab_entry__model_name='testrequisition',
             lab_entry__requisition_panel__name=panel.name).count(), 1)
-        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type)
+        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type, requisition_identifier='WJ000001')
         #obj.save()
         self.assertEqual(RequisitionMetaData.objects.filter(
             entry_status='KEYED',
@@ -86,7 +86,7 @@ class EntryMetaDataTests(TestCase):
         requisition_panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.requisition_panel
         panel = TestPanel.objects.get(name=requisition_panel.name)
         aliquot_type = TestAliquotType.objects.get(alpha_code=requisition_panel.aliquot_type_alpha_code)
-        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type)
+        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type, requisition_identifier='WJ0000002')
         obj.save()
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED',
                                                                registered_subject=self.registered_subject,
@@ -113,7 +113,7 @@ class EntryMetaDataTests(TestCase):
         requisition_panel = RequisitionMetaData.objects.filter(registered_subject=self.registered_subject)[0].lab_entry.requisition_panel
         panel = TestPanel.objects.get(name=requisition_panel.name)
         aliquot_type = TestAliquotType.objects.get(alpha_code=requisition_panel.aliquot_type_alpha_code)
-        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type)
+        obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type, requisition_identifier='WJ0000003')
         obj.save()
         self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED',
                                                                registered_subject=self.registered_subject,
@@ -193,7 +193,7 @@ class EntryMetaDataTests(TestCase):
         for requisition_panel in requisition_panels:
             panel = TestPanel.objects.get(name=requisition_panel.name)
             aliquot_type = TestAliquotType.objects.get(alpha_code=requisition_panel.aliquot_type_alpha_code)
-            obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type)
+            obj = TestRequisitionFactory(test_visit=self.test_visit, panel=panel, aliquot_type=aliquot_type, requisition_identifier='WJ0000003')
             obj.save()
             self.assertEqual(RequisitionMetaData.objects.filter(entry_status='KEYED',
                                                                    registered_subject=self.registered_subject,
