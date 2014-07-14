@@ -10,18 +10,14 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
 
-from edc.map.classes import site_mappers
+from edc.apps.utils import Conf
 from ..classes import SerializeToTransaction
 from ..models import OutgoingTransaction
-
-#site_mappers.autodiscover()
 
 @login_required
 def dump_to_usb(request, **kwargs):
     app_name = kwargs.get('app_name', None)
-    mapper = None
-    mapper = site_mappers.get_registry(site_mappers.get_current_mapper().map_area)()
-    site_name = mapper.get_map_area()
+    site_name = Conf.return_site_name()
     if not site_name.islower():
         raise TypeError('Ensure settings.CURRENT_COMMUNITY is all small letters.')
     usb_path = None
