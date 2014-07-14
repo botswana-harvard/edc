@@ -9,6 +9,7 @@ def string_to_datatype(string_value):
     retval = string_value
     if string_value.lower() in ['true', 'false', 'none']:
         retval = eval(string_value)
+        return retval
     # try to return as a decimal
     try:
         value = Decimal(string_value)
@@ -32,12 +33,16 @@ def string_to_datatype(string_value):
             retval = value.date()
     except ValueError:
         pass
+    except TypeError:
+        pass
     # try to return as datetime
     try:
         value = parser.parse(string_value)
         if value.strftime('%Y-%m-%d %H:%M') == string_value:
             retval = value
     except ValueError:
+        pass
+    except TypeError:
         pass
     # otherwise return string value
     return retval
