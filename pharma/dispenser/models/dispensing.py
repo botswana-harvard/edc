@@ -24,8 +24,8 @@ class Dispensing(BaseUuidModel):
     copies = models.IntegerField(default=1)
 
     def save(self, *args, **kwargs):
-        if not RegisteredSubject.objects.filter(subject_identifier=self.subject_identifier, sid=self.sid, initials=self.initials):
-            raise ValidationError('Subject not found. Using criteria {0}. Perhaps catch this in forms.py'.format((self.subject_identifier, self.sid, self.initials)))
+#         if not RegisteredSubject.objects.filter(subject_identifier=self.subject_identifier, sid=self.sid, initials=self.initials):
+#             raise ValidationError('Subject not found. Using criteria {0}. Perhaps catch this in forms.py'.format((self.subject_identifier, self.sid, self.initials)))
         if not self.id:
             if not self.identifier:
                 self.identifier = DispensingIdentifier().get_identifier()
