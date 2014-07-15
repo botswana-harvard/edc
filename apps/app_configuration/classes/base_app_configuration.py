@@ -140,7 +140,11 @@ class BaseAppConfiguration(object):
         if StudySpecific.objects.all().count() == 0:
             StudySpecific.objects.create(**self.study_variables_setup)
         else:
-            StudySpecific.objects.all().update(**self.study_variables_setup)
+            specifics = StudySpecific.objects.all()
+            specifics.update(**self.study_variables_setup)
+            for sp in specifics:
+                #This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
+                sp.save()
         if not StudySite.objects.filter(site_code=self.study_site_setup.get('site_code')).exists():
             StudySite.objects.create(**self.study_site_setup)
 
@@ -180,7 +184,11 @@ class BaseAppConfiguration(object):
             if not ConsentCatalogue.objects.filter(**catalogue_setup).exists():
                 ConsentCatalogue.objects.create(**catalogue_setup)
             else:
-                ConsentCatalogue.objects.filter(**catalogue_setup).update(**catalogue_setup)
+                catalogues = ConsentCatalogue.objects.filter(**catalogue_setup)
+                catalogues.update(**catalogue_setup)
+                for ct in catalogues:
+                    #This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
+                    ct.save()
             catalogue_setup.update({'content_type_map': content_type_map_string})
 
     def update_global(self):
