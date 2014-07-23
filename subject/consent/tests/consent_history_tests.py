@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from edc.subject.registration.models import RegisteredSubject
+from subject.registration.models import RegisteredSubject
 
 from ..models import BaseConsentHistory
 
@@ -10,7 +10,7 @@ from ..models import BaseConsentHistory
 class ConsentUpdateTests(TestCase):
 
     def setUp(self):
-        from edc.testing.tests.factories import TestConsentFactory
+        from testing.tests.factories import TestConsentFactory
         self.test_consent_factory = TestConsentFactory
         self.create_study_variables()
 

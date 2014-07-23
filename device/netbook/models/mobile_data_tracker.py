@@ -1,5 +1,5 @@
 from django.db import models
-from edc.base.model.models import BaseModel
+from base.model.models import BaseModel
 
 
 TRACK_STATUS = (('IN', 'In'), ('OUT', 'Out'))

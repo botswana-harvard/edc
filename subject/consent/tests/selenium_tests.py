@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
-from edc.subject.registration.models import RegisteredSubject
-from edc.testing.models import TestSubjectUuidModel, TestForeignKey, TestM2m
+from subject.registration.models import RegisteredSubject
+from testing.models import TestSubjectUuidModel, TestForeignKey, TestM2m
 from .base_methods import BaseMethods
 
 

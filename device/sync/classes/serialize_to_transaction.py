@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core import serializers
 from django.db.models import get_model
 
-from edc.core.crypto_fields.classes import FieldCryptor
+from core.crypto_fields.classes import FieldCryptor
 
 from .transaction_producer import TransactionProducer
 

@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
-from edc.core.bhp_variables.models import StudySpecific
+from core.bhp_variables.models import StudySpecific
 
 
 def MinConsentAge(value):

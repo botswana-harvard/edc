@@ -2,7 +2,7 @@ from textwrap import wrap
 
 from django.db import models
 
-from edc.base.model.models import BaseModel
+from base.model.models import BaseModel
 
 
 class DataDictionaryModel(BaseModel):

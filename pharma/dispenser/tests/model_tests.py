@@ -1,9 +1,9 @@
 import factory
 from django.test import TestCase
-from edc.subject.registration.tests.factories import RegisteredSubjectFactory
+from subject.registration.tests.factories import RegisteredSubjectFactory
 from factories import DispensingFactory
 from ph_dispenser.models import DispensingIdentifierModel, IdentifierSequence
-from edc.core.identifier.models import Sequence
+from core.identifier.models import Sequence
 
 
 class ModelTests(TestCase):

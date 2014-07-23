@@ -1,7 +1,7 @@
 import factory
 from datetime import date
-from edc.base.model.tests.factories import BaseUuidModelFactory
-from edc.subject.haart.choices import ARV_DRUG_LIST, DOSE_STATUS, ARV_MODIFICATION_REASON
+from base.model.tests.factories import BaseUuidModelFactory
+from subject.haart.choices import ARV_DRUG_LIST, DOSE_STATUS, ARV_MODIFICATION_REASON
 
 
 class BaseHaartModificationFactory(BaseUuidModelFactory):

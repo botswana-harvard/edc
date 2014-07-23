@@ -1,5 +1,5 @@
 from django.contrib import admin
-from edc.base.admin.admin import BaseModelAdmin
+from base.modeladmin.admin import BaseModelAdmin
 from .actions import toggle_active, toggle_scale, toggle_lln, toggle_uln, toggle_serum
 from .models import GradingList, GradingListItem, ReferenceRangeList, ReferenceRangeListItem
 from .forms import GradingListItemForm

@@ -1,7 +1,7 @@
 from django.db import models
 
-from edc.device.sync.models import BaseSyncUuidModel
-from edc.subject.registration.models import RegisteredSubject
+from device.sync.models import BaseSyncUuidModel
+from subject.registration.models import RegisteredSubject
 
 from .base_packing_list import BasePackingList
 

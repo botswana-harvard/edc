@@ -9,7 +9,7 @@ from geopy import distance
 from django.conf import settings
 from django.utils.encoding import smart_str
 
-from edc.base.model.models import BaseUuidModel
+from base.model.models import BaseUuidModel
 
 from ..exceptions import MapperError
 

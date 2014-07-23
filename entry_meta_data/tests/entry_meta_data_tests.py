@@ -1,18 +1,18 @@
 from django.test import TestCase
 
-from edc.core.bhp_variables.models import StudySite
-from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
-from edc.subject.appointment.models import Appointment
-from edc.subject.entry.models import LabEntry
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.visit_schedule.models import VisitDefinition
-from edc.testing.models import TestPanel, TestAliquotType, TestScheduledModel1
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.classes import TestLabProfile
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestRequisitionFactory
-from edc.lab.lab_profile.classes import site_lab_profiles
+from core.bhp_variables.models import StudySite
+from entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
+from subject.appointment.models import Appointment
+from subject.entry.models import LabEntry
+from subject.lab_tracker.classes import site_lab_tracker
+from lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
+from subject.registration.models import RegisteredSubject
+from subject.visit_schedule.models import VisitDefinition
+from testing.models import TestPanel, TestAliquotType, TestScheduledModel1
+from testing.classes import TestVisitSchedule, TestAppConfiguration
+from testing.classes import TestLabProfile
+from testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestRequisitionFactory
+from lab.lab_profile.classes import site_lab_profiles
 
 
 class EntryMetaDataTests(TestCase):
@@ -21,7 +21,7 @@ class EntryMetaDataTests(TestCase):
     consent_catalogue_name = 'v1'
 
     def setUp(self):
-        from edc.testing.tests.factories import TestVisitFactory
+        from testing.tests.factories import TestVisitFactory
         try:
             site_lab_profiles.register(TestLabProfile())
         except AlreadyRegisteredLabProfile:

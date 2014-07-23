@@ -1,4 +1,4 @@
-from edc.entry_meta_data.models import ScheduledEntryMetaData
+from entry_meta_data.models import ScheduledEntryMetaData
 
 from .base_scheduled_entry_context import BaseScheduledEntryContext
 

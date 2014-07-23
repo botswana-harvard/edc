@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
-from edc.base.model.models import BaseModel
+from base.model.models import BaseModel
 
 from .excluded_history import ExcludedHistory
 

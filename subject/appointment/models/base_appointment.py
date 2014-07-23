@@ -1,8 +1,8 @@
 from django.db import models
 try:
-    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
+    from device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
 except ImportError:
-    from edc.device.sync.models import BaseSyncUuidModel
+    from device.sync.models import BaseSyncUuidModel
 from ..choices import APPT_STATUS
 
 

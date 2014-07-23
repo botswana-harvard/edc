@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from edc.core.bhp_sms.classes import Sms
-from edc.core.identifier.models import PendingIdentifier
+from core.bhp_sms.classes import Sms
+from core.identifier.models import PendingIdentifier
 from .subject_identifier import SubjectIdentifier
 
 

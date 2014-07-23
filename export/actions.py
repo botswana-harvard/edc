@@ -3,8 +3,8 @@ from datetime import datetime
 from django.core import serializers
 from django.db.models import get_model
 
-from edc.core.crypto_fields.classes import FieldCryptor
-from edc.export.classes import ExportAsCsv, ExportJsonAsCsv
+from core.crypto_fields.classes import FieldCryptor
+from export.classes import ExportAsCsv, ExportJsonAsCsv
 
 
 def export_as_csv_action(description="Export selected objects to CSV",
@@ -15,7 +15,7 @@ def export_as_csv_action(description="Export selected objects to CSV",
     'header' is whether or not to output the column names as the first row
 
     in my_app/admin.py add this import::
-        from edc.export.actions import export_as_csv_action
+        from export.actions import export_as_csv_action
 
     add this to your modeladmin class::
         actions = [export_as_csv_action("CSV Export",

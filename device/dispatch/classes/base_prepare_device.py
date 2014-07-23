@@ -5,9 +5,9 @@ from django.db import IntegrityError
 from django.db.models import Model, get_model, get_models, get_app, Max, ForeignKey, OneToOneField
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User, Group, Permission
-from edc.base.model.models import BaseListModel
-from edc.core.bhp_userprofile.models import UserProfile
-from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
+from base.model.models import BaseListModel
+from core.bhp_userprofile.models import UserProfile
+from core.bhp_content_type_map.classes import ContentTypeMapHelper
 from .base_controller import BaseController
 
 

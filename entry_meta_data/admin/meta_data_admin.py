@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from edc.base.admin.admin import BaseModelAdmin
-from edc.subject.appointment.models import Appointment
-from edc.subject.entry.models import Entry, LabEntry
-from edc.subject.registration.models import RegisteredSubject
+from base.modeladmin.admin import BaseModelAdmin
+from subject.appointment.models import Appointment
+from subject.entry.models import Entry, LabEntry
+from subject.registration.models import RegisteredSubject
 
 from ..forms import ScheduledEntryMetaDataForm, RequisitionMetaDataForm
 from ..models import ScheduledEntryMetaData, RequisitionMetaData

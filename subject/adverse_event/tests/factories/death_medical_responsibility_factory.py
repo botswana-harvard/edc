@@ -1,4 +1,4 @@
-from edc.base.model.tests.factories import BaseListModelFactory
+from base.model.tests.factories import BaseListModelFactory
 from ...models import DeathMedicalResponsibility
 
 

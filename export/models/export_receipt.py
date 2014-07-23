@@ -2,7 +2,7 @@
 from django.db import models
 from django_extensions.db.fields import UUIDField
 
-from edc.device.sync.models import BaseSyncUuidModel
+from device.sync.models import BaseSyncUuidModel
 
 
 class ExportReceipt(BaseSyncUuidModel):

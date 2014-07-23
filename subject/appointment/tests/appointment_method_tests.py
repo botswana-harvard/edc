@@ -2,17 +2,17 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 
-from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-from edc.entry_meta_data.models import ScheduledEntryMetaData
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.subject.entry.tests.factories import EntryFactory
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.visit_schedule.models import VisitDefinition
-from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
-from edc.testing.models import TestConsent, TestScheduledModel
+from core.bhp_content_type_map.classes import ContentTypeMapHelper
+from core.bhp_content_type_map.models import ContentTypeMap
+from core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from entry_meta_data.models import ScheduledEntryMetaData
+from subject.consent.tests.factories import ConsentCatalogueFactory
+from subject.entry.tests.factories import EntryFactory
+from subject.lab_tracker.classes import site_lab_tracker
+from subject.registration.models import RegisteredSubject
+from subject.visit_schedule.models import VisitDefinition
+from subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+from testing.models import TestConsent, TestScheduledModel
 
 from ..choices import APPT_STATUS
 from ..models import Appointment
@@ -92,7 +92,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
  
     def test_validate_appt_status(self):
         # setup visit 1000
-        from edc.testing.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory, TestScheduledModelFactory
+        from testing.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory, TestScheduledModelFactory
         app_label = 'bhp_base_test'
         site_lab_tracker.autodiscover()
         StudySpecificFactory()

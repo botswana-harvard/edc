@@ -5,20 +5,20 @@ from django.contrib import admin
 from django.db import models
 from django.test import TestCase
 
-from edc.core.bhp_variables.models import StudySite
-from edc.subject.appointment.models import Appointment
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.registration.models import RegisteredSubject
-from edc.testing.models import TestConsentWithMixin
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.classes import TestLabProfile
-from edc.testing.tests.factories import TestConsentWithMixinFactory
-from edc.lab.lab_profile.classes import site_lab_profiles
+from core.bhp_variables.models import StudySite
+from subject.appointment.models import Appointment
+from subject.lab_tracker.classes import site_lab_tracker
+from lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
+from subject.registration.models import RegisteredSubject
+from testing.models import TestConsentWithMixin
+from testing.classes import TestVisitSchedule, TestAppConfiguration
+from testing.classes import TestLabProfile
+from testing.tests.factories import TestConsentWithMixinFactory
+from lab.lab_profile.classes import site_lab_profiles
 
-from edc.subject.visit_tracking.admin import BaseVisitTrackingModelAdmin
-from edc.testing.forms import TestScheduledModelForm
-from edc.testing.tests.factories import TestScheduledModelFactory
+from subject.visit_tracking.admin import BaseVisitTrackingModelAdmin
+from testing.forms import TestScheduledModelForm
+from testing.tests.factories import TestScheduledModelFactory
 
 from ..admin import SupplementalModelAdminMixin
 from ..classes import SupplementalFields
@@ -45,7 +45,7 @@ class TestSupplementalFields(TestCase):
     app_label = 'testing'
 
     def setUp(self):
-        from edc.testing.tests.factories import TestVisitFactory
+        from testing.tests.factories import TestVisitFactory
         try:
             site_lab_profiles.register(TestLabProfile())
         except AlreadyRegisteredLabProfile:

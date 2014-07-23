@@ -7,13 +7,13 @@ ALLOW_MODEL_SERIALIZATION = True
 add this to your models.py
 
 try:
-    from edc.device.sync.classes import BaseSyncModel as BaseUuidModel
+    from device.sync.classes import BaseSyncModel as BaseUuidModel
 except ImportError:
-    from edc.base.model.classes import BaseUuidModel
+    from base.model.classes import BaseUuidModel
     
 -or just-
 
-from edc.device.sync.classes import BaseSyncModel as BaseUuidModel
+from device.sync.classes import BaseSyncModel as BaseUuidModel
 
 
 IMPORTANT:

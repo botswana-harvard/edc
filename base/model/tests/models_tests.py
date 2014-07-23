@@ -1,5 +1,5 @@
 from django.test import TestCase
-from edc.testing.models import TestModel, TestM2m, TestForeignKey
+from testing.models import TestModel, TestM2m, TestForeignKey
 
 
 class ModelsTests(TestCase):

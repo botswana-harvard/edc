@@ -1,7 +1,7 @@
 import factory
 from datetime import datetime
-from edc.base.model.tests.factories import BaseUuidModelFactory
-from edc.subject.appointment.tests.factories import AppointmentFactory
+from base.model.tests.factories import BaseUuidModelFactory
+from subject.appointment.tests.factories import AppointmentFactory
 
 
 class BaseVisitTrackingFactory(BaseUuidModelFactory):

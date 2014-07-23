@@ -10,10 +10,10 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.encoding import force_unicode
 
-from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper
-from edc.subject.rule_groups.classes import site_rule_groups
+from entry_meta_data.helpers import ScheduledEntryMetaDataHelper
+from subject.rule_groups.classes import site_rule_groups
 
-from ..exceptions import NextUrlError
+from base.modeladmin import NextUrlError
 
 logger = logging.getLogger(__name__)
 

@@ -1,4 +1,4 @@
-from edc.subject.subject.tests.factories import BaseSubjectFactory
+from subject.subject.tests.factories import BaseSubjectFactory
 
 
 class BaseConsentBasicsFactory(BaseSubjectFactory):

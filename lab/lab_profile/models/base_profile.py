@@ -1,6 +1,6 @@
 from django.db import models
 
-from edc.base.model.models import BaseUuidModel
+from base.model.models import BaseUuidModel
 
 
 class BaseProfile(BaseUuidModel):

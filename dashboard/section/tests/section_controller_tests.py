@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 
-from edc.testing.models import TestModel
-from edc.dashboard.search.classes import BaseSearchByWord
+from testing.models import TestModel
+from dashboard.search.classes import BaseSearchByWord
 
 from ..classes import BaseSectionIndexView
 from ..classes import site_sections, BaseSectionView

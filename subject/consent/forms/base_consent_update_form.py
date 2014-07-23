@@ -1,5 +1,5 @@
 from django import forms
-from edc.base.form.forms import BaseModelForm
+from base.form.forms import BaseModelForm
 
 
 class BaseConsentUpdateForm (BaseModelForm):

@@ -2,18 +2,18 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-from edc.dashboard.subject.classes import ScheduledEntryContext
-from edc.subject.appointment.models import Appointment
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.entry_meta_data.models import ScheduledEntryMetaData
-from edc.subject.entry.tests.factories import EntryFactory, LabEntryFactory
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
+from core.bhp_content_type_map.classes import ContentTypeMapHelper
+from core.bhp_content_type_map.models import ContentTypeMap
+from core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from dashboard.subject.classes import ScheduledEntryContext
+from subject.appointment.models import Appointment
+from subject.consent.tests.factories import ConsentCatalogueFactory
+from entry_meta_data.models import ScheduledEntryMetaData
+from subject.entry.tests.factories import EntryFactory, LabEntryFactory
+from subject.lab_tracker.classes import site_lab_tracker
+from subject.registration.models import RegisteredSubject
+from subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+from testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
 
 
 class ScheduledEntryContextTests(TestCase):
@@ -22,7 +22,7 @@ class ScheduledEntryContextTests(TestCase):
     consent_catalogue_name = 'v1'
 
     def setUp(self):
-        from edc.testing.tests.factories import TestVisitFactory
+        from testing.tests.factories import TestVisitFactory
         self.test_visit_factory = TestVisitFactory
         site_lab_tracker.autodiscover()
         study_specific = StudySpecificFactory()

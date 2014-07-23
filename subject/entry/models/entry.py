@@ -1,8 +1,8 @@
 from django.db import models
 
-from edc.constants import NOT_REQUIRED, REQUIRED
-from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.subject.visit_schedule.models import BaseWindowPeriodItem, VisitDefinition
+from constants import NOT_REQUIRED, REQUIRED
+from core.bhp_content_type_map.models import ContentTypeMap
+from subject.visit_schedule.models import BaseWindowPeriodItem, VisitDefinition
 
 from ..choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
 from ..exceptions import EntryManagerError

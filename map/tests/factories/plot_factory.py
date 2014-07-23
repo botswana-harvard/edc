@@ -1,5 +1,5 @@
 import factory
-from edc.base.model.tests.factories import BaseUuidModelFactory
+from base.model.tests.factories import BaseUuidModelFactory
 from apps.bcpp_household.models import Plot
 
 

@@ -5,7 +5,7 @@ Created on Oct 19, 2012
 '''
 from django.utils import unittest
 from django.db.models import get_model
-from edc.subject.registration.models import RegisteredSubject
+from subject.registration.models import RegisteredSubject
 from .test_case_data import *
 
 

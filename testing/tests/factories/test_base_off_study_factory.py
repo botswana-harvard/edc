@@ -1,4 +1,4 @@
-from edc.subject.off_study.tests.factories import BaseOffStudyFactory
+from subject.off_study.tests.factories import BaseOffStudyFactory
 
 from ...models import TestBaseOffStudy
 

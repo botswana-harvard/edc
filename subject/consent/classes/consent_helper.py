@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db.models import get_model
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
-from edc.base.model.models import BaseModel
+from base.model.models import BaseModel
 from ..exceptions import ConsentError, ConsentDoesNotExist
 
 
@@ -13,7 +13,7 @@ class ConsentHelper(object):
     May be subclassed at the protocol module to override :func:`clean_versioned_field` to add more detailed
     data checks for versioned fields than the default. For example, from mpepu_maternal::
 
-        from edc.subject.consent.classes import ConsentHelper
+        from subject.consent.classes import ConsentHelper
 
         class MaternalEligibilityConsentHelper(ConsentHelper):
             def clean_versioned_field(self, field_value, field, start_datetime, consent_version):
@@ -167,7 +167,7 @@ class ConsentHelper(object):
         return current_consent_version
 
     def is_off_study(self):
-        from edc.subject.off_study.models import BaseOffStudy
+        from subject.off_study.models import BaseOffStudy
         if not isinstance(self.get_subject_instance(), BaseOffStudy):
             if self.get_subject_instance().is_off_study():
                 raise self._get_exception_cls()('Data collection not allowed after off study date. Subject was taken off study before this form\'s report datetime \'{0}\'. (ConsentHelper)'.format(self.get_subject_instance().get_report_datetime()))
@@ -177,7 +177,7 @@ class ConsentHelper(object):
 
         If model class of the subject instance is listed in the consent catalogue under the consent of a different subject, such
         as with mother and their infants, get the other subject's identifier from the :func:`get_consent_subject_identifier`. """
-        from edc.subject.consent.models import BaseConsent
+        from subject.consent.models import BaseConsent
         consent_models = []
         consent_subject_identifier = None
         if 'get_consenting_subject_identifier' in dir(self.get_subject_instance()):

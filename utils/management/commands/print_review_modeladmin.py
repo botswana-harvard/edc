@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from edc.utils import generate_review_modeladmin
+from utils import generate_review_modeladmin
 
 
 class Command(BaseCommand):

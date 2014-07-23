@@ -1,7 +1,7 @@
 from django.db.models import get_model
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
-from edc.core.bhp_using.classes import BaseUsing
+from core.bhp_using.classes import BaseUsing
 from ..exceptions import ProducerError
 
 

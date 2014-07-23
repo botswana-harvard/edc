@@ -3,7 +3,7 @@
 from django.db import models
 from django.core import serializers
 
-from edc.core.crypto_fields.classes import FieldCryptor
+from core.crypto_fields.classes import FieldCryptor
 
 from ..models import ExportTransaction
 

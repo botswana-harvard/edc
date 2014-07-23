@@ -1,6 +1,6 @@
 from django.db import models
 
-from edc.subject.registration.models import RegisteredSubject
+from subject.registration.models import RegisteredSubject
 
 from lis.specimen.lab_receive.models import BaseReceive
 

@@ -1,6 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 
-from edc.subject.entry.models import Entry
+from subject.entry.models import Entry
 
 from ..models import ScheduledEntryMetaData
 

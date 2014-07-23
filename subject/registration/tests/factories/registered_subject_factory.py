@@ -1,5 +1,5 @@
 import factory
-from edc.subject.subject.tests.factories import BaseSubjectFactory
+from subject.subject.tests.factories import BaseSubjectFactory
 from ...models import RegisteredSubject
 
 

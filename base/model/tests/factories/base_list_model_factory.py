@@ -1,5 +1,5 @@
 import factory
-from edc.testing.factory.factories import BaseFactory
+from testing.factory.factories import BaseFactory
 
 
 class BaseListModelFactory(BaseFactory):

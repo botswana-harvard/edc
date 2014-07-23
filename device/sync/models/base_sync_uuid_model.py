@@ -7,7 +7,7 @@ from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 
-from edc.base.model.models import BaseUuidModel
+from base.model.models import BaseUuidModel
 
 from ..classes import TransactionProducer
 
@@ -32,7 +32,7 @@ class BaseSyncUuidModel(BaseUuidModel):
 
     def is_serialized(self, serialize=True):
         if 'edc.device.sync' in settings.INSTALLED_APPS:
-            from edc.apps.utils import Conf
+            from apps.utils import Conf
             return Conf.get('ALLOW_MODEL_SERIALIZATION')
 
     def deserialize_prep(self):

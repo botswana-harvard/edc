@@ -3,9 +3,9 @@ from collections import OrderedDict
 from django.db.models import ForeignKey
 from django.core.exceptions import ImproperlyConfigured
 
-from edc.base.admin.admin import BaseModelAdmin
-from edc.export.actions import export_as_csv_action
-from edc.subject.consent.models import BaseConsentedUuidModel
+from base.modeladmin.admin import BaseModelAdmin
+from export.actions import export_as_csv_action
+from subject.consent.models import BaseConsentedUuidModel
 
 from ..classes import VisitModelHelper
 

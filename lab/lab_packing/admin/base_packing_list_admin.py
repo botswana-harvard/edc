@@ -1,5 +1,5 @@
 from .base_packing_list_model_admin import BasePackingListModelAdmin
-from edc.lab.lab_requisition.models import BaseRequisition
+from lab.lab_requisition.models import BaseRequisition
 from lis.specimen.lab_aliquot.models import BaseAliquot
 
 

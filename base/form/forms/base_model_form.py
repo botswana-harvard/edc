@@ -2,7 +2,7 @@ from django import forms
 from django.db.models import OneToOneField, ForeignKey, get_model
 from django.db.models.query import QuerySet
 
-from edc.subject.visit_tracking.models import BaseVisitTracking
+from subject.visit_tracking.models import BaseVisitTracking
 
 from ..classes import LogicCheck
 
@@ -73,7 +73,7 @@ class BaseModelForm(forms.ModelForm):
         # encrypted fields may have their own validation code to run.
         # See the custom field objects in edc.core.crypto_fields.
         try:
-            from edc.core.crypto_fields.fields import BaseEncryptedField
+            from core.crypto_fields.fields import BaseEncryptedField
             for field in self._meta.model._meta.fields:
                 if isinstance(field, BaseEncryptedField):
                     field.validate_with_cleaned_data(field.attname, cleaned_data)

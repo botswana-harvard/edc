@@ -1,4 +1,4 @@
-from edc.core.identifier.classes import BaseIdentifier
+from core.identifier.classes import BaseIdentifier
 
 
 class DispensingIdentifier(BaseIdentifier):

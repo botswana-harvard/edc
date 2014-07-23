@@ -1,7 +1,7 @@
 from datetime import date
 import factory
 from django.db import models
-from edc.base.model.tests.factories import BaseModelFactory
+from base.model.tests.factories import BaseModelFactory
 from ...models import UploadTransactionFile
 
 class UploadTransactionFileFactory(BaseModelFactory):

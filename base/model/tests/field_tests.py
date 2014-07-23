@@ -3,7 +3,7 @@ from git import Repo, GitCmdObjectDB
 from django.conf import settings
 from django.test import TestCase
 
-from edc.testing.models import TestModel
+from testing.models import TestModel
 
 
 class FieldTests(TestCase):

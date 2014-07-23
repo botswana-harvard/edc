@@ -4,8 +4,8 @@ from datetime import date, timedelta
 
 from django.db import models
 
-from edc.base.model.models import BaseModel
-from edc.utils.choices import COMMUNITIES
+from base.model.models import BaseModel
+from utils.choices import COMMUNITIES
 
 
 class UploadSkipDays(BaseModel):

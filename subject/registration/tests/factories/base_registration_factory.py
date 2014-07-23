@@ -1,6 +1,6 @@
 import factory
 from datetime import datetime
-from edc.base.model.tests.factories import BaseUuidModelFactory
+from base.model.tests.factories import BaseUuidModelFactory
 from .registered_subject_factory import RegisteredSubjectFactory
 
 

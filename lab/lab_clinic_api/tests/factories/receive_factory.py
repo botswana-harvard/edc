@@ -1,6 +1,6 @@
 import factory
 from lis.specimen.lab_receive.tests.factories import BaseReceiveFactory
-from edc.subject.registration.tests.factories import RegisteredSubjectFactory
+from subject.registration.tests.factories import RegisteredSubjectFactory
 from ...models import Receive
 
 

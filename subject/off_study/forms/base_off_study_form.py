@@ -1,5 +1,5 @@
 from django import forms
-from edc.subject.consent.forms import BaseConsentedModelForm
+from subject.consent.forms import BaseConsentedModelForm
 
 
 class BaseOffStudyForm(BaseConsentedModelForm):

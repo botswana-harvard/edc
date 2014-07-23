@@ -6,13 +6,13 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
-from edc.core.crypto_fields.fields import EncryptedLastnameField, EncryptedTextField
-from edc.core.crypto_fields.utils import mask_encrypted
-from edc.core.bhp_variables.models import StudySite
-from edc.core.bhp_common.utils import formatted_age
-from edc.base.model.validators import datetime_not_future, datetime_not_before_study_start, eligible_if_no
-from edc.choices.common import YES_NO
-from edc.subject.subject.models import BaseSubject
+from core.crypto_fields.fields import EncryptedLastnameField, EncryptedTextField
+from core.crypto_fields.utils import mask_encrypted
+from core.bhp_variables.models import StudySite
+from core.bhp_common.utils import formatted_age
+from base.model.validators import datetime_not_future, datetime_not_before_study_start, eligible_if_no
+from choices.common import YES_NO
+from subject.subject.models import BaseSubject
 
 from ..exceptions import ConsentError
 from ..classes import ConsentedSubjectIdentifier

@@ -7,7 +7,7 @@ from django.db import connection
 from django.db.models import ForeignKey
 from django.db.utils import IntegrityError
 
-from edc.core.crypto_fields.classes import FieldCryptor
+from core.crypto_fields.classes import FieldCryptor
 
 from .transaction_producer import TransactionProducer
 

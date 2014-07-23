@@ -1,5 +1,5 @@
 from django.db import models
-from edc.core.identifier.models import BaseIdentifierModel
+from core.identifier.models import BaseIdentifierModel
 
 
 class DispensingIdentifierModel(BaseIdentifierModel):

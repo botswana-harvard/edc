@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from edc.base.admin.admin import BaseModelAdmin, BaseTabularInline
+from base.modeladmin.admin import BaseModelAdmin, BaseTabularInline
 
 from ..models import LabEntry
 

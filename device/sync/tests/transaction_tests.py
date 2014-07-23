@@ -3,10 +3,10 @@ from django.conf import settings
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
-from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.device.sync.classes import Consumer, DeserializeFromTransaction, SerializeToTransaction
-from edc.subject.consent.models import ConsentCatalogue
-from edc.device.sync.models import Producer, OutgoingTransaction, IncomingTransaction, TestItem
+from core.bhp_content_type_map.models import ContentTypeMap
+from device.sync.classes import Consumer, DeserializeFromTransaction, SerializeToTransaction
+from subject.consent.models import ConsentCatalogue
+from device.sync.models import Producer, OutgoingTransaction, IncomingTransaction, TestItem
 
 
 class TransactionTests(TestCase):

@@ -1,4 +1,4 @@
-from edc.subject.consent.models import BaseConsentedUuidModel
+from subject.consent.models import BaseConsentedUuidModel
 from .base_appointment_mixin import BaseAppointmentMixin
 
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from edc.base.admin.admin import BaseModelAdmin
+from base.modeladmin.admin import BaseModelAdmin
 
 from ..actions import flag_as_reviewed, unflag_as_reviewed
 from ..forms import ResultForm

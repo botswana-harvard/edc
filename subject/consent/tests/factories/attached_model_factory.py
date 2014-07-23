@@ -1,5 +1,5 @@
 import factory
-from edc.base.model.tests.factories import BaseUuidModelFactory
+from base.model.tests.factories import BaseUuidModelFactory
 from ...models import AttachedModel
 from .consent_catalogue_factory import ConsentCatalogueFactory
 

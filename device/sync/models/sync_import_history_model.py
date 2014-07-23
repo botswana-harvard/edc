@@ -1,4 +1,4 @@
-# from edc.core.bhp_lock.models import BaseImportHistoryModel
+# from core.bhp_lock.models import BaseImportHistoryModel
 #
 #
 # class SyncImportHistoryModel(BaseImportHistoryModel):

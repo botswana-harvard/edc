@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import get_app, get_models
-from edc.subject.appointment_helper.models import BaseAppointmentHelperModel
+from subject.appointment_helper.models import BaseAppointmentHelperModel
 from ..managers import RegisteredSubjectManager
 from .registered_subject import RegisteredSubject
 
@@ -16,7 +16,7 @@ class BaseRegisteredSubjectModel (BaseAppointmentHelperModel):
 
     Use this along with BaseRegisteredSubjectModelAdmin()
 
-    .. seealso:: This class inherits methods from edc.subject.appointment_helper that create appointments if the model
+    .. seealso:: This class inherits methods from subject.appointment_helper that create appointments if the model
                  is configured as a ScheduledGroup model. See base class :mod:`bhp_appointment_helper.classes.BaseAppointmentHelperModel`.
 
     """
@@ -40,7 +40,7 @@ class BaseRegisteredSubjectModel (BaseAppointmentHelperModel):
 
     def get_visit_model_cls(self, instance=None):
         """Returns the visit model which is a subclass of :class:`BaseVisitTracking`."""
-        from edc.subject.visit_tracking.models.base_visit_tracking import BaseVisitTracking
+        from subject.visit_tracking.models.base_visit_tracking import BaseVisitTracking
         if not instance:
             instance = self
         if instance.get_visit_model_app():
@@ -55,7 +55,7 @@ class BaseRegisteredSubjectModel (BaseAppointmentHelperModel):
 
     def get_visit_model(self, instance):
         """Returns the visit model which is a subclass of :class:`BaseVisitTracking`."""
-        from edc.subject.visit_tracking.models.base_visit_tracking import BaseVisitTracking
+        from subject.visit_tracking.models.base_visit_tracking import BaseVisitTracking
         for model in get_models(get_app(instance._meta.app_label)):
             if isinstance(model(), BaseVisitTracking):
                 return model

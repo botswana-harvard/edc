@@ -1,7 +1,7 @@
 from django.db import models
 
-from edc.subject.appointment.models import Appointment
-from edc.subject.entry.models import LabEntry
+from subject.appointment.models import Appointment
+from subject.entry.models import LabEntry
 
 from .base_entry_meta_data import BaseEntryMetaData
 

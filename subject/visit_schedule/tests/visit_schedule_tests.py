@@ -1,12 +1,12 @@
 from django.test import TestCase
 
-from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.lab.lab_profile.classes import site_lab_profiles
-from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.appointment_helper.models import BaseAppointmentMixin
-from edc.subject.entry.models import Entry, LabEntry
-from edc.testing.classes import TestLabProfile
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
+from core.bhp_content_type_map.classes import ContentTypeMapHelper
+from lab.lab_profile.classes import site_lab_profiles
+from lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
+from subject.appointment_helper.models import BaseAppointmentMixin
+from subject.entry.models import Entry, LabEntry
+from testing.classes import TestLabProfile
+from testing.classes import TestVisitSchedule, TestAppConfiguration
 
 from ..models import MembershipForm, ScheduleGroup, VisitDefinition
 
@@ -76,6 +76,6 @@ class VisitScheduleTests(TestCase):
             schedule_group = self.test_visit_schedule.schedule_groups.get(schedule_group_name)
             membership_form_model = self.test_visit_schedule.membership_forms[schedule_group.membership_form_name].model
             # i know this is a consent model in the test case
-            from edc.testing.tests.factories import TestConsentWithMixinFactory
+            from testing.tests.factories import TestConsentWithMixinFactory
             self.assertEqual(membership_form_model, TestConsentWithMixinFactory.FACTORY_FOR)
             self.assertIsNotNone(TestConsentWithMixinFactory(gender='M'))

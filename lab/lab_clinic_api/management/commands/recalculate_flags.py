@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db.models import get_model
 from lis.specimen.lab_result_item.classes import ResultItemFlag
-from edc.subject.lab_tracker.classes import site_lab_tracker
+from subject.lab_tracker.classes import site_lab_tracker
 
 site_lab_tracker.autodiscover()
 

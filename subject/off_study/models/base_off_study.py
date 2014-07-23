@@ -2,11 +2,11 @@ from datetime import datetime, date
 from django.db import models
 from django.db.models import Max, get_app, get_models
 from django.core.exceptions import ImproperlyConfigured
-from edc.base.model.fields import OtherCharField
-from edc.subject.registration.models import BaseRegisteredSubjectModel
-from edc.core.crypto_fields.utils import mask_encrypted
-from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.choices.common import YES_NO
+from base.model.fields import OtherCharField
+from subject.registration.models import BaseRegisteredSubjectModel
+from core.crypto_fields.utils import mask_encrypted
+from subject.visit_tracking.models import BaseVisitTracking
+from choices.common import YES_NO
 from ..managers import OffStudyManager
 from ..exceptions import SubjectOffStudyDateError
 

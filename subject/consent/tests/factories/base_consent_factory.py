@@ -1,6 +1,6 @@
 import factory
 from datetime import datetime
-from edc.core.bhp_variables.tests.factories import StudySiteFactory
+from core.bhp_variables.tests.factories import StudySiteFactory
 from .base_consent_basics_factory import BaseConsentBasicsFactory
 
 

@@ -1,4 +1,4 @@
-from edc.subject.registration.tests.factories import BaseRegistrationFactory
+from subject.registration.tests.factories import BaseRegistrationFactory
 from ...models import TestRegistration
 
 
