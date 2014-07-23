@@ -11,13 +11,13 @@ from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
 from django.core.serializers.json import DjangoJSONEncoder
 
-from edc.device.sync.models import BaseSyncUuidModel
-from edc.device.sync.classes import SerializeToTransaction
-from edc.core.crypto_fields.fields import BaseEncryptedField
-from edc.base.model.fields import UUIDAutoField
+from device.sync.models import BaseSyncUuidModel
+from device.sync.classes import SerializeToTransaction
+from core.crypto_fields.fields import BaseEncryptedField
+from base.model.fields import UUIDAutoField
 
 from .__init__ import GLOBAL_TRACK_FIELDS
-from edc.core.bhp_common.utils.convert_from_camel import convert_from_camel
+from core.bhp_common.utils.convert_from_camel import convert_from_camel
 
 value_error_re = re.compile("^.+'(.+)'$")
 

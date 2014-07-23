@@ -3,7 +3,7 @@ import copy
 
 from django.db.models import get_model
 
-from edc.base.model.models import BaseModel
+from base.model.models import BaseModel
 
 from .base_rule import BaseRule
 

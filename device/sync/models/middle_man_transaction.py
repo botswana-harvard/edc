@@ -4,7 +4,7 @@ from django.db.models import get_model
 from django.conf import settings
 from ..classes import DeserializeFromTransaction
 from .base_transaction import BaseTransaction
-from edc.device.device.classes import Device
+from device.device.classes import Device
 
 
 class MiddleManTransaction(BaseTransaction):

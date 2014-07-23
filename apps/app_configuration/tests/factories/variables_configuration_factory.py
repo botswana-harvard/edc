@@ -1,6 +1,6 @@
 import factory
-from edc.base.model.tests.factories import BaseUuidModelFactory
-from edc.core.bhp_variables.models import StudySpecific
+from base.model.tests.factories import BaseUuidModelFactory
+from core.bhp_variables.models import StudySpecific
 
 
 class VariblesConfigurationFactory(BaseUuidModelFactory):

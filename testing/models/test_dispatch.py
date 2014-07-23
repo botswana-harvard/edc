@@ -1,8 +1,8 @@
 from django.db import models
-from edc.audit.audit_trail import AuditTrail
-from edc.base.model.models import BaseListModel
-from edc.testing.models import TestM2m
-from edc.device.dispatch.models import BaseDispatchSyncUuidModel
+from audit.audit_trail import AuditTrail
+from base.model.models import BaseListModel
+from testing.models import TestM2m
+from device.dispatch.models import BaseDispatchSyncUuidModel
 
 
 class TestDspList(BaseListModel):

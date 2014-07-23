@@ -1,6 +1,6 @@
 # import logging
 # from django.db.models import get_model
-# from edc.core.bhp_lock.classes import BaseImportHistory
+# from core.bhp_lock.classes import BaseImportHistory
 # from .sync_lock import SyncLock
 #
 #

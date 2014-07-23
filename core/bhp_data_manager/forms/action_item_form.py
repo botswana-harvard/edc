@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import Group
 from django.contrib.admin.widgets import AdminRadioSelect, AdminRadioFieldRenderer
-from edc.base.form.forms import BaseModelForm
+from base.form.forms import BaseModelForm
 from ..models import ActionItem
 
 

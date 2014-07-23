@@ -1,4 +1,4 @@
-from edc.subject.subject.managers import BaseSubjectManager
+from subject.subject.managers import BaseSubjectManager
 
 
 class RegisteredSubjectManager(BaseSubjectManager):

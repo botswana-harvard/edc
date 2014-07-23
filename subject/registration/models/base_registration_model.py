@@ -1,5 +1,5 @@
 from django.db import models
-from edc.base.model.validators import datetime_not_before_study_start, datetime_not_future
+from base.model.validators import datetime_not_before_study_start, datetime_not_future
 from .base_registered_subject_model import BaseRegisteredSubjectModel
 
 

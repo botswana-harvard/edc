@@ -2,7 +2,7 @@ from django.core.serializers.base import SerializationError
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from edc.lab.lab_clinic_api.models import TestCode
+from lab.lab_clinic_api.models import TestCode
 
 from .base_base_requisition import BaseBaseRequisition
 

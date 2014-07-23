@@ -3,11 +3,11 @@ from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 
-from edc.audit.audit_trail import AuditTrail
-from edc.core.bhp_variables.models import StudySite
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.visit_schedule.classes import WindowPeriod
-from edc.subject.visit_schedule.models import VisitDefinition
+from audit.audit_trail import AuditTrail
+from core.bhp_variables.models import StudySite
+from subject.registration.models import RegisteredSubject
+from subject.visit_schedule.classes import WindowPeriod
+from subject.visit_schedule.models import VisitDefinition
 
 from ..managers import AppointmentManager
 from ..choices import APPT_TYPE
@@ -17,7 +17,6 @@ from .base_appointment import BaseAppointment
 
 
 class Appointment(BaseAppointment):
-
     """Tracks appointments for a registered subject's visit.
 
         Only one appointment per subject visit_definition+visit_instance.
@@ -29,14 +28,18 @@ class Appointment(BaseAppointment):
 
     appt_close_datetime = models.DateTimeField(null=True, editable=False)
 
-    study_site = models.ForeignKey(StudySite,
+    study_site = models.ForeignKey(
+        StudySite,
         null=True,
         blank=False)
 
-    visit_definition = models.ForeignKey(VisitDefinition, related_name='+',
+    visit_definition = models.ForeignKey(
+        VisitDefinition,
+        related_name='+',
         verbose_name=("Visit"),
         help_text=("For tracking within the window period of a visit, use the decimal convention. "
-                    "Format is NNNN.N. e.g 1000.0, 1000.1, 1000.2, etc)"))
+                   "Format is NNNN.N. e.g 1000.0, 1000.1, 1000.2, etc)"))
+
     visit_instance = models.CharField(
         max_length=1,
         verbose_name=("Instance"),
@@ -46,7 +49,7 @@ class Appointment(BaseAppointment):
         blank=True,
         db_index=True,
         help_text=("A decimal to represent an additional report to be included with the original "
-                    "visit report. (NNNN.0)"))
+                   "visit report. (NNNN.0)"))
     dashboard_type = models.CharField(
         max_length=25,
         editable=False,
@@ -67,6 +70,7 @@ class Appointment(BaseAppointment):
     objects = AppointmentManager()
 
     def natural_key(self):
+        """Returns a natural key."""
         return (self.visit_instance, ) + self.visit_definition.natural_key() + self.registered_subject.natural_key()
     natural_key.dependencies = ['registration.registeredsubject', 'bhp_visit.visitdefinition']
 
@@ -74,7 +78,7 @@ class Appointment(BaseAppointment):
         """Returns the appt_datetime, possibly adjusted, and the best_appt_datetime, the calculated ideal timepoint datetime.
 
         .. note:: best_appt_datetime is not editable by the user. If 'None', will raise an exception."""
-        from edc.subject.appointment_helper.classes import AppointmentDateHelper
+        from subject.appointment_helper.classes import AppointmentDateHelper
         # for tests
         if not exception_cls:
             exception_cls = ValidationError
@@ -86,8 +90,6 @@ class Appointment(BaseAppointment):
             if not self.best_appt_datetime:
                 # did you update best_appt_datetime for existing instances since the migration?
                 raise exception_cls('Appointment instance attribute \'best_appt_datetime\' cannot be null on change.')
-            #if not self.is_new_appointment():
-            #    raise exception_cls('Appointment date can no longer be changed. Appointment is not \'New\'')
             appt_datetime = appointment_date_helper.change_datetime(self.best_appt_datetime, self.appt_datetime, self.study_site, self.visit_definition)
             best_appt_datetime = self.best_appt_datetime
         return appt_datetime, best_appt_datetime
@@ -115,6 +117,7 @@ class Appointment(BaseAppointment):
                                                                                                  self.visit_instance))
 
     def check_window_period(self, exception_cls=None):
+        """Is this used?"""
         if not exception_cls:
             exception_cls = ValidationError
         if self.id:
@@ -123,7 +126,8 @@ class Appointment(BaseAppointment):
                 raise exception_cls(window_period.error_message)
 
     def save(self, *args, **kwargs):
-        from edc.subject.appointment_helper.classes import AppointmentHelper
+        """Django save method"""
+        from subject.appointment_helper.classes import AppointmentHelper
         using = kwargs.get('using')
         self.appt_datetime, self.best_appt_datetime = self.validate_appt_datetime()
         self.check_window_period()
@@ -132,12 +136,15 @@ class Appointment(BaseAppointment):
         super(Appointment, self).save(*args, **kwargs)
 
     def raw_save(self, *args, **kwargs):
+        """Optional save to bypass stuff going on in the default save method."""
         super(Appointment, self).save(*args, **kwargs)
 
     def __unicode__(self):
+        """Django."""
         return "{0} {1} for {2}.{3}".format(self.registered_subject.subject_identifier, self.registered_subject.subject_type, self.visit_definition.code, self.visit_instance)
 
     def dashboard(self):
+        """Returns a hyperink for the Admin page."""
         ret = None
         if self.registered_subject:
             if self.registered_subject.subject_identifier:
@@ -151,18 +158,21 @@ class Appointment(BaseAppointment):
     dashboard.allow_tags = True
 
     def get_subject_identifier(self):
+        """Returns the subject identifier."""
         return self.registered_subject.subject_identifier
 
     def get_registered_subject(self):
+        """Returns the registered subject."""
         return self.registered_subject
 
     def get_report_datetime(self):
+        """Returns the appointment datetime as the report_datetime."""
         return self.appt_datetime
 
     def allow_missing_forms(self):
         """ This method will look for the existence of a model record that allows it to close visit as done even though not all forms filled eg participation model in BCPP """
         from django.db.models import get_model
-        from edc.subject.entry.models import Entry
+        from subject.entry.models import Entry
         from .base_participation_model import BaseParticipationModel
         scheduled_entries = Entry.objects.all()
         for entry in scheduled_entries:
@@ -176,9 +186,11 @@ class Appointment(BaseAppointment):
 
     @property
     def complete(self):
+        """Returns True if the appointment status is DONE."""
         return self.appt_status == DONE
 
     class Meta:
+        """Django model Meta."""
         app_label = 'appointment'
         db_table = 'bhp_appointment_appointment'
         unique_together = (('registered_subject', 'visit_definition', 'visit_instance'),)

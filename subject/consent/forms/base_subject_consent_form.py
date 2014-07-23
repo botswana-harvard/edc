@@ -2,11 +2,11 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.utils import dateparse
 from django import forms
-from edc.core.bhp_variables.models import StudySpecific
-from edc.core.bhp_variables.choices import GENDER_OF_CONSENT
-from edc.core.bhp_common.utils import formatted_age
-from edc.base.form.forms import BaseModelForm
-from edc.core.crypto_fields.fields import BaseEncryptedField
+from core.bhp_variables.models import StudySpecific
+from core.bhp_variables.choices import GENDER_OF_CONSENT
+from core.bhp_common.utils import formatted_age
+from base.form.forms import BaseModelForm
+from core.crypto_fields.fields import BaseEncryptedField
 
 
 class BaseSubjectConsentForm(BaseModelForm):

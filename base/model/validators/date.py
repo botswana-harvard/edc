@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
 from django.core.exceptions import ValidationError
-from edc.core.bhp_variables.models import StudySpecific
+from core.bhp_variables.models import StudySpecific
 
 
 def IsTodayDateTime(value):

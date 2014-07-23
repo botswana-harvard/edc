@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.base.model.models import BaseUuidModel
+from base.model.models import BaseUuidModel
 from ..choices import REVIEW_STATUS
 
 

@@ -1,8 +1,8 @@
 from django.db import models
 try:
-    from edc.device.sync.models import BaseSyncUuidModel as BaseUuidModel
+    from device.sync.models import BaseSyncUuidModel as BaseUuidModel
 except ImportError:
-    from edc.base.model.models import BaseUuidModel
+    from base.model.models import BaseUuidModel
 
 from ..classes import site_lab_profiles
 

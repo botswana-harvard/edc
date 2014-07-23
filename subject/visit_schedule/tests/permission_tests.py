@@ -3,9 +3,9 @@ from django.db.models import get_app, get_models
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
-from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.subject.entry.models import Entry
-from edc.core.bhp_content_type_map.models import ContentTypeMap
+from core.bhp_content_type_map.classes import ContentTypeMapHelper
+from subject.entry.models import Entry
+from core.bhp_content_type_map.models import ContentTypeMap
 
 from ..models import VisitDefinition
 from ..classes import Permissions

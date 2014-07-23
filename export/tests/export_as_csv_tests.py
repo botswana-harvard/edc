@@ -2,16 +2,16 @@ from collections import OrderedDict
 
 from django.test import TestCase
 
-from edc.lab.lab_profile.classes import site_lab_profiles
-from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.appointment.models import Appointment
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.registration.models import RegisteredSubject
-from edc.testing.classes import TestLabProfile
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.models import TestModel, TestScheduledModel, TestConsentWithMixin
-from edc.testing.tests.factories import TestModelFactory, TestScheduledModelFactory, TestConsentWithMixinFactory, TestVisitFactory
-from edc.core.bhp_variables.models import StudySite
+from lab.lab_profile.classes import site_lab_profiles
+from lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
+from subject.appointment.models import Appointment
+from subject.lab_tracker.classes import site_lab_tracker
+from subject.registration.models import RegisteredSubject
+from testing.classes import TestLabProfile
+from testing.classes import TestVisitSchedule, TestAppConfiguration
+from testing.models import TestModel, TestScheduledModel, TestConsentWithMixin
+from testing.tests.factories import TestModelFactory, TestScheduledModelFactory, TestConsentWithMixinFactory, TestVisitFactory
+from core.bhp_variables.models import StudySite
 
 from ..classes import ExportAsCsv
 from ..models import ExportHistory, ExportTransaction

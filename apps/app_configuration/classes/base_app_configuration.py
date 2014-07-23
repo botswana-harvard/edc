@@ -2,16 +2,16 @@ import json
 
 from django.db.models import get_model
 
-from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_variables.models import StudySpecific, StudySite
-from edc.export.models import ExportPlan
-from edc.lab.lab_clinic_api.models import AliquotType, Panel
-from edc.lab.lab_profile.classes import site_lab_profiles
-from edc.notification.models import NotificationPlan
-from edc.subject.consent.models import ConsentCatalogue
-from edc.subject.entry.models import RequisitionPanel
-from edc.utils import datatype_to_string
+from core.bhp_content_type_map.classes import ContentTypeMapHelper
+from core.bhp_content_type_map.models import ContentTypeMap
+from core.bhp_variables.models import StudySpecific, StudySite
+from export.models import ExportPlan
+from lab.lab_clinic_api.models import AliquotType, Panel
+from lab.lab_profile.classes import site_lab_profiles
+from notification.models import NotificationPlan
+from subject.consent.models import ConsentCatalogue
+from subject.entry.models import RequisitionPanel
+from utils import datatype_to_string
 
 from lis.labeling.models import LabelPrinter
 

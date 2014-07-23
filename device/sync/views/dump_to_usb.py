@@ -10,7 +10,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
 
-from edc.apps.utils import Conf
+from apps.utils import Conf
 from ..classes import SerializeToTransaction
 from ..models import OutgoingTransaction
 

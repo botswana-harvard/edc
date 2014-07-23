@@ -6,9 +6,9 @@ from datetime import datetime
 
 from django.db.models.constants import LOOKUP_SEP
 
-from edc.core.crypto_fields.fields import BaseEncryptedField
+from core.crypto_fields.fields import BaseEncryptedField
 
-from edc.notification.models import Notification
+from notification.models import Notification
 
 from ..models import ExportHistory
 

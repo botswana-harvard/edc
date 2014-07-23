@@ -2,11 +2,11 @@ from datetime import datetime
 
 from django.db import models
 
-from edc.choices import YES_NO
-from edc.base.model.models import BaseUuidModel
-from edc.entry_meta_data.managers import EntryMetaDataManager
-from edc.export.managers import ExportHistoryManager
-from edc.export.models import ExportTrackingFieldsMixin
+from choices import YES_NO
+from base.model.models import BaseUuidModel
+from entry_meta_data.managers import EntryMetaDataManager
+from export.managers import ExportHistoryManager
+from export.models import ExportTrackingFieldsMixin
 
 from .test_visit import TestVisit
 

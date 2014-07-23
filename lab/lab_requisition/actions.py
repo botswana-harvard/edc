@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.contrib import messages
 
-from edc.lab.lab_profile.classes import site_lab_profiles
+from lab.lab_profile.classes import site_lab_profiles
 
 from lis.exim.lab_export.classes import ExportDmis
 from lis.labeling.exceptions import PrinterException

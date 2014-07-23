@@ -1,5 +1,5 @@
 # from django.core.management.base import BaseCommand
-# from edc.subject.visit_schedule.models import MembershipForm
+# from subject.visit_schedule.models import MembershipForm
 # 
 # 
 # class Command(BaseCommand):
@@ -15,7 +15,7 @@
 # #         )
 # 
 #     def handle(self, *args, **options):
-#         from edc.subject.appointment_helper.models import BaseAppointmentMixin
+#         from subject.appointment_helper.models import BaseAppointmentMixin
 #         codes_for_category = MembershipForm.objects.codes_for_category
 #         categories = [membership_form.category for membership_form in MembershipForm.objects.all().order_by('category')]
 #         categories = list(set(categories))

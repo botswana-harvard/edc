@@ -3,20 +3,20 @@
 # from django.test import TestCase
 # from django.db import models
 # 
-# from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-# from edc.core.bhp_content_type_map.models import ContentTypeMap
-# from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-# from edc.dashboard.subject.classes import RegisteredSubjectDashboard
-# from edc.subject.appointment.models import Appointment
-# from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-# from edc.subject.entry.tests.factories import EntryFactory
-# from edc.subject.lab_entry.tests.factories import LabEntryFactory
-# from edc.subject.lab_entry.models import ScheduledLabEntryMetaData
-# from edc.subject.lab_tracker.classes import site_lab_tracker
-# from edc.subject.registration.models import RegisteredSubject
-# from edc.subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
-# from edc.testing.models import TestConsent
-# from edc.testing.tests.factories import TestConsentWithMixinFactory, TestVisitFactory
+# from core.bhp_content_type_map.classes import ContentTypeMapHelper
+# from core.bhp_content_type_map.models import ContentTypeMap
+# from core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+# from dashboard.subject.classes import RegisteredSubjectDashboard
+# from subject.appointment.models import Appointment
+# from subject.consent.tests.factories import ConsentCatalogueFactory
+# from subject.entry.tests.factories import EntryFactory
+# from subject.lab_entry.tests.factories import LabEntryFactory
+# from subject.lab_entry.models import ScheduledLabEntryMetaData
+# from subject.lab_tracker.classes import site_lab_tracker
+# from subject.registration.models import RegisteredSubject
+# from subject.visit_schedule.tests.factories import MembershipFormFactory, ScheduleGroupFactory, VisitDefinitionFactory
+# from testing.models import TestConsent
+# from testing.tests.factories import TestConsentWithMixinFactory, TestVisitFactory
 # 
 # from ..models import ScheduledEntryMetaData
 # 

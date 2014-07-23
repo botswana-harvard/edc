@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db.models import get_model, ForeignKey, OneToOneField
 from django.db import IntegrityError
 from django.core.exceptions import ImproperlyConfigured
-from edc.subject.visit_schedule.models import MembershipForm
+from subject.visit_schedule.models import MembershipForm
 from ..exceptions import DispatchModelError, DispatchError, AlreadyDispatched, DispatchControllerError
 from ..models import DispatchItemRegister, DispatchContainerRegister
 from .base_controller import BaseController
@@ -278,7 +278,7 @@ class BaseDispatch(BaseController):
     def set_visit_model_cls(self, app_label, model_cls):
         """Sets the visit_model_cls attribute with a dictionary of tuples (field name, class) by app.
         """
-        from edc.subject.visit_tracking.models import BaseVisitTracking
+        from subject.visit_tracking.models import BaseVisitTracking
         self._visit_models = {}
         if not model_cls:
             raise TypeError('Parameter model_cls cannot be None.')

@@ -1,5 +1,5 @@
-from edc.base.model.tests.factories import BaseUuidModelFactory
-from edc.device.sync.models import TestItem
+from base.model.tests.factories import BaseUuidModelFactory
+from device.sync.models import TestItem
 
 
 class TestItemFactory(BaseUuidModelFactory):

@@ -1,4 +1,4 @@
-from edc.testing.factory.factories import BaseFactory
+from testing.factory.factories import BaseFactory
 
 starting_seq_num = 0
 

@@ -2,19 +2,19 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from edc.entry_meta_data.models import RequisitionMetaData
-from edc.lab.lab_clinic_api.models import Receive, Aliquot
-from edc.lab.lab_profile.classes import site_lab_profiles
-from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.appointment.models import Appointment
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.visit_schedule.models import VisitDefinition
-from edc.testing.classes import TestAppConfiguration
-from edc.testing.classes import TestLabProfile
-from edc.testing.classes import TestVisitSchedule
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestRequisitionFactory
-from edc.testing.models import TestPanel, TestAliquotType
+from entry_meta_data.models import RequisitionMetaData
+from lab.lab_clinic_api.models import Receive, Aliquot
+from lab.lab_profile.classes import site_lab_profiles
+from lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
+from subject.appointment.models import Appointment
+from subject.lab_tracker.classes import site_lab_tracker
+from subject.registration.models import RegisteredSubject
+from subject.visit_schedule.models import VisitDefinition
+from testing.classes import TestAppConfiguration
+from testing.classes import TestLabProfile
+from testing.classes import TestVisitSchedule
+from testing.tests.factories import TestConsentWithMixinFactory, TestRequisitionFactory
+from testing.models import TestPanel, TestAliquotType
 
 from ..classes import LabProfile
 
@@ -22,7 +22,7 @@ from ..classes import LabProfile
 class LabProfileTests(TestCase):
 
     def setUp(self):
-        from edc.testing.tests.factories import TestVisitFactory
+        from testing.tests.factories import TestVisitFactory
         self.test_visit_factory = TestVisitFactory
         site_lab_tracker.autodiscover()
         try:

@@ -23,7 +23,7 @@ class OffStudyMixin(object):
 
     def _get_off_study_cls(self):
         """Private method that returns the off study model class by calling overridable method :func:`get_off_study_cls`."""
-        from edc.subject.off_study.models import BaseOffStudy
+        from subject.off_study.models import BaseOffStudy
         if isinstance(self, BaseOffStudy):
             return None
         return self.get_off_study_cls()

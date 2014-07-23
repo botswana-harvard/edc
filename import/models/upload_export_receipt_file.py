@@ -9,8 +9,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
 
-from edc.base.model.models import BaseModel
-from edc.export.models import ExportHistory
+from base.model.models import BaseModel
+from export.models import ExportHistory
 
 
 class UploadExportReceiptFile(BaseModel):

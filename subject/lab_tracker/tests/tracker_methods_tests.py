@@ -2,12 +2,12 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
-from edc.lab.lab_clinic_api.models import ResultItem
-from edc.lab.lab_clinic_api.tests.factories import ResultItemFactory, AliquotConditionFactory, AliquotFactory, OrderFactory, ReceiveFactory, ResultFactory, TestCodeFactory
-from edc.core.bhp_variables.tests.factories import StudySpecificFactory
-from edc.testing.models import TestSubjectResultModel
-from edc.testing.tests.factories import TestSubjectResultModelFactory
-from edc.subject.registration.tests.factories import RegisteredSubjectFactory
+from lab.lab_clinic_api.models import ResultItem
+from lab.lab_clinic_api.tests.factories import ResultItemFactory, AliquotConditionFactory, AliquotFactory, OrderFactory, ReceiveFactory, ResultFactory, TestCodeFactory
+from core.bhp_variables.tests.factories import StudySpecificFactory
+from testing.models import TestSubjectResultModel
+from testing.tests.factories import TestSubjectResultModelFactory
+from subject.registration.tests.factories import RegisteredSubjectFactory
 from ..models import HistoryModel
 from ..classes import LabTracker, site_lab_tracker
 from ..classes.controller import AlreadyRegistered

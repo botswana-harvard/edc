@@ -6,9 +6,9 @@ from django.core import serializers
 from django.db.models import get_model
 from django.core.management.base import BaseCommand, CommandError
 
-from edc.core.crypto_fields.classes import FieldCryptor
-from edc.export.models.export_transaction import ExportTransaction
-from edc.notification.models import Notification, NotificationPlan
+from core.crypto_fields.classes import FieldCryptor
+from export.models.export_transaction import ExportTransaction
+from notification.models import Notification, NotificationPlan
 
 from ...classes import ExportJsonAsCsv
 from ...models import ExportPlan

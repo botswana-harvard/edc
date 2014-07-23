@@ -1,7 +1,7 @@
-from edc.lab.lab_profile.classes import LabProfile
+from lab.lab_profile.classes import LabProfile
 
-from edc.testing.models import TestAliquotType, TestRequisition, TestPanel, TestProfile, TestProfileItem
-from edc.testing.models import TestReceive
+from testing.models import TestAliquotType, TestRequisition, TestPanel, TestProfile, TestProfileItem
+from testing.models import TestReceive
 
 
 class TestLabProfile(LabProfile):

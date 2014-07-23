@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.base.model.models import BaseModel
+from base.model.models import BaseModel
 
 
 class ModelHelpText(BaseModel):

@@ -1,4 +1,4 @@
-from edc.subject.off_study.models import BaseOffStudy
+from subject.off_study.models import BaseOffStudy
 
 
 class TestOffStudy(BaseOffStudy):

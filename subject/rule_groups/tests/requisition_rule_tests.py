@@ -1,20 +1,20 @@
 from django.test import TestCase
 
-from edc.entry_meta_data.models import RequisitionMetaData
-from edc.lab.lab_profile.classes import site_lab_profiles
-from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.appointment.models import Appointment
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.rule_groups.classes import site_rule_groups
-from edc.subject.visit_schedule.models import VisitDefinition
-from edc.testing.classes import TestLabProfile
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.models import TestVisit, TestScheduledModel1, TestConsentWithMixin, TestPanel, TestAliquotType
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory, TestRequisitionFactory
-from edc.core.bhp_variables.models import StudySite
-from edc.subject.entry.models import RequisitionPanel
-from edc.constants import NOT_REQUIRED, REQUIRED
+from entry_meta_data.models import RequisitionMetaData
+from lab.lab_profile.classes import site_lab_profiles
+from lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
+from subject.appointment.models import Appointment
+from subject.lab_tracker.classes import site_lab_tracker
+from subject.registration.models import RegisteredSubject
+from subject.rule_groups.classes import site_rule_groups
+from subject.visit_schedule.models import VisitDefinition
+from testing.classes import TestLabProfile
+from testing.classes import TestVisitSchedule, TestAppConfiguration
+from testing.models import TestVisit, TestScheduledModel1, TestConsentWithMixin, TestPanel, TestAliquotType
+from testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory, TestRequisitionFactory
+from core.bhp_variables.models import StudySite
+from subject.entry.models import RequisitionPanel
+from constants import NOT_REQUIRED, REQUIRED
 
 from ..classes import RuleGroup, RequisitionRule, Logic
 

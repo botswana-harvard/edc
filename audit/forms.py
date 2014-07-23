@@ -1,5 +1,5 @@
 from django import forms
-from edc.core.model_selector.forms import ModelSelectorForm
+from core.model_selector.forms import ModelSelectorForm
 
 
 class AuditTrailForm(ModelSelectorForm):

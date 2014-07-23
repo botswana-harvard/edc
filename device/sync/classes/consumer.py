@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.serializers.base import DeserializationError
 from django.db.models import get_model
 
-from edc.device.device.classes import Device
+from device.device.classes import Device
 from ..exceptions import TransactionConsumerError
 
 from .deserialize_from_transaction import DeserializeFromTransaction
@@ -24,7 +24,7 @@ nullhandler = logger.addHandler(NullHandler())
 class Consumer(object):
 
     def __init__(self):
-        from edc.device.dispatch.classes import SignalManager
+        from device.dispatch.classes import SignalManager
         self.signal_manager = SignalManager()
         self._device = Device()
 

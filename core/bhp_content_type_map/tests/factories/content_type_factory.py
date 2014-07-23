@@ -1,6 +1,6 @@
 import factory
 from django.contrib.contenttypes.models import ContentType
-from edc.base.model.tests.factories import BaseModelFactory
+from base.model.tests.factories import BaseModelFactory
 
 
 class ContentTypeFactory(BaseModelFactory):

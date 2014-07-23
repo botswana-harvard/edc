@@ -1,6 +1,6 @@
 from django import forms
 
-from edc.base.form.forms import BaseModelForm
+from base.form.forms import BaseModelForm
 
 
 class BaseRequisitionForm (BaseModelForm):

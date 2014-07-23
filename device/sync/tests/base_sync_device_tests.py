@@ -4,7 +4,7 @@ from tastypie.models import ApiKey
 from django.contrib.auth.models import User
 from django.core import management
 from ..models import OutgoingTransaction, IncomingTransaction, MiddleManTransaction
-from edc.device.device.classes import Device
+from device.device.classes import Device
 
 
 class BaseSyncDeviceTests(TestCase):

@@ -5,7 +5,7 @@ Change the base class of the model to :class:`bhp_sync.classes.base_sync_model`.
 
 For example, given a model of laboratory test panels, enable synchronization by adding::
     
-    from edc.device.sync.classes import BaseSyncModel as BaseModel
+    from device.sync.classes import BaseSyncModel as BaseModel
     
     class Panel(BaseModel):
     
@@ -14,9 +14,9 @@ For example, given a model of laboratory test panels, enable synchronization by 
 or it might be better to make the import conditional like this::
 
     try:
-        from edc.device.sync.classes import BaseSyncModel as BaseModel
+        from device.sync.classes import BaseSyncModel as BaseModel
     except ImportError:
-        from edc.base.model.classes import BaseModel
+        from base.model.classes import BaseModel
         
     class Panel(BaseModel):
     
@@ -29,9 +29,9 @@ and finally:
     
     from django.db import models
     try:
-        from edc.device.sync.classes import BaseSyncModel as BaseModel
+        from device.sync.classes import BaseSyncModel as BaseModel
     except ImportError:
-        from edc.base.model.classes import BaseModel
+        from base.model.classes import BaseModel
     from lab_aliquot_list import AliquotType
     from panel_group import PanelGroup
     

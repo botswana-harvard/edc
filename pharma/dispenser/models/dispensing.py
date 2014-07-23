@@ -1,8 +1,8 @@
 from datetime import date
 from django.db import models
 from django.core.exceptions import ValidationError
-from edc.base.model.models import BaseUuidModel
-from edc.subject.registration.models import RegisteredSubject
+from base.model.models import BaseUuidModel
+from subject.registration.models import RegisteredSubject
 from ..classes import DispensingIdentifier
 from ..choices import PACKING_UNITS
 

@@ -1,6 +1,6 @@
 from django.db import models
 
-from edc.device.sync.models import BaseSyncUuidModel
+from device.sync.models import BaseSyncUuidModel
 
 
 class ExcludedHistory (BaseSyncUuidModel):

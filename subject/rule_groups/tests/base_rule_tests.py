@@ -1,22 +1,22 @@
 from django.test import TestCase
 
-from edc.constants import NOT_REQUIRED, NEW
-from edc.core.bhp_variables.models import StudySite
-from edc.entry_meta_data.models import ScheduledEntryMetaData
-from edc.lab.lab_profile.classes import site_lab_profiles
-from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.appointment.models import Appointment
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.rule_groups.classes import site_rule_groups
-from edc.subject.visit_schedule.models import VisitDefinition
-from edc.testing.classes import TestLabProfile
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.models import TestVisit, TestScheduledModel1, TestScheduledModel2, TestConsentWithMixin
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory
+from constants import NOT_REQUIRED, NEW
+from core.bhp_variables.models import StudySite
+from entry_meta_data.models import ScheduledEntryMetaData
+from lab.lab_profile.classes import site_lab_profiles
+from lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
+from subject.appointment.models import Appointment
+from subject.lab_tracker.classes import site_lab_tracker
+from subject.registration.models import RegisteredSubject
+from subject.rule_groups.classes import site_rule_groups
+from subject.visit_schedule.models import VisitDefinition
+from testing.classes import TestLabProfile
+from testing.classes import TestVisitSchedule, TestAppConfiguration
+from testing.models import TestVisit, TestScheduledModel1, TestScheduledModel2, TestConsentWithMixin
+from testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestVisitFactory
 
 from ..classes import RuleGroup, BaseRule, ScheduledDataRule, Logic
-from edc.subject.visit_tracking.models import BaseVisitTracking
+from subject.visit_tracking.models import BaseVisitTracking
 
 
 def func_condition_true(visit_instance):

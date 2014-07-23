@@ -1,5 +1,5 @@
 from django.db import models
-from edc.device.dispatch.models import BaseDispatchSyncUuidModel
+from device.dispatch.models import BaseDispatchSyncUuidModel
 
 
 class Crypt (BaseDispatchSyncUuidModel):

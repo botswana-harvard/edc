@@ -1,15 +1,15 @@
 from django.test import TestCase
 
-from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_content_type_map.models import ContentTypeMap
-from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
-from edc.subject.appointment.models import Appointment
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.registration.models import RegisteredSubject
-from edc.testing.classes import TestVisitSchedule
-from edc.testing.tests.factories import TestConsentWithMixinFactory
-from edc.testing.models import TestOffStudy
+from core.bhp_content_type_map.classes import ContentTypeMapHelper
+from core.bhp_content_type_map.models import ContentTypeMap
+from core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
+from subject.appointment.models import Appointment
+from subject.consent.tests.factories import ConsentCatalogueFactory
+from subject.lab_tracker.classes import site_lab_tracker
+from subject.registration.models import RegisteredSubject
+from testing.classes import TestVisitSchedule
+from testing.tests.factories import TestConsentWithMixinFactory
+from testing.models import TestOffStudy
 
 
 class VisitTests(TestCase):
@@ -33,7 +33,7 @@ class VisitTests(TestCase):
         self.test_visit_schedule.build()
 
     def test_off_study_reason(self):
-        from edc.testing.tests.factories import TestVisitFactory
+        from testing.tests.factories import TestVisitFactory
         # add consent
         TestConsentWithMixinFactory(gender='M')
         registered_subject = RegisteredSubject.objects.all()[0]

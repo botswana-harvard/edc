@@ -6,7 +6,7 @@ from django.conf import settings
 from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
 
-from edc.subject.entry.models import Entry
+from subject.entry.models import Entry
 
 from .rule_group import RuleGroup
 

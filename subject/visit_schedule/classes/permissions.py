@@ -86,7 +86,7 @@ class Permissions(object):
 
     def set_content_types_by_visit_definition(self, codes):
         """Sets to a complete and unique list of content types from each Entry in the visit definition."""
-        from edc.subject.entry.models import Entry
+        from subject.entry.models import Entry
 
         self._content_types = []
         for visit_definition in self.get_visit_definitions():

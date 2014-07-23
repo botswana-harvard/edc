@@ -2,7 +2,7 @@ from django.db.models import get_models
 from django.core.management.base import LabelCommand
 from django.db import connection, transaction
 
-from edc.base.model.models import BaseUuidModel
+from base.model.models import BaseUuidModel
 
 
 class Command(LabelCommand):

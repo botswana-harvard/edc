@@ -1,5 +1,5 @@
 from .controller import site_sections
-# from edc.dashboard.search.classes import site_search
+# from dashboard.search.classes import site_search
 
 
 class BaseSectionIndexView(object):

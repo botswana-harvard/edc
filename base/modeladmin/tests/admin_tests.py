@@ -5,8 +5,8 @@ from django.http import HttpResponseRedirect
 
 from django.contrib.auth.models import User
 from django.test.client import RequestFactory
-from edc.testing.models import TestModel
-from ..exceptions import NextUrlError
+from testing.models import TestModel
+from base.modeladmin import NextUrlError
 
 admin.autodiscover()
 

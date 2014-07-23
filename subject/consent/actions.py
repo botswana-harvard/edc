@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.contrib import messages
-from edc.apps import Conf
+from apps import Conf
 
 
 def flag_as_verified_against_paper(modeladmin, request, queryset, **kwargs):

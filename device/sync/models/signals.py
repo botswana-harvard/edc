@@ -1,7 +1,7 @@
 import socket
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
-from edc.device.sync.classes import SerializeToTransaction
+from device.sync.classes import SerializeToTransaction
 from .incoming_transaction import IncomingTransaction
 from .middle_man_transaction import MiddleManTransaction
 from .base_sync_uuid_model import BaseSyncUuidModel

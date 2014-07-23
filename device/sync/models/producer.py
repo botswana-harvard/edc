@@ -1,8 +1,8 @@
 from django.db import models
 from django.conf import settings
 
-from edc.core.crypto_fields.fields import EncryptedCharField
-from edc.base.model.models import BaseUuidModel
+from core.crypto_fields.fields import EncryptedCharField
+from base.model.models import BaseUuidModel
 
 
 class Producer(BaseUuidModel):
