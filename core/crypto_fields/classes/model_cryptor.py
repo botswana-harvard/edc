@@ -1,11 +1,12 @@
 import sys
+
 from django.db.models import get_models, get_app
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from ..fields import BaseEncryptedField
 
 
 class ModelCryptor(object):
+    """A utility class to for a model with encrypted fields."""
 
     def encrypt_instance(self, instance, save=True):
         """ Encrypts the instance by calling save_base (not save!). """
@@ -19,6 +20,7 @@ class ModelCryptor(object):
         Keyword Arguments:
         field_name -- return a list with field object of this attname only. Name is ignored if not a field using encrytion.
         """
+        from ..fields import BaseEncryptedField
         encrypted_fields = []
         field_name = kwargs.get('field_name', None)
         if field_name:
@@ -37,7 +39,6 @@ class ModelCryptor(object):
             app = get_app(app_name)
         except ImproperlyConfigured:
             app = None
-            pass
         if app:
             for model in get_models(get_app(app_name)):
                 encrypted_fields = self.get_encrypted_fields(model)
@@ -78,10 +79,10 @@ class ModelCryptor(object):
         else:
             unencrypted_instance_total = unencrypted_instances.count()
             if (instance_total - unencrypted_instance_total) > 0:
-                sys.stdout.write(' {0}/{1} instances already encrypted ({2}).\n'.format((instance_total -
-                                                                                         unencrypted_instance_total),
-                                                                                         instance_total,
-                                                                                         field_name))
+                sys.stdout.write(' {0}/{1} instances already encrypted ({2}).\n'.format(
+                    (instance_total - unencrypted_instance_total),
+                    instance_total,
+                    field_name))
                 sys.stdout.flush()
             instance_count = 0
             for unencrypted_instance in unencrypted_instances:
@@ -96,32 +97,13 @@ class ModelCryptor(object):
                         sys.stdout.write(save_message)
                     sys.stdout.flush()
 
-    def decrypt_instance(self, instance,
-                         encrypted_field_object=BaseEncryptedField):
-        """ Returns a modified instance (not saved), encrypt all un-encrypted
-        field objects in a given model instance.
-
-        """
-        pass
-#        for field in instance._meta.fields:
-#            if isinstance(field, BaseEncryptedField):
-#                setattr(instance, field.attname,
-#                        field.decrypt(getattr(instance, field.attname)))
-#        return instance
-
-    def decrypt_model(self, model):
-        """ decrypt and save all encrypted field objects in a given model """
-        pass
-        #for instance in model.objects.all():
-        #    instance = self.decrypt_instance(self, instance,
-        #                                      BaseEncryptedField)
-        #    instance.save()
-
     def get_unencrypted_values_set(self, model, **kwargs):
+        """Returns a values set of unencrypted values."""
         kwargs.update({'query_set': 'values_set'})
         return self._get_unencrypted(model, **kwargs)
 
     def get_unencrypted_query_set(self, model, **kwargs):
+        """Returns a queryset of unencrypted values."""
         return self._get_unencrypted(model, **kwargs)
 
     def _get_unencrypted(self, model, **kwargs):
@@ -148,17 +130,11 @@ class ModelCryptor(object):
             field_name = encrypted_field.attname
             field_startswith = '{0}__startswith'.format(encrypted_field.attname)
             encryption_prefix = encrypted_field.field_cryptor.cryptor.HASH_PREFIX
-            #field_isnull = '{0}__isnull'.format(encrypted_field.attname)
             field_exact = '{0}__exact'.format(encrypted_field.attname)
             if query_set == 'values_set':
-                unencrypted_set = (model.objects.exclude(**{field_startswith: encryption_prefix})
-                                               .exclude(**{field_exact: None})
-                                               .exclude(**{field_exact: ''}).values('pk'))
+                unencrypted_set = (model.objects.exclude(**{field_startswith: encryption_prefix}).exclude(**{field_exact: None}).exclude(**{field_exact: ''}).values('pk'))
             elif query_set == 'query_set':
-                unencrypted_set = (model.objects.exclude(**{field_startswith: encryption_prefix})
-                                                .exclude(**{field_exact: None})
-                                                .exclude(**{field_exact: ''})
-                                                )
+                unencrypted_set = (model.objects.exclude(**{field_startswith: encryption_prefix}).exclude(**{field_exact: None}).exclude(**{field_exact: ''}))
             else:
                 raise TypeError('Invalid value for keyword argument \'query_set\'. Got {0}'.format(query_set))
             if unencrypted_set.count() > 0:
@@ -178,8 +154,6 @@ class ModelCryptor(object):
         suppress_messages -- whether to print messages to stdout (default: False)
 
         """
-        #suppress_messages = kwargs.get('suppress_messages', False)
-        #field_name = kwargs.get('field_name', None)
         instance = kwargs.get('instance', None)
         if not instance:
             raise TypeError('Keyword argument \'instance\' cannot be None')
@@ -195,8 +169,6 @@ class ModelCryptor(object):
         suppress_messages -- whether to print messages to stdout (default: False)
 
         """
-        #suppress_messages = kwargs.get('suppress_messages', False)
-        #field_name = kwargs.get('field_name', None)
         model = kwargs.get('model', None)
         if not model:
             raise TypeError('Keyword argument \'model\' cannot be None')
@@ -250,10 +222,10 @@ class ModelCryptor(object):
                         else:
                             print ('(?) {model_name}: {count} of {total} '
                                    'rows not encrypted (based on {field_name})').format(
-                                        model_name=model_name,
-                                        count=unencrypted_values_set.count(),
-                                        total=model.objects.all().count(),
-                                        field_name=field_name)
+                                model_name=model_name,
+                                count=unencrypted_values_set.count(),
+                                total=model.objects.all().count(),
+                                field_name=field_name)
                 elif model.objects.all().count() == 0:
                     is_encrypted = True
                     if not suppress_messages:
