@@ -55,7 +55,7 @@ class BaseSubject (BaseSyncUuidModel):
         null=True,
         )
 
-    dob = EncryptedDateField(
+    dob = models.DateField(
         verbose_name=_("Date of birth"),
         validators=[
             dob_not_future,
