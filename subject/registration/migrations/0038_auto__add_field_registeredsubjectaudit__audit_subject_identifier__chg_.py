@@ -8,23 +8,11 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'RegisteredSubjectAudit._audit_subject_identifier'
-#         db.add_column('bhp_registration_registeredsubject_audit', '_audit_subject_identifier',
-#                       self.gf('django.db.models.fields.CharField')(max_length=50, null=True),
-#                       keep_default=False)
+        # Changing field 'ClinicConsent.dob'
+        db.alter_column(u'bhp_registration_registeredsubject', 'dob', self.gf('django.db.models.fields.DateField')(null=True))
 
-
-        # Changing field 'RegisteredSubjectAudit.dob'
-        db.alter_column('bhp_registration_registeredsubject_audit', 'dob', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True))
-
-        # Changing field 'RegisteredSubjectAudit.initials'
-        db.alter_column('bhp_registration_registeredsubject_audit', 'initials', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True))
-
-        # Changing field 'RegisteredSubject.dob'
-        db.alter_column('bhp_registration_registeredsubject', 'dob', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True))
-
-        # Changing field 'RegisteredSubject.initials'
-        db.alter_column('bhp_registration_registeredsubject', 'initials', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True))
+        # Changing field 'ClinicConsentAudit.dob'
+        db.alter_column(u'bhp_registration_registeredsubject', 'dob', self.gf('django.db.models.fields.DateField')(null=True))
 
     def backwards(self, orm):
         pass
