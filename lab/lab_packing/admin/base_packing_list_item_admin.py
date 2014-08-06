@@ -4,7 +4,7 @@ from edc.base.admin.admin import BaseModelAdmin
 class BasePackingListItemAdmin(BaseModelAdmin):
 
     search_fields = ('packing_list__pk', 'packing_list__timestamp', 'item_description', 'item_reference',)
-    list_display = ('specimen', 'priority', 'panel', 'description', 'gender', 'drawn_datetime', 'clinician', 'view_packing_list',)
+    list_display = ('specimen', 'priority', 'description', 'gender', 'drawn_datetime', 'clinician', 'view_packing_list', 'panel')
     list_filter = ('created', 'panel')
 
     def delete_model(self, request, obj):
