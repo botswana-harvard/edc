@@ -123,17 +123,12 @@ class BaseScheduledEntryContext(object):
         url = ''
         if self.instance:
             try:
-                url = reverse("admin:{app_label}_review_{model_name}review_change".format(
-                    app_label=self.model._meta.app_label,
-                    model_name=self.model._meta.object_name.lower(),
-                    ), args=(self.instance.pk, ))
+                url = '/databrowse/{app_label}/{model_name}/objects/{pk}/'.format(
+                 app_label=self.model._meta.app_label,
+                 model_name=self.model._meta.object_name.lower(),
+                 pk=self.instance.pk)
             except NoReverseMatch:
                 pass
-#            return '/admin/{app_label}_review/{model_name}review/{pk}/'
-#             return '/databrowse/{app_label}/{model_name}/objects/{pk}/'.format(
-#                 app_label=self.model._meta.app_label,
-#                 model_name=self.model._meta.object_name.lower(),
-#                 pk=self.instance.pk)
         return url
 
     @property
