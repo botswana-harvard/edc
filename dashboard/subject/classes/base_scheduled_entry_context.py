@@ -3,9 +3,9 @@ import copy
 from django.db.models import get_model
 from django.core.urlresolvers import reverse, NoReverseMatch
 
-from constants import NOT_REQUIRED, ADDITIONAL
-from core.bhp_common.utils import convert_from_camel
-from subject.appointment.constants import IN_PROGRESS
+from edc.constants import NOT_REQUIRED, ADDITIONAL
+from edc.core.bhp_common.utils import convert_from_camel
+from edc.subject.appointment.constants import IN_PROGRESS
 
 
 class BaseScheduledEntryContext(object):
