@@ -64,8 +64,26 @@ class BaseScheduledEntryContext(object):
         """Sets to the model instance referred to by the scheduled entry."""
         if not self._instance:
             options = {convert_from_camel(self.visit_instance._meta.object_name): self.visit_instance}
+#             print self.visit_instance.__dict__
+
+#             try:
+#                 print self.model
+#                 self._instance = self.model.objects.get(maternal_visit=self.visit_instance)
+#                 print self._instance
+# #                 print self.visit_instance
+# #                 self._instance = self.model.objects.get(infant_visit = self.visit_instance)
+# #                 print self._instance
+#             except self.model.DoesNotExist:
+#                 print self.visit_instance.appointment
+#                 print "OK"
+#                 pass
+#             print options
+#             print self.model
             if self.model.objects.filter(**options):
                 self._instance = self.model.objects.get(**options)
+#         print "Model:"
+#         print self.model
+#         print self._instance
         return self._instance
 
     @property
@@ -123,17 +141,12 @@ class BaseScheduledEntryContext(object):
         url = ''
         if self.instance:
             try:
-                url = reverse("admin:{app_label}_review_{model_name}review_change".format(
-                    app_label=self.model._meta.app_label,
-                    model_name=self.model._meta.object_name.lower(),
-                    ), args=(self.instance.pk, ))
+                url = '/databrowse/{app_label}/{model_name}/objects/{pk}/'.format(
+                 app_label=self.model._meta.app_label,
+                 model_name=self.model._meta.object_name.lower(),
+                 pk=self.instance.pk)
             except NoReverseMatch:
                 pass
-#            return '/admin/{app_label}_review/{model_name}review/{pk}/'
-#             return '/databrowse/{app_label}/{model_name}/objects/{pk}/'.format(
-#                 app_label=self.model._meta.app_label,
-#                 model_name=self.model._meta.object_name.lower(),
-#                 pk=self.instance.pk)
         return url
 
     @property
