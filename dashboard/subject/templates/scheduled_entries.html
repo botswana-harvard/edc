@@ -49,7 +49,7 @@
                 </td>
                 <td>
                 {% if scheduled_entry.audit_trail_url %}
-                  <A href="{{ scheduled_entry.audit_trail_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&app_label={{ app_label }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms">Audit trail coli {{ dashboard_model }} zest</A>
+                  <A href="{{ scheduled_entry.audit_trail_url }}?next={{ subject_dashboard_url|default:"dashboard_url" }}&app_label={{ app_label }}&dashboard_type={{ dashboard_type }}&dashboard_model={{ dashboard_model }}&dashboard_id={{ dashboard_id }}&show=forms">Audit trail{{ dashboard_model }}</A>
                 {% endif %}
                 </td>
             </tr>
