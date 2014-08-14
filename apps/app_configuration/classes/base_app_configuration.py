@@ -182,7 +182,7 @@ class BaseAppConfiguration(object):
         """Updates configuration in the :mod:`consent` module."""
         for catalogue_setup in self.consent_catalogue_list:
             content_type_map_string = catalogue_setup.get('content_type_map')
-            catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map').lower())})
+            catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))})
             if not ConsentCatalogue.objects.filter(**catalogue_setup).exists():
                 ConsentCatalogue.objects.create(**catalogue_setup)
             else:
