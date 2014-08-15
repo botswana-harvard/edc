@@ -49,7 +49,7 @@ class BaseAppConfiguration(object):
         self.update_or_create_labeling()
         self.update_export_plan_setup()
         self.update_notification_plan_setup()
-        self.update_holidays_setup()
+#         self.update_holidays_setup()
 
     def update_or_create_lab_clinic_api(self):
         """Configure lab clinic api list models."""
@@ -182,7 +182,7 @@ class BaseAppConfiguration(object):
         """Updates configuration in the :mod:`consent` module."""
         for catalogue_setup in self.consent_catalogue_list:
             content_type_map_string = catalogue_setup.get('content_type_map')
-            catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map').lower())})
+            catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))})
             if not ConsentCatalogue.objects.filter(**catalogue_setup).exists():
                 ConsentCatalogue.objects.create(**catalogue_setup)
             else:
