@@ -51,7 +51,7 @@ class Controller(object):
         if section_view_cls().get_section_name() in self._registry:
             raise AlreadyRegistered('A section view class of type {1} is already registered ({0})'.format(section_view_cls, section_view_cls().get_section_name()))
         if 'DENIED_SECTIONS_FOR_GROUP' in dir(settings) and 'LOGGED_IN_USER_GROUP' in dir(settings):
-            logged_in_user_group = settings.LOGGED_IN_USER_GROUP #settings.LOGGED_IN_USER_GROUP must be changed. Only temporary untill i figure out how to get logged in USER from within a class properly.
+            logged_in_user_group = settings.LOGGED_IN_USER_GROUP  # settings.LOGGED_IN_USER_GROUP must be changed. Only temporary untill i figure out how to get logged in USER from within a class properly.
             if settings.DENIED_SECTIONS_FOR_GROUP.get(logged_in_user_group, None):
                 #denied_sections_for_user should be a tuple of section names
                 denied_sections_for_user = settings.DENIED_SECTIONS_FOR_GROUP.get(logged_in_user_group)
