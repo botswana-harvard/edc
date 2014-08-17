@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models import TextField, Count
 from django.template.loader import render_to_string
 
-from apps.app_configuration.models.global_configuration import GlobalConfiguration
+from edc.apps.app_configuration.models.global_configuration import GlobalConfiguration
 from edc.constants import NEW, NOT_REQUIRED
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.core.bhp_data_manager.models import ActionItem

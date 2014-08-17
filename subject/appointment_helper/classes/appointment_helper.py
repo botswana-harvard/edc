@@ -2,7 +2,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model, Max
 
 from edc.subject.appointment.exceptions import AppointmentStatusError
-from apps.app_configuration.models import GlobalConfiguration
+from edc.apps.app_configuration.models import GlobalConfiguration
 from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 

@@ -2,7 +2,7 @@ import pyodbc
 
 from django.conf import settings
 
-from apps.bcpp_lab.models import SubjectRequisition
+from edc.apps.bcpp_lab.models import SubjectRequisition
 
 
 cnxn2 = pyodbc.connect(settings.LAB_IMPORT_DMIS_DATA_SOURCE)

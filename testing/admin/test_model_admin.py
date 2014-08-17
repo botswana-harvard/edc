@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.admin_supplemental_fields.classes import SupplementalFields
+from edc.apps.admin_supplemental_fields.classes import SupplementalFields
 from edc.base.modeladmin.admin import BaseModelAdmin
 
 from ..forms import TestModelForm
