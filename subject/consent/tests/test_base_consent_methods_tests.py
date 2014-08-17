@@ -3,14 +3,14 @@ import re
 from datetime import datetime
 from django.test import TestCase
 
-from core.bhp_content_type_map.classes import ContentTypeMapHelper
-from core.bhp_content_type_map.models import ContentTypeMap
-from core.bhp_variables.models import StudySite
-from core.bhp_variables.tests.factories import StudySiteFactory
-from core.identifier.exceptions import IdentifierError
-from subject.registration.models import RegisteredSubject
-from subject.registration.tests.factories import RegisteredSubjectFactory
-from testing.models import TestForeignKey, TestM2m, TestConsent, TestSubjectUuidModel, TestConsentNoRs
+from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
+from edc.core.bhp_content_type_map.models import ContentTypeMap
+from edc.core.bhp_variables.models import StudySite
+from edc.core.bhp_variables.tests.factories import StudySiteFactory
+from edc.core.identifier.exceptions import IdentifierError
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.registration.tests.factories import RegisteredSubjectFactory
+from edc.testing.models import TestForeignKey, TestM2m, TestConsent, TestSubjectUuidModel, TestConsentNoRs
 
 from .base_methods import BaseMethods
 from .factories import ConsentCatalogueFactory
@@ -19,7 +19,7 @@ from .factories import ConsentCatalogueFactory
 class BaseConsentMethodsTests(TestCase, BaseMethods):
 
     def setUp(self):
-        from testing.tests.factories import TestConsentFactory
+        from edc.testing.tests.factories import TestConsentFactory
         self.test_consent_factory = TestConsentFactory
         self.create_study_variables()
 
@@ -97,7 +97,7 @@ class BaseConsentMethodsTests(TestCase, BaseMethods):
 #         print 'ok'
 
     def test_subject_consent_no_registered_subject(self):
-        from testing.tests.factories import TestConsentNoRsFactory
+        from edc.testing.tests.factories import TestConsentNoRsFactory
 
         print 'TEST SUBJECT CONSENT WITH NO KEY TO RS'
         TestConsent.objects.all().delete()

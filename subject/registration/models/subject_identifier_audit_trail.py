@@ -1,7 +1,9 @@
 from datetime import date
+
 from django_extensions.db.fields import UUIDField
 from django.db import models
-from base.model.models import BaseModel
+
+from edc.base.model.models import BaseModel
 
 
 class SubjectIdentifierAuditTrail(BaseModel):

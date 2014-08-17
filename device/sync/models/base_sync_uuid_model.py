@@ -7,7 +7,7 @@ from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 
-from base.model.models import BaseUuidModel
+from edc.base.model.models import BaseUuidModel
 
 from ..classes import TransactionProducer
 

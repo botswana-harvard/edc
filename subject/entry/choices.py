@@ -1,4 +1,4 @@
-from constants import NEW, NOT_REQUIRED, KEYED
+from edc.constants import NEW, NOT_REQUIRED, KEYED
 
 ENTRY_CATEGORY = (
     ('CLINIC', 'Clinic'),

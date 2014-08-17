@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from subject.registration.models import RegisteredSubject
+from edc.subject.registration.models import RegisteredSubject
 from ..sms_error_codes import (SEARCH_SUBJECT_ID_SMS_FORMAT_ERR,
                                      SUBJECT_IDENTIFIER_NOT_FOUND, SUBJECT_IDENTIFIER_FOUND)
 from .sms import Sms

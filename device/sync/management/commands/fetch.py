@@ -1,7 +1,7 @@
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
-# from device.sync.classes import SyncLock, ImportHistory, Consumer
-from device.sync.classes import Consumer
+# from edc.device.sync.classes import SyncLock, ImportHistory, Consumer
+from edc.device.sync.classes import Consumer
 
 
 class Command(BaseCommand):

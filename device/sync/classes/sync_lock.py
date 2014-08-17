@@ -1,6 +1,6 @@
 # import logging
 # from django.db.models import get_model
-# from core.bhp_lock.classes import BaseLock
+# from edc.core.bhp_lock.classes import BaseLock
 #
 # logger = logging.getLogger(__name__)
 #

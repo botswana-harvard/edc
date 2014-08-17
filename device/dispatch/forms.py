@@ -1,5 +1,5 @@
 from django import forms
-from device.sync.models import Producer
+from edc.device.sync.models import Producer
 
 
 class DispatchForm(forms.Form):

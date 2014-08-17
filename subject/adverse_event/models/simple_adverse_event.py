@@ -1,9 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.validators import MaxValueValidator, MinValueValidator
-from base.model.models import BaseListModel
-from subject.consent.models import BaseConsentedUuidModel
-from subject.registration.models import RegisteredSubject
+from edc.base.model.models import BaseListModel
+from edc.subject.consent.models import BaseConsentedUuidModel
+from edc.subject.registration.models import RegisteredSubject
 from ..choices import GRADING_SCALE
 
 

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from base.modeladmin.admin import BaseModelAdmin
-from export.actions import export_as_csv_action
+from edc.base.modeladmin.admin import BaseModelAdmin
+from edc.export.actions import export_as_csv_action
 
 from ..actions import recalculate_grading
 from ..forms import ResultItemForm

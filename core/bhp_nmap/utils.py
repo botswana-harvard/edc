@@ -1,5 +1,5 @@
 import nmap
-from core.bhp_common.utils import os_variables
+from edc.core.bhp_common.utils import os_variables
 # http://xael.org/norman/python/python-nmap/#usage
 
 

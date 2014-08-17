@@ -1,4 +1,4 @@
-from base.form.forms import BaseModelForm
+from edc.base.form.forms import BaseModelForm
 from ..models import RegisteredSubject
 
 

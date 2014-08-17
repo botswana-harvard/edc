@@ -3,7 +3,7 @@ import copy
 
 from django.db.models import get_model
 
-from base.model.models import BaseModel
+from edc.base.model.models import BaseModel
 
 from .base_rule import BaseRule
 
@@ -31,7 +31,7 @@ class BaseRuleGroup(type):
                     for rule in [member for member in inspect.getmembers(parent) if isinstance(member[1], BaseRule)]:
                         parent_rule = copy.deepcopy(rule)
                         attrs.update({parent_rule[0]: parent_rule[1]})
-            except AttributeError as e:
+            except AttributeError:
                 pass
         meta = attrs.pop('Meta', None)
         # source model is the same for all rules in this group, so get it now

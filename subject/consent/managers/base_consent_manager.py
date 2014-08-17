@@ -1,4 +1,4 @@
-from subject.subject.managers import BaseSubjectManager
+from edc.subject.subject.managers import BaseSubjectManager
 
 
 class BaseConsentManager(BaseSubjectManager):

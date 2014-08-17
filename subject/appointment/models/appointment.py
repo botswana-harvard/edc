@@ -3,11 +3,11 @@ from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 
-from audit.audit_trail import AuditTrail
-from core.bhp_variables.models import StudySite
-from subject.registration.models import RegisteredSubject
-from subject.visit_schedule.classes import WindowPeriod
-from subject.visit_schedule.models import VisitDefinition
+from edc.audit.audit_trail import AuditTrail
+from edc.core.bhp_variables.models import StudySite
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.visit_schedule.classes import WindowPeriod
+from edc.subject.visit_schedule.models import VisitDefinition
 
 from ..managers import AppointmentManager
 from ..choices import APPT_TYPE
@@ -78,7 +78,7 @@ class Appointment(BaseAppointment):
         """Returns the appt_datetime, possibly adjusted, and the best_appt_datetime, the calculated ideal timepoint datetime.
 
         .. note:: best_appt_datetime is not editable by the user. If 'None', will raise an exception."""
-        from subject.appointment_helper.classes import AppointmentDateHelper
+        from edc.subject.appointment_helper.classes import AppointmentDateHelper
         # for tests
         if not exception_cls:
             exception_cls = ValidationError
@@ -127,7 +127,7 @@ class Appointment(BaseAppointment):
 
     def save(self, *args, **kwargs):
         """Django save method"""
-        from subject.appointment_helper.classes import AppointmentHelper
+        from edc.subject.appointment_helper.classes import AppointmentHelper
         using = kwargs.get('using')
         self.appt_datetime, self.best_appt_datetime = self.validate_appt_datetime()
         self.check_window_period()
@@ -172,7 +172,7 @@ class Appointment(BaseAppointment):
     def allow_missing_forms(self):
         """ This method will look for the existence of a model record that allows it to close visit as done even though not all forms filled eg participation model in BCPP """
         from django.db.models import get_model
-        from subject.entry.models import Entry
+        from edc.subject.entry.models import Entry
         from .base_participation_model import BaseParticipationModel
         scheduled_entries = Entry.objects.all()
         for entry in scheduled_entries:

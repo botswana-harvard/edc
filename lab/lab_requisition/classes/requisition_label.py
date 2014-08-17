@@ -1,5 +1,5 @@
-from core.bhp_variables.models import StudySpecific
-from subject.registration.models import RegisteredSubject
+from edc.core.bhp_variables.models import StudySpecific
+from edc.subject.registration.models import RegisteredSubject
 
 from lis.labeling.classes import ModelLabel
 from lis.labeling.models import ZplTemplate

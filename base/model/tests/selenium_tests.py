@@ -1,9 +1,12 @@
 import time
-from django.test import LiveServerTestCase
-from django.contrib.auth.models import User
+
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
-from testing.models import TestM2m, TestForeignKey, TestModel
+
+from django.test import LiveServerTestCase
+from django.contrib.auth.models import User
+
+from edc.testing.models import TestM2m, TestForeignKey, TestModel
 
 
 class MySeleniumTests(LiveServerTestCase):

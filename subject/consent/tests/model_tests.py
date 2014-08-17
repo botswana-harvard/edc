@@ -1,12 +1,12 @@
 from django.test import TestCase
-from core.bhp_variables.tests.factories import StudySiteFactory, StudySpecificFactory
-from subject.registration.models import RegisteredSubject
+from edc.core.bhp_variables.tests.factories import StudySiteFactory, StudySpecificFactory
+from edc.subject.registration.models import RegisteredSubject
 
 
 class ModelTests(TestCase):
 
     def setUp(self):
-        from testing.tests.factories import TestConsentFactory
+        from edc.testing.tests.factories import TestConsentFactory
         self.test_consent_factory = TestConsentFactory
         self.create_study_variables()
 

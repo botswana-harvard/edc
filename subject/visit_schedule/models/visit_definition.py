@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.core.validators import MaxLengthValidator
 from django.db import models
 
-from core.bhp_content_type_map.models import ContentTypeMap
+from edc.core.bhp_content_type_map.models import ContentTypeMap
 
 from ..managers import VisitDefinitionManager
 from ..models import BaseWindowPeriodItem

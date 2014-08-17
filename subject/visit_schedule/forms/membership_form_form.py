@@ -1,7 +1,7 @@
 from django import forms
-from base.form.forms import BaseModelForm
-from subject.appointment.models import Appointment
-from subject.appointment_helper.models import  BaseAppointmentMixin
+from edc.base.form.forms import BaseModelForm
+from edc.subject.appointment.models import Appointment
+from edc.subject.appointment_helper.models import  BaseAppointmentMixin
 
 
 class MembershipFormForm(BaseModelForm):

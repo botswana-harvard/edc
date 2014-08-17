@@ -1,6 +1,6 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from subject.visit_schedule.models import VisitDefinition
+from edc.subject.visit_schedule.models import VisitDefinition
 
 
 class ApptDateTimeDescriptor(object):

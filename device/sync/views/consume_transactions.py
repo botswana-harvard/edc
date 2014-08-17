@@ -6,9 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
-from device.sync.models import Producer, RequestLog, IncomingTransaction, MiddleManTransaction
-from device.sync.classes import TransactionProducer
-from device.device.classes import Device
+from edc.device.sync.models import Producer, RequestLog, IncomingTransaction, MiddleManTransaction
+from edc.device.sync.classes import TransactionProducer
+from edc.device.device.classes import Device
 
 
 @login_required

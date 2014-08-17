@@ -1,7 +1,7 @@
 from django.db import models
-from audit.audit_trail import AuditTrail
-from lab.lab_requisition.models import BaseRequisition
-from entry_meta_data.managers import RequisitionMetaDataManager
+from edc.audit.audit_trail import AuditTrail
+from edc.lab.lab_requisition.models import BaseRequisition
+from edc.entry_meta_data.managers import RequisitionMetaDataManager
 
 from .test_visit import TestVisit
 from .test_panel import TestPanel

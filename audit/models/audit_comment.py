@@ -2,7 +2,7 @@ from django_extensions.db.fields import UUIDField
 
 from django.db import models
 
-from base.model.models import BaseUuidModel
+from edc.base.model.models import BaseUuidModel
 from ..choices import AUDITCODES
 
 

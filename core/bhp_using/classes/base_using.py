@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from device.device.classes import Device
+from edc.device.device.classes import Device
 from ..exceptions import UsingError, UsingSourceError, UsingDestinationError
 
 

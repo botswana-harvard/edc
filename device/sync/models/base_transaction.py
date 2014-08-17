@@ -1,6 +1,8 @@
 from django.core.urlresolvers import reverse
 from django.db import models
-from base.model.models import BaseUuidModel
+
+from edc.base.model.models import BaseUuidModel
+
 from ..classes import TransactionProducer
 
 transaction_producer = TransactionProducer()

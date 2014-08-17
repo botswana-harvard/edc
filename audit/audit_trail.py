@@ -11,13 +11,13 @@ from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
 from django.core.serializers.json import DjangoJSONEncoder
 
-from device.sync.models import BaseSyncUuidModel
-from device.sync.classes import SerializeToTransaction
-from core.crypto_fields.fields import BaseEncryptedField
-from base.model.fields import UUIDAutoField
+from edc.base.model.fields import UUIDAutoField
+from edc.core.crypto_fields.fields import BaseEncryptedField
+from edc.device.sync.classes import SerializeToTransaction
+from edc.device.sync.models import BaseSyncUuidModel
 
 from .__init__ import GLOBAL_TRACK_FIELDS
-from core.bhp_common.utils.convert_from_camel import convert_from_camel
+from edc.core.bhp_common.utils.convert_from_camel import convert_from_camel
 
 value_error_re = re.compile("^.+'(.+)'$")
 
@@ -61,7 +61,7 @@ class AuditTrail(object):
                 clsAdmin = type(cls_admin_name, (BaseAuditModelAdmin, ), {model: model})
                 admin.site.register(model, clsAdmin)
                 # Otherwise, register class with default ModelAdmin
-                #admin.site.register(model, AuditModelAdmin)
+                # admin.site.register(model, AuditModelAdmin)
             descriptor = AuditTrailDescriptor(model._default_manager, sender._meta.pk.attname)
             setattr(sender, name, descriptor)
 
@@ -107,12 +107,12 @@ class AuditTrail(object):
 
                     model._default_manager.create(**kwargs)
 
-            ## Uncomment this line for pre r8223 Django builds
-            #dispatcher.connect(_audit, signal=models.signals.post_save, sender=cls, weak=False)
-            ## Comment this line for pre r8223 Django builds
+            # Uncomment this line for pre r8223 Django builds
+            # dispatcher.connect(_audit, signal=models.signals.post_save, sender=cls, weak=False)
+            # Comment this line for pre r8223 Django builds
             models.signals.post_save.connect(_audit, sender=cls, weak=False, dispatch_uid='audit_on_save_{0}'.format(model._meta.object_name.lower()))
 
-            #begin: erikvw added for serialization
+            # begin: erikvw added for serialization
             def _serialize_on_save(sender, instance, **kwargs):
                 """ serialize the AUDIT model instance to the outgoing transaction model """
                 if not kwargs.get('raw'):
@@ -140,17 +140,17 @@ class AuditTrail(object):
                     for field_arr in model._audit_track:
                         kwargs[field_arr[0]] = _audit_track(instance, field_arr)
                     model._default_manager.create(**kwargs)
-                ## Uncomment this line for pre r8223 Django builds
-                #dispatcher.connect(_audit_delete, signal=models.signals.pre_delete, sender=cls, weak=False)
-                ## Comment this line for pre r8223 Django builds
+                # Uncomment this line for pre r8223 Django builds
+                # dispatcher.connect(_audit_delete, signal=models.signals.pre_delete, sender=cls, weak=False)
+                # Comment this line for pre r8223 Django builds
                 models.signals.pre_delete.connect(_audit_delete, sender=cls, weak=False, dispatch_uid='audit_delete_{0}'.format(model._meta.object_name.lower()))
                 # begin: erikvw added for serialization
                 # models.signals.pre_delete.connect(_serialize, sender=model, weak=False, dispatch_uid='audit_serialize_on_delete')
                 # end: erikvw added for serialization
 
-        ## Uncomment this line for pre r8223 Django builds
-        #dispatcher.connect(_contribute, signal=models.signals.class_prepared, sender=cls, weak=False)
-        ## Comment this line for pre r8223 Django builds
+        #  Uncomment this line for pre r8223 Django builds
+        # dispatcher.connect(_contribute, signal=models.signals.class_prepared, sender=cls, weak=False)
+        # Comment this line for pre r8223 Django builds
         models.signals.class_prepared.connect(_contribute, sender=cls, weak=False)
 
 
@@ -160,8 +160,8 @@ class AuditTrailDescriptor(object):
         self.pk_attribute = pk_attribute
 
     def __get__(self, instance=None, owner=None):
-        if instance == None:
-            #raise AttributeError, "Audit trail is only accessible via %s instances." % type.__name__
+        if not instance:
+            # raise AttributeError, "Audit trail is only accessible via %s instances." % type.__name__
             return create_audit_manager_class(self.manager)
         else:
             return create_audit_manager_with_pk(self.manager, self.pk_attribute, instance._get_pk_val())
@@ -240,11 +240,11 @@ def create_audit_model(cls, **kwargs):
             new_field.rel.related_name = '_audit_' + field.related_query_name()
             attrs[field.name] = new_field
             # end erikvw added
-        #elif isinstance(field, BaseEncryptedField):
-        #    attrs[field.name] = models.CharField(max_length=field.get_max_length(), null=True, editable=False)
+        # elif isinstance(field, BaseEncryptedField):
+        #     attrs[field.name] = models.CharField(max_length=field.get_max_length(), null=True, editable=False)
         else:
-            if field.primary_key == True:
-                raise ImproperlyConfigured("%s should not be a primary key! Unhandled by AuditTrail" % (cls.__name__, field.attname))
+            if field.primary_key:
+                raise ImproperlyConfigured("{0}.{1} should not be a primary key! Unhandled by AuditTrail".format(cls, field))
             attrs[field.name] = copy.copy(field)
             # If 'unique' is in there, we need to remove it, otherwise the index
             # is created and multiple audit entries for one item fail.

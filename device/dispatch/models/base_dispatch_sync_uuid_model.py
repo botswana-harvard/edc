@@ -2,9 +2,9 @@ import logging
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
-from device.sync.models import BaseSyncUuidModel
-from device.device.classes import Device
-from core.bhp_using.classes import BaseUsing
+from edc.device.sync.models import BaseSyncUuidModel
+from edc.device.device.classes import Device
+from edc.core.bhp_using.classes import BaseUsing
 from ..exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError
 
 

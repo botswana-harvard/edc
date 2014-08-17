@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from apps.app_configuration.classes import BaseAppConfiguration
-from lab.lab_profile.classes import ProfileItemTuple, ProfileTuple
+from edc.lab.lab_profile.classes import ProfileItemTuple, ProfileTuple
 
 from lis.labeling.classes import LabelPrinterTuple
 from lis.specimen.lab_aliquot_list.classes import AliquotTypeTuple

@@ -10,10 +10,10 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.encoding import force_unicode
 
-from entry_meta_data.helpers import ScheduledEntryMetaDataHelper
-from subject.rule_groups.classes import site_rule_groups
+from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper
+from edc.subject.rule_groups.classes import site_rule_groups
 
-from base.modeladmin import NextUrlError
+from edc.base.modeladmin import NextUrlError
 
 logger = logging.getLogger(__name__)
 
@@ -46,8 +46,6 @@ class BaseModelAdmin (admin.ModelAdmin):
         return extra_context
 
     def add_view(self, request, form_url='', extra_context=None):
-        META = 0
-        DCT = 1
         extra_context = extra_context or dict()
         extra_context = self.contribute_to_extra_context(extra_context)
         extra_context.update(instructions=self.instructions)
@@ -56,8 +54,8 @@ class BaseModelAdmin (admin.ModelAdmin):
         if request.GET.get('group_title'):
             extra_context.update(title=('{group_title}: Add {title}').format(group_title=request.GET.get('group_title'), title=force_unicode(self.model._meta.verbose_name)))
         extra_context.update(self.get_dashboard_context(request))
-        #model_help_text = '' #self.get_model_help_text(self.model._meta.app_label, self.model._meta.object_name)
-        #extra_context.update(model_help_text_meta=model_help_text[META], model_help_text=model_help_text[DCT])
+        # model_help_text = '' #self.get_model_help_text(self.model._meta.app_label, self.model._meta.object_name)
+        # extra_context.update(model_help_text_meta=model_help_text[META], model_help_text=model_help_text[DCT])
         return super(BaseModelAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
@@ -81,7 +79,7 @@ class BaseModelAdmin (admin.ModelAdmin):
         """Redirects as default unless keyword 'next' is in the GET and is a valid url_name (e.g. can be reversed using other GET values)."""
         http_response_redirect = super(BaseModelAdmin, self).response_add(request, obj, post_url_continue)
         custom_http_response_redirect = None
-        if not '_addanother' in request.POST and not '_continue' in request.POST:
+        if '_addanother' not in request.POST and '_continue' not in request.POST:
             if request.GET.get('next'):
                 custom_http_response_redirect = self.response_add_redirect_on_next_url(
                     request.GET.get('next'),
@@ -97,7 +95,7 @@ class BaseModelAdmin (admin.ModelAdmin):
         """Redirects as default unless keyword 'next' is in the GET and is a valid url_name (e.g. can be reversed using other GET values)."""
         http_response_redirect = super(BaseModelAdmin, self).response_add(request, obj, post_url_continue)
         custom_http_response_redirect = None
-        if not '_addanother' in request.POST and not '_continue' in request.POST:
+        if '_addanother' not in request.POST and '_continue' not in request.POST:
             # look for session variable "filtered" set in change_view
             if request.session.get('filtered', None):
                 if 'next=' not in request.session.get('filtered'):
@@ -194,10 +192,10 @@ class BaseModelAdmin (admin.ModelAdmin):
                     #        be code that cannot be reached
                     url = reverse(
                         'subject_dashboard_url', kwargs={  # TODO: this defaults to the value subject_dashboard_url, not the variable!!!
-                        'dashboard_type': dashboard_type,
-                        'dashboard_id': dashboard_id,
-                        'dashboard_model': dashboard_model,
-                        'show': show})
+                            'dashboard_type': dashboard_type,
+                            'dashboard_id': dashboard_id,
+                            'dashboard_model': dashboard_model,
+                            'show': show})
                 else:
                     pass
             if not url:
@@ -271,10 +269,10 @@ class BaseModelAdmin (admin.ModelAdmin):
 
     def get_dashboard_context(self, request):
         return {'subject_dashboard_url': request.GET.get('next', ''),
-                      'dashboard_type': request.GET.get('dashboard_type', ''),
-                      'dashboard_model': request.GET.get('dashboard_model', ''),
-                      'dashboard_id': request.GET.get('dashboard_id', ''),
-                      'show': request.GET.get('show', 'any')}
+                'dashboard_type': request.GET.get('dashboard_type', ''),
+                'dashboard_model': request.GET.get('dashboard_model', ''),
+                'dashboard_id': request.GET.get('dashboard_id', ''),
+                'show': request.GET.get('show', 'any')}
 
     def reverse_next_to_dashboard(self, next_url_name, request, obj, **kwargs):
         url = ''
@@ -298,8 +296,6 @@ class BaseModelAdmin (admin.ModelAdmin):
                 url = reverse(next_url_name, kwargs=kwargs)
             except NoReverseMatch:
                 raise NoReverseMatch('response_add failed to reverse url \'{0}\' with kwargs {1}. Is this a dashboard url?'.format(next_url_name, kwargs))
-                #logger.warning('Warning: response_add failed to reverse \'{0}\' with kwargs {1}'.format(next_url_name, kwargs))
-                #pass
             except:
                 raise
         return url
@@ -320,13 +316,6 @@ class BaseModelAdmin (admin.ModelAdmin):
             del kwargs['csrfmiddlewaretoken']
         return kwargs
 
-#     def get_model_help_text(self, app_label=None, module_name=None):
-#         # TODO: and this does what?
-#         mht = dict()
-#         for model_help_text in ModelHelpText.objects.filter(app_label=app_label, module_name=module_name.lower()):
-#             mht.update({model_help_text.field_name: model_help_text})
-#         return (ModelHelpText._meta, mht)
-
     def next_url_in_scheduled_entry_meta_data(self, obj, visit_attr, entry_order):
         """Returns a tuple with the reverse of the admin url for the next model listed in scheduled_entry_meta_data.
 
@@ -336,7 +325,7 @@ class BaseModelAdmin (admin.ModelAdmin):
         next_url_tuple = (None, None, None)
         if visit_attr and entry_order:
             visit_instance = getattr(obj, visit_attr)
-            #site_rule_groups.update_all(visit_instance)
+            # site_rule_groups.update_all(visit_instance)
             site_rule_groups.update_rules_for_source_model(obj, visit_instance)
             next_entry = ScheduledEntryMetaDataHelper(visit_instance.get_appointment(), visit_instance.__class__, visit_attr).get_next_entry_for(entry_order)
             if next_entry:
@@ -344,5 +333,5 @@ class BaseModelAdmin (admin.ModelAdmin):
                     reverse('admin:{0}_{1}_add'.format(next_entry.entry.content_type_map.app_label, next_entry.entry.content_type_map.module_name)),
                     visit_instance,
                     next_entry.entry.entry_order
-                    )
+                )
         return next_url_tuple

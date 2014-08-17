@@ -1,6 +1,6 @@
 from django import forms
 from django.conf import settings
-from subject.consent.forms import BaseConsentedModelForm
+from edc.subject.consent.forms import BaseConsentedModelForm
 
 
 class BaseVisitTrackingForm(BaseConsentedModelForm):

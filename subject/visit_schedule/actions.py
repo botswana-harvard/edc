@@ -1,4 +1,4 @@
-from base.modeladmin.utils import ModelExporter
+from edc.base.modeladmin.utils import ModelExporter
 
 
 def export_as_html(modeladmin, request, queryset, **kwargs):

@@ -1,2 +1,2 @@
 from .report_decryptor import ReportDecryptor
-from .operational_report_utilities import OperatationalReportUtilities
+from .operational_report_utilities import OperationalReportUtilities

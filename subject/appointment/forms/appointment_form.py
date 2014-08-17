@@ -3,8 +3,8 @@ from datetime import date
 from django import forms
 from django.core.exceptions import ValidationError
 
-from entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
-from base.form.forms import BaseModelForm
+from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
+from edc.base.form.forms import BaseModelForm
 
 from ..constants import IN_PROGRESS, DONE, INCOMPLETE, NEW, CANCELLED
 from ..models import Appointment

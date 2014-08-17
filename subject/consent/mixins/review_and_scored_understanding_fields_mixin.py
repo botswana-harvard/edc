@@ -1,7 +1,7 @@
 from django.db import models
 
-from choices import YES_NO, YES_NO_DECLINED
-from base.model.validators import eligible_if_yes
+from edc.choices import YES_NO, YES_NO_DECLINED
+from edc.base.model.validators import eligible_if_yes
 
 
 class ReviewAndScoredUnderstandingFieldsMixin(models.Model):

@@ -3,24 +3,24 @@ from dateutil.relativedelta import relativedelta
 
 from django.test import TestCase
 
-from core.bhp_content_type_map.classes import ContentTypeMapHelper
-from core.bhp_content_type_map.models import ContentTypeMap
-from core.bhp_variables.tests.factories import StudySiteFactory
-from subject.appointment.models import Appointment
-from subject.consent.models import AttachedModel
-from subject.consent.tests.factories import ConsentCatalogueFactory
-from subject.registration.tests.factories import RegisteredSubjectFactory
-from subject.visit_schedule.models import VisitDefinition
-from subject.visit_schedule.tests.factories import VisitDefinitionFactory
-from testing.models import TestOffStudy
-from testing.models import TestSubjectVisit
+from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
+from edc.core.bhp_content_type_map.models import ContentTypeMap
+from edc.core.bhp_variables.tests.factories import StudySiteFactory
+from edc.subject.appointment.models import Appointment
+from edc.subject.consent.models import AttachedModel
+from edc.subject.consent.tests.factories import ConsentCatalogueFactory
+from edc.subject.registration.tests.factories import RegisteredSubjectFactory
+from edc.subject.visit_schedule.models import VisitDefinition
+from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
+from edc.testing.models import TestOffStudy
+from edc.testing.models import TestSubjectVisit
 
 
 class OffStudyMethodsTests(TestCase):
 
     def setUp(self):
 
-        from testing.tests.factories import TestConsentFactory
+        from edc.testing.tests.factories import TestConsentFactory
         self.test_consent_factory = TestConsentFactory
         self.create_study_variables()
 
@@ -68,7 +68,7 @@ class OffStudyMethodsTests(TestCase):
         VisitDefinitionFactory(code='1800', visit_tracking_content_type_map=visit_tracking_content_type_map)
 
     def create_appointments(self, now, appts):
-        from subject.appointment.tests.factories import AppointmentFactory
+        from edc.subject.appointment.tests.factories import AppointmentFactory
         for visit_code, dte in appts.iteritems():
             appointment = AppointmentFactory(registered_subject=self.registered_subject, appt_datetime=dte, visit_definition=VisitDefinition.objects.get(code=visit_code))
             # appt_datetime may be change by get_best_apptdatetime, so update dict

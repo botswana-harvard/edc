@@ -1,4 +1,4 @@
-from subject.registration.models import BaseRegistrationModel
+from edc.subject.registration.models import BaseRegistrationModel
 from ..managers import TestRegistrationManager
 from .test_off_study_mixin import TestOffStudyMixin
 from .test_base_off_study import TestBaseOffStudy

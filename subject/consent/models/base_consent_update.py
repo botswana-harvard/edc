@@ -3,11 +3,11 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext as _
 
-from base.model.validators import datetime_not_future, datetime_not_before_study_start
-from choices.common import YES_NO
-from core.bhp_variables.models import StudySite
-from core.crypto_fields.fields import EncryptedLastnameField, EncryptedTextField
-from device.sync.models import BaseSyncUuidModel
+from edc.base.model.validators import datetime_not_future, datetime_not_before_study_start
+from edc.choices.common import YES_NO
+from edc.core.bhp_variables.models import StudySite
+from edc.core.crypto_fields.fields import EncryptedLastnameField, EncryptedTextField
+from edc.device.sync.models import BaseSyncUuidModel
 
 from ..classes import ConsentHelper
 from ..managers import BaseConsentUpdateManager

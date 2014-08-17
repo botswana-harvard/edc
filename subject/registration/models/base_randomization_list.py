@@ -1,24 +1,23 @@
 from django.db import models
-from device.sync.models import BaseSyncUuidModel
+
+from edc.device.sync.models import BaseSyncUuidModel
 
 
 class BaseRandomizationList (BaseSyncUuidModel):
 
     sid = models.IntegerField(
         unique=True,
-        verbose_name="SID",
-        )
-    site_name = models.CharField("Registration Site",
+        verbose_name="SID")
+
+    site_name = models.CharField(
+        "Registration Site",
         max_length=10)
 
-    site = models.IntegerField("site code"
-        )
+    site = models.IntegerField("site code")
 
     registration_datetime = models.DateTimeField("Registration Date and Time")
 
-    subject_identifier = models.CharField(
-        max_length=25
-        )
+    subject_identifier = models.CharField(max_length=25)
 
     class Meta:
         abstract = True

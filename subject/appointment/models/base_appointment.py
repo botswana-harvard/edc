@@ -1,8 +1,8 @@
 from django.db import models
 try:
-    from device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
+    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
 except ImportError:
-    from device.sync.models import BaseSyncUuidModel
+    from edc.device.sync.models import BaseSyncUuidModel
 from ..choices import APPT_STATUS
 
 
@@ -34,7 +34,8 @@ class BaseAppointment (BaseSyncUuidModel):
         verbose_name=("Contact Tel"),
         max_length=250,
         blank=True)
-    comment = models.CharField("Comment",
+    comment = models.CharField(
+        "Comment",
         max_length=250,
         blank=True)
 

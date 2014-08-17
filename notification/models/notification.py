@@ -1,6 +1,6 @@
 from django.db import models
 
-from device.sync.models import BaseSyncUuidModel
+from edc.device.sync.models import BaseSyncUuidModel
 
 
 class Notification(BaseSyncUuidModel):

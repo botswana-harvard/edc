@@ -4,7 +4,7 @@ from django.conf.urls import patterns, url
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 
-from core.crypto_fields.fields import BaseEncryptedField
+from edc.core.crypto_fields.fields import BaseEncryptedField
 
 from ..exceptions import SearchModelError
 from ..forms import SearchForm

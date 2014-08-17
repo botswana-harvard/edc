@@ -7,17 +7,17 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
 try:
-    from device.dispatch.models import BaseDispatchSyncUuidModel as BaseUuidModel
+    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseUuidModel
 except ImportError:
-    from base.model.models import BaseUuidModel
+    from edc.base.model.models import BaseUuidModel
 
-from base.model.fields import InitialsField
-from choices.common import YES_NO
-from core.bhp_string.classes import StringHelper
-from core.bhp_variables.models import StudySite
-from device.device.classes import Device
-from lab.lab_clinic_api.models import AliquotType
-from lab.lab_clinic_api.models import Panel
+from edc.base.model.fields import InitialsField
+from edc.choices.common import YES_NO
+from edc.core.bhp_string.classes import StringHelper
+from edc.core.bhp_variables.models import StudySite
+from edc.device.device.classes import Device
+# from edc.lab.lab_clinic_api.models import AliquotType
+# from edc.lab.lab_clinic_api.models import Panel
 
 from ..choices import PRIORITY, REASON_NOT_DRAWN, ITEM_TYPE
 from ..classes import RequisitionLabel

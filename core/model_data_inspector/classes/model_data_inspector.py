@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Count, Sum, Avg, Max, Min, StdDev, Variance
 from django.db.models import DateTimeField, DateField, IntegerField, DecimalField, CharField, BooleanField, NullBooleanField
 
-from core.model_selector.classes import ModelSelector
+from edc.core.model_selector.classes import ModelSelector
 
 from ..models import Related, GroupingHint
 

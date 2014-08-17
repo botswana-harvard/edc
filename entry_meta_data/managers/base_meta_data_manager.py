@@ -1,9 +1,9 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
-from constants import REQUIRED, NOT_REQUIRED, KEYED
-from core.bhp_common.utils import convert_from_camel
-from subject.appointment.models import Appointment
+from edc.constants import REQUIRED, NOT_REQUIRED, KEYED
+from edc.core.bhp_common.utils import convert_from_camel
+from edc.subject.appointment.models import Appointment
 
 
 class BaseMetaDataManager(models.Manager):
@@ -134,5 +134,5 @@ class BaseMetaDataManager(models.Manager):
 
     def run_rule_groups(self):
         """Runs rule groups that use the data in this instance; that is, the model is a rule source model."""
-        from subject.rule_groups.classes import site_rule_groups
+        from edc.subject.rule_groups.classes import site_rule_groups
         return site_rule_groups.update_rules_for_source_model(self.model, self.visit_instance)

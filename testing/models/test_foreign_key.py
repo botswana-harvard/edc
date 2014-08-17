@@ -1,4 +1,4 @@
-from base.model.models.base_list_model import BaseListModel
+from edc.base.model.models.base_list_model import BaseListModel
 
 
 class TestForeignKey(BaseListModel):

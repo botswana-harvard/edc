@@ -4,10 +4,10 @@ from datetime import date, datetime
 
 from django.db.models import get_model, IntegerField
 
-from core.bhp_common.utils import convert_from_camel
-from subject.consent.classes import ConsentHelper
-from subject.lab_tracker.classes import site_lab_tracker
-from subject.visit_tracking.models import BaseVisitTracking
+from edc.core.bhp_common.utils import convert_from_camel
+from edc.subject.consent.classes import ConsentHelper
+from edc.subject.lab_tracker.classes import site_lab_tracker
+from edc.subject.visit_tracking.models import BaseVisitTracking
 
 from .logic import Logic
 

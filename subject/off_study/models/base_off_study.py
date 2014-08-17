@@ -1,27 +1,28 @@
 from datetime import datetime, date
+
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models import Max, get_app, get_models
-from django.core.exceptions import ImproperlyConfigured
-from base.model.fields import OtherCharField
-from subject.registration.models import BaseRegisteredSubjectModel
-from core.crypto_fields.utils import mask_encrypted
-from subject.visit_tracking.models import BaseVisitTracking
-from choices.common import YES_NO
-from ..managers import OffStudyManager
+
+from edc.base.model.fields import OtherCharField
+from edc.choices.common import YES_NO
+from edc.core.crypto_fields.utils import mask_encrypted
+from edc.subject.registration.models import BaseRegisteredSubjectModel
+from edc.subject.visit_tracking.models import BaseVisitTracking
+
 from ..exceptions import SubjectOffStudyDateError
+from ..managers import OffStudyManager
 
 
 class BaseOffStudy(BaseRegisteredSubjectModel):
     """Base model for the Off Study model in an app."""
     offstudy_date = models.DateField(
         verbose_name="Off-study Date",
-        help_text="",
-        )
+        help_text="")
 
     reason = models.CharField(
         verbose_name="Please code the primary reason participant taken off-study",
-        max_length=30,
-        )
+        max_length=30)
 
     reason_other = OtherCharField()
 
@@ -36,8 +37,7 @@ class BaseOffStudy(BaseRegisteredSubjectModel):
         max_length=250,
         verbose_name="Comments:",
         blank=True,
-        null=True,
-        )
+        null=True)
 
     objects = OffStudyManager()
 

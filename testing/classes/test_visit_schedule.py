@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
-from constants import REQUIRED, NOT_ADDITIONAL
-from subject.visit_schedule.classes import VisitScheduleConfiguration, EntryTuple, RequisitionPanelTuple, MembershipFormTuple, ScheduleGroupTuple
+from edc.constants import REQUIRED, NOT_ADDITIONAL
+from edc.subject.visit_schedule.classes import VisitScheduleConfiguration, EntryTuple, RequisitionPanelTuple, MembershipFormTuple, ScheduleGroupTuple
 
 from ..models import TestVisit, TestConsentWithMixin, TestAliquotType, TestPanel
 

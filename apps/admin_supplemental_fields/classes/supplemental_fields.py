@@ -1,5 +1,6 @@
 import copy
 import random
+
 from ..models import ExcludedHistory
 
 
@@ -13,7 +14,7 @@ class SupplementalFields(object):
 
         For example::
             # If p=0.1, the supplemental fields will appear 100/1000 times the admin add form is shown.
-            from core.admin_supplemental_fields.classes import SupplementalFields
+            from edc.core.admin_supplemental_fields.classes import SupplementalFields
 
             class MyModelAdmin(model.ModelAdmin):
                 form = MyForm

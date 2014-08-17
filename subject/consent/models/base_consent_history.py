@@ -1,6 +1,6 @@
 from django.db import models
-from base.model.models import BaseUuidModel
-from subject.registration.models import RegisteredSubject
+from edc.base.model.models import BaseUuidModel
+from edc.subject.registration.models import RegisteredSubject
 from ..managers import BaseConsentHistoryManager
 
 

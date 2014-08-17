@@ -1,4 +1,4 @@
-from subject.entry.models import LabEntry
+from edc.subject.entry.models import LabEntry
 
 from ..models import RequisitionMetaData
 

@@ -1,9 +1,9 @@
 from django.conf import settings
 if 'edc.device.dispatch' in settings.INSTALLED_APPS:
-    from device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
+    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
 else:
-    from device.sync.models import BaseSyncUuidModel
-from subject.off_study.exceptions import SubjectOffStudyError
+    from edc.device.sync.models import BaseSyncUuidModel
+from edc.subject.off_study.exceptions import SubjectOffStudyError
 from ..classes import ConsentHelper
 
 

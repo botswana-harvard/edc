@@ -14,8 +14,7 @@ class Conf(object):
 
     @staticmethod
     def return_site_name():
-        from map.classes import site_mappers
-        mapper = None
+        from edc.map.classes import site_mappers
         mapper = site_mappers.get_registry(site_mappers.get_current_mapper().map_area)()
         if mapper:
             site_name = mapper.get_map_area()

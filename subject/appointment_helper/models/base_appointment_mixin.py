@@ -1,5 +1,6 @@
-from django.db.models.signals import Signal, post_save
-from subject.registration.models import RegisteredSubject
+# from django.db.models.signals import Signal, post_save
+
+from edc.subject.registration.models import RegisteredSubject
 
 
 class BaseAppointmentMixin(object):
@@ -35,7 +36,7 @@ class BaseAppointmentMixin(object):
 
         .. seealso:: :class:`appointment_helper.AppointmentHelper`. """
         self.pre_prepare_appointments(using)
-        from subject.appointment_helper.classes import AppointmentHelper
+        from edc.subject.appointment_helper.classes import AppointmentHelper
         if 'registered_subject' in dir(self):
             registered_subject = self.registered_subject
         else:

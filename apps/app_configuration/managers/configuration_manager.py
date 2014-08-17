@@ -1,6 +1,6 @@
 from django.db import models
 
-from utils import string_to_datatype
+from edc.utils import string_to_datatype
 
 
 class ConfigurationManager(models.Manager):

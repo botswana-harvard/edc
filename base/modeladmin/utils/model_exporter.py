@@ -2,7 +2,7 @@ import os
 from django.contrib import admin
 from django.conf import settings
 from django.contrib.auth.models import User
-from subject.visit_schedule.models import VisitDefinition
+from edc.subject.visit_schedule.models import VisitDefinition
 
 
 class ModelExporter(object):

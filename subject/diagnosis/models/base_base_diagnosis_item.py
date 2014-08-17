@@ -1,6 +1,6 @@
 from django.db import models
-from subject.consent.models import BaseConsentedUuidModel
-from choices import YES_NO
+from edc.subject.consent.models import BaseConsentedUuidModel
+from edc.choices import YES_NO
 from ..choices import GRADE
 
 

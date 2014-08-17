@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from device.sync.models import BaseSyncUuidModel
+from edc.device.sync.models import BaseSyncUuidModel
 
 from .export_tracking_fields_mixin import ExportTrackingFieldsMixin
 

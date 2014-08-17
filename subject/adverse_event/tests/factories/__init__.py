@@ -1,4 +1,4 @@
-from base_death_factory import BaseDeathFactory
+from edc.base_death_factory import BaseDeathFactory
 from death_reason_hospitalized_factory import DeathReasonHospitalizedFactory
 from death_medical_responsibility_factory import DeathMedicalResponsibilityFactory
 from death_cause_category_factory import DeathCauseCategoryFactory

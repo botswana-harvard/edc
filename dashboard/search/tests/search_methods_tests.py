@@ -2,8 +2,8 @@ from django.core.paginator import Page
 from django.db.models.query import QuerySet
 from django.test import TestCase
 
-from dashboard.section.classes import BaseSectionView, site_sections
-from testing.models import TestConsent
+from edc.dashboard.section.classes import BaseSectionView, site_sections
+from edc.testing.models import TestConsent
 
 from ..classes import BaseSearchByWord
 from ..exceptions import SearchModelError, SearchAttributeError
@@ -12,7 +12,7 @@ from ..exceptions import SearchModelError, SearchAttributeError
 class SearchMethodsTests(TestCase):
 
     def setUp(self):
-        from testing.tests.factories import TestConsentFactory
+        from edc.testing.tests.factories import TestConsentFactory
         self.test_consent_factory = TestConsentFactory
 
     def test_section_name(self):

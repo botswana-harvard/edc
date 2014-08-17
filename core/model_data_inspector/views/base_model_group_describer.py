@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from core.bhp_variables.models import StudySite
+from edc.core.bhp_variables.models import StudySite
 
 from ..forms import DateRangeForm
 

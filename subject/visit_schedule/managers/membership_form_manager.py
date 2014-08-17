@@ -1,5 +1,5 @@
 from django.db import models
-from core.bhp_content_type_map.models import ContentTypeMap
+from edc.core.bhp_content_type_map.models import ContentTypeMap
 
 
 class MembershipFormManager(models.Manager):

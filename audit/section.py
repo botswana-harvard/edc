@@ -1,4 +1,4 @@
-from dashboard.section.classes import BaseSectionView, site_sections
+from edc.dashboard.section.classes import BaseSectionView, site_sections
 
 
 class SectionAuditView(BaseSectionView):

@@ -1,5 +1,5 @@
 import factory
-from choices.common import IDENTITY_TYPE
+from edc.choices.common import IDENTITY_TYPE
 from ...models import TestConsent
 from .test_consent_factory import BaseConsentFactory
 

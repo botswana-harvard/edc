@@ -1,8 +1,8 @@
 from django.db import models
-from audit.audit_trail import AuditTrail
-from base.model.models import BaseUuidModel
-from base.model.validators import datetime_not_before_study_start
-from core.bhp_content_type_map.models import ContentTypeMap
+from edc.audit.audit_trail import AuditTrail
+from edc.base.model.models import BaseUuidModel
+from edc.base.model.validators import datetime_not_before_study_start
+from edc.core.bhp_content_type_map.models import ContentTypeMap
 from ..choices import CONSENT_TYPES
 from ..managers import ConsentCatalogueManager
 

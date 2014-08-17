@@ -2,10 +2,10 @@ from datetime import datetime
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 from django.db.models import get_model
-from subject.registration.models import RegisteredSubject
-from device.sync.models import Producer, OutgoingTransaction, IncomingTransaction
-from device.sync.exceptions import PendingTransactionError, ProducerError
-from core.bhp_using.exceptions import UsingError, UsingSourceError
+from edc.subject.registration.models import RegisteredSubject
+from edc.device.sync.models import Producer, OutgoingTransaction, IncomingTransaction
+from edc.device.sync.exceptions import PendingTransactionError, ProducerError
+from edc.core.bhp_using.exceptions import UsingError, UsingSourceError
 from ..classes import BaseController, ReturnController, BaseDispatchController
 from ..exceptions import (DispatchError, AlreadyDispatched, DispatchControllerNotReady,
                           DispatchItemError, AlreadyDispatchedContainer)

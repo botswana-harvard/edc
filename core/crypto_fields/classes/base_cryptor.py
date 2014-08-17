@@ -1,4 +1,4 @@
-from core.bhp_string.classes import StringHelper
+from edc.core.bhp_string.classes import StringHelper
 
 
 class BaseCryptor(StringHelper):

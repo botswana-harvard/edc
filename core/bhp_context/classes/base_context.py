@@ -1,7 +1,7 @@
 import socket
 import copy
 from django.conf import settings
-from core.bhp_common.utils import os_variables
+from edc.core.bhp_common.utils import os_variables
 
 
 class BaseContext(object):

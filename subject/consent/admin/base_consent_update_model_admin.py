@@ -1,5 +1,5 @@
-from base.modeladmin.admin import BaseModelAdmin
-from subject.consent.models import BaseConsent
+from edc.base.modeladmin.admin import BaseModelAdmin
+from edc.subject.consent.models import BaseConsent
 
 
 class BaseConsentUpdateModelAdmin(BaseModelAdmin):

@@ -1,13 +1,13 @@
 from datetime import datetime
 from django.test import TestCase
 from django.contrib.auth.models import User
-from core.bhp_variables.tests.factories import StudySiteFactory
-from core.bhp_content_type_map.models import ContentTypeMap
-from core.bhp_content_type_map.classes import ContentTypeMapHelper
-from core.bhp_variables.tests.factories import StudySpecificFactory
-from subject.lab_tracker.classes import site_lab_tracker
-from subject.visit_schedule.tests.factories import VisitDefinitionFactory
-from subject.registration.tests.factories import RegisteredSubjectFactory
+from edc.core.bhp_variables.tests.factories import StudySiteFactory
+from edc.core.bhp_content_type_map.models import ContentTypeMap
+from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
+from edc.core.bhp_variables.tests.factories import StudySpecificFactory
+from edc.subject.lab_tracker.classes import site_lab_tracker
+from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
+from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from .factories import AppointmentFactory
 
 
