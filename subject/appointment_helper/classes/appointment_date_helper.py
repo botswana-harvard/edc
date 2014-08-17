@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from django.db.models import get_model
 
-from apps.app_configuration.models import GlobalConfiguration
+from edc.apps.app_configuration.models import GlobalConfiguration
 from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.visit_schedule.models import VisitDefinition
 
