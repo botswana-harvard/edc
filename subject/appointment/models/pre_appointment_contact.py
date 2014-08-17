@@ -1,6 +1,6 @@
 from django.db import models
-from audit.audit_trail import AuditTrail
-from subject.contact.models import BaseContactLogItem
+from edc.audit.audit_trail import AuditTrail
+from edc.subject.contact.models import BaseContactLogItem
 from ..models import Appointment
 
 
@@ -11,7 +11,7 @@ class PreAppointmentContact(BaseContactLogItem):
     is_confirmed = models.BooleanField(
         verbose_name='Appointment confirmed',
         default=False,
-        )
+    )
 
     history = AuditTrail()
 

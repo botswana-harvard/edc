@@ -1,11 +1,14 @@
 import logging
 import copy
+
 from datetime import datetime
-from django.db.models import get_model
-from django.core.exceptions import ImproperlyConfigured
+
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+from django.db.models import get_model
 from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
+
 from .helpers import TrackerNamedTpl
 from .history_updater import HistoryUpdater
 
@@ -27,8 +30,8 @@ class Controller(object):
 
     .. code-block:: python
 
-        from subject.lab_tracker.classes import site_lab_tracker
-        from subject.lab_tracker.classes import HivLabTracker
+        from edc.subject.lab_tracker.classes import site_lab_tracker
+        from edc.subject.lab_tracker.classes import HivLabTracker
         from models import HivTestReview, HivResult
 
 
@@ -64,7 +67,7 @@ class Controller(object):
             raise AlreadyRegistered('A lab_tracker with subject_type=={0} and group_name=={1} is already registered. Cannot register {2}.'.format(lab_tracker_cls.subject_type, lab_tracker_cls.group_name, lab_tracker_cls))
         if 'subject_type' not in dir(lab_tracker_cls):
             raise ImproperlyConfigured('Missing class attribute \'subject_type\'. See tracker {0}.'.format(lab_tracker_cls))
-        if not 'SUBJECT_TYPES' in dir(settings):
+        if 'SUBJECT_TYPES' not in dir(settings):
             raise ImproperlyConfigured('Missing settings attribute SUBJECT_TYPES.')
         if lab_tracker_inst.get_subject_type() not in settings.SUBJECT_TYPES and not lab_tracker_inst.get_subject_type() == 'test_subject_type':
             raise ImproperlyConfigured('Class attribute \'subject_type\' must be a valid subject type. Got {0}. Must be one of {1}. See tracker {2}'.format(lab_tracker_inst.get_subject_type(), settings.SUBJECT_TYPES, lab_tracker_cls))
@@ -198,22 +201,22 @@ class Controller(object):
 
     def get_value(self, group_name, subject_identifier, subject_type, value_datetime=None):
         """Returns the result value or a tuple with the result value, if default, in this LabTracker group for this subject.
- 
+
         Searches thru the registry to find a class that can be used to search for the value..
- 
+
             Args:
                 * group_name: group name as set on the LabTracker class declaration
                 * subject_identifier: a valid subject identifier
                 * value_datetime: a valid datetim
- 
+
         .. note:: If a default value is returned, the result is a tuple.
- 
+
        This method will be called from any class that needs the value being tracked. For example,
        :class:`ClinicGradeFlag` needs to know the HIV Status of a subject at the time a sample
        was drawn in order to grade a test result.
- 
+
        .. seealso:: :func:`lab_clinic_reference.classes.ClinicGradeFlag.get_hiv_status`.
- 
+
         """
         self.confirm_autodiscovered()
         value = None

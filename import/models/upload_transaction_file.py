@@ -4,9 +4,9 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
 
-from base.model.models import BaseModel
-from device.sync.classes import DeserializeFromTransaction
-from device.sync.models import IncomingTransaction
+from edc.base.model.models import BaseModel
+from edc.device.sync.classes import DeserializeFromTransaction
+from edc.device.sync.models import IncomingTransaction
 from .upload_skip_days import UploadSkipDays
 
 

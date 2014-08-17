@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.db.models import get_app, get_models
 from django.dispatch import receiver
-from core.bhp_content_type_map.models import ContentTypeMap
+from edc.core.bhp_content_type_map.models import ContentTypeMap
 from ..models import BaseConsent, BaseConsentedUuidModel
 from .consent_catalogue import ConsentCatalogue
 from .attached_model import AttachedModel

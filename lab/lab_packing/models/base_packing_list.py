@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import models
-from audit.audit_trail import AuditTrail
-from device.sync.models import BaseSyncUuidModel
+from edc.audit.audit_trail import AuditTrail
+from edc.device.sync.models import BaseSyncUuidModel
 
 
 class BasePackingList(BaseSyncUuidModel):

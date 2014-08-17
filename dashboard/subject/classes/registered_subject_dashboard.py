@@ -9,27 +9,27 @@ from django.db.models import TextField, Count
 from django.template.loader import render_to_string
 
 from apps.app_configuration.models.global_configuration import GlobalConfiguration
-from constants import NEW, NOT_REQUIRED
-from core.bhp_common.utils import convert_from_camel
-from core.bhp_data_manager.models import ActionItem
-from core.crypto_fields.fields import EncryptedTextField
-from dashboard.base.classes import Dashboard
-from entry_meta_data.helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
-from lab.lab_clinic_api.classes import EdcLabResults
-from lab.lab_packing.models import BasePackingList
-from lab.lab_requisition.models import BaseBaseRequisition
-from subject.appointment.constants import IN_PROGRESS
-from subject.appointment.models import Appointment
-from subject.lab_tracker.classes import site_lab_tracker
-from subject.locator.models import BaseLocator
-from subject.registration.models import RegisteredSubject
-from subject.subject_config.models import SubjectConfiguration
-from subject.subject_summary.models import Link
-from subject.visit_schedule.classes import MembershipFormHelper
-from subject.visit_schedule.exceptions import MembershipFormError
-from subject.visit_schedule.models import MembershipForm
-from subject.visit_tracking.models import BaseVisitTracking
-from utils.collections import flatten
+from edc.constants import NEW, NOT_REQUIRED
+from edc.core.bhp_common.utils import convert_from_camel
+from edc.core.bhp_data_manager.models import ActionItem
+from edc.core.crypto_fields.fields import EncryptedTextField
+from edc.dashboard.base.classes import Dashboard
+from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
+from edc.lab.lab_clinic_api.classes import EdcLabResults
+from edc.lab.lab_packing.models import BasePackingList
+from edc.lab.lab_requisition.models import BaseBaseRequisition
+from edc.subject.appointment.constants import IN_PROGRESS
+from edc.subject.appointment.models import Appointment
+from edc.subject.lab_tracker.classes import site_lab_tracker
+from edc.subject.locator.models import BaseLocator
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.subject_config.models import SubjectConfiguration
+from edc.subject.subject_summary.models import Link
+from edc.subject.visit_schedule.classes import MembershipFormHelper
+from edc.subject.visit_schedule.exceptions import MembershipFormError
+from edc.subject.visit_schedule.models import MembershipForm
+from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc.utils.collections import flatten
 
 from .scheduled_entry_context import ScheduledEntryContext
 from .requisition_context import RequisitionContext

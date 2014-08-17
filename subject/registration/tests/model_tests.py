@@ -3,8 +3,8 @@ import re
 from django.test import TestCase
 from django.conf import settings
 
-from core.identifier.exceptions import IdentifierError
-from testing.models import TestConsent
+from edc.core.identifier.exceptions import IdentifierError
+from edc.testing.models import TestConsent
 
 from ..models import RegisteredSubject
 
@@ -14,7 +14,7 @@ from .factories import RegisteredSubjectFactory
 class ModelTests(TestCase):
 
     def setUp(self):
-        from testing.tests.factories import TestConsentFactory
+        from edc.testing.tests.factories import TestConsentFactory
         self.test_consent_factory = TestConsentFactory
         self.create_study_variables()
 

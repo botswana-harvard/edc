@@ -7,7 +7,7 @@ The :class:`consent_helper.ConsentHelper` class provides methods to help manage 
 It may be subclassed at the protocol module to override :func:`clean_versioned_field` to add more detailed
 data checks for versioned fields than the default. For example, from mpepu_maternal.classes::
 
-    from subject.consent.classes import ConsentHelper
+    from edc.subject.consent.classes import ConsentHelper
     
     class MaternalEligibilityConsentHelper(ConsentHelper):
         def clean_versioned_field(self, field_value, field, start_datetime, consent_version):

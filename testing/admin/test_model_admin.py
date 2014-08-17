@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from apps.admin_supplemental_fields.classes import SupplementalFields
-from base.modeladmin.admin import BaseModelAdmin
+from edc.base.modeladmin.admin import BaseModelAdmin
 
 from ..forms import TestModelForm
 from ..models import TestModel, TestM2m, TestForeignKey

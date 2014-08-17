@@ -1,5 +1,5 @@
 from django.contrib import admin
-from base.modeladmin.admin import BaseModelAdmin, BaseTabularInline
+from edc.base.modeladmin.admin import BaseModelAdmin, BaseTabularInline
 from ..models import AttachedModel
 
 

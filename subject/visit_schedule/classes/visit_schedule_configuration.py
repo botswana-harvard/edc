@@ -3,7 +3,7 @@ from collections import OrderedDict, namedtuple
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 
-from core.bhp_content_type_map.models import ContentTypeMap
+from edc.core.bhp_content_type_map.models import ContentTypeMap
 
 EntryTuple = namedtuple('EntryTuple', 'order app_label model_name default_entry_status additional')
 MembershipFormTuple = namedtuple('MembershipFormTuple', 'name model visible')
@@ -72,7 +72,7 @@ class VisitScheduleConfiguration(object):
                                                'refers to model {0}.{1} which does not exist.'.format(requisition_item.app_label, requisition_item.model_name))
 
     def sync_content_type_map(self):
-        from core.bhp_content_type_map.classes import ContentTypeMapHelper
+        from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
         content_type_map_helper = ContentTypeMapHelper()
         content_type_map_helper.populate()
         content_type_map_helper.sync()
@@ -80,8 +80,8 @@ class VisitScheduleConfiguration(object):
     def rebuild(self):
         """Rebuild, WARNING which DELETES meta data."""
         from ..models import MembershipForm, ScheduleGroup, VisitDefinition
-        from subject.entry.models import Entry
-        from subject.appointment.models import Appointment
+        from edc.subject.entry.models import Entry
+        from edc.subject.appointment.models import Appointment
 
         self.sync_content_type_map()  # This will be required to be properly synced when creating entries.
 
@@ -100,7 +100,7 @@ class VisitScheduleConfiguration(object):
     def build(self):
         """Builds and / or updates the visit schedule models."""
         from ..models import MembershipForm, ScheduleGroup, VisitDefinition
-        from subject.entry.models import Entry, LabEntry, RequisitionPanel
+        from edc.subject.entry.models import Entry, LabEntry, RequisitionPanel
         self.sync_content_type_map()  # This will be required to be properly synced when creating entries.
         for membership_form in self.membership_forms.itervalues():
             if not MembershipForm.objects.filter(category=membership_form.name):

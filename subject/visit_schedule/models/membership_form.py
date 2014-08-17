@@ -2,8 +2,8 @@ from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from base.model.models import BaseUuidModel
-from core.bhp_content_type_map.models import ContentTypeMap
+from edc.base.model.models import BaseUuidModel
+from edc.core.bhp_content_type_map.models import ContentTypeMap
 
 from ..managers import MembershipFormManager
 
@@ -42,7 +42,7 @@ class MembershipForm(BaseUuidModel):
         if not self.model_name:
             self.model_name = self.content_type_map.model
         # get the model class
-        from subject.appointment_helper.models import BaseAppointmentMixin
+        from edc.subject.appointment_helper.models import BaseAppointmentMixin
         cls = self.content_type_map.model_class()
         # inspect for registered subject attribute
         if not 'registered_subject' in dir(cls):

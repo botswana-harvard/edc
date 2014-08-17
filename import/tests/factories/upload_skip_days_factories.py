@@ -1,6 +1,6 @@
 from datetime import date
 import factory
-from base.model.tests.factories import BaseModelFactory
+from edc.base.model.tests.factories import BaseModelFactory
 from ...models import UploadSkipDays
 
 class UploadSkipDaysFactory(BaseModelFactory):

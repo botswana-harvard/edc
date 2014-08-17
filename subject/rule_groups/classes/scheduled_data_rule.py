@@ -1,6 +1,3 @@
-# from entry_meta_data.helpers import ScheduledEntryMetaDataHelper
-# from entry_meta_data.models import ScheduledEntryMetaData
-
 from .base_rule import BaseRule
 
 
@@ -36,8 +33,8 @@ class ScheduledDataRule(BaseRule):
     """
 
     def __init__(self, *args, **kwargs):
-        from entry_meta_data.helpers import ScheduledEntryMetaDataHelper
-        from entry_meta_data.models import ScheduledEntryMetaData
+        from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper
+        from edc.entry_meta_data.models import ScheduledEntryMetaData
         super(ScheduledDataRule, self).__init__(*args, **kwargs)
         self.entry_class = ScheduledEntryMetaDataHelper
         self.meta_data_model = ScheduledEntryMetaData

@@ -1,14 +1,14 @@
 from django.test import TestCase
-from subject.registration.models import RegisteredSubject
-from testing.forms import TestSubjectUuidModelForm
-from testing.tests.factories import TestM2mFactory, TestForeignKeyFactory
+from edc.subject.registration.models import RegisteredSubject
+from edc.testing.forms import TestSubjectUuidModelForm
+from edc.testing.tests.factories import TestM2mFactory, TestForeignKeyFactory
 from .base_methods import BaseMethods
 
 
 class FormsTests(TestCase, BaseMethods):
 
     def setUp(self):
-        from testing.tests.factories import TestConsentFactory
+        from edc.testing.tests.factories import TestConsentFactory
         self.test_consent_factory = TestConsentFactory
         self.create_study_variables()
 

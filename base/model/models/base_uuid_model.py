@@ -10,11 +10,11 @@ class BaseUuidModel(BaseModel):
     id = UUIDAutoField(
         primary_key=True,
         help_text="system field. uuid primary key."
-        )
+    )
 
     revision = RevisionField(
         help_text="system field. Git repository branch:commit."
-        )
+    )
 
     class Meta:
         abstract = True

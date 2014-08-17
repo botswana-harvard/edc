@@ -1,13 +1,13 @@
 from django.db import models
 
-from base.model.fields import IdentityTypeField
-from core.crypto_fields.fields import EncryptedIdentityField
-from subject.appointment_helper.models import BaseAppointmentMixin
-from subject.consent.managers import BaseConsentManager
-from subject.consent.mixins import ReviewAndScoredUnderstandingFieldsMixin
-from subject.consent.mixins.bw import IdentityFieldsMixin
-from subject.consent.models import BaseConsent
-from subject.registration.models import RegisteredSubject
+from edc.base.model.fields import IdentityTypeField
+from edc.core.crypto_fields.fields import EncryptedIdentityField
+from edc.subject.appointment_helper.models import BaseAppointmentMixin
+from edc.subject.consent.managers import BaseConsentManager
+from edc.subject.consent.mixins import ReviewAndScoredUnderstandingFieldsMixin
+from edc.subject.consent.mixins.bw import IdentityFieldsMixin
+from edc.subject.consent.models import BaseConsent
+from edc.subject.registration.models import RegisteredSubject
 
 from .test_consent_history import TestConsentHistory
 

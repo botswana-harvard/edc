@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext as _
-from base.model.models import BaseModel
+from edc.base.model.models import BaseModel
 
 
 class Netbook(BaseModel):

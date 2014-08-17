@@ -1,4 +1,4 @@
-from device.sync.models import IncomingTransaction, OutgoingTransaction
+from edc.device.sync.models import IncomingTransaction, OutgoingTransaction
 
 
 def out_to_incoming(self):

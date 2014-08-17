@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 from django.db.models import get_model
 
 from apps.app_configuration.models import GlobalConfiguration
-from subject.visit_schedule.classes import WindowPeriod
-from subject.visit_schedule.models import VisitDefinition
+from edc.subject.visit_schedule.classes import WindowPeriod
+from edc.subject.visit_schedule.models import VisitDefinition
 
 
 class AppointmentDateHelper(object):
@@ -115,7 +115,7 @@ class AppointmentDateHelper(object):
 
     def _move_on_appt_max_exceeded(self, original_appt_datetime, site, appointments_per_day_max=None, appointments_days_formard=None):
         """Moves appointment date to another date if the appointments_per_day_max is exceeded."""
-        from subject.appointment.models import Appointment
+        from edc.subject.appointment.models import Appointment
         appt_datetime = copy.deepcopy(original_appt_datetime)
         if not appointments_per_day_max:
             appointments_per_day_max = self.appointments_per_day_max

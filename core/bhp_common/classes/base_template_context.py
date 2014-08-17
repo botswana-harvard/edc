@@ -1,4 +1,5 @@
 from django.conf import settings
+
 from ..utils import os_variables
 
 
@@ -16,9 +17,9 @@ class BaseContext(dict):
             'os_variables': os_variables,
             'sql': "",
             'database': settings.DATABASES['default'],
-            }
+        }
         self._context.update(**defaults)
-        #section_name, for example 'clinic', 'lab', 'admin', 'surveys' comes as a parameter from the Url
+        # section_name, for example 'clinic', 'lab', 'admin', 'surveys' comes as a parameter from the Url
         if kwargs.get('section_name') is None:
             raise TypeError('BaseSearcher requires keyword/value for key \'section_name\'. None given.')
         else:

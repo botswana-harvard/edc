@@ -1,4 +1,4 @@
-from base.model.models import BaseListModel
+from edc.base.model.models import BaseListModel
 
 
 class DiagnosisSite (BaseListModel):

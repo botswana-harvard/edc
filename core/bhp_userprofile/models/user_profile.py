@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from base.model.fields import InitialsField
+from edc.base.model.fields import InitialsField
 from ...bhp_userprofile.choices import SALUTATION
 
 #if not 'AUTH_PROFILE_MODULE' in dir(settings):

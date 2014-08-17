@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import models
-from base.model.models import BaseUuidModel
-from device.sync.models import Producer
+from edc.base.model.models import BaseUuidModel
+from edc.device.sync.models import Producer
 
 
 class PrepareHistory(BaseUuidModel):

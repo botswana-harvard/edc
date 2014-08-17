@@ -1,10 +1,14 @@
 from datetime import datetime
+
 from django.db import models
 from django.db.models import get_model
 from django.conf import settings
+
+from edc.device.device.classes import Device
+
 from ..classes import DeserializeFromTransaction
+
 from .base_transaction import BaseTransaction
-from device.device.classes import Device
 
 
 class MiddleManTransaction(BaseTransaction):
@@ -14,12 +18,12 @@ class MiddleManTransaction(BaseTransaction):
     is_consumed_middleman = models.BooleanField(
         default=False,
         db_index=True,
-        )
+    )
 
     is_consumed_server = models.BooleanField(
         default=False,
         db_index=True,
-        )
+    )
 
     def save(self, *args, **kwargs):
         if self.is_consumed_server and not self.consumed_datetime:
@@ -37,7 +41,7 @@ class MiddleManTransaction(BaseTransaction):
         if model and 'save_to_inspector' in dir(model):
             fields = model_dict.get('fields')
             instance_pk = model_dict.get('pk')
-            model().save_to_inspector(fields, instance_pk )
+            model().save_to_inspector(fields, instance_pk)
 
     objects = models.Manager()
 

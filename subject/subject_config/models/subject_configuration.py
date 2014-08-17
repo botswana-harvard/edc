@@ -1,8 +1,8 @@
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from device.sync.models import BaseSyncUuidModel
-from subject.appointment.choices import APPT_STATUS
-from subject.appointment.constants import NEW
+from edc.device.sync.models import BaseSyncUuidModel
+from edc.subject.appointment.choices import APPT_STATUS
+from edc.subject.appointment.constants import NEW
 
 
 class SubjectConfiguration(BaseSyncUuidModel):

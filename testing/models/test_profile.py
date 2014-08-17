@@ -1,7 +1,7 @@
 from django.db import models
 
-from lab.lab_profile.models import BaseProfile
-from lab.lab_profile.models import BaseProfileItem
+from edc.lab.lab_profile.models import BaseProfile
+from edc.lab.lab_profile.models import BaseProfileItem
 
 from .test_aliquot_type import TestAliquotType
 

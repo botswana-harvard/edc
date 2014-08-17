@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from base.modeladmin.admin import BaseModelAdmin
+from edc.base.modeladmin.admin import BaseModelAdmin
 
+from ..admin import SupplementalModelAdminMixin
 from ..classes import SupplementalFields
 from ..forms import TestSupplementalForm
 from ..models import TestSupplemental
-from ..admin import SupplementalModelAdminMixin
 
 
 class TestSupplementalAdmin(SupplementalModelAdminMixin, BaseModelAdmin):

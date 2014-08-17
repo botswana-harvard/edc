@@ -1,9 +1,9 @@
 from datetime import datetime
 from django.db import models
-from base.model.fields import OtherCharField
-from choices.common import YES_NO
-from base.model.validators import date_not_before_study_start, date_not_future
-from subject.registration.models import BaseRegisteredSubjectModel
+from edc.base.model.fields import OtherCharField
+from edc.choices.common import YES_NO
+from edc.base.model.validators import date_not_before_study_start, date_not_future
+from edc.subject.registration.models import BaseRegisteredSubjectModel
 from ..managers import DeathManager
 from .death_list import DeathCauseInfo, DeathCauseCategory, DeathReasonHospitalized
 

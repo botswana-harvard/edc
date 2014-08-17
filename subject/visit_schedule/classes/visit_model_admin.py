@@ -1,6 +1,6 @@
 # from django.core.urlresolvers import reverse
-# from core.bhp_common.models import MyModelAdmin
-# from entry_meta_data.models import ScheduledEntryMetaData 
+# from edc.core.bhp_common.models import MyModelAdmin
+# from edc.entry_meta_data.models import ScheduledEntryMetaData 
 # 
 # # this is not used, see bhp_appointment
 # 

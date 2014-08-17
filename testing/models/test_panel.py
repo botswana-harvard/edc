@@ -1,6 +1,6 @@
 from django.db import models
-from lab.lab_clinic_api.choices import PANEL_TYPE
-from lab.lab_clinic_api.models import TestCode
+from edc.lab.lab_clinic_api.choices import PANEL_TYPE
+from edc.lab.lab_clinic_api.models import TestCode
 
 
 from lis.specimen.lab_panel.models import BasePanel

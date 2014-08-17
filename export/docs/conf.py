@@ -252,7 +252,7 @@ texinfo_documents = [
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
 
-from utils.sphinx_extensions import process_model_docstring, process_model_verbose_name_docstring
+from edc.utils.sphinx_extensions import process_model_docstring, process_model_verbose_name_docstring
 
 
 def setup(app):

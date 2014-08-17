@@ -1,4 +1,4 @@
-from base.modeladmin.admin import BaseTabularInline
+from edc.base.modeladmin.admin import BaseTabularInline
 
 
 class BaseConsentUpdateInlineAdmin(BaseTabularInline):

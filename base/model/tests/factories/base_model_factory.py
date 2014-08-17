@@ -1,4 +1,4 @@
-from testing.factory.factories import BaseFactory
+from edc.testing.factory.factories import BaseFactory
 
 
 class BaseModelFactory(BaseFactory):

@@ -1,5 +1,5 @@
-from subject.registration.admin import BaseRegisteredSubjectModelAdmin
-from subject.appointment.models import Appointment
+from edc.subject.appointment.models import Appointment
+from edc.subject.registration.admin import BaseRegisteredSubjectModelAdmin
 
 
 class BaseOffStudyModelAdmin(BaseRegisteredSubjectModelAdmin):
@@ -12,6 +12,6 @@ class BaseOffStudyModelAdmin(BaseRegisteredSubjectModelAdmin):
             registered_subject=obj.registered_subject,
             appt_datetime__gt=obj.offstudy_date,
             **{visit_model_field: True}
-            ).delete()
+        ).delete()
 
         super(BaseOffStudyModelAdmin, self).save_model(request, obj, form, change)

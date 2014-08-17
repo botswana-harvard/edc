@@ -3,4 +3,4 @@ PARAM_TYPES = (
     ('datetimefield', 'DateTimeField'),
     ('integerfield', 'IntegerField'),
     ('doublefield', 'DoubleField'),
-    )
+)

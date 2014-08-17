@@ -1,4 +1,4 @@
-from base.model.tests.factories import BaseModelFactory
+from edc.base.model.tests.factories import BaseModelFactory
 from ...models import BaseReport
 
 class BaseReportFactory(BaseModelFactory):

@@ -1,7 +1,7 @@
 from django.db.models import get_model
-from device.sync.exceptions import ProducerError
-from device.sync.models import OutgoingTransaction
-from device.sync.classes import Consumer
+from edc.device.sync.exceptions import ProducerError
+from edc.device.sync.models import OutgoingTransaction
+from edc.device.sync.classes import Consumer
 from ..exceptions import (AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError,
                           DispatchModelError, DispatchControllerNotReady, DispatchItemError)
 from ..models import TestItem, DispatchItemRegister, DispatchContainerRegister, TestContainer

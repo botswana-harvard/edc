@@ -1,5 +1,5 @@
 import factory
-from base.model.tests.factories import BaseUuidModelFactory
+from edc.base.model.tests.factories import BaseUuidModelFactory
 from ...models import ScheduleGroup
 
 starting_seq_num = 1000

@@ -3,7 +3,8 @@ from django.utils.translation import ugettext as _
 from django.db import models
 from django.db.models import CharField, DateTimeField, DecimalField
 from django.forms import RegexField
-from choices.common import DATE_ESTIMATED, IDENTITY_TYPE
+
+from edc.choices.common import DATE_ESTIMATED, IDENTITY_TYPE
 
 
 class TransCharField(CharField):
@@ -65,7 +66,7 @@ class DobField(DateTimeField):
         kwargs.setdefault('verbose_name', _('Date of Birth'))
         kwargs.setdefault('editable', True)
         kwargs.setdefault('help_text', _('Format is YYYY-MM-DD'))
-        #self.validators.append(datetime_is_not_future)
+        # self.validators.append(datetime_is_not_future)
         DateTimeField.__init__(self, *args, **kwargs)
 
     def get_internal_type(self):
@@ -200,7 +201,7 @@ class WeightField(DecimalField):
 
 
 class OmangField(CharField):
-# FIXME: get rid of this if it is not encrypted!!
+    # FIXME: get rid of this if it is not encrypted!!
     """See EncryptedIdentityField!
         field for omang. If getting an ID that may alos be something other than an Omang,
         use IdentityField along with IdentityTypeField
@@ -249,7 +250,7 @@ class IdentityTypeField(CharField):
         ...
 
         identity = models.CharField(
-            verbose_name=_("Identity number (OMANG, etc)"), 
+            verbose_name=_("Identity number (OMANG, etc)"),
             max_length=25,
             unique=True,
             help_text=_("Use Omang, Passport number, driver's license number or Omang receipt number")
@@ -270,7 +271,7 @@ class IdentityTypeField(CharField):
         kwargs.setdefault('editable', True)
         kwargs.setdefault('max_length', 15)
         kwargs.setdefault('choices', IDENTITY_TYPE)
-        #kwargs.setdefault('help_text', _('Format is 9999[12]9999'))
+        # kwargs.setdefault('help_text', _('Format is 9999[12]9999'))
         CharField.__init__(self, *args, **kwargs)
 
     def get_internal_type(self):

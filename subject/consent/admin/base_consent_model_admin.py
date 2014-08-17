@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from base.modeladmin.admin import BaseModelAdmin
+from edc.base.modeladmin.admin import BaseModelAdmin
 
 from ..actions import flag_as_verified_against_paper, unflag_as_verified_against_paper
 from ..models.consent_catalogue import ConsentCatalogue

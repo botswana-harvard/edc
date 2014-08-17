@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.serializers.base import SerializationError
-from subject.visit_tracking.models import BaseVisitTracking
+from edc.subject.visit_tracking.models import BaseVisitTracking
 from ..models import BaseRequisition
 
 

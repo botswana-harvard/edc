@@ -1,4 +1,4 @@
-from base.model.tests.factories import BaseUuidModelFactory
+from edc.base.model.tests.factories import BaseUuidModelFactory
 
 from ...models import TestScheduledModel, TestScheduledModel1, TestScheduledModel2, TestScheduledModel3
 

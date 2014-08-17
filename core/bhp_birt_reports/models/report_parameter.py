@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from base.model.models import BaseModel
+from edc.base.model.models import BaseModel
 
 from ..choices import PARAM_TYPES
 from ..models import BaseReport

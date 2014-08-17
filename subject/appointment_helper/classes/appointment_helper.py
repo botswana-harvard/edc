@@ -1,13 +1,13 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model, Max
 
-from subject.appointment.exceptions import AppointmentStatusError
+from edc.subject.appointment.exceptions import AppointmentStatusError
 from apps.app_configuration.models import GlobalConfiguration
-from subject.subject_config.models import SubjectConfiguration
-from subject.visit_schedule.models import VisitDefinition, ScheduleGroup
+from edc.subject.subject_config.models import SubjectConfiguration
+from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 
-from subject.appointment.constants import IN_PROGRESS, DONE, INCOMPLETE, NEW, CANCELLED
-from entry_meta_data.helpers import ScheduledEntryMetaDataHelper
+from edc.subject.appointment.constants import IN_PROGRESS, DONE, INCOMPLETE, NEW, CANCELLED
+from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper
 
 from .appointment_date_helper import AppointmentDateHelper
 

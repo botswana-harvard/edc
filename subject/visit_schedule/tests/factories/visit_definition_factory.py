@@ -1,6 +1,6 @@
 import factory
-from base.model.tests.factories import BaseUuidModelFactory
-from core.bhp_content_type_map.tests.factories import ContentTypeMapFactory
+from edc.base.model.tests.factories import BaseUuidModelFactory
+from edc.core.bhp_content_type_map.tests.factories import ContentTypeMapFactory
 from ...models import VisitDefinition
 
 starting_seq_num = 1000

@@ -1,7 +1,5 @@
-import re, socket, sys
+import socket
 import syslog
-from django import forms
-from django.core.exceptions import ValidationError
 
 
 def os_variables():

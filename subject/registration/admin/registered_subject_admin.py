@@ -1,5 +1,5 @@
 from django.contrib import admin
-from base.modeladmin.admin import BaseModelAdmin
+from edc.base.modeladmin.admin import BaseModelAdmin
 from ..models import RegisteredSubject
 from ..forms import RegisteredSubjectForm
 

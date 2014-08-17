@@ -1,9 +1,14 @@
 import logging
+
 from datetime import datetime
+
 from django.db.models import ForeignKey, OneToOneField, get_model
 from django.core.exceptions import ImproperlyConfigured
-from base.model.models import BaseModel
+
+from edc.base.model.models import BaseModel
+
 from ..models import HistoryModel, DefaultValueLog
+
 from .helpers import TrackerNamedTpl
 from .history_updater import HistoryUpdater
 
@@ -141,7 +146,7 @@ class LabTracker(object):
 
     def get_history(self, value_datetime, order_desc=None):
         """Returns an ordered HistoryModel queryset for this subject filtered for records on or before value_datetime."""
-        if order_desc == None:
+        if not order_desc:
             order_desc = True
         self.set_value_datetime(value_datetime)
         if not self._history or self.is_dirty():
@@ -279,7 +284,7 @@ class LabTracker(object):
         return None
 
     def _set_history_query_options(self):
-        from subject.visit_tracking.models import BaseVisitTracking
+        from edc.subject.visit_tracking.models import BaseVisitTracking
         self._history_query_options = {}
         for tracker in self.get_trackers():
             query_string = None
@@ -370,7 +375,7 @@ class LabTracker(object):
                 subject_type=self.get_subject_type(),
                 group_name=self.get_group_name(),
                 value_datetime__lte=self.get_value_datetime()
-                ).exclude(value=self._get_default_value()).order_by('-value_datetime')[0]
+            ).exclude(value=self._get_default_value()).order_by('-value_datetime')[0]
         self._set_is_dirty(False)
 
     def _get_history_inst(self):

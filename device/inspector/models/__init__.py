@@ -1,1 +1,1 @@
-from base_inspector import BaseInspector
+from .base_inspector import BaseInspector

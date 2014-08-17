@@ -1,7 +1,7 @@
 from django.db import models
-from subject.consent.models import BaseConsentedUuidModel
-from choices.common import YES_NO
-from core.crypto_fields.fields import EncryptedTextField
+from edc.subject.consent.models import BaseConsentedUuidModel
+from edc.choices.common import YES_NO
+from edc.core.crypto_fields.fields import EncryptedTextField
 
 
 class BaseContactLogItem(BaseConsentedUuidModel):

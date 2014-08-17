@@ -1,17 +1,17 @@
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
-from subject.registration.models import RegisteredSubject
-from subject.rule_groups.classes import site_rule_groups
-from subject.visit_tracking.models import BaseVisitTracking
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.rule_groups.classes import site_rule_groups
+from edc.subject.visit_tracking.models import BaseVisitTracking
 
-from .scheduled_entry_meta_data import ScheduledEntryMetaData
 from .requisition_meta_data import RequisitionMetaData
+from .scheduled_entry_meta_data import ScheduledEntryMetaData
 
 
 @receiver(post_save, weak=False, dispatch_uid="entry_meta_data_on_post_save")
 def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_fields, **kwargs):
-    from entry_meta_data.helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
+    from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
     if isinstance(instance, BaseVisitTracking):
         scheduled_entry_helper = ScheduledEntryMetaDataHelper(instance.appointment, sender)
         scheduled_entry_helper.add_or_update_for_visit()

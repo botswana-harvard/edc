@@ -1,5 +1,5 @@
-from subject.consent.models import BaseConsentHistory
-from subject.consent.managers import BaseConsentHistoryManager
+from edc.subject.consent.models import BaseConsentHistory
+from edc.subject.consent.managers import BaseConsentHistoryManager
 
 
 class ConsentHistoryManager(BaseConsentHistoryManager):

@@ -1,7 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 
-from subject.entry.models import LabEntry
-from constants import REQUIRED, NOT_REQUIRED, KEYED
+from edc.subject.entry.models import LabEntry
+from edc.constants import REQUIRED, NOT_REQUIRED, KEYED
 
 from ..models import RequisitionMetaData
 

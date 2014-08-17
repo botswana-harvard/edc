@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.admin.widgets import AdminRadioSelect, AdminRadioFieldRenderer
-from base.form.forms import BaseModelForm
-from subject.contact.forms import BaseContactLogItemFormCleaner
+from edc.base.form.forms import BaseModelForm
+from edc.subject.contact.forms import BaseContactLogItemFormCleaner
 from ..models import PreAppointmentContact
 from ..choices import INFO_PROVIDER
 

@@ -6,7 +6,7 @@ from ..exceptions import MapperError
 
 
 def plot_item_points(request, **kwargs):
-    """Plot items from base selection criteria.
+    """Plot items from edc.base selection criteria.
 
       * Filter points to plot by sending coordinates of a selected ward only to the items.html template.
       * Regions contain sections    """

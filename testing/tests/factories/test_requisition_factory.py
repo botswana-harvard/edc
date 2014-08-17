@@ -1,6 +1,6 @@
 import factory
 
-from lab.lab_requisition.tests.factories import BaseRequisitionFactory
+from edc.lab.lab_requisition.tests.factories import BaseRequisitionFactory
 
 from ...models import TestRequisition
 

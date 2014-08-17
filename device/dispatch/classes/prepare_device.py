@@ -7,11 +7,11 @@ from django.db.models import Model, get_model, get_models, get_app
 from django.conf import settings
 from django.db.models import signals
 from lis.base.model.models import BaseLabListModel, BaseLabModel, BaseLabUuidModel
-from core.bhp_common.utils import td_to_string
-from base.model.models import BaseModel
-from device.sync.models import BaseSyncUuidModel
-from base.model.models import BaseUuidModel
-from subject.consent.models.signals import add_models_to_catalogue
+from edc.core.bhp_common.utils import td_to_string
+from edc.base.model.models import BaseModel
+from edc.device.sync.models import BaseSyncUuidModel
+from edc.base.model.models import BaseUuidModel
+from edc.subject.consent.models.signals import add_models_to_catalogue
 from ..exceptions import BackupError, RestoreError
 from .base_prepare_device import BasePrepareDevice
 

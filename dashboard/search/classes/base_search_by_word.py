@@ -1,9 +1,9 @@
 from django.db import models
 from django.db.models import Q
 
-from core.crypto_fields.fields import BaseEncryptedField
-from subject.registration.models import RegisteredSubject
-from subject.consent.models import BaseConsent
+from edc.core.crypto_fields.fields import BaseEncryptedField
+from edc.subject.registration.models import RegisteredSubject
+from edc.subject.consent.models import BaseConsent
 
 from ..exceptions import SearchError
 

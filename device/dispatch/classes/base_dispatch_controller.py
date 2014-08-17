@@ -1,9 +1,9 @@
 import logging
 from django.db.models.query import QuerySet
 from django.db.models import get_models, get_app, get_model
-from lab.lab_requisition.models import BaseRequisition
-from device.sync.models import BaseSyncUuidModel
-from subject.consent.models import BaseConsent
+from edc.lab.lab_requisition.models import BaseRequisition
+from edc.device.sync.models import BaseSyncUuidModel
+from edc.subject.consent.models import BaseConsent
 from ..exceptions import (AlreadyDispatchedItem, AlreadyReturnedController, DispatchError,
                           DispatchContainerError, AlreadyDispatchedContainer, DispatchControllerNotReady, DispatchItemError)
 from ..models import DispatchContainerRegister

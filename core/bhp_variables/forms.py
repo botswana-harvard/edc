@@ -1,7 +1,7 @@
 import socket
 import re
 from django import forms
-from base.form.forms import BaseModelForm
+from edc.base.form.forms import BaseModelForm
 from .models import StudySpecific
 
 

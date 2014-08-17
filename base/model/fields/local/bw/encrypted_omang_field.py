@@ -2,14 +2,14 @@ import re
 
 from django.forms import ValidationError
 
-from core.crypto_fields.fields import EncryptedIdentityField
+from edc.core.crypto_fields.fields import EncryptedIdentityField
 
 
 class EncryptedOmangField(EncryptedIdentityField):
 
     def validate_with_cleaned_data(self, attname, cleaned_data):
         """ Tests the OMANG, this field validator must have access to the keys identity_type, gender """
-        if attname  in cleaned_data:
+        if attname in cleaned_data:
             value = cleaned_data.get(attname, None)
             if value:
                 # check for required keys from cleaned_data
@@ -30,5 +30,5 @@ class EncryptedOmangField(EncryptedIdentityField):
                             str_value = "%s" % (value)
                             pattern = {'M': '^[0-9]{4}[1]{1}[0-9]{4}$', 'F': '^[0-9]{4}[2]{1}[0-9]{4}$'}
                             p = re.compile(pattern[gender])
-                            if p.match(str_value) == None:
+                            if not p.match(str_value):
                                 raise ValidationError(u'Invalid Omang number format and/or invalid Omang format for gender (%s). You entered %s.' % (gender, str_value))

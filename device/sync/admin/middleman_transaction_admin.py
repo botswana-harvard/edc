@@ -1,5 +1,5 @@
 from django.contrib import admin
-from base.modeladmin.admin import BaseModelAdmin
+from edc.base.modeladmin.admin import BaseModelAdmin
 from ..models import MiddleManTransaction
 from ..actions import reset_outgoing_transaction_middle_as_consumed, reset_outgoing_transaction_middle_as_not_consumed, reset_outgoing_transaction_server_as_consumed, reset_outgoing_transaction_server_as_not_consumed
 
