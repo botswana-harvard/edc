@@ -1,8 +1,8 @@
 from django.db import models
-from edc.device.sync.models import BaseSyncUuidModel
+from edc.base.model.models import BaseUuidModel
 
 
-class Holiday(BaseSyncUuidModel):
+class Holiday(BaseUuidModel):
 
     holiday_name = models.CharField(
         max_length=25,
