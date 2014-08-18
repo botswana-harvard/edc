@@ -8,36 +8,33 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Changing field 'ClinicConsent.dob'
-        db.alter_column(u'bhp_registration_registeredsubject', 'dob', self.gf('django.db.models.fields.DateField')(null=True))
 
-        # Changing field 'ClinicConsentAudit.dob'
-        db.alter_column(u'bhp_registration_registeredsubject', 'dob', self.gf('django.db.models.fields.DateField')(null=True))
+        # Changing field 'RegisteredSubject.initials'
+        db.alter_column('bhp_registration_registeredsubject', 'initials', self.gf('django.db.models.fields.CharField')(max_length=78, null=True))
+
+        # Changing field 'RegisteredSubject.initials'
+        db.alter_column('bhp_registration_registeredsubject_audit', 'initials', self.gf('django.db.models.fields.CharField')(max_length=78, null=True))
+
+        # Changing field 'RegisteredSubjectAudit.dob'
+        db.alter_column('bhp_registration_registeredsubject_audit', 'dob', self.gf('django.db.models.fields.DateField')(null=True))
+
+        # Changing field 'RegisteredSubject.dob'
+        db.alter_column('bhp_registration_registeredsubject', 'dob', self.gf('django.db.models.fields.DateField')(null=True))
 
     def backwards(self, orm):
-        pass
-        # Deleting field 'RegisteredSubjectAudit._audit_subject_identifier'
-#         db.delete_column('bhp_registration_registeredsubject_audit', '_audit_subject_identifier')
-# 
-# 
-#         # Changing field 'RegisteredSubjectAudit.dob'
-#         db.alter_column('bhp_registration_registeredsubject_audit', 'dob', self.gf('django.db.models.fields.DateField')(null=True))
-# 
-#         # Changing field 'RegisteredSubjectAudit.initials'
-#         db.alter_column('bhp_registration_registeredsubject_audit', 'initials', self.gf('django.db.models.fields.CharField')(max_length=10, null=True))
-# 
-#         # Changing field 'RegisteredSubject.dob'
-#         db.alter_column('bhp_registration_registeredsubject', 'dob', self.gf('django.db.models.fields.DateField')(null=True))
-# 
-#         # Changing field 'RegisteredSubject.initials'
-#         db.alter_column('bhp_registration_registeredsubject', 'initials', self.gf('django.db.models.fields.CharField')(max_length=10, null=True))
+
+        # Changing field 'RegisteredSubjectAudit.dob'
+        db.alter_column('bhp_registration_registeredsubject_audit', 'dob', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True))
+
+        # Changing field 'RegisteredSubject.dob'
+        db.alter_column('bhp_registration_registeredsubject', 'dob', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True))
 
     models = {
         'bhp_variables.studysite': {
             'Meta': {'ordering': "['site_code']", 'unique_together': "[('site_code', 'site_name')]", 'object_name': 'StudySite'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'silverapple'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'silverapple'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'Tshepisos-MacBook-Pro.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'Tshepisos-MacBook-Pro.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
@@ -50,12 +47,12 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['subject_identifier']", 'unique_together': "(('first_name', 'dob', 'initials'),)", 'object_name': 'RegisteredSubject', 'db_table': "'bhp_registration_registeredsubject'"},
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'dob': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
+            'dob': ('django.db.models.fields.DateField', [], {'null': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
             'gender': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True'}),
             'hiv_status': ('django.db.models.fields.CharField', [], {'max_length': '15', 'null': 'True'}),
-            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'silverapple'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'silverapple'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'Tshepisos-MacBook-Pro.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'Tshepisos-MacBook-Pro.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'identity': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True', 'blank': 'True'}),
             'identity_type': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
@@ -90,12 +87,12 @@ class Migration(SchemaMigration):
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'dob': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
+            'dob': ('django.db.models.fields.DateField', [], {'null': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
             'gender': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True'}),
             'hiv_status': ('django.db.models.fields.CharField', [], {'max_length': '15', 'null': 'True'}),
-            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'silverapple'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'silverapple'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'Tshepisos-MacBook-Pro.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'Tshepisos-MacBook-Pro.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36'}),
             'identity': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True', 'blank': 'True'}),
             'identity_type': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
@@ -125,9 +122,9 @@ class Migration(SchemaMigration):
         'registration.subjectidentifieraudittrail': {
             'Meta': {'ordering': "['-date_allocated']", 'object_name': 'SubjectIdentifierAuditTrail', 'db_table': "'bhp_registration_subjectidentifieraudittrail'"},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'date_allocated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 7, 10, 0, 0)'}),
-            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'silverapple'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'silverapple'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'date_allocated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 8, 6, 0, 0)'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'Tshepisos-MacBook-Pro.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'Tshepisos-MacBook-Pro.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'subject_consent_id': ('django.db.models.fields.CharField', [], {'max_length': '36'}),
