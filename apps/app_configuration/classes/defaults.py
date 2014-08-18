@@ -9,4 +9,4 @@ default_global_configuration = {
         'default_appt_type': 'default',
         'appointments_per_day_max': 30,
         'appointments_days_forward': 8},
-    }
+}

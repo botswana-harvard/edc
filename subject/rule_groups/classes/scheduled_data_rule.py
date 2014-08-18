@@ -1,6 +1,3 @@
-# from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper
-# from edc.entry_meta_data.models import ScheduledEntryMetaData
-
 from .base_rule import BaseRule
 
 

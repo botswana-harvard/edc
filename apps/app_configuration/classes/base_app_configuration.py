@@ -145,7 +145,7 @@ class BaseAppConfiguration(object):
             specifics = StudySpecific.objects.all()
             specifics.update(**self.study_variables_setup)
             for sp in specifics:
-                #This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
+                # This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
                 sp.save()
         if not StudySite.objects.filter(site_code=self.study_site_setup.get('site_code')).exists():
             StudySite.objects.create(**self.study_site_setup)
@@ -164,7 +164,7 @@ class BaseAppConfiguration(object):
                     cups_printer_name=printer_setup.cups_printer_name,
                     cups_server_ip=printer_setup.cups_server_ip,
                     default=printer_setup.default,
-                    )
+                )
         for zpl_template_setup in self.labeling_setup.get('zpl_template', []):
             try:
                 zpl_template = ZplTemplate.objects.get(name=zpl_template_setup.name)
@@ -176,7 +176,7 @@ class BaseAppConfiguration(object):
                     name=zpl_template_setup.name,
                     template=zpl_template_setup.template,
                     default=zpl_template_setup.default,
-                    )
+                )
 
     def update_or_create_consent_catalogue(self):
         """Updates configuration in the :mod:`consent` module."""
@@ -189,7 +189,7 @@ class BaseAppConfiguration(object):
                 catalogues = ConsentCatalogue.objects.filter(**catalogue_setup)
                 catalogues.update(**catalogue_setup)
                 for ct in catalogues:
-                    #This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
+                    # This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
                     ct.save()
             catalogue_setup.update({'content_type_map': content_type_map_string})
 
@@ -248,7 +248,7 @@ class BaseAppConfiguration(object):
                         strip=export_plan.get('strip'),
                         target_path=export_plan.get('target_path'),
                         notification_plan_name=export_plan.get('notification_plan_name'),
-                        )
+                    )
 
     def update_notification_plan_setup(self):
         if self.notification_plan_setup:
@@ -270,6 +270,7 @@ class BaseAppConfiguration(object):
                         body_format=notification_plan.get('body_format'),
                         recipient_list=json.dumps(notification_plan.get('recipient_list')),
                         cc_list=json.dumps(notification_plan.get('cc_list')),
+<<<<<<< HEAD
                         )
 
     def update_holidays_setup(self):
@@ -281,3 +282,6 @@ class BaseAppConfiguration(object):
                 updated_holiday = Holiday.objects.get(holiday_name=holiday)
                 updated_holiday.holiday_date = self.holidays_setup.get(holiday)
                 updated_holiday.save()
+=======
+                    )
+>>>>>>> 8ec552fe22fcbc61d7d82e6212014885ee2fad24

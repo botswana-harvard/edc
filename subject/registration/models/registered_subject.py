@@ -1,16 +1,16 @@
-from django.db import models
+from django.conf import settings
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from django.conf import settings
+from django.db import models
 from django.utils.translation import ugettext as _
+
 from edc.audit.audit_trail import AuditTrail
-from edc.choices.common import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
 from edc.base.model.fields import IdentityTypeField
+from edc.choices.common import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
 from edc.core.bhp_variables.models import StudySite
-from edc.subject.subject.models import BaseSubject
 from edc.core.crypto_fields.fields import EncryptedIdentityField, SaltField
 from edc.core.crypto_fields.utils import mask_encrypted
-from ..managers import RegisteredSubjectManager
+from edc.subject.subject.models import BaseSubject
 
 
 class RegisteredSubject(BaseSubject):
@@ -21,33 +21,34 @@ class RegisteredSubject(BaseSubject):
         blank=True,
         db_index=True,
         unique=True,
-        )
+    )
 
     subject_consent_id = models.CharField(
         max_length=100,
         null=True,
         blank=True,
-        )
+    )
 
     registration_identifier = models.CharField(
         max_length=36,
         null=True,
         blank=True,
-        )
+    )
 
     sid = models.CharField(
         verbose_name="SID",
         max_length=15,
         null=True,
         blank=True,
-        )
+    )
 
-    study_site = models.ForeignKey(StudySite,
+    study_site = models.ForeignKey(
+        StudySite,
         verbose_name='Site',
         help_text="",
         null=True,
         blank=True,
-        )
+    )
 
     relative_identifier = models.CharField(
         verbose_name="Identifier of immediate relation",
@@ -55,12 +56,12 @@ class RegisteredSubject(BaseSubject):
         null=True,
         blank=True,
         help_text="For example, mother's identifier, if available / appropriate"
-        )
+    )
 
     identity = EncryptedIdentityField(
         null=True,
         blank=True,
-        )
+    )
 
     identity_type = IdentityTypeField()
 
@@ -70,52 +71,52 @@ class RegisteredSubject(BaseSubject):
         choices=YES_NO,
         default='?',
         help_text=_("Does the subject agree to have samples stored after the study has ended")
-        )
+    )
 
     hiv_status = models.CharField(
         verbose_name='Hiv status',
         max_length=15,
         choices=POS_NEG_UNKNOWN,
         null=True,
-        )
+    )
     survival_status = models.CharField(
         verbose_name='Survival status',
         max_length=15,
         choices=ALIVE_DEAD_UNKNOWN,
         null=True,
-        )
+    )
 
     screening_datetime = models.DateTimeField(
         null=True,
         blank=True
-        )
+    )
 
     registration_datetime = models.DateTimeField(
         null=True,
         blank=True
-        )
+    )
 
     """ for simplicity, if going straight from screen to rando,
         update both registration date and randomization date """
     randomization_datetime = models.DateTimeField(
         null=True,
         blank=True
-        )
+    )
 
     registration_status = models.CharField(
         verbose_name="Registration status",
         max_length=25,
-        #choices=REGISTRATION_STATUS,
+        # choices=REGISTRATION_STATUS,
         null=True,
         blank=True,
-        )
+    )
 
     comment = models.TextField(
         verbose_name='Comment',
         max_length=250,
         null=True,
         blank=True,
-        )
+    )
 
     salt = SaltField()
 
@@ -151,7 +152,7 @@ class RegisteredSubject(BaseSubject):
         For testing, you can skip these verifications by using 'test_subject_type' as the subject_type."""
         if not settings_attrs:
             settings_attrs = settings
-        if not 'SUBJECT_TYPES' in dir(settings_attrs):
+        if 'SUBJECT_TYPES' not in dir(settings_attrs):
             raise ImproperlyConfigured('Missing settings attribute. Required list SUBJECT_TYPES. e.g SUBJECT_TYPES = [\'maternal\', \'infant\'].')
         if 'MAX_SUBJECTS' in dir(settings_attrs):
             if not isinstance(settings_attrs.MAX_SUBJECTS, dict):
@@ -187,14 +188,14 @@ class RegisteredSubject(BaseSubject):
 
     def dispatch_container_lookup(self, using=None):
         return None
-    
+
     def is_dispatchable_model(self):
         return True
-    
+
     def bypass_for_edit_dispatched_as_item(self):
         # requery myself
         obj = self.__class__.objects.get(pk=self.pk)
-        #dont allow values in these fields to change if dispatched
+        # dont allow values in these fields to change if dispatched
         may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['study_site_id', 'registration_status', 'modified']]
         for k, v in may_not_change_these_fields:
             if k[0] != '_':
@@ -217,9 +218,9 @@ class RegisteredSubject(BaseSubject):
         ret = None
         if self.subject_identifier:
             url = reverse('subject_dashboard_url', kwargs={'dashboard_type': self.subject_type.lower(),
-                                                   'dashboard_id': self.pk,
-                                                   'dashboard_model': 'registered_subject',
-                                                   'show': 'appointments'})
+                                                           'dashboard_id': self.pk,
+                                                           'dashboard_model': 'registered_subject',
+                                                           'show': 'appointments'})
             ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True

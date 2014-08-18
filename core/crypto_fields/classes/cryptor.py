@@ -1,14 +1,17 @@
-import os
 import base64
 import copy
-import sys
 import logging
+import os
+import sys
+
 from M2Crypto import RSA, EVP
-from django.core.exceptions import ImproperlyConfigured
+
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+
 from ..exceptions import EncryptionError, AlgorithmError, EncryptionKeyError, ModeError
 
-from base_cryptor import BaseCryptor
+from .base_cryptor import BaseCryptor
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +27,10 @@ class Cryptor(BaseCryptor):
     RSA_KEY_LENGTH = 2048
     ENC = 1
     DEC = 0
-    #keys folder
     try:
         KEY_PATH = settings.KEY_PATH
     except KeyError:
-        KEY_PATH = ''
+        KEY_PATH = 'keys'
     # valid algorithms, algorithm modes and the corresponding file
     # names where the keys are stored.
     # ..note:: The model :class:`UserProfile` expects this dictionary structure as well
@@ -40,15 +42,15 @@ class Cryptor(BaseCryptor):
                                'private': os.path.join(KEY_PATH, 'user-rsa-restricted-private.pem'),
                                'salt': os.path.join(KEY_PATH, 'user-rsa-restricted-salt.key')},
                 'local': {'public': os.path.join(KEY_PATH, 'user-rsa-local-public.pem'),
-                         'private': os.path.join(KEY_PATH, 'user-rsa-local-private.pem'),
-                         'salt': os.path.join(KEY_PATH, 'user-rsa-local-salt.key')},
+                          'private': os.path.join(KEY_PATH, 'user-rsa-local-private.pem'),
+                          'salt': os.path.join(KEY_PATH, 'user-rsa-local-salt.key')},
                 'salter': {'public': os.path.join(KEY_PATH, 'user-rsa-salter-public.pem'),
                            'private': os.path.join(KEY_PATH, 'user-rsa-salter-private.pem')},
                 },
         'aes': {'local': {'key': os.path.join(KEY_PATH, 'user-aes-local.key'),
                           'salt': os.path.join(KEY_PATH, 'user-aes-local.salt')},
                 },
-       }
+    }
 
     _PRELOADED_KEYS = copy.deepcopy(_VALID_MODES)
     IS_PRELOADED = False
@@ -58,21 +60,20 @@ class Cryptor(BaseCryptor):
         self.public_key = None
         self.private_key = None
         self.aes_key = None
-        #self.encrypted_salt = None
+        # self.encrypted_salt = None
         self.has_encryption_key = False
         self.algorithm = algorithm
         self.mode = mode
         # check algorithm and mode
         if self.algorithm not in self._get_keypaths().keys():
             raise AlgorithmError('Invalid algorithm \'{algorithm}\'. '
-                           'Must be one of {keys}'.format(algorithm=self.algorithm,
-                                                          keys=', '.join(self._get_keypaths().keys())))
+                                 'Must be one of {keys}'.format(algorithm=self.algorithm,
+                                                                keys=', '.join(self._get_keypaths().keys())))
         if self.mode:
-            if (self.mode not in
-                self._get_keypaths().get(self.algorithm).iterkeys()):
+            if (self.mode not in self._get_keypaths().get(self.algorithm).iterkeys()):
                 raise ModeError('Invalid mode \'{mode}\' for algorithm {algorithm}.'
-                               ' Must be one of {keys}'.format(mode=self.mode, algorithm=self.algorithm,
-                                                           keys=', '.join(self._get_keypaths().get(self.algorithm).keys())))
+                                ' Must be one of {keys}'.format(mode=self.mode, algorithm=self.algorithm,
+                                                                keys=', '.join(self._get_keypaths().get(self.algorithm).keys())))
         if kwargs.get('preload', True):
             if not self.IS_PRELOADED:
                 self.preload_all_keys()
@@ -98,8 +99,7 @@ class Cryptor(BaseCryptor):
                 raise EncryptionKeyError('Algorithm and mode must be set \
                                       before attempting to set the \
                                       public key')
-            keyfile = (self._get_keypaths().get(algorithm).get(mode)
-                                                     .get('public'))
+            keyfile = (self._get_keypaths().get(algorithm).get(mode).get('public'))
         if isinstance(self._get_preloaded_keypaths().get(algorithm).get(mode).get('public'), RSA.RSA_pub):
             self.public_key = (self._get_preloaded_keypaths().get(algorithm).get(mode).get('public'))
         else:
@@ -132,8 +132,8 @@ class Cryptor(BaseCryptor):
             # keyfile not specified, so get default for algorithm and mode
             if not algorithm or not mode:
                 raise EncryptionKeyError('Algorithm and mode must be set '
-                                     'before attempting to set the '
-                                     'private key')
+                                         'before attempting to set the '
+                                         'private key')
             keyfile = self._get_keypaths().get(algorithm).get(mode).get('private', None)
         # either load from IS_PRELOADED or from file
         if isinstance(self._get_preloaded_keypaths().get(algorithm).get(mode).get('private', None), RSA.RSA):
@@ -183,7 +183,7 @@ class Cryptor(BaseCryptor):
             except:
                 logger.critical("Unexpected error:", sys.exc_info()[0])
                 raise
-        return self.aes_key != None
+        return self.aes_key is not None
 
     def rsa_encrypt(self, plaintext, **kwargs):
         """Return an un-encoded secret or fail. """
@@ -191,10 +191,10 @@ class Cryptor(BaseCryptor):
             # FAIL here if key not available and user is trying to save data
             raise ImproperlyConfigured('RSA key not available, unable to '
                                        'encrypt sensitive data using the RSA algorithm.')
-        #TODO: is_encrypted() does not work unless called from the FieldCryptor!
+        # TODO: is_encrypted() does not work unless called from the FieldCryptor!
         if self.is_encrypted(plaintext):
             raise EncryptionError('Attempt to rsa encrypt an already '
-                             'encrypted value.')
+                                  'encrypted value.')
         return self.public_key.public_encrypt(plaintext, RSA.pkcs1_oaep_padding)
 
     def rsa_decrypt(self, secret, is_encoded=True, **kwargs):
@@ -219,7 +219,7 @@ class Cryptor(BaseCryptor):
         mode = kwargs.get('mode', self.mode)
         retval = secret
         if secret:
-            #cipher_tuple is (cipher, sep, iv)
+            # cipher_tuple is (cipher, sep, iv)
             if isinstance(secret, (basestring)):
                 logger.warning('warning: decrypt {algorithm} {mode} expects secret to be a list or tuple. '
                                'Got basestring'.format(algorithm=algorithm, mode=mode))
@@ -250,10 +250,10 @@ class Cryptor(BaseCryptor):
                 raise ImproperlyConfigured('AES key not available, unable to '
                                            'encrypt sensitive data using the '
                                            'AES algorithm.')
-            #TODO: is_encrypted() does not work unless called from the FieldCryptor!
+            # TODO: is_encrypted() does not work unless called from the FieldCryptor!
             if self.is_encrypted(plaintext):
                 raise EncryptionError('Attempt to aes encrypt an already '
-                                  'encrypted value.')
+                                      'encrypted value.')
             iv = os.urandom(16)
             cipher = self._build_aes_cipher(self.aes_key, iv, self.ENC)
             v = cipher.update(plaintext)
@@ -298,7 +298,7 @@ class Cryptor(BaseCryptor):
                     key = self.get_encrypted_salt(algorithm, mode)
                 else:
                     raise EncryptionKeyError('Unexpected key type for {algorithm} {mode}.'
-                                    'Got {key_name}'.format(algorithm=algorithm, mode=mode, key_name=key_name))
+                                             'Got {key_name}'.format(algorithm=algorithm, mode=mode, key_name=key_name))
             elif algorithm == 'aes':
                 if key_name == 'key':
                     self.set_aes_key(algorithm=algorithm, mode=mode)
@@ -308,7 +308,7 @@ class Cryptor(BaseCryptor):
                     key = self.get_encrypted_salt(algorithm, mode)
                 else:
                     raise EncryptionKeyError('Unexpected key type for {algorithm} {mode}.'
-                                    'Got {key_name}'.format(algorithm=algorithm, mode=mode, key_name=key_name))
+                                             'Got {key_name}'.format(algorithm=algorithm, mode=mode, key_name=key_name))
             else:
                 raise AlgorithmError('Unknown algorithm. Got {0}.'.format(algorithm))
             return key
@@ -422,7 +422,7 @@ class Cryptor(BaseCryptor):
         logger.info('Testing keys...')
         for algorithm, mode_dict in self._get_keypaths().iteritems():
             for mode in mode_dict.iterkeys():
-                #logger.warning('Testing {algorithm} {mode}...'.format(algorithm=algorithm, mode=mode))
+                # logger.warning('Testing {algorithm} {mode}...'.format(algorithm=algorithm, mode=mode))
                 encrypted_text = _encrypt(self, plaintext, algorithm, mode)
                 decrypted_text = _decrypt(self, encrypted_text, algorithm, mode)
                 if encrypted_text == decrypted_text and decrypted_text is not None:

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from ..models import OutgoingTransaction, MiddleManTransaction
 from .factories import MiddleManTransactionFactory, ProducerFactory
 from .base_sync_device_tests import BaseSyncDeviceTests
-from apps.bcpp_inspector.models import SubjectRequisitionInspector
+from edc.apps.bcpp_inspector.models import SubjectRequisitionInspector
 
 
 class MiddleManTests(BaseSyncDeviceTests):

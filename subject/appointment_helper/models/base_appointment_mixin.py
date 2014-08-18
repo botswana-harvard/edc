@@ -1,4 +1,5 @@
-from django.db.models.signals import Signal, post_save
+# from django.db.models.signals import Signal, post_save
+
 from edc.subject.registration.models import RegisteredSubject
 
 

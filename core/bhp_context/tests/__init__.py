@@ -1,1 +1,1 @@
-from base_context_tests import BaseContextTests
+from edc.base_context_tests import BaseContextTests

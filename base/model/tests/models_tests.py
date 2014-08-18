@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from edc.testing.models import TestModel, TestM2m, TestForeignKey
 
 
@@ -16,5 +17,5 @@ class ModelsTests(TestCase):
         test_model = TestModel.objects.get(name='TEST')
         self.assertEqual(test_model.test_foreign_key, test_fk)
         self.assertIsNotNone(test_model.test_foreign_key)
-        #self.assertEqual(test_model.test_m2m, test_m2m)
+        # self.assertEqual(test_model.test_m2m, test_m2m)
         self.assertIsNotNone(test_model.test_m2m)

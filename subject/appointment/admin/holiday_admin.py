@@ -1,6 +1,6 @@
 from django.contrib import admin
-from edc.base.admin.admin import BaseModelAdmin
-from edc.base.admin.admin import BaseTabularInline
+from edc.base.modeladmin.admin import BaseModelAdmin
+from edc.base.modeladmin.admin import BaseTabularInline
 from ..models import Holiday
 
 
