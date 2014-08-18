@@ -269,9 +269,7 @@ class BaseAppConfiguration(object):
                         subject_format=notification_plan.get('subject_format'),
                         body_format=notification_plan.get('body_format'),
                         recipient_list=json.dumps(notification_plan.get('recipient_list')),
-                        cc_list=json.dumps(notification_plan.get('cc_list')),
-<<<<<<< HEAD
-                        )
+                        cc_list=json.dumps(notification_plan.get('cc_list')))
 
     def update_holidays_setup(self):
         """Updates holiday configurations in appointment__holiday module."""
@@ -282,6 +280,3 @@ class BaseAppConfiguration(object):
                 updated_holiday = Holiday.objects.get(holiday_name=holiday)
                 updated_holiday.holiday_date = self.holidays_setup.get(holiday)
                 updated_holiday.save()
-=======
-                    )
->>>>>>> 8ec552fe22fcbc61d7d82e6212014885ee2fad24
