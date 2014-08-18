@@ -152,7 +152,25 @@
                        {% endif %}
                     {% endif %}&nbsp;|&nbsp;
                     {% endblock subject_configuration %}
-                    <A href="{% url appointment_meta|admin_urlname:'changelist' %}?q={{ subject_identifier }}&o=3.1">appointments</A>
+                    
+                    <A href="{% url appointment_meta|admin_urlname:'changelist' %}?q={{ subject_identifier }}&o=3.1">appointments</A>&nbsp;|&nbsp;
+                    
+                    {% block quality_inspection %}
+                    {% if quality_inspection %}
+                        {% if visit_model_instance %}
+                           <A href="{% url quality_inspection_meta|admin_urlname:'change' quality_inspection.pk %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">data inspection</A>
+                       {% else %}
+                           <A href="{% url quality_inspection_meta|admin_urlname:'change' quality_inspection.pk %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">data inspection</A>
+                       {% endif %}
+                    {% else %}
+                       {% if visit_model_instance %}
+                           <A href="{% url quality_inspection_meta|admin_urlname:'add' %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">data inspection</A>
+                       {% else %}
+                           <A href="{% url quality_inspection_meta|admin_urlname:'add' %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">data inspection</A>
+                       {% endif %}
+                    {% endif %}&nbsp;|&nbsp;
+                    {% endblock quality_inspection %}
+                    
                 {% endblock top_links %}
                 </td></tr>
 
