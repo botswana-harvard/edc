@@ -9,8 +9,10 @@ from ..actions import refresh_order_status
 
 class OrderAdmin(BaseModelAdmin):
     date_hierarchy = 'order_datetime'
-    list_display = ("order_identifier", "receive_identifier", "to_receive", "to_result", "subject_identifier", "panel", "order_datetime", 'status', 'created', 'modified', 'import_datetime')
-    search_fields = ('aliquot__receive__registered_subject__subject_identifier', "order_identifier", "aliquot__receive__receive_identifier")
+    list_display = ("order_identifier", "receive_identifier", "to_receive", "to_result", "subject_identifier",
+                    "panel", "order_datetime", 'status', 'created', 'modified', 'import_datetime')
+    search_fields = ('aliquot__receive__registered_subject__subject_identifier', "order_identifier",
+                     "aliquot__receive__receive_identifier")
     list_filter = ('status', 'import_datetime', 'aliquot__aliquot_condition', 'panel__edc_name')
     list_per_page = 15
     actions = [refresh_order_status, ]
