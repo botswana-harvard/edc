@@ -8,6 +8,7 @@ from edc.core.bhp_variables.models import StudySite
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.visit_schedule.models import VisitDefinition
+from edc.core.bhp_data_manager.models import QualityInspection
 
 from ..managers import AppointmentManager
 from ..choices import APPT_TYPE
@@ -128,11 +129,24 @@ class Appointment(BaseAppointment):
         self.appt_datetime, self.best_appt_datetime = self.validate_appt_datetime()
         self.check_window_period()
         self.validate_visit_instance(using=using)
+        self.close_off_appointment()
         AppointmentHelper().check_appt_status(self, using)
         super(Appointment, self).save(*args, **kwargs)
 
     def raw_save(self, *args, **kwargs):
         super(Appointment, self).save(*args, **kwargs)
+
+    def close_off_appointment(self):
+        """checks if the appointment status is done"""
+        if self.appt_status == 'done':
+            """confirms if the Quality Inspection form is auto filled, if not, create it (auto fill)"""
+            def confirm_quality_inspection_exists():
+                try:
+                    return QualityInspection.objects.get(registered_subject=self.registered_subject, the_visit_code=self.visit_definition.code)
+                except QualityInspection.DoesNotExist:
+                    return False
+            if not confirm_quality_inspection_exists():
+                QualityInspection.objects.create(registered_subject=self.registered_subject, the_visit_code=self.visit_definition.code)
 
     def __unicode__(self):
         return "{0} {1} for {2}.{3}".format(self.registered_subject.subject_identifier, self.registered_subject.subject_type, self.visit_definition.code, self.visit_instance)
