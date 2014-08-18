@@ -85,7 +85,7 @@ class BaseSearchByWord(BaseSearcher):
             Q(first_name__exact=search_term_or_hash.get('first_name')) |
             Q(last_name__exact=search_term_or_hash.get('last_name')) |
             Q(identity__exact=search_term_or_hash.get('identity')) |
-            Q(initials__contains=search_term_or_hash.get('initials')) |
+            Q(initials__icontains=search_term_or_hash.get('initials')) |
             Q(user_created__icontains=search_term_or_hash.get('user_created')) |
             Q(user_modified__icontains=search_term_or_hash.get('user_modified'))
             )
