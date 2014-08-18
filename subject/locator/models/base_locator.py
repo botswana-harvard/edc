@@ -95,7 +95,6 @@ class BaseLocator(BaseConsentedUuidModel):
         max_length=25,
         choices=YES_NO_DOESNT_WORK,
         verbose_name="Has the participant given his/her permission for study staff to contact her at work for follow up purposes during the study?",
-        help_text=" if 'No' go to section B, otherwise continue"
         )
     subject_work_place = EncryptedTextField(
         max_length=500,

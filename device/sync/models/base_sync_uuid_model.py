@@ -32,7 +32,7 @@ class BaseSyncUuidModel(BaseUuidModel):
 
     def is_serialized(self, serialize=True):
         if 'edc.device.sync' in settings.INSTALLED_APPS:
-            from apps.bcpp.utils import Conf
+            from edc.apps.utils import Conf
             return Conf.get('ALLOW_MODEL_SERIALIZATION')
 
     def deserialize_prep(self):
