@@ -1,5 +1,7 @@
 import inspect
+
 from datetime import datetime
+
 from ..models import HistoryModel
 
 
@@ -194,7 +196,7 @@ class HistoryUpdater(object):
             source_model_name=self.get_model_inst()._meta.object_name.lower(),
             source_identifier=self.get_model_inst().pk,
             group_name=self.get_group_name(),
-            ).delete()
+        ).delete()
 
     def _get_method(self, func, parameter_name, parameter_value):
         """Calls the given func with or without a value depending on inspection."""

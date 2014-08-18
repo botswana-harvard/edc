@@ -10,63 +10,52 @@ class Producer(BaseUuidModel):
     name = models.CharField(
         max_length=50,
         help_text='Usually hostname-database_name. e.g mpp83-bhp041_survey',
-        unique=True,
-        )
+        unique=True)
 
     settings_key = models.CharField(
         max_length=50,
         help_text='Key in settings.DATABASES, usually hostname of producer',
-        unique=True,
-        )
+        unique=True)
 
-    url = models.CharField(
-        max_length=64,
-        )
+    url = models.CharField(max_length=64)
 
     producer_ip = EncryptedCharField(
         verbose_name="Producer IP address.",
         null=True,
         db_index=True,
-        help_text=("provide the IP address of the producer."),
-        )
+        help_text=("provide the IP address of the producer."))
 
     db_user = EncryptedCharField(
         verbose_name="Database username.",
         default='root',
         null=True,
         db_index=True,
-        help_text=("provide the database name of the producer."),
-        )
+        help_text=("provide the database name of the producer."))
 
     db_user_name = EncryptedCharField(
         verbose_name="Database name.",
         null=True,
         db_index=True,
-        help_text=("provide the database name of the producer."),
-        )
+        help_text=("provide the database name of the producer."))
 
     port = EncryptedCharField(
         verbose_name="Database port.",
         default='',
         blank=True,
         null=True,
-        help_text=("provide the database name of the producer."),
-        )
+        help_text=("provide the database name of the producer."))
 
     db_password = EncryptedCharField(
         verbose_name="Database password.",
         null=True,
         db_index=True,
-        help_text=("provide the password to database on the producer."),
-        )
+        help_text=("provide the password to database on the producer."))
 
     is_active = models.BooleanField(
-        default=True
-        )
+        default=True)
 
     sync_datetime = models.DateTimeField(
-        null=True
-        )
+        null=True)
 
     sync_status = models.CharField(
         max_length=250,
@@ -77,8 +66,7 @@ class Producer(BaseUuidModel):
         default=0)
 
     json_total_count = models.IntegerField(
-        default=0
-        )
+        default=0)
 
     comment = models.TextField(
         max_length=50,

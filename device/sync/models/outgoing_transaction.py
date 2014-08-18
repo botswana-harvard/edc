@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from django.db import models
+
 from .base_transaction import BaseTransaction
 
 
@@ -9,12 +11,12 @@ class OutgoingTransaction(BaseTransaction):
     is_consumed_middleman = models.BooleanField(
         default=False,
         db_index=True,
-        )
+    )
 
     is_consumed_server = models.BooleanField(
         default=False,
         db_index=True,
-        )
+    )
 
     objects = models.Manager()
 

@@ -1,4 +1,5 @@
 from django import forms
+
 from edc.subject.consent.forms import BaseConsentedModelForm
 
 

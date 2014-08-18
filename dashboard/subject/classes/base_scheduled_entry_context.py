@@ -40,16 +40,14 @@ class BaseScheduledEntryContext(object):
             'model_url': self.model_url,
             'meta_data_model_change_url': self.meta_data_model_change_url,
             'databrowse_url': self.databrowse_url,
-            'audit_trail_url': self.audit_trail_url,
-            })
+            'audit_trail_url': self.audit_trail_url})
         if self.instance:
             context.update({
                 'model_pk': self.instance.pk,
                 'user_created': self.instance.user_created,
                 'user_modified': self.instance.user_modified,
                 'created': self.instance.created,
-                'modified': self.instance.modified,
-                })
+                'modified': self.instance.modified})
         context = self.contribute_to_context(context)
         return context
 

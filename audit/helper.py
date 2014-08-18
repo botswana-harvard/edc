@@ -28,7 +28,7 @@ def get_subject_identifier(obj):
         elif [fld for fld in obj._meta.fields if fld.name == 'registered_subject']:
             subject_identifier = obj.registered_subject.subject_identifier
         else:
-            #raise TypeError('AuditTrail cannot find the subject_identifier. Perhaps add a get_visit() or get_subject_identifier() method to the model')
+            # raise TypeError('AuditTrail cannot find the subject_identifier. Perhaps add a get_visit() or get_subject_identifier() method to the model')
             pass
     except:
         pass

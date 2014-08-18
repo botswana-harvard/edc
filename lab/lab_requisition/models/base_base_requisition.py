@@ -16,8 +16,8 @@ from edc.choices.common import YES_NO
 from edc.core.bhp_string.classes import StringHelper
 from edc.core.bhp_variables.models import StudySite
 from edc.device.device.classes import Device
-from edc.lab.lab_clinic_api.models import AliquotType
-from edc.lab.lab_clinic_api.models import Panel
+# from edc.lab.lab_clinic_api.models import AliquotType
+# from edc.lab.lab_clinic_api.models import Panel
 
 from ..choices import PRIORITY, REASON_NOT_DRAWN, ITEM_TYPE
 from ..classes import RequisitionLabel

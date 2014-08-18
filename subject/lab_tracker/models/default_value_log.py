@@ -1,4 +1,5 @@
 from django.db import models
+
 from edc.device.sync.models import BaseSyncUuidModel
 
 

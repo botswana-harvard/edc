@@ -7,7 +7,7 @@ class ControllerRegister(object):
         self._register = []
 
     def register(self, controller, retry=False):
-        from base_controller import BaseController
+        from edc.base_controller import BaseController
         if not isinstance(controller, BaseController):
             raise TypeError('Controller must be an instance of dispatch.classes.Base.')
         if str(controller) in self._register:

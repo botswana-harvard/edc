@@ -1,7 +1,7 @@
 from datetime import date
 
 
-class OperatationalReportUtilities():
+class OperationalReportUtilities():
 
     def date_format_utility(self, date_string, default):
         if date_string == 'YYYY/MM/DD' or date_string == '':

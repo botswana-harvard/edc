@@ -1,8 +1,3 @@
-import array
-import struct
-import socket
-import fcntl
-
 SIOCGIFCONF = 0x8912  # define SIOCGIFCONF
 BYTES = 4096  # Simply define the byte size
 

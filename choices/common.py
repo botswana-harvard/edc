@@ -20,13 +20,13 @@ ACU_EST_NEG = (
 ALIVE_DEAD = (
     ('alive', 'Alive'),
     ('dead', 'Dead'),
-    )
+)
 
 ALIVE_DEAD_UNKNOWN = (
     ('alive', 'Alive'),
     ('dead', 'Dead'),
     ('unknown', 'Unknown'),
-    )
+)
 
 ART_STATUS = (
     ('ON', 'Yes, ON ART'),
@@ -63,7 +63,7 @@ COUNTRY = (
     ('china', 'China'),
     ('india', 'India'),
     ('OTHER', 'Other'),
-    )
+)
 
 DAYS_OF_WEEK = (
     ('Monday', 'Monday'),
@@ -118,8 +118,8 @@ DRUG_ROUTE = (
 )
 
 FEEDING = (
-   ('BF', 'Breast Feed'),
-   ('FF', 'Formula Feed'),
+    ('BF', 'Breast Feed'),
+    ('FF', 'Formula Feed'),
 )
 
 GENDER = (
@@ -232,13 +232,13 @@ SEXUAL_DEBUT = (
 TIME_OF_WEEK = (
     ('weekdays', 'Weekdays'),
     ('weekend', 'Weekends'),
-    )
+)
 
 TIME_OF_DAY = (
     ('morning', 'Morning'),
     ('afternoon', 'Afternoon'),
     ('evening', 'Evening'),
-    )
+)
 
 TIME_UNITS = (
     ('TODAY', 'Today'),
@@ -257,7 +257,7 @@ URINALYSIS = (
     ('Blood', 'Blood'),
     ('Protein', 'Protein'),
     ('Cells', 'Cells'),
-    )
+)
 
 WILL_DECL = (
     ('WILLING', 'Willing'),
@@ -273,7 +273,7 @@ YES_NO_DECLINED = (
     ('Yes', 'Yes'),
     ('No', 'No'),
     ('Declined', 'Yes, but subject declined copy'),
-    )
+)
 
 YES_NO_OPTIONAL = (
     ('Yes', 'Yes'),

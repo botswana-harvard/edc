@@ -1,5 +1,5 @@
 from django.contrib import admin
-from edc.base.admin.admin import BaseModelAdmin
+from edc.base.modeladmin.admin import BaseModelAdmin
 from ..models import IncomingTransaction
 from ..actions import reset_transaction_as_not_consumed, reset_transaction_as_consumed, reset_incomingtransaction_error_status, reset_incomingtransaction_ignore_status, \
                     set_incomingtransaction_as_ignore_status, set_incomingtransaction_audits_to_ignored, reset_incomingtransaction_audits

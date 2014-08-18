@@ -1,10 +1,13 @@
-from django.core.exceptions import ImproperlyConfigured
-from django.conf.urls import patterns, url
-from django.db.models import get_model
 from django import forms
+
+from django.conf.urls import patterns, url
+from django.core.exceptions import ImproperlyConfigured
+from django.db.models import get_model
+
 from edc.core.crypto_fields.fields import BaseEncryptedField
-from ..forms import SearchForm
+
 from ..exceptions import SearchModelError
+from ..forms import SearchForm
 
 
 class BaseSearcher(object):
@@ -120,19 +123,19 @@ class BaseSearcher(object):
         # TODO: can section be removed from this??
         if section_name:
             return patterns('',
-            url(r'^(?P<section_name>{section_name})/(?P<search_name>{search_name})/(?P<search_term>[\d\w\ \-\<\>]+)/$'.format(section_name=section_name, search_name=self.get_name()),
-                view,
-                name="section_search_{name}_url".format(name=self.get_name())),
-            url(r'^(?P<section_name>{section_name})/(?P<search_name>{search_name})/$'.format(section_name=section_name, search_name=self.get_name()),
-                view,
-                name="section_search_{name}_url".format(name=self.get_name())))
+                url(r'^(?P<section_name>{section_name})/(?P<search_name>{search_name})/(?P<search_term>[\d\w\ \-\<\>]+)/$'.format(section_name=section_name, search_name=self.get_name()),
+                    view,
+                    name="section_search_{name}_url".format(name=self.get_name())),
+                url(r'^(?P<section_name>{section_name})/(?P<search_name>{search_name})/$'.format(section_name=section_name, search_name=self.get_name()),
+                    view,
+                    name="section_search_{name}_url".format(name=self.get_name())))
         return patterns('',
-        url(r'^(?P<search_name>{search_name})/(?P<search_term>{search_term})/$'.format(search_name=self.get_name(), search_term=self.get_search_term()),
-            view,
-            name="search_{name}_url".format(name=self.get_name())),
-        url(r'^(?P<search_name>{search_name})/$'.format(search_name=self.get_name()),
-            view,
-            name="search_{name}_url".format(name=self.get_name())))
+            url(r'^(?P<search_name>{search_name})/(?P<search_term>{search_term})/$'.format(search_name=self.get_name(), search_term=self.get_search_term()),
+                view,
+                name="search_{name}_url".format(name=self.get_name())),
+            url(r'^(?P<search_name>{search_name})/$'.format(search_name=self.get_name()),
+                view,
+                name="search_{name}_url".format(name=self.get_name())))
 
     def hash_for_encrypted_fields(self, search_term, model_instance):
         """ Using the model's field objects and the search term, create a dictionary of
