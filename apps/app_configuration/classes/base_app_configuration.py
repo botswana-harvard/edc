@@ -6,6 +6,7 @@ from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.export.models import ExportPlan
+from edc.subject.appointment.models import Holiday
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.notification.models import NotificationPlan
@@ -48,6 +49,7 @@ class BaseAppConfiguration(object):
         self.update_or_create_labeling()
         self.update_export_plan_setup()
         self.update_notification_plan_setup()
+#         self.update_holidays_setup()
 
     def update_or_create_lab_clinic_api(self):
         """Configure lab clinic api list models."""
@@ -140,7 +142,11 @@ class BaseAppConfiguration(object):
         if StudySpecific.objects.all().count() == 0:
             StudySpecific.objects.create(**self.study_variables_setup)
         else:
-            StudySpecific.objects.all().update(**self.study_variables_setup)
+            specifics = StudySpecific.objects.all()
+            specifics.update(**self.study_variables_setup)
+            for sp in specifics:
+                #This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
+                sp.save()
         if not StudySite.objects.filter(site_code=self.study_site_setup.get('site_code')).exists():
             StudySite.objects.create(**self.study_site_setup)
 
@@ -176,11 +182,15 @@ class BaseAppConfiguration(object):
         """Updates configuration in the :mod:`consent` module."""
         for catalogue_setup in self.consent_catalogue_list:
             content_type_map_string = catalogue_setup.get('content_type_map')
-            catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map').lower())})
+            catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))})
             if not ConsentCatalogue.objects.filter(**catalogue_setup).exists():
                 ConsentCatalogue.objects.create(**catalogue_setup)
             else:
-                ConsentCatalogue.objects.filter(**catalogue_setup).update(**catalogue_setup)
+                catalogues = ConsentCatalogue.objects.filter(**catalogue_setup)
+                catalogues.update(**catalogue_setup)
+                for ct in catalogues:
+                    #This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
+                    ct.save()
             catalogue_setup.update({'content_type_map': content_type_map_string})
 
     def update_global(self):
@@ -261,3 +271,13 @@ class BaseAppConfiguration(object):
                         recipient_list=json.dumps(notification_plan.get('recipient_list')),
                         cc_list=json.dumps(notification_plan.get('cc_list')),
                         )
+
+    def update_holidays_setup(self):
+        """Updates holiday configurations in appointment__holiday module."""
+        for holiday in self.holidays_setup:
+            if not Holiday.objects.filter(holiday_name=holiday).exists():
+                Holiday.objects.create(holiday_name=holiday, holiday_date=self.holidays_setup.get(holiday))
+            else:
+                updated_holiday = Holiday.objects.get(holiday_name=holiday)
+                updated_holiday.holiday_date = self.holidays_setup.get(holiday)
+                updated_holiday.save()

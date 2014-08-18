@@ -620,6 +620,7 @@ class RegisteredSubjectDashboard(Dashboard):
             'scheduled_entries': scheduled_entries,
             'visit_attr': self.visit_model_attrname,
             'visit_model_instance': self.visit_model_instance,
+            'app_label': self.visit_model_instance._meta.app_label,
             'registered_subject': self.registered_subject.pk,
             'appointment': self.appointment.pk,
             'dashboard_type': self.dashboard_type,

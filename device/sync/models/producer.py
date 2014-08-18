@@ -1,4 +1,7 @@
 from django.db import models
+from django.conf import settings
+
+from edc.core.crypto_fields.fields import EncryptedCharField
 from edc.base.model.models import BaseUuidModel
 
 
@@ -20,6 +23,43 @@ class Producer(BaseUuidModel):
         max_length=64,
         )
 
+    producer_ip = EncryptedCharField(
+        verbose_name="Producer IP address.",
+        null=True,
+        db_index=True,
+        help_text=("provide the IP address of the producer."),
+        )
+
+    db_user = EncryptedCharField(
+        verbose_name="Database username.",
+        default='root',
+        null=True,
+        db_index=True,
+        help_text=("provide the database name of the producer."),
+        )
+
+    db_user_name = EncryptedCharField(
+        verbose_name="Database name.",
+        null=True,
+        db_index=True,
+        help_text=("provide the database name of the producer."),
+        )
+
+    port = EncryptedCharField(
+        verbose_name="Database port.",
+        default='',
+        blank=True,
+        null=True,
+        help_text=("provide the database name of the producer."),
+        )
+
+    db_password = EncryptedCharField(
+        verbose_name="Database password.",
+        null=True,
+        db_index=True,
+        help_text=("provide the password to database on the producer."),
+        )
+
     is_active = models.BooleanField(
         default=True
         )
@@ -32,10 +72,10 @@ class Producer(BaseUuidModel):
         max_length=250,
         default='-',
         null=True)
-    
+
     json_limit = models.IntegerField(
         default=0)
-    
+
     json_total_count = models.IntegerField(
         default=0
         )
@@ -44,34 +84,23 @@ class Producer(BaseUuidModel):
         max_length=50,
         null=True,
         blank=True)
-    
+
     objects = models.Manager()
 
-
     def save(self, *args, **kwargs):
-#         from django.conf import settings
-#         print settings.DATABASES
-#         producer_dict = {
-#                 'ENGINE': 'django.db.backends.mysql',
-#                 'TEST_MIRROR': None,
-#                 'NAME': self.settings_key,
-#                 'TEST_CHARSET': None,
-#                 'TIME_ZONE': 'Africa/Gaborone',
-#                 'TEST_COLLATION': None,
-#                 'PORT': '3306',
-#                 'HOST': self.url,
-#                 'USER': self.settings_key,
-#                 'TEST_NAME': None,
-#                 'PASSWORD': 'cc3721b',
-#                 'OPTIONS': {
-#                     'init_command': 'SET storage_engine=INNODB'
-#                 }
-#             }
-#         #if not settings.DATABASES.get(self.settings_key, None):
-#         settings.DATABASES[self.settings_key] = producer_dict
-#         print settings.DATABASES[self.settings_key]
+        settings.DATABASES[self.settings_key] = {
+            'ENGINE': 'django.db.backends.mysql',
+            'OPTIONS': {
+                'init_command': 'SET storage_engine=INNODB',
+            },
+            'NAME': self.db_user_name,
+            'USER': self.db_user,
+            'PASSWORD': self.db_password,
+            'HOST': self.producer_ip,
+            'PORT': self.port,
+        }
         super(Producer, self).save(*args, **kwargs)
-    
+
     def __unicode__(self):
         return self.name
 

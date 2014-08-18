@@ -47,7 +47,8 @@ class LabProfile(object):
                     count=0,
                     aliquot_type=requisition.aliquot_type,
                     aliquot_condition=None)
-                aliquot.primary_aliquot = aliquot
+                #Why is this next statement important?, it causes a problem when deserializing Aliquot instances.
+                #aliquot.primary_aliquot = aliquot
                 aliquot.aliquot_identifier = self.aliquot_identifier(aliquot, requisition.aliquot_type, 1)
                 aliquot.save()
             received = True
