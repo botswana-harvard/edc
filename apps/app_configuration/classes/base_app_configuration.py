@@ -49,7 +49,7 @@ class BaseAppConfiguration(object):
         self.update_or_create_labeling()
         self.update_export_plan_setup()
         self.update_notification_plan_setup()
-#         self.update_holidays_setup()
+        self.update_holidays_setup()
 
     def update_or_create_lab_clinic_api(self):
         """Configure lab clinic api list models."""
@@ -270,7 +270,6 @@ class BaseAppConfiguration(object):
                         body_format=notification_plan.get('body_format'),
                         recipient_list=json.dumps(notification_plan.get('recipient_list')),
                         cc_list=json.dumps(notification_plan.get('cc_list')),
-<<<<<<< HEAD
                         )
 
     def update_holidays_setup(self):
@@ -282,6 +281,3 @@ class BaseAppConfiguration(object):
                 updated_holiday = Holiday.objects.get(holiday_name=holiday)
                 updated_holiday.holiday_date = self.holidays_setup.get(holiday)
                 updated_holiday.save()
-=======
-                    )
->>>>>>> 8ec552fe22fcbc61d7d82e6212014885ee2fad24
