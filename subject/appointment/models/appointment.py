@@ -147,11 +147,11 @@ class Appointment(BaseAppointment):
             """confirms if the Quality Inspection form is auto filled, if not, create it (auto fill)"""
             def confirm_quality_inspection_exists():
                 try:
-                    return QualityInspection.objects.get(registered_subject=self.registered_subject, the_visit_code=self.visit_definition.code)
+                    return QualityInspection.objects.get(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
                 except QualityInspection.DoesNotExist:
                     return False
             if not confirm_quality_inspection_exists():
-                QualityInspection.objects.create(registered_subject=self.registered_subject, the_visit_code=self.visit_definition.code)
+                QualityInspection.objects.create(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
 
     def __unicode__(self):
         """Django."""
