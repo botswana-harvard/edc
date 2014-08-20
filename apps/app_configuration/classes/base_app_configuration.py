@@ -268,7 +268,6 @@ class BaseAppConfiguration(object):
                         friendly_name=notification_plan.get('friendly_name'),
                         subject_format=notification_plan.get('subject_format'),
                         body_format=notification_plan.get('body_format'),
-                        recipient_list=json.dumps(notification_plan.get('recipient_list')),
                         cc_list=json.dumps(notification_plan.get('cc_list')),
                         )
 

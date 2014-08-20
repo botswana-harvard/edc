@@ -45,7 +45,7 @@ class Command(BaseCommand):
                 try:
                     model_instanceB = model_instancesB.get(id=model_instanceA.id)
                 except model_class.DoesNotExist:
-                    out_file.write('Could not locate model {0} of id {1} from DB {2} in DB {3}'.format(model_class, model_instanceA.id, dbA, dbB))
+                    out_file.write('Could not locate model {0} of id {1} from DB {2} in DB {3}. Date Modified={4}'.format(model_class, model_instanceA.id, dbA, dbB, model_instanceA.modified))
                     out_file.write('\n')
                     out_file.write('\n')
                     continue
@@ -53,8 +53,10 @@ class Command(BaseCommand):
                     fieldA = getattr(model_instanceA, field.name)
                     fieldB = getattr(model_instanceB, field.name)
                     if fieldA != fieldB:
-                        out_file.write('Field {0} for model {1} of id {2} in {3} mismatched that in {4}. Got {5} for {6} and {7} for {8}'.format(
-                                     field.name, model_class, model_instanceA.id, dbA, dbB, getattr(model_instanceA, field.name), dbA, getattr(model_instanceB, field.name), dbB))
+                        print 'Field {0} for model {1} of id {2} in {3} mismatched that in {4}. Got {5} for {6} and {7} for {8}. Date modified={9}'.format(
+                                     field.name, model_class, model_instanceA.id, dbA, dbB, getattr(model_instanceA, field.name), dbA, getattr(model_instanceB, field.name), dbB, model_instanceA.modified)
+                        out_file.write('Field {0} for model {1} of id {2} in {3} mismatched that in {4}. Got {5} for {6} and {7} for {8}. Date modified={9}'.format(
+                                     field.name, model_class, model_instanceA.id, dbA, dbB, getattr(model_instanceA, field.name), dbA, getattr(model_instanceB, field.name), dbB, model_instanceA.modified))
                         out_file.write('\n')
                         out_file.write('\n')
         out_file.close()
