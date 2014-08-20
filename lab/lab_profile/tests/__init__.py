@@ -1,1 +1,1 @@
-from lab_profile_tests import LabProfileTests
+from .lab_profile_tests import LabProfileTests

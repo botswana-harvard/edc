@@ -1,1 +1,1 @@
-from device_tests import DeviceTests
+from .device_tests import DeviceTests

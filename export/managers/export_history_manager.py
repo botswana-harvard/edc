@@ -26,7 +26,7 @@ class ExportHistoryManager(models.Manager):
         """Serialize this instance to the export transaction model if ready.
 
         Be sure to inspect model property ready_to_export_transaction. ready_to_export_transaction can
-        return True or False. If False, the tx will not be exported. 
+        return True or False. If False, the tx will not be exported.
 
         .. note:: If change_type == 'D', entire tx is still sent."""
         try:
