@@ -1,6 +1,8 @@
 from M2Crypto.RSA import RSAError
-from django.test import TestCase
+
 from django.core.exceptions import ImproperlyConfigured
+from django.test import TestCase
+
 from ..classes import Cryptor, FieldCryptor
 from ..exceptions import AlgorithmError, EncryptionKeyError, ModeError
 

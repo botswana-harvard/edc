@@ -1,7 +1,11 @@
 import socket
+
 from datetime import datetime
+
 from django.conf import settings
+
 from edc.base.model.tests.factories import BaseUuidModelFactory
+
 from ...models import StudySpecific
 
 

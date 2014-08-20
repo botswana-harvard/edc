@@ -1,12 +1,13 @@
-from django.conf import settings
-from django.test import TestCase
 import datetime
+
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
+from django.test import TestCase
+
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.device.sync.classes import Consumer, DeserializeFromTransaction
-from edc.subject.consent.models import ConsentCatalogue
 from edc.device.sync.models import Producer, OutgoingTransaction, IncomingTransaction
+from edc.subject.consent.models import ConsentCatalogue
 
 
 class SyncMethodsTests(TestCase):

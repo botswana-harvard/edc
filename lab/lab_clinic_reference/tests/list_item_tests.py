@@ -6,8 +6,11 @@ Created on Nov 7, 2012
 Run this test using machine$ python lab_clinic_reference/tests.py from command line
 '''
 from operator import attrgetter
+
 from django.test import TestCase
+
 from lis.core.lab_reference.utils import get_upper_range_days, get_lower_range_days
+
 from ..models import GradingListItem
 
 
