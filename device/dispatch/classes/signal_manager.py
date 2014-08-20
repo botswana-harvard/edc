@@ -2,12 +2,12 @@ from django.db.models import signals
 
 from edc.base.model.models import BaseModel
 from edc.device.sync.models.signals import serialize_on_save, serialize_m2m_on_save
+from edc.entry_meta_data.models import entry_meta_data_on_post_save, entry_meta_data_on_pre_delete
 from edc.subject.appointment.models import pre_appointment_contact_on_post_save, pre_appointment_contact_on_post_delete
 from edc.subject.appointment_helper.models import prepare_appointments_on_post_save
 from edc.subject.consent.models.signals import is_consented_instance_on_pre_save, update_consent_history
 from edc.subject.lab_tracker.models.signals import tracker_on_post_save, tracker_on_post_delete
 from edc.subject.subject.models.signals import base_subject_get_or_create_registered_subject_on_post_save
-from edc.entry_meta_data.models import entry_meta_data_on_post_save, entry_meta_data_on_pre_delete
 from edc.subject.visit_tracking.models.signals import base_visit_tracking_check_in_progress_on_post_save
 
 
