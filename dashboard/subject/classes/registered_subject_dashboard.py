@@ -435,7 +435,7 @@ class RegisteredSubjectDashboard(Dashboard):
         self._quality_inspection = None
         if self.registered_subject:
             if QualityInspection.objects.filter(registered_subject=self.registered_subject):
-                self._quality_inspection = QualityInspection.objects.get(registered_subject=self.registered_subject)
+                self._quality_inspection = QualityInspection.objects.filter(registered_subject=self.registered_subject)[0]
         return self._quality_inspection
 
     @property
