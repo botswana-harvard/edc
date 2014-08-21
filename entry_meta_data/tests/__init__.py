@@ -1,1 +1,1 @@
-from .entry_meta_data_tests import EntryMetaDataTests
+from .tests_entry_meta_data import TestsEntryMetaData
