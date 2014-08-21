@@ -11,7 +11,7 @@ class PreAppointmentContact(BaseContactLogItem):
     is_confirmed = models.BooleanField(
         verbose_name='Appointment confirmed',
         default=False,
-        )
+    )
 
     history = AuditTrail()
 

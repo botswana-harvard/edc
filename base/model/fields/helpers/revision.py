@@ -10,7 +10,7 @@ class Revision(object):
         self.set_revision()
 
     def get_source_folder(self):
-        if not 'SOURCE_DIR' in dir(settings):
+        if 'SOURCE_DIR' not in dir(settings):
             raise AttributeError('Missing settings attribute: \'SOURCE_DIR\' required by revision field class')
         return settings.SOURCE_DIR
 

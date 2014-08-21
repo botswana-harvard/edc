@@ -16,36 +16,31 @@ class ReportParameter(BaseModel):
 
     parameter_name = models.CharField(
         verbose_name=("parameter name"),
-        max_length=25,
-        )
+        max_length=25)
 
     parameter_type = models.CharField(
         verbose_name=("parameter type"),
         max_length=25,
-        choices=PARAM_TYPES,
-        )
+        choices=PARAM_TYPES)
 
     is_selectfield = models.BooleanField(
         verbose_name=("is selectfield"),
         default=False,
-        help_text='Allows multiple selects'
-        )
+        help_text='Allows multiple selects')
 
     app_name = models.CharField(
         verbose_name=("application"),
         max_length=35,
         blank=True,
         null=True,
-        help_text='App that parameter exists in'
-        )
+        help_text='App that parameter exists in')
 
     model_name = models.CharField(
         verbose_name=("model"),
         max_length=35,
         blank=True,
         null=True,
-        help_text='Model that parameter exists in'
-        )
+        help_text='Model that parameter exists in')
 
     query_string = models.CharField(
         verbose_name=("query string"),
@@ -53,16 +48,15 @@ class ReportParameter(BaseModel):
         validators=[start_with_model, ],
         blank=True,
         null=True,
-        help_text='Always start query set with \'Model.\''
-        )
+        help_text='Always start query set with \'Model.\'')
 
     def save(self, *args, **kwargs):
         if self.is_selectfield:
-            if self.app_name == None or self.app_name == '':
+            if not self.app_name:
                 raise ValidationError('Application must be filled if is_selectfield=True')
-            if self.model_name == None or self.model_name == '':
+            if not self.model_name:
                 raise ValidationError('Model must be filled if is_selectfield=True')
-            if self.query_string == None or self.query_string == '':
+            if not self.query_string:
                 raise ValidationError('Query string must be filled if is_selectfield=True')
         super(ReportParameter, self).save(*args, **kwargs)
 

@@ -6,7 +6,7 @@ from django.test import TestCase
 from edc.testing.models import TestModel
 
 
-class FieldTests(TestCase):
+class TestsFields(TestCase):
 
     def test_revision_field2(self):
         """can create a new model instance and revision is not none."""

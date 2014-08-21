@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+
 from edc.core.bhp_variables.models import StudySpecific
 from edc.core.bhp_variables.choices import GENDER_OF_CONSENT
 

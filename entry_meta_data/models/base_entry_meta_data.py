@@ -1,4 +1,5 @@
 from django.db import models
+
 from edc.constants import NOT_REQUIRED
 from edc.device.sync.models import BaseSyncUuidModel
 from edc.subject.registration.models import RegisteredSubject

@@ -1,13 +1,16 @@
 import logging
-from django.db import models
+
 from django.core.urlresolvers import reverse
-from lis.specimen.lab_order.models import BaseOrder
+from django.db import models
+
 from lis.exim.lab_import_dmis.classes.dmis_tools import DmisTools
-from edc.lab.lab_requisition.classes import site_requisitions
+from lis.specimen.lab_order.models import BaseOrder
+
 from ..managers import OrderManager
+
 from .aliquot import Aliquot
-from .panel import Panel
 from .aliquot_condition import AliquotCondition
+from .panel import Panel
 
 
 logger = logging.getLogger(__name__)
@@ -23,17 +26,22 @@ class Order(BaseOrder):
     """Stores orders and is in a one to many relation with :class:`Aliquot` where one aliquot may
     have multiple orders and in a one-to-many relation with :class:`Result` where one order
     should only have one final result (but not enforced by the DB)."""
+
     aliquot = models.ForeignKey(Aliquot)
+
     panel = models.ForeignKey(Panel)
+
     subject_identifier = models.CharField(
         max_length=50,
         null=True,
         editable=False,
         db_index=True,
         help_text="non-user helper field to simplify search and filtering")
+
     receive_identifier = models.CharField(
         max_length=25, editable=False, null=True, db_index=True,
         help_text="non-user helper field to simplify search and filter")
+
     objects = OrderManager()
 
     def natural_key(self):
@@ -75,10 +83,8 @@ class Order(BaseOrder):
                 # was this meant to be a storage panel?
                 status = 'ERROR'
         elif self.aliquot.aliquot_condition != aliquot_condition_ok:
-            #self.clear_orphan_result()
             status = 'REDRAW'
         else:
-            #self.clear_orphan_result()
             status = 'PENDING'
         # regardless of status, check that order was not deleted on DMIS
         dmis_tools = DmisTools()
@@ -106,27 +112,6 @@ class Order(BaseOrder):
         else:
             return ''
     to_result.allow_tags = True
-
-    def get_requisition(self):
-        """ Gets the requisition used to order this item using the specimen identifier allocated by the EDC when the item was packed.
-
-        .. note:: The receiver on the LIS tracks the EDC specimen identifier which is re-imported to the
-                  EDC as an attribute of the receive record.
-        """
-        # TODO: ???????????????
-        requisition = None
-        requisition_cls = site_requisitions.get(self.aliquot.receive.registered_subject.subject_type)
-        if requisition_cls:
-            if requisition_cls.objects.filter(specimen_identifier=self.aliquot.receive.requisition_identifier).exists():
-                requisition = requisition_cls.objects.get(specimen_identifier=self.aliquot.receive.requisition_identifier)
-        return requisition
-
-    def req(self):
-        try:
-            return self.get_requisition().specimen_identifier
-        except:
-            return None
-    req.allow_tags = True
 
     def get_absolute_url(self):
         return reverse('admin:lab_clinic_api_order_change', args=(self.id,))

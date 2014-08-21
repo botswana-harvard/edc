@@ -5,7 +5,7 @@ from ..exceptions import MapperError
 
 
 def draw_site_polygon(request, **kwargs):
-    """Plots items from base selection criteria.
+    """Plots items from edc.base selection criteria.
 
       * Filter points to plot by sending coordinates of a selected ward only to the items.html template.
       * Regions contain sections    """

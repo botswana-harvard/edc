@@ -1,6 +1,7 @@
-from django.db import models
 from django.core.urlresolvers import reverse
+from django.db import models
 from django_extensions.db.models import TimeStampedModel
+
 from ..fields import HostnameCreationField, HostnameModificationField
 
 
@@ -15,7 +16,7 @@ class BaseModel(TimeStampedModel):
         default="",
         db_index=True,
         help_text="system field."
-        )
+    )
 
     user_modified = models.CharField(
         max_length=250,
@@ -24,17 +25,17 @@ class BaseModel(TimeStampedModel):
         default="",
         db_index=True,
         help_text="system field.",
-        )
+    )
 
     hostname_created = HostnameCreationField(
         db_index=True,
         help_text="system field.",
-        )
+    )
 
     hostname_modified = HostnameModificationField(
         db_index=True,
         help_text="system field.",
-        )
+    )
 
     def get_absolute_url(self):
         if self.id:

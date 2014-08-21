@@ -34,7 +34,8 @@ class BaseAppointment (BaseSyncUuidModel):
         verbose_name=("Contact Tel"),
         max_length=250,
         blank=True)
-    comment = models.CharField("Comment",
+    comment = models.CharField(
+        "Comment",
         max_length=250,
         blank=True)
 

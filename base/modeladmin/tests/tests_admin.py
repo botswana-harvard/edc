@@ -1,24 +1,24 @@
-from django.test import TestCase
-from django.core.urlresolvers import reverse
 from django.contrib import admin
-from django.http import HttpResponseRedirect
-
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.test import TestCase
 from django.test.client import RequestFactory
+
+from edc.base.modeladmin import NextUrlError
 from edc.testing.models import TestModel
-from ..exceptions import NextUrlError
 
 admin.autodiscover()
 
 
-class AdminTests(TestCase):
+class TestsAdmin(TestCase):
 
     urls = "urls"
 
     def setUp(self):
         self.factory = RequestFactory()
         self.user = self._create_superuser('django')
-        #self.test_model = TestModelFactory()
+        # self.test_model = TestModelFactory()
 
     def _create_superuser(self, username):
         return User.objects.create(username=username, is_superuser=True)

@@ -1,4 +1,3 @@
-from datetime import datetime
 from uuid import uuid4
 
 from django.contrib import admin
@@ -6,15 +5,15 @@ from django.db import models
 from django.test import TestCase
 
 from edc.core.bhp_variables.models import StudySite
+from edc.lab.lab_profile.classes import site_lab_profiles
+from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc.subject.appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc.subject.registration.models import RegisteredSubject
-from edc.testing.models import TestConsentWithMixin
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
 from edc.testing.classes import TestLabProfile
+from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
+from edc.testing.models import TestConsentWithMixin
 from edc.testing.tests.factories import TestConsentWithMixinFactory
-from edc.lab.lab_profile.classes import site_lab_profiles
 
 from edc.subject.visit_tracking.admin import BaseVisitTrackingModelAdmin
 from edc.testing.forms import TestScheduledModelForm
@@ -36,8 +35,6 @@ class TestScheduledModelAdmin(SupplementalModelAdminMixin, BaseVisitTrackingMode
 
     def has_change_permission(self, request, obj):
         return True
-
-#admin.site.register(TestScheduledModel, TestScheduledModelAdmin)
 
 
 class TestSupplementalFields(TestCase):
@@ -359,47 +356,3 @@ class TestSupplementalFields(TestCase):
     def test_5(self):
         """test that ModelAdmin fields is correctly reset after use."""
         pass
-
-#     def test_p5(self):
-#         P = 0
-#         INC = 1
-#         EXC = 2
-#         for opt in [(0.135, 135, 865), (0.5, 500, 500), (0.75, 750, 250)]:
-#             print 'p={0} include(0)={1} exclude(1)={2}'.format(*opt)
-#             sf = SupplementalFields(('f3', 'f4'), p=opt[P])
-#             self.assertEqual(sf._get_probability_as_sequence().count(0), opt[INC])
-#             self.assertEqual(sf._get_probability_as_sequence().count(1), opt[EXC])
-#             zero = []
-#             one = []
-#             for j in range(0, 1000):
-#                 lst = []
-#                 for i in range(0, 1000):
-#                     fields, exclude_fields = sf.choose_fields(('f1', 'f2', 'f3', 'f4', 'f5'), TestModel())
-#                     if fields == ('f1', 'f2', 'f3', 'f4', 'f5') and not exclude_fields:
-#                         # supp fields were not excluded
-#                         lst.append(0)
-#                     elif fields == ('f1', 'f2', 'f5') and exclude_fields == ('f3', 'f4'):
-#                         # supp fields were excluded
-#                         lst.append(1)
-#                     else:
-#                         lst.append(2)
-#                         print '  fields={0}'.format(fields)
-#                         print '  exclude_fields={0}'.format(exclude_fields)
-#                 zero.append(lst.count(0))
-#                 one.append(lst.count(1))
-#                 self.assertEqual(lst.count(2), 0)
-#                 #if opt[P] > 0.5:
-#                 #    self.assertGreater(lst.count(0), lst.count(1))
-#                 #elif opt[P] < 0.5:
-#                 #    self.assertLess(lst.count(0), lst.count(1))
-#                 #else:
-#                 #    pass
-#                 #print '    0 -> {0} < {1} < {2}'.format(opt[INC] - (opt[INC] * (opt[P] * 2)), lst.count(0), opt[INC] + (opt[INC] * (opt[P] * 2)))
-#                 #self.assertTrue(opt[INC] - (opt[INC] * (opt[P] * 2)) < lst.count(0) < opt[INC] + (opt[INC] * (opt[P] * 2)))
-#                 #print '    1 -> {0} < {1} < {2}'.format(opt[EXC] - (opt[EXC] * (opt[P] * 2)), lst.count(1), opt[EXC] + (opt[EXC] * (opt[P] * 2)))
-#                 #self.assertTrue(opt[EXC] - (opt[EXC] * (opt[P] * 2)) < lst.count(1) < opt[EXC] + (opt[EXC] * (opt[P] * 2)))
-#                 #self.assertTrue(lst.count(0) in range(110, 155), lst.count(0))
-#                 #self.assertTrue(lst.count(1) in range(850, 883), lst.count(1))
-#             print '  Included mean={0} std={1}, n={2}'.format(numpy.mean(zero), numpy.std(zero), len(zero))
-#             print '  Excluded mean={0} std={1}, n={2} '.format(numpy.mean(one), numpy.std(one), len(one))
-

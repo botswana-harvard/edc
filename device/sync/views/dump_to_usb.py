@@ -1,4 +1,3 @@
-import os
 import platform
 
 from datetime import datetime
@@ -8,11 +7,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.conf import settings
 
 from edc.apps.utils import Conf
 from ..classes import SerializeToTransaction
 from ..models import OutgoingTransaction
+
 
 @login_required
 def dump_to_usb(request, **kwargs):
@@ -28,8 +27,8 @@ def dump_to_usb(request, **kwargs):
     if not app_name:
         raise ValidationError('app_name cannot be None')
     try:
-        #filename should be in form appname_identifier_timestamp.jso eg bcpp_ranaka_2013118.json
-        f = open(usb_path + app_name +'_'+ site_name + '_' + str(datetime.now().strftime("%Y%m%d%H%M")) + '.json', 'w')
+        # filename should be in form appname_identifier_timestamp.jso eg bcpp_ranaka_2013118.json
+        f = open(usb_path + app_name + '_' + site_name + '_' + str(datetime.now().strftime("%Y%m%d%H%M")) + '.json', 'w')
     except:
         raise ValidationError('Please insert a usb device named \'{0}_usb\', currently using USB_PATH \'{1}\''.format(app_name, usb_path))
     outgoing_transactions = OutgoingTransaction.objects.filter(is_consumed_server=False, is_consumed_middleman=False)
@@ -47,5 +46,4 @@ def dump_to_usb(request, **kwargs):
         messages.add_message(request, messages.INFO, 'Serialized \'{0}\' \'{1}\' transactions to \'{2}\''.format(outgoing_transactions.count(), 'OutgoingTransactions', usb_path))
     return render_to_response(
         'dump_to_usb.html',
-         context_instance=RequestContext(request)
-        )
+        context_instance=RequestContext(request))

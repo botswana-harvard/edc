@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from edc.base.admin.admin import BaseModelAdmin
+from edc.base.modeladmin.admin import BaseModelAdmin
 
 from ..actions import process_report
 from ..models import BaseReport

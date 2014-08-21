@@ -1,9 +1,11 @@
 from django.db import IntegrityError
 from django.db.models import get_model
 from django.test import TestCase
-from edc.device.sync.models import Producer
+
 from edc.device.sync.exceptions import ProducerError
+from edc.device.sync.models import Producer
 from edc.testing.tests.factories import TestDspContainerFactory, TestDspContainer
+
 from ..classes import BaseDispatch, ReturnController, BaseDispatchController
 from ..exceptions import AlreadyDispatchedContainer, AlreadyRegisteredController
 from ..models import DispatchContainerRegister, DispatchItemRegister

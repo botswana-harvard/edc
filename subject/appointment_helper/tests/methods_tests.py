@@ -1,6 +1,9 @@
 from datetime import timedelta, datetime
+
 from dateutil.relativedelta import relativedelta
+
 from django.test import TestCase
+
 from ..classes import AppointmentDateHelper
 
 

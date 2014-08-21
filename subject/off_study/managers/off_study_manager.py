@@ -1,4 +1,5 @@
 from django.db import models
+
 from edc.subject.registration.models import RegisteredSubject
 
 

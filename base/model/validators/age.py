@@ -1,6 +1,8 @@
-from datetime import date, timedelta
+from datetime import date
 from dateutil.relativedelta import relativedelta
+
 from django.core.exceptions import ValidationError
+
 from edc.core.bhp_variables.models import StudySpecific
 
 
@@ -13,7 +15,7 @@ def MinConsentAge(value):
     min_consent_age_years = ss.minimum_age_of_consent
     rdelta = relativedelta(date.today(), value)
     if rdelta.years < min_consent_age_years:
-        raise ValidationError(u'Participant must be {0}yrs or older. Date of birth suggests otherwise. You entered {1} that suggests that the person is {2}yrs'.format(min_consent_age_years, value, rdelta.years))    
+        raise ValidationError(u'Participant must be {0}yrs or older. Date of birth suggests otherwise. You entered {1} that suggests that the person is {2}yrs'.format(min_consent_age_years, value, rdelta.years))
 
 
 def MaxConsentAge(value):
