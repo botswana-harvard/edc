@@ -11,7 +11,7 @@ from edc.subject.visit_schedule.models import VisitDefinition
 from edc.core.bhp_data_manager.models import QualityInspection
 
 from ..managers import AppointmentManager
-from ..choices import APPT_TYPE
+from ..choices import APPT_TYPE, APPT_STATUS
 from ..constants import DONE
 
 from .base_appointment import BaseAppointment
@@ -160,14 +160,17 @@ class Appointment(BaseAppointment):
     def dashboard(self):
         """Returns a hyperink for the Admin page."""
         ret = None
-        if self.registered_subject:
-            if self.registered_subject.subject_identifier:
-                url = reverse('subject_dashboard_url',
-                              kwargs={'dashboard_type': self.registered_subject.subject_type.lower(),
-                                      'dashboard_model': 'appointment',
-                                      'dashboard_id': self.pk,
-                                      'show': 'appointments'})
-                ret = """<a href="{url}" />dashboard</a>""".format(url=url)
+        if self.appt_status == APPT_STATUS[0][0]:
+            return 'NEW'
+        else:
+            if self.registered_subject:
+                if self.registered_subject.subject_identifier:
+                    url = reverse('subject_dashboard_url',
+                                  kwargs={'dashboard_type': self.registered_subject.subject_type.lower(),
+                                          'dashboard_model': 'appointment',
+                                          'dashboard_id': self.pk,
+                                          'show': 'appointments'})
+                    ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True
 
