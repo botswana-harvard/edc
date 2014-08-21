@@ -3,7 +3,7 @@ from django.test import TestCase
 from edc.testing.models import TestModel, TestM2m, TestForeignKey
 
 
-class ModelsTests(TestCase):
+class TestsModels(TestCase):
 
     def setUp(self):
         pass

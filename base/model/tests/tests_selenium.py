@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from edc.testing.models import TestM2m, TestForeignKey, TestModel
 
 
-class MySeleniumTests(LiveServerTestCase):
+class TestsSelenium(LiveServerTestCase):
 
     def setUp(self):
         self.adminuser = User.objects.create_user('django', 'django@test.com', 'pass')
@@ -29,12 +29,12 @@ class MySeleniumTests(LiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         cls.selenium = WebDriver()
-        super(MySeleniumTests, cls).setUpClass()
+        super(TestsSelenium, cls).setUpClass()
 
     @classmethod
     def tearDownClass(cls):
         cls.selenium.quit()
-        super(MySeleniumTests, cls).tearDownClass()
+        super(TestsSelenium, cls).tearDownClass()
 
     def login(self):
         self.selenium.get('%s%s' % (self.live_server_url, '/erik/'))
