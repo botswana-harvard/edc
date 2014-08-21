@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -52,6 +53,20 @@ class QualityInspection(BaseModel):
     objects = models.Manager()
 
     history = AuditTrail()
+
+    def __unicode__(self):
+        return "for {0} at the {1} visit".format(self.registered_subject, self.the_visit_code)
+
+    def save(self, *args, **kwargs):
+        self.confirm_appointment_status_is_done_before_setting_quality_to_closed()
+        super(QualityInspection, self).save(*args, **kwargs)
+
+    def confirm_appointment_status_is_done_before_setting_quality_to_closed(self):
+        if self.status == 'closed':
+            from edc.subject.appointment.models import Appointment
+            appointment = Appointment.objects.get(registered_subject=self.registered_subject)
+            if appointment.appt_status != 'done':
+                raise ValidationError('You cannot make a close off when the appointment status is not equal to DONE. Check appointment status first.')
 
     def dashboard(self):
         ret = None
