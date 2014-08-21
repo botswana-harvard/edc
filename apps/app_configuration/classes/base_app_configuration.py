@@ -6,20 +6,19 @@ from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.export.models import ExportPlan
-from edc.subject.appointment.models import Holiday
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.notification.models import NotificationPlan
+from edc.subject.appointment.models import Holiday
 from edc.subject.consent.models import ConsentCatalogue
 from edc.subject.entry.models import RequisitionPanel
 from edc.utils import datatype_to_string
 
 from lis.labeling.models import LabelPrinter
-
-from ..models import GlobalConfiguration
+from lis.labeling.models import ZplTemplate
 
 from .defaults import default_global_configuration
-from lis.labeling.models.zpl_template import ZplTemplate
+from ..models import GlobalConfiguration
 
 
 class BaseAppConfiguration(object):
@@ -34,6 +33,7 @@ class BaseAppConfiguration(object):
     export_plan_setup = {}
     notification_plan_setup = {}
     labeling_setup = {}
+    holidays_setup = {}
 
     def __init__(self):
         """Updates content type maps then runs each configuration method with the corresponding class attribute.
