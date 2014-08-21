@@ -33,6 +33,7 @@ class BaseAppConfiguration(object):
     export_plan_setup = {}
     notification_plan_setup = {}
     labeling_setup = {}
+    holidays_setup = {}
 
     def __init__(self):
         """Updates content type maps then runs each configuration method with the corresponding class attribute.
