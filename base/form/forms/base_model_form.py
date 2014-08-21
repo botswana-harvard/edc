@@ -15,6 +15,7 @@ class BaseModelForm(forms.ModelForm):
         # if in admin edit mode, populate visit model's queryset
         # if not in admin, e.g. coming from the dashboard, might
         # throw an exception.
+        
         if self.instance:
             if 'get_visit' in dir(self.instance):
                 try:
@@ -28,6 +29,7 @@ class BaseModelForm(forms.ModelForm):
                             pass
                 except:
                     pass
+
         # if in admin edit mode, populate registered_subject's queryset
         if 'registered_subject' in self.fields:
             try:
@@ -63,7 +65,7 @@ class BaseModelForm(forms.ModelForm):
         """Calls crypto clean methods, OTHER/Specify and some functionality for bhp_dispatch."""
         cleaned_data = self.cleaned_data
         # check if dispatched
-        #if 'edc.device.dispatch' in settings.INSTALLED_APPS:
+        # if 'edc.device.dispatch' in settings.INSTALLED_APPS:
         #    if 'is_dispatched' in dir(self._meta.model()):
         #        if self._meta.model().is_dispatched():#this does not work {self._meta.model()}
         #                                              #The form about to be saved looses its foreign key objects

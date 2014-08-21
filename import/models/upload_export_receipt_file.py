@@ -3,17 +3,14 @@ import re
 
 from datetime import datetime
 
-from django_extensions.db.fields import UUIDField
-
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
 
-from edc.base.model.models import BaseModel
+from edc.base.model.models import BaseUuidModel
 from edc.export.models import ExportHistory
 
 
-class UploadExportReceiptFile(BaseModel):
+class UploadExportReceiptFile(BaseUuidModel):
 
     export_receipt_file = models.FileField(upload_to=settings.MEDIA_ROOT)
 
@@ -34,7 +31,7 @@ class UploadExportReceiptFile(BaseModel):
     receipt_datetime = models.DateTimeField(editable=False, null=True)
 
     objects = models.Manager()
-    
+
     def save(self, *args, **kwargs):
         if not self.id:
             self.file_name = self.export_receipt_file.name.replace('\\', '/').split('/')[-1]
@@ -52,7 +49,6 @@ class UploadExportReceiptFile(BaseModel):
             for item in row:
                 if re.match(re_pk, item):  # match a row item on uuid
                     if not ExportHistory.objects.filter(export_uuid=item):
-                        #raise ValidationError('ExportHistory not found for export_uuid={0}'.format(item))
                         error_list.append(item)
                     elif ExportHistory.objects.filter(export_uuid=item, received=True):
                         self.duplicate += 1

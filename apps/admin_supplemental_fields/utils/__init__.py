@@ -1,1 +1,1 @@
-from show_supplemental_fields import *
+from show_supplemental_fields import show_supplemental_fields

@@ -1,6 +1,6 @@
 import factory
 from edc.base.model.tests.factories import BaseUuidModelFactory
-from apps.bcpp_household.models import Plot
+from edc.apps.bcpp_household.models import Plot
 
 
 class PlotFactory(BaseUuidModelFactory):

@@ -1,22 +1,24 @@
 from django.conf import settings
-from tastypie.models import ApiKey
 from django.contrib.auth.models import User
+
+from tastypie.models import ApiKey
+
 from ..models import OutgoingTransaction, MiddleManTransaction
 from .factories import MiddleManTransactionFactory, ProducerFactory
 from .base_sync_device_tests import BaseSyncDeviceTests
-from apps.bcpp_inspector.models import SubjectRequisitionInspector
+
+from .apps.bcpp_inspector.models import SubjectRequisitionInspector
 
 
 class MiddleManTests(BaseSyncDeviceTests):
 
-
     def test_middleman_settings(self):
-        #if not Device().is_middleman:
+        # if not Device().is_middleman:
         self.device.set_device_id(99)
         self.assertRaises(TypeError, lambda: MiddleManTransactionFactory())
 
     def test_requisition_inspector(self):
-        #if Device().is_middleman:
+        # if Device().is_middleman:
         settings.DEVICE_ID = '98'
         wb_requisition = MiddleManTransactionFactory()#default middle man transaction is wb requisition.
 

@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from django.db import models
+
 from edc.base.model.models import BaseModel
 
 

@@ -29,6 +29,7 @@ from edc.subject.visit_schedule.classes import MembershipFormHelper
 from edc.subject.visit_schedule.exceptions import MembershipFormError
 from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc.core.bhp_data_manager.models import QualityInspection
 from edc.utils.collections import flatten
 
 from .scheduled_entry_context import ScheduledEntryContext
@@ -101,6 +102,8 @@ class RegisteredSubjectDashboard(Dashboard):
             visit_model=self.visit_model,
             visit_model_instance=self.visit_model_instance,
             visit_model_meta=self.visit_model._meta,
+            quality_inspection=self.quality_inspection,
+            quality_inspection_meta=QualityInspection._meta,
             )
         if self.show == 'forms':
             self.context.add(
@@ -426,6 +429,14 @@ class RegisteredSubjectDashboard(Dashboard):
             if SubjectConfiguration.objects.filter(subject_identifier=self.subject_identifier):
                 self._subject_configuration = SubjectConfiguration.objects.get(subject_identifier=self.subject_identifier)
         return self._subject_configuration
+
+    @property
+    def quality_inspection(self):
+        self._quality_inspection = None
+        if self.registered_subject:
+            if QualityInspection.objects.filter(registered_subject=self.registered_subject):
+                self._quality_inspection = QualityInspection.objects.filter(registered_subject=self.registered_subject)[0]
+        return self._quality_inspection
 
     @property
     def show(self):

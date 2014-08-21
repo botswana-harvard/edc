@@ -1,5 +1,6 @@
 from django.db.models import get_model
-from controller import site_rule_groups
+
+from .controller import site_rule_groups
 
 
 class DashboardRule(object):

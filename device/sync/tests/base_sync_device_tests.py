@@ -1,10 +1,13 @@
-from django.test import TestCase
 from django.contrib.auth.management.commands import changepassword
-from tastypie.models import ApiKey
 from django.contrib.auth.models import User
 from django.core import management
-from ..models import OutgoingTransaction, IncomingTransaction, MiddleManTransaction
+from django.test import TestCase
+
+from tastypie.models import ApiKey
+
 from edc.device.device.classes import Device
+
+from ..models import OutgoingTransaction, IncomingTransaction, MiddleManTransaction
 
 
 class BaseSyncDeviceTests(TestCase):
@@ -20,8 +23,8 @@ class BaseSyncDeviceTests(TestCase):
         if not ApiKey.objects.filter(user=User.objects.get(username='john')):
             ApiKey.objects.create(user=User.objects.get(username='john'))
         self.device = Device()
-        
+
     def denies_anonymous_acess(self, producer, app_name):
-        response = self.client.get('/bhp_sync/consume/'+producer+'/'+app_name+'/', follow=True)
-        self.assertRedirects(response, '/bcpp/login/?next=/bhp_sync/consume/'+producer+'/'+app_name+'/')
+        response = self.client.get('/bhp_sync/consume/' + producer + '/' + app_name + '/', follow=True)
+        self.assertRedirects(response, '/bcpp/login/?next=/bhp_sync/consume/' + producer + '/' + app_name + '/')
         self.client.post('/bcpp/login/', {'username': 'john', 'password': 'smith'})

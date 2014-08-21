@@ -5,8 +5,8 @@ from edc.subject.registration.models import RegisteredSubject
 from edc.subject.rule_groups.classes import site_rule_groups
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
-from .scheduled_entry_meta_data import ScheduledEntryMetaData
 from .requisition_meta_data import RequisitionMetaData
+from .scheduled_entry_meta_data import ScheduledEntryMetaData
 
 
 @receiver(post_save, weak=False, dispatch_uid="entry_meta_data_on_post_save")

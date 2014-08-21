@@ -6,20 +6,19 @@ from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.export.models import ExportPlan
-from edc.subject.appointment.models import Holiday
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.notification.models import NotificationPlan
+from edc.subject.appointment.models import Holiday
 from edc.subject.consent.models import ConsentCatalogue
 from edc.subject.entry.models import RequisitionPanel
 from edc.utils import datatype_to_string
 
 from lis.labeling.models import LabelPrinter
-
-from ..models import GlobalConfiguration
+from lis.labeling.models import ZplTemplate
 
 from .defaults import default_global_configuration
-from lis.labeling.models.zpl_template import ZplTemplate
+from ..models import GlobalConfiguration
 
 
 class BaseAppConfiguration(object):
@@ -34,6 +33,7 @@ class BaseAppConfiguration(object):
     export_plan_setup = {}
     notification_plan_setup = {}
     labeling_setup = {}
+    holidays_setup = {}
 
     def __init__(self):
         """Updates content type maps then runs each configuration method with the corresponding class attribute.
@@ -49,7 +49,7 @@ class BaseAppConfiguration(object):
         self.update_or_create_labeling()
         self.update_export_plan_setup()
         self.update_notification_plan_setup()
-#         self.update_holidays_setup()
+        self.update_holidays_setup()
 
     def update_or_create_lab_clinic_api(self):
         """Configure lab clinic api list models."""
@@ -145,7 +145,7 @@ class BaseAppConfiguration(object):
             specifics = StudySpecific.objects.all()
             specifics.update(**self.study_variables_setup)
             for sp in specifics:
-                #This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
+                # This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
                 sp.save()
         if not StudySite.objects.filter(site_code=self.study_site_setup.get('site_code')).exists():
             StudySite.objects.create(**self.study_site_setup)
@@ -164,7 +164,7 @@ class BaseAppConfiguration(object):
                     cups_printer_name=printer_setup.cups_printer_name,
                     cups_server_ip=printer_setup.cups_server_ip,
                     default=printer_setup.default,
-                    )
+                )
         for zpl_template_setup in self.labeling_setup.get('zpl_template', []):
             try:
                 zpl_template = ZplTemplate.objects.get(name=zpl_template_setup.name)
@@ -176,7 +176,7 @@ class BaseAppConfiguration(object):
                     name=zpl_template_setup.name,
                     template=zpl_template_setup.template,
                     default=zpl_template_setup.default,
-                    )
+                )
 
     def update_or_create_consent_catalogue(self):
         """Updates configuration in the :mod:`consent` module."""
@@ -189,7 +189,7 @@ class BaseAppConfiguration(object):
                 catalogues = ConsentCatalogue.objects.filter(**catalogue_setup)
                 catalogues.update(**catalogue_setup)
                 for ct in catalogues:
-                    #This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
+                    # This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
                     ct.save()
             catalogue_setup.update({'content_type_map': content_type_map_string})
 
@@ -248,7 +248,7 @@ class BaseAppConfiguration(object):
                         strip=export_plan.get('strip'),
                         target_path=export_plan.get('target_path'),
                         notification_plan_name=export_plan.get('notification_plan_name'),
-                        )
+                    )
 
     def update_notification_plan_setup(self):
         if self.notification_plan_setup:
@@ -268,7 +268,6 @@ class BaseAppConfiguration(object):
                         friendly_name=notification_plan.get('friendly_name'),
                         subject_format=notification_plan.get('subject_format'),
                         body_format=notification_plan.get('body_format'),
-                        recipient_list=json.dumps(notification_plan.get('recipient_list')),
                         cc_list=json.dumps(notification_plan.get('cc_list')),
                         )
 

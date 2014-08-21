@@ -1,4 +1,4 @@
-from edc.base.admin.admin import BaseModelAdmin
+from edc.base.modeladmin.admin import BaseModelAdmin
 from edc.subject.consent.models import BaseConsent
 
 

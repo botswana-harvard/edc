@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -33,9 +34,9 @@ class OffStudyMixin(object):
 
         Once consented, a subject must be deliberately taken "off study" using a model that
         is a subclass of :class:`off_study.models.BaseOffStudy`."""
-        if not 'get_subject_identifier' in dir(self):
+        if 'get_subject_identifier' not in dir(self):
             raise ImproperlyConfigured('OffStudyMixin expected method \'get_subject_identifier\' to exist on the base model class. Model {0}'.format(self._meta.object_name))
-        if not 'get_report_datetime' in dir(self):
+        if 'get_report_datetime' not in dir(self):
             raise ImproperlyConfigured('OffStudyMixin expected method \'get_report_datetime\' to exist on the base model class. Model {0}'.format(self._meta.object_name))
         report_datetime = self.get_report_datetime()
         report_date = datetime(report_datetime.year, report_datetime.month, report_datetime.day)
