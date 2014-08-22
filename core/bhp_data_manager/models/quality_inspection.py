@@ -62,12 +62,11 @@ class QualityInspection(BaseModel):
         super(QualityInspection, self).save(*args, **kwargs)
 
     def confirm_appointment_status_is_done_before_setting_quality_to_closed(self):
-        """closing off only appt that are either done/incomplete/cancelled ONLY"""
         if self.status == 'closed':
             from edc.subject.appointment.models import Appointment
             appointment = Appointment.objects.get(registered_subject=self.registered_subject)
-            if appointment.appt_status != ['done', 'incomplete', 'cancelled']:
-                raise ValidationError('You cannot make a close off when the appointment status is not equal to DONE or INCOMPLETE or CANCELLED. Check appointment status first.')
+            if appointment.appt_status != 'done':
+                raise ValidationError('You cannot make a close off when the appointment status is not equal to DONE. Check appointment status first.')
 
     def dashboard(self):
         ret = None

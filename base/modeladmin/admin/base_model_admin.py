@@ -289,11 +289,6 @@ class BaseModelAdmin (admin.ModelAdmin):
             module_name = request.GET.get('module_name').lower()
             mode = next_url_name
             url = reverse('admin:{app_label}_{module_name}_{mode}'.format(app_label=app_label, module_name=module_name, mode=mode))
-        elif next_url_name:
-            try:
-                url = reverse(next_url_name)
-            except:
-                url = next_url_name
         else:
             # normally you should not be here.
             try:
