@@ -7,7 +7,7 @@ from ..classes import Cryptor, FieldCryptor
 from ..exceptions import AlgorithmError, EncryptionKeyError, ModeError
 
 
-class CryptorMethodsTests(TestCase):
+class TestCryptorMethods(TestCase):
 
     """"""
     def test_base_cryptor_load_keys(self):

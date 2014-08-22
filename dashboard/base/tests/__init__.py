@@ -1,1 +1,1 @@
-from dashboard_method_tests import DashboardMethodTests
+from .test_dashboard_methods import TestDashboardMethods

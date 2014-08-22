@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from edc.testing.models import TestM2m, TestForeignKey, TestModel
 
 
-class TestsSelenium(LiveServerTestCase):
+class TestSelenium(LiveServerTestCase):
 
     def setUp(self):
         self.adminuser = User.objects.create_user('django', 'django@test.com', 'pass')

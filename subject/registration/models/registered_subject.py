@@ -42,8 +42,7 @@ class RegisteredSubject(BaseSubject):
         blank=True,
     )
 
-    study_site = models.ForeignKey(
-        StudySite,
+    study_site = models.ForeignKey(StudySite,
         verbose_name='Site',
         help_text="",
         null=True,

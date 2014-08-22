@@ -55,8 +55,7 @@ class BaseBaseRequisition (BaseUuidModel):
         help_text='Use three digit code e.g 041, 056, 062, etc'
         )
 
-    site = models.ForeignKey(StudySite,
-        null=True,)
+    site = models.ForeignKey(StudySite, null=True)
 
     clinician_initials = InitialsField(
         default='--',
@@ -209,7 +208,7 @@ class BaseBaseRequisition (BaseUuidModel):
         if not self.requisition_identifier:
             return False
         if (len(self.requisition_identifier) == 36
-            and p.match(self.requisition_identifier)):
+                and p.match(self.requisition_identifier)):
             return True
         return False
 

@@ -55,7 +55,15 @@ class Controller(object):
         return lst
 
     def get_current_mapper(self):
-        if settings.CURRENT_COMMUNITY_CHECK:
+        """Returns the mapper for the current community using the settings attribute CURRENT_COMMUNITY as a key.
+
+        If CURRENT_COMMUNITY_CHECK is set to True or is not set, the value of CURRENT_COMMUNITY will be checked
+        against plot information before returning the mapper."""
+        try:
+            community_check = settings.CURRENT_COMMUNITY_CHECK
+        except AttributeError:
+            community_check = True
+        if community_check:
             if 'CURRENT_COMMUNITY' not in dir(settings) or not settings.CURRENT_COMMUNITY:
                 raise MapperError('Ensure settings.CURRENT_COMMUNITY exists and is not \'None\'.')
             if not settings.DEVICE_ID == '99':
