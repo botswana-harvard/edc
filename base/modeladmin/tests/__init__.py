@@ -1,1 +1,1 @@
-from .tests_admin import TestsAdmin
+from .test_admin import TestAdmin

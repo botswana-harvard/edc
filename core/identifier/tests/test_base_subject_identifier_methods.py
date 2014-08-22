@@ -6,7 +6,7 @@ from ..exceptions import IndentifierFormatError
 from ..models import Sequence
 
 
-class BaseSubjectIdentifierMethodsTests(TestCase):
+class TestBaseSubjectIdentifierMethods(TestCase):
 
     def test_p1(self):
         """Subject Identifier Tests."""

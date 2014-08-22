@@ -45,7 +45,6 @@ EDC_APPS = (
 
     'edc.map',
 
-    'edc.testing',
     'edc.utils',
 
     'edc.subject.lab_tracker',
@@ -75,4 +74,6 @@ EDC_APPS = (
     'edc.lab.lab_requisition',
     'edc.lab.lab_packing',
     'edc.lab.lab_profile',
+    'edc.testing',
+
 )
