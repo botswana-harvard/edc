@@ -66,6 +66,8 @@ class Appointment(BaseAppointment):
 
     history = AuditTrail()
 
+    quality_inspection_status = models.ForeignKey(QualityInspection)
+
     objects = AppointmentManager()
 
     def natural_key(self):
@@ -132,6 +134,7 @@ class Appointment(BaseAppointment):
         self.check_window_period()
         self.validate_visit_instance(using=using)
         self.close_off_appointment()
+        self.prevent_further_edit_to_appointment_when_status_is_done()
         AppointmentHelper().check_appt_status(self, using)
         super(Appointment, self).save(*args, **kwargs)
 
@@ -150,6 +153,18 @@ class Appointment(BaseAppointment):
                     return False
             if not confirm_quality_inspection_exists():
                 QualityInspection.objects.create(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
+
+    def prevent_further_edit_to_appointment_when_status_is_done(self):
+        """this is to prevent any further edits to the appointment once its confirmed
+        that both the appt_status and quality_status are set to done and closed respectively"""
+        appointment = Appointment.objects.filter(registered_subject=self.registered_subject, visit_definition=self.visit_definition)
+        if appointment:
+            if not appointment.count() > 1:
+                quality_closed = models.get_model('bhp_data_manager', 'QualityInspection').objects.filter(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
+                if quality_closed:
+                    if appointment[0].appt_status == 'done' and quality_closed[0].status == 'closed':
+                        if appointment.appt_status in ['new', 'in_progress', 'incomplete', 'cancelled']:
+                            raise ValidationError('This appointment is closed off and no further edits can be made')
 
     def __unicode__(self):
         """Django."""
