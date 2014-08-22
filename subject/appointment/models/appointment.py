@@ -11,12 +11,10 @@ from edc.subject.visit_schedule.models import VisitDefinition
 from edc.core.bhp_data_manager.models import QualityInspection
 
 from ..managers import AppointmentManager
-from ..choices import APPT_TYPE
+from ..choices import APPT_TYPE, APPT_STATUS
 from ..constants import DONE
 
 from .base_appointment import BaseAppointment
-
-from edc.core.bhp_data_manager.models import QualityInspection
 
 
 class Appointment(BaseAppointment):
@@ -67,8 +65,6 @@ class Appointment(BaseAppointment):
         help_text='Default for subject may be edited in admin under section bhp_subject. See Subject Configuration.')
 
     history = AuditTrail()
-
-    quality_inspection_status = models.ForeignKey(QualityInspection)
 
     objects = AppointmentManager()
 
@@ -136,7 +132,6 @@ class Appointment(BaseAppointment):
         self.check_window_period()
         self.validate_visit_instance(using=using)
         self.close_off_appointment()
-        self.prevent_further_edit_to_appointment_when_status_is_done()
         AppointmentHelper().check_appt_status(self, using)
         super(Appointment, self).save(*args, **kwargs)
 
@@ -156,18 +151,6 @@ class Appointment(BaseAppointment):
             if not confirm_quality_inspection_exists():
                 QualityInspection.objects.create(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
 
-    def prevent_further_edit_to_appointment_when_status_is_done(self):
-        """this is to prevent any further edits to the appointment once its confirmed
-        that both the appt_status and quality_status are set to done and closed respectively"""
-        appointment = Appointment.objects.filter(registered_subject=self.registered_subject, visit_definition=self.visit_definition)
-        if appointment:
-            if not appointment.count() > 1:
-                quality_closed = models.get_model('bhp_data_manager', 'QualityInspection').objects.filter(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
-                if quality_closed:
-                    if appointment[0].appt_status == 'done' and quality_closed[0].status == 'closed':
-                        if appointment.appt_status in ['new', 'in_progress', 'incomplete', 'cancelled']:
-                            raise ValidationError('This appointment is closed off and no further edits can be made')
-
     def __unicode__(self):
         """Django."""
         return "{0} {1} for {2}.{3}".format(self.registered_subject.subject_identifier, self.registered_subject.subject_type, self.visit_definition.code, self.visit_instance)
@@ -175,14 +158,17 @@ class Appointment(BaseAppointment):
     def dashboard(self):
         """Returns a hyperink for the Admin page."""
         ret = None
-        if self.registered_subject:
-            if self.registered_subject.subject_identifier:
-                url = reverse('subject_dashboard_url',
-                              kwargs={'dashboard_type': self.registered_subject.subject_type.lower(),
-                                      'dashboard_model': 'appointment',
-                                      'dashboard_id': self.pk,
-                                      'show': 'appointments'})
-                ret = """<a href="{url}" />dashboard</a>""".format(url=url)
+        if self.appt_status == APPT_STATUS[0][0]:
+            return 'NEW'
+        else:
+            if self.registered_subject:
+                if self.registered_subject.subject_identifier:
+                    url = reverse('subject_dashboard_url',
+                                  kwargs={'dashboard_type': self.registered_subject.subject_type.lower(),
+                                          'dashboard_model': 'appointment',
+                                          'dashboard_id': self.pk,
+                                          'show': 'appointments'})
+                    ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True
 
