@@ -5,7 +5,7 @@ from django.test import TestCase
 from edc.core.bhp_context.classes import BaseContext
 
 
-class BaseContextTests(TestCase):
+class TestBaseContext(TestCase):
 
     def test_p1(self):
         context = BaseContext()

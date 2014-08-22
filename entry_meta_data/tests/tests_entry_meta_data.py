@@ -27,11 +27,10 @@ class TestsEntryMetaData(TransactionTestCase):
             site_lab_profiles.register(TestLabProfile())
         except AlreadyRegisteredLabProfile:
             pass
-        try:
-            TestAppConfiguration()
-        except IntegrityError:
-            pass
         site_lab_tracker.autodiscover()
+
+        TestAppConfiguration()
+
         TestVisitSchedule().rebuild()
 
         self.test_visit_factory = TestVisitFactory

@@ -7,9 +7,7 @@ from edc.device.sync.models import Producer
 class BaseDispatch(BaseUuidModel):
     """A base model for dispatching models to a mobile device
     """
-    producer = models.ForeignKey(
-        Producer,
-        verbose_name="Producer / Netbook")
+    producer = models.ForeignKey(Producer, verbose_name="Producer / Netbook")
 
     is_dispatched = models.BooleanField(default=True)
 

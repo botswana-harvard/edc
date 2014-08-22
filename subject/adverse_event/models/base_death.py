@@ -5,8 +5,7 @@ from .base_base_death import BaseBaseDeath
 
 class BaseDeath(BaseBaseDeath):
 
-    death_medical_responsibility = models.ForeignKey(
-        DeathMedicalResponsibility,
+    death_medical_responsibility = models.ForeignKey(DeathMedicalResponsibility,
         verbose_name="Who was responsible for primary medical care of the participant during the month prior to death?",
         help_text="")
 

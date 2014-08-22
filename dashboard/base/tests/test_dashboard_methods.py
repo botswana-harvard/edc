@@ -9,7 +9,7 @@ from ..classes import Dashboard
 from ..exceptions import DashboardModelError
 
 
-class DashboardMethodTests(TestCase):
+class TestDashboardMethods(TestCase):
 
     def setUp(self):
         from edc.testing.tests.factories import TestConsentFactory

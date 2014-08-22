@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from ..classes import Device
 
 
-class DeviceTests(SimpleTestCase):
+class TestDevice(SimpleTestCase):
 
     def test_device1(self):
         """ Cannot start with 0 """

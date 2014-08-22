@@ -11,20 +11,11 @@ from .receive import Receive
 class Aliquot(BaseAliquot):
     """Stores aliquot information and is the central model in the RAORR relational model."""
 
-    receive = models.ForeignKey(
-        Receive,
-        editable=False)
+    receive = models.ForeignKey(Receive, editable=False)
 
-    aliquot_type = models.ForeignKey(
-        AliquotType,
-        verbose_name="Aliquot Type",
-        null=True)
+    aliquot_type = models.ForeignKey(AliquotType, verbose_name="Aliquot Type", null=True)
 
-    aliquot_condition = models.ForeignKey(
-        AliquotCondition,
-        verbose_name="Aliquot Condition",
-        null=True,
-        blank=True)
+    aliquot_condition = models.ForeignKey(AliquotCondition, verbose_name="Aliquot Condition", null=True, blank=True)
 
     import_datetime = models.DateTimeField(null=True, editable=False)
 
