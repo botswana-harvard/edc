@@ -26,6 +26,7 @@ class AppointmentAdmin(BaseModelAdmin):
 
     fields = (
         'registered_subject',
+        'quality_inspection_status',
         'appt_datetime',
         'appt_status',
         'study_site',
@@ -38,6 +39,7 @@ class AppointmentAdmin(BaseModelAdmin):
 
     list_display = (
         'registered_subject',
+        'quality_inspection_status',
         'dashboard',
         'appt_datetime',
         'appt_type',
@@ -54,6 +56,7 @@ class AppointmentAdmin(BaseModelAdmin):
     list_filter = (
         'study_site',
         'registered_subject__subject_type',
+        'quality_inspection_status__status',
         'appt_type',
         'is_confirmed',
         'contact_count',
