@@ -11,7 +11,7 @@ from edc.testing.models import TestModel
 admin.autodiscover()
 
 
-class TestsAdmin(TestCase):
+class TestAdmin(TestCase):
 
     urls = "urls"
 

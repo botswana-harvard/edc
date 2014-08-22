@@ -6,7 +6,7 @@ from ..classes import BaseUsing
 from ..exceptions import UsingError, UsingSourceError, UsingDestinationError
 
 
-class BaseUsingMethodsTests(TestCase):
+class TestBaseUsingMethods(TestCase):
 
     def test_methods(self):
         using_source = 'default'

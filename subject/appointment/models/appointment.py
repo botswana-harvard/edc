@@ -31,13 +31,11 @@ class Appointment(BaseAppointment):
 
     appt_close_datetime = models.DateTimeField(null=True, editable=False)
 
-    study_site = models.ForeignKey(
-        StudySite,
+    study_site = models.ForeignKey(StudySite,
         null=True,
         blank=False)
 
-    visit_definition = models.ForeignKey(
-        VisitDefinition,
+    visit_definition = models.ForeignKey(VisitDefinition,
         related_name='+',
         verbose_name=("Visit"),
         help_text=("For tracking within the window period of a visit, use the decimal convention. "

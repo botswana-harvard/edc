@@ -5,7 +5,7 @@ from ..exceptions import CheckDigitError, IdentifierEncodingError, IdentifierDec
 from ..models import IdentifierTracker
 
 
-class IdentifierMethodsTests(TestCase):
+class TestIdentifierMethods(TestCase):
 
     def setUp(self):
 

@@ -1,2 +1,2 @@
-from .tests_models import TestsModels
-from .tests_fields import TestsFields
+from .test_models import TestModels
+from .test_fields import TestFields
