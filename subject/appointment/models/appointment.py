@@ -8,7 +8,6 @@ from edc.core.bhp_variables.models import StudySite
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.visit_schedule.models import VisitDefinition
-from edc.core.bhp_data_manager.models import QualityInspection
 
 from ..managers import AppointmentManager
 from ..choices import APPT_TYPE, APPT_STATUS
@@ -143,24 +142,25 @@ class Appointment(BaseAppointment):
     def close_off_appointment(self):
         """checks if the appointment status is done"""
         if self.appt_status == 'done':
+            from edc.core.bhp_data_manager.models.time_point_completion import TimePointCompletion
             """confirms if the Quality Inspection form is auto filled, if not, create it (auto fill)"""
-            def confirm_quality_inspection_exists():
+            def confirm_time_point_completion_exists():
                 try:
-                    return QualityInspection.objects.filter(registered_subject=self.registered_subject, the_visit_code=self.visit_definition.code)
-                except QualityInspection.DoesNotExist:
+                    return TimePointCompletion.objects.filter(registered_subject=self.registered_subject, the_visit_code=self.visit_definition.code)
+                except TimePointCompletion.DoesNotExist:
                     return False
-            if not confirm_quality_inspection_exists():
-                QualityInspection.objects.create(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
+            if not confirm_time_point_completion_exists():
+                TimePointCompletion.objects.create(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
 
     def prevent_further_edit_to_appointment_when_status_is_done(self):
         """this is to prevent any further edits to the appointment once its confirmed
-        that both the appt_status and quality_status are set to done and closed respectively"""
+        that both the appt_status and time_point_completion_status are set to done and closed respectively"""
         appointment = Appointment.objects.filter(registered_subject=self.registered_subject, visit_definition=self.visit_definition)
         if appointment:
             if not appointment.count() > 1:
-                quality_closed = models.get_model('bhp_data_manager', 'QualityInspection').objects.filter(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
-                if quality_closed:
-                    if appointment[0].appt_status == 'done' and quality_closed[0].status == 'closed':
+                time_point_closed = models.get_model('bhp_data_manager', 'TimePointCompletion').objects.filter(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
+                if time_point_closed:
+                    if appointment[0].appt_status == 'done' and time_point_closed[0].status == 'closed':
                         if appointment.appt_status in ['new', 'in_progress', 'incomplete', 'cancelled']:
                             raise ValidationError('This appointment is closed off and no further edits can be made')
 
