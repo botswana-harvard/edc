@@ -5,8 +5,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
-from edc.subject.appointment.choices import APPT_STATUS
-from edc.subject.appointment.constants import DONE
+from edc.subject.appointment.models import Appointment
+from edc.choices.common import YES_NO_NA
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.audit.audit_trail import AuditTrail
 from edc.subject.registration.models import RegisteredSubject
@@ -14,12 +14,13 @@ from edc.subject.visit_schedule.models import VisitDefinition
 from edc.base.model.models import BaseModel
 
 
-class QualityInspection(BaseModel):
+class TimePointCompletion(BaseModel):
     """ All completed appointments are noted in this form.
         Only authorized users can access this form.
         This form basically allows the user to definitely confirm
         that the appointment has been completed"""
 
+    appointment = models.ForeignKey(Appointment, null=True)
     date_added = models.DateTimeField(
         verbose_name='Date added',
         default=datetime.today(),
@@ -50,6 +51,28 @@ class QualityInspection(BaseModel):
         editable=False
         )
 
+    #adding fields for withdrawal of consent
+
+    subject_withdrew = models.CharField(
+        max_length=35,
+        choices=YES_NO_NA,
+        default='N/A',
+        null=True,
+        help_text='Use ONLY when subject has changed mind and wishes to withdraw consent')
+
+    reasons_withdrawn = models.CharField(
+        max_length=35,
+        choices=(
+            ('changed_mind', 'Subject changed mind'),
+            ('N/A', 'Not applicable')),
+        null=True,
+        default='N/A',
+        help_text='')
+
+    date_withdrawn = models.DateTimeField(
+        null=True,
+        blank=True)
+
     objects = models.Manager()
 
     history = AuditTrail()
@@ -58,10 +81,10 @@ class QualityInspection(BaseModel):
         return "for {0} at the {1} visit".format(self.registered_subject, self.the_visit_code)
 
     def save(self, *args, **kwargs):
-        self.confirm_appointment_status_is_done_before_setting_quality_to_closed()
-        super(QualityInspection, self).save(*args, **kwargs)
+        self.confirm_appointment_status_is_done_before_setting_time_point_completion_to_closed()
+        super(TimePointCompletion, self).save(*args, **kwargs)
 
-    def confirm_appointment_status_is_done_before_setting_quality_to_closed(self):
+    def confirm_appointment_status_is_done_before_setting_time_point_completion_to_closed(self):
         """closing off only appt that are either done/incomplete/cancelled ONLY"""
         if self.status == 'closed':
             from edc.subject.appointment.models import Appointment
@@ -84,5 +107,5 @@ class QualityInspection(BaseModel):
 
     class Meta:
         app_label = "bhp_data_manager"
-        verbose_name = "Supervisor QA tool"
-        verbose_name_plural = "Supervisor QA tool"
+        verbose_name = "Time Point Completion tool"
+        verbose_name_plural = "Time Point Completion tool"

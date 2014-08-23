@@ -1,4 +1,4 @@
 from .comment import Comment
 from .action_item import ActionItem
 #from .model_help_text import ModelHelpText
-from .quality_inspection import QualityInspection
+from .time_point_completion import TimePointCompletion
