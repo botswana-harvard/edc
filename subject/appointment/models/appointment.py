@@ -66,8 +66,6 @@ class Appointment(BaseAppointment):
 
     history = AuditTrail()
 
-    quality_inspection_status = models.ForeignKey(QualityInspection)
-
     objects = AppointmentManager()
 
     def natural_key(self):
