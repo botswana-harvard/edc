@@ -48,7 +48,7 @@ class Command(BaseCommand):
         print '  all audit_on_save_xxx signals'
         msg_list = []
         for signal in SignalManager().signal_register:
-            if not signal in post_save + post_delete + pre_save + m2m_changed:
+            if signal not in post_save + post_delete + pre_save + m2m_changed:
                 msg_list.append('  ** warning: signal {0} does not exist.'.format(signal))
         print '  {0}\n  {1}'.format(SignalManager().signal_register[0], '\n  '.join(SignalManager().signal_register[1:]))
         print '\n'.join(msg_list)

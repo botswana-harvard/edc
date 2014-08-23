@@ -154,7 +154,7 @@ class BaseSubject (BaseSyncUuidModel):
                  instance of RegisteredSubject.
         ..note:: 'self' may not have an attribute registered_subject or the attribute may not be set.
         """
-        using = kwargs.get('using', None)
+        using = kwargs.get('using')
         updated = False
         registered_subject = None
         # skip if self is an instance of RegisteredSubject
@@ -181,7 +181,7 @@ class BaseSubject (BaseSyncUuidModel):
         return None
 
     def save(self, *args, **kwargs):
-        using = kwargs.get('using', None)
+        using = kwargs.get('using')
         if not self.is_registered_subject():
             self.subject_type = self.get_subject_type()
         self.insert_dummy_identifier()

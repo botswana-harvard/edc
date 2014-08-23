@@ -208,7 +208,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         return dispatch_item
 
     def save(self, *args, **kwargs):
-        using = kwargs.get('using', None)
+        using = kwargs.get('using')
         if self.id:
             if self.is_dispatchable_model():
                 if self.is_dispatch_container_model():

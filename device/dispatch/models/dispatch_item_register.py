@@ -26,7 +26,7 @@ class DispatchItemRegister(BaseDispatch):
 # the controller class.
     def save(self, *args, **kwargs):
         """Confirms an instance does not exist for this item_identifier."""
-        using = kwargs.get('using', None)
+        using = kwargs.get('using')
         if self.__class__.objects.using(using).filter(
                 item_identifier=self.item_identifier,
                 is_dispatched=True,

@@ -32,7 +32,7 @@ class MiddleManTransaction(BaseTransaction):
             raise TypeError('\'{0}\' is not configured to be a MiddleMan, so you cannot save MiddleMan transanctions here.'.format(settings.DEVICE_ID))
         super(MiddleManTransaction, self).save(*args, **kwargs)
 
-    def deserialize_to_inspector_on_post_save(self, **kwargs):
+    def deserialize_to_inspector_on_post_save(self, instance, raw, created, using, **kwargs):
         model_dict = DeserializeFromTransaction().decrypt_transanction(self)[0]
         tokens = model_dict.get('model').split('.')
         app_name = tokens[0]
@@ -41,7 +41,7 @@ class MiddleManTransaction(BaseTransaction):
         if model and 'save_to_inspector' in dir(model):
             fields = model_dict.get('fields')
             instance_pk = model_dict.get('pk')
-            model().save_to_inspector(fields, instance_pk)
+            model().save_to_inspector(fields, instance_pk, using)
 
     objects = models.Manager()
 

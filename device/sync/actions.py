@@ -9,7 +9,10 @@ def serialize(modeladmin, request, queryset):
     serialize_to_transaction = SerializeToTransaction()
     n = 0
     for instance in queryset:
-        serialize_to_transaction.serialize(instance.__class__, instance)
+        raw = False
+        created = True
+        using = 'default'
+        serialize_to_transaction.serialize(instance.__class__, instance, raw, created, using)
         n += 1
     messages.add_message(request, messages.SUCCESS, '%s transactions have been sent to Outgoing' % (n,))
 serialize.short_description = "Send as Outgoing Transaction"
