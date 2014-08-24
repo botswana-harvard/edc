@@ -78,12 +78,10 @@ class TimePointCompletion(BaseModel):
         """Closing off only appt that are either done/incomplete/cancelled ONLY."""
         exception_cls = exception_cls or ValidationError
         if self.status == 'closed':
-            if self.appointment.appt_status == 'new':
-                raise exception_cls('You cannot close an appointment that has a NEW status')
-            elif self.appointment.appt_status == 'in_progress':
-                raise exception_cls('You cannot close an appointment that is still in progress')
+            if self.appointment.appt_status in ['new', 'in_progress']:
+                raise exception_cls('You cannot close an appointment that has a {0} status'.format(self.appointment.appt_status.upper()))
         else:
-            if self.appointment.appt_status != ['done', 'incomplete', 'cancelled']:
+            if self.appointment.appt_status not in ['done', 'incomplete', 'cancelled']:
                 raise exception_cls('You cannot make a close off when the appointment status is not equal to DONE or INCOMPLETE or CANCELLED. Check appointment status first')
 
     def dashboard(self):
