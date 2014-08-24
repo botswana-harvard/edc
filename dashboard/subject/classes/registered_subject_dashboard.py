@@ -433,9 +433,9 @@ class RegisteredSubjectDashboard(Dashboard):
     @property
     def time_point_completion(self):
         self._time_point_completion = None
-        if self.registered_subject:
-            if TimePointCompletion.objects.filter(registered_subject=self.registered_subject):
-                self._time_point_completion = TimePointCompletion.objects.filter(registered_subject=self.registered_subject)[0]
+        if self.appointment:
+            if TimePointCompletion.objects.filter(appointment=self.appointment):
+                self._time_point_completion = TimePointCompletion.objects.filter(appointment=self.appointment)[0]
         return self._time_point_completion
 
     @property
