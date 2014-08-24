@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from edc.subject.registration.models import RegisteredSubject
+from edc.subject.appointment.models import Appointment
 from ..forms import TimePointCompletionForm
 from ..models import TimePointCompletion
 from .base_admin import BaseAdmin
@@ -22,8 +23,7 @@ class TimePointCompletionAdmin(BaseAdmin):
             'subject_withdrew')
         self.search_fields.insert(0, 'registered_subject__subject_identifier')
         self.list_filter = (
-        'registered_subject',
-        #'the_visit_code',
+        'registered_subject__gender',
         'status',
         'subject_withdrew',
         'appointment__visit_definition__code'
@@ -43,6 +43,9 @@ class TimePointCompletionAdmin(BaseAdmin):
         if db_field.name == "registered_subject":
             if request.GET.get('registered_subject'):
                 kwargs["queryset"] = RegisteredSubject.objects.filter(pk=request.GET.get('registered_subject'))
+        if db_field.name == "appointment":
+            if request.GET.get('appointment'):
+                kwargs["queryset"] = Appointment.objects.filter(pk=request.GET.get('appointment'))
         return super(TimePointCompletionAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(TimePointCompletion, TimePointCompletionAdmin)

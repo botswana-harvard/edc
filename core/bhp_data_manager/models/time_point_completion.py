@@ -80,16 +80,24 @@ class TimePointCompletion(BaseModel):
     def __unicode__(self):
         return "for {0} at the {1} visit".format(self.registered_subject, self.the_visit_code)
 
+    def get_report_datetime(self):
+        return self.date_added
+
     def save(self, *args, **kwargs):
-        self.confirm_appointment_status_is_done_before_setting_time_point_completion_to_closed()
+        self.confirm_appointment_status_before_setting_time_point_completion_to_closed()
         super(TimePointCompletion, self).save(*args, **kwargs)
 
-    def confirm_appointment_status_is_done_before_setting_time_point_completion_to_closed(self):
+    def confirm_appointment_status_before_setting_time_point_completion_to_closed(self):
         """closing off only appt that are either done/incomplete/cancelled ONLY"""
         if self.status == 'closed':
             from edc.subject.appointment.models import Appointment
-            appointment = Appointment.objects.get(registered_subject=self.registered_subject)
-            if appointment.appt_status != ['done', 'incomplete', 'cancelled']:
+            appointment = Appointment.objects.filter(registered_subject=self.registered_subject)
+            if appointment[0].appt_status == 'new':
+                raise ValidationError('You cannot close an appointment that has a NEW status')
+            if appointment[0].appt_status == 'in_progress':
+                raise ValidationError('You cannot close an appointment that is still in progress')
+        elif self.status[0] == 'closed':
+            if appointment[0].appt_status != ['done', 'incomplete', 'cancelled']:
                 raise ValidationError('You cannot make a close off when the appointment status is not equal to DONE or INCOMPLETE or CANCELLED. Check appointment status first')
 
     def dashboard(self):
