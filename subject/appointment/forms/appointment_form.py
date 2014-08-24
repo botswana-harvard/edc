@@ -18,6 +18,7 @@ class AppointmentForm(BaseModelForm):
     def clean(self):
 
         cleaned_data = self.cleaned_data
+        self.instance.check_time_point_completion(forms.ValidationError)
         if not cleaned_data.get("appt_datetime"):
             raise forms.ValidationError('Please provide the appointment date and time.')
         appt_datetime = cleaned_data.get("appt_datetime")
