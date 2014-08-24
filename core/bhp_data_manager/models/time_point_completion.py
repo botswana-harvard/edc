@@ -83,12 +83,13 @@ class TimePointCompletion(BaseModel):
 
     def dashboard(self):
         ret = None
-        url = reverse('subject_dashboard_url',
-                      kwargs={'dashboard_type': self.appointment,
-                              'dashboard_model': 'appointment',
-                              'dashboard_id': self.appointment.pk,
-                              'show': 'appointments'})
-        ret = """<a href="{url}" />dashboard</a>""".format(url=url)
+        if self.appointment:
+            url = reverse('subject_dashboard_url',
+                          kwargs={'dashboard_type': self.appointment.registered_subject.subject_type.lower(),
+                                  'dashboard_model': 'appointment',
+                                  'dashboard_id': self.appointment.pk,
+                                  'show': 'appointments'})
+            ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True
 
