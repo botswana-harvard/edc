@@ -24,9 +24,9 @@ class TimePointCompletionAdmin(BaseAdmin):
         self.search_fields.insert(0, 'appointment__registered_subject__subject_identifier')
         self.list_filter = (
             'status',
-            'close_datetime'
+            'close_datetime',
             'appointment__registered_subject__gender',
-            'appointment__visit_definition__code'
+            'appointment__visit_definition__code',
             'subject_withdrew',
         )
 
