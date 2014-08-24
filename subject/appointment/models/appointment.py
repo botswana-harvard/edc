@@ -131,7 +131,7 @@ class Appointment(BaseAppointment):
         self.check_window_period()
         self.validate_visit_instance(using=using)
 
-        self.check_time_point_completion()
+        self.check_time_point_completion(self)
 
         AppointmentHelper().check_appt_status(self, using)
         super(Appointment, self).save(*args, **kwargs)
