@@ -14,19 +14,18 @@ class TimePointCompletionAdmin(BaseAdmin):
     def __init__(self, *args, **kwargs):
         super(TimePointCompletionAdmin, self).__init__(*args, **kwargs)
         self.list_display = (
-            'registered_subject',
+            'appointment',
             'dashboard',
-            'date_added',
-            'the_visit_code',
-            #'appointment',
+            'close_date',
             'status',
             'subject_withdrew')
         self.search_fields.insert(0, 'registered_subject__subject_identifier')
         self.list_filter = (
-        'registered_subject__gender',
-        'status',
-        'subject_withdrew',
-        'appointment__visit_definition__code'
+            'status',
+            'close_date'
+            'appointment__registered_subject__gender',
+            'appointment__visit_definition__code'
+            'subject_withdrew',
         )
 
     def save_model(self, request, obj, form, change):
