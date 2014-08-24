@@ -20,7 +20,7 @@ from ..models import Appointment
 from .base_appointment_tests import BaseAppointmentTests
 
 
-class TestQualityInspection(BaseAppointmentTests):
+class TestTimePointCompletion(BaseAppointmentTests):
 
     def test_close_off_appointment(self):
         from edc.testing.tests.factories import TestRegistrationFactory, TestVisitFactory, TestConsentFactory, TestScheduledModelFactory
@@ -82,9 +82,9 @@ class TestQualityInspection(BaseAppointmentTests):
                 print 'assert appointment status changed to done'
                 self.assertEquals(appointment.appt_status, 'done')
         if appointment.appt_status == 'done':
-            print 'confirm entry into Quality Inspection form'
-            from edc.core.bhp_data_manager.tests.factories import QualityInspectionFactory
-            from edc.core.bhp_data_manager.models import QualityInspection
-            quality = QualityInspectionFactory(registered_subject=registered_subject, the_visit_code=visit_definition.code)
-            self.asserEqual(QualityInspection.objects.all().count(), 1)
+            print 'confirm entry into TimePointCompletion form'
+            from edc.core.bhp_data_manager.tests.factories import TimePointCompletionFactory
+            from edc.core.bhp_data_manager.models import TimePointCompletion
+            quality = TimePointCompletionFactory(registered_subject=registered_subject, the_visit_code=visit_definition.code)
+            self.asserEqual(TimePointCompletion.objects.all().count(), 1)
             print quality
