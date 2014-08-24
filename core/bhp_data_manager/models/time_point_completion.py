@@ -71,14 +71,14 @@ class TimePointCompletion(BaseModel):
         return self.date_added
 
     def save(self, *args, **kwargs):
-        self.allow_closed_status()
+        self.validate_status()
         super(TimePointCompletion, self).save(*args, **kwargs)
 
-    def allow_closed_status(self, exception_cls=None):
+    def validate_status(self, exception_cls=None):
         """Closing off only appt that are either done/incomplete/cancelled ONLY."""
         exception_cls = exception_cls or ValidationError
         if self.status == 'closed' and self.appointment.appt_status in ['new', 'in_progress']:
-                raise exception_cls('You cannot close an appointment that has a {0} status'.format(self.appointment.appt_status.upper()))
+            raise exception_cls('You cannot close an appointment that has a {0} status'.format(self.appointment.appt_status.upper()))
 
     def dashboard(self):
         ret = None
