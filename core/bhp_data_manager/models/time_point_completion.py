@@ -1,13 +1,14 @@
 from datetime import datetime
-from django.db import models
+
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
+from django.db import models
 
-from edc.subject.appointment.models import Appointment
-from edc.choices.common import YES_NO_NA
-from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.audit.audit_trail import AuditTrail
 from edc.base.model.models import BaseModel
+from edc.choices.common import YES_NO_NA
+from edc.core.crypto_fields.fields import EncryptedTextField
+from edc.subject.appointment.models import Appointment
 
 
 class TimePointCompletion(BaseModel):
