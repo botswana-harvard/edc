@@ -96,5 +96,5 @@ class TimePointCompletion(BaseModel):
 
     class Meta:
         app_label = "bhp_data_manager"
-        verbose_name = "Time Point Completion tool"
-        verbose_name_plural = "Time Point Completion tool"
+        verbose_name = "Time Point Completion"
+        verbose_name_plural = "Time Point Completion"
