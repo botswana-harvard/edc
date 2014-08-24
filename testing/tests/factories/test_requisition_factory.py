@@ -8,6 +8,7 @@ from .test_visit_factory import TestVisitFactory
 
 
 class TestRequisitionFactory(BaseRequisitionFactory):
-    FACTORY_FOR = TestRequisition
+    class Meta:
+        model = TestRequisition
 
     test_visit = factory.SubFactory(TestVisitFactory)

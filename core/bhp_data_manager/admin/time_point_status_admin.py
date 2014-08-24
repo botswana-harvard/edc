@@ -1,20 +1,19 @@
 from django.contrib import admin
-from django.contrib.auth.models import Group
 
 from edc.subject.appointment.models import Appointment
 
-from ..forms import TimePointCompletionForm
-from ..models import TimePointCompletion
+from ..forms import TimePointStatusForm
+from ..models import TimePointStatus
 
 from .base_admin import BaseAdmin
 
 
-class TimePointCompletionAdmin(BaseAdmin):
+class TimePointStatusAdmin(BaseAdmin):
 
-    form = TimePointCompletionForm
+    form = TimePointStatusForm
 
     def __init__(self, *args, **kwargs):
-        super(TimePointCompletionAdmin, self).__init__(*args, **kwargs)
+        super(TimePointStatusAdmin, self).__init__(*args, **kwargs)
         self.list_display = (
             'appointment',
             'dashboard',
@@ -34,6 +33,6 @@ class TimePointCompletionAdmin(BaseAdmin):
         if db_field.name == "appointment":
             if request.GET.get('appointment'):
                 kwargs["queryset"] = Appointment.objects.filter(pk=request.GET.get('appointment'))
-        return super(TimePointCompletionAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        return super(TimePointStatusAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
-admin.site.register(TimePointCompletion, TimePointCompletionAdmin)
+admin.site.register(TimePointStatus, TimePointStatusAdmin)
