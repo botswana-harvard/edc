@@ -155,21 +155,21 @@
                     
                     <A href="{% url appointment_meta|admin_urlname:'changelist' %}?q={{ subject_identifier }}&o=3.1">appointments</A>&nbsp;|&nbsp;
                     
-                    {% block quality_inspection %}
-                    {% if quality_inspection %}
+                    {% block time_point_completion %}
+                    {% if time_point_completion %}
                         {% if visit_model_instance %}
-                           <A href="{% url quality_inspection_meta|admin_urlname:'change' quality_inspection.pk %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">data inspection</A>
+                           <A href="{% url time_point_completion_meta|admin_urlname:'change' time_point_completion.pk %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">time-point completion</A>
                        {% else %}
-                           <A href="{% url quality_inspection_meta|admin_urlname:'change' quality_inspection.pk %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">data inspection</A>
+                           <A href="{% url time_point_completion_meta|admin_urlname:'change' time_point_completion.pk %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">time-point completion</A>
                        {% endif %}
                     {% else %}
                        {% if visit_model_instance %}
-                           <A href="{% url quality_inspection_meta|admin_urlname:'add' %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">data inspection</A>
+                           <A href="{% url time_point_completion_meta|admin_urlname:'add' %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">time-point completion</A>
                        {% else %}
-                           <A href="{% url quality_inspection_meta|admin_urlname:'add' %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">data inspection</A>
+                           <A href="{% url time_point_completion_meta|admin_urlname:'add' %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">time-point completion</A>
                        {% endif %}
                     {% endif %}&nbsp;|&nbsp;
-                    {% endblock quality_inspection %}
+                    {% endblock time_point_completion %}
                     
                     {% block correct_consent %}
                     {% endblock correct_consent %}
