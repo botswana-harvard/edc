@@ -66,7 +66,7 @@ class TimePointCompletion(BaseModel):
     history = AuditTrail()
 
     def __unicode__(self):
-        return "for {0} at the {1} visit".format(self.registered_subject, self.the_visit_code)
+        return "for {0} with {1} status".format(self.appointment, self.status.upper())
 
     def get_report_datetime(self):
         return self.date_added
@@ -83,14 +83,12 @@ class TimePointCompletion(BaseModel):
 
     def dashboard(self):
         ret = None
-        if self.registered_subject:
-            if self.registered_subject.subject_identifier:
-                url = reverse('subject_dashboard_url',
-                              kwargs={'dashboard_type': self.registered_subject.subject_type.lower(),
-                                      'dashboard_model': 'registered_subject',
-                                      'dashboard_id': self.registered_subject.pk,
-                                      'show': 'appointments'})
-                ret = """<a href="{url}" />dashboard</a>""".format(url=url)
+        url = reverse('subject_dashboard_url',
+                      kwargs={'dashboard_type': self.appointment,
+                              'dashboard_model': 'appointment',
+                              'dashboard_id': self.appointment.pk,
+                              'show': 'appointments'})
+        ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True
 
