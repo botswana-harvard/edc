@@ -11,14 +11,14 @@ from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.subject.appointment.models import Appointment
 
 
-class TimePointCompletion(BaseModel):
+class TimePointStatus(BaseModel):
     """ All completed appointments are noted in this form.
 
     Only authorized users can access this form. This form allows
     the user to definitely confirm that the appointment has
     been completed"""
 
-    appointment = models.ForeignKey(Appointment)
+    appointment = models.OneToOneField(Appointment)
 
     close_datetime = models.DateTimeField(
         verbose_name='Date and time appointment "closed" for edit.',
@@ -73,13 +73,13 @@ class TimePointCompletion(BaseModel):
 
     def save(self, *args, **kwargs):
         self.validate_status()
-        super(TimePointCompletion, self).save(*args, **kwargs)
+        super(TimePointStatus, self).save(*args, **kwargs)
 
     def validate_status(self, exception_cls=None):
         """Closing off only appt that are either done/incomplete/cancelled ONLY."""
         exception_cls = exception_cls or ValidationError
         if self.status == 'closed' and self.appointment.appt_status in ['new', 'in_progress']:
-            raise exception_cls('You cannot close an appointment that has a {0} status'.format(self.appointment.appt_status.upper()))
+            raise exception_cls('Cannot close timepoint. Appointment status is {0}.'.format(self.appointment.appt_status.upper()))
 
     def dashboard(self):
         ret = None

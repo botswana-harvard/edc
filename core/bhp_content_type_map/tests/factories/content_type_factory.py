@@ -4,7 +4,8 @@ from edc.base.model.tests.factories import BaseModelFactory
 
 
 class ContentTypeFactory(BaseModelFactory):
-    FACTORY_FOR = ContentType
+    class Meta:
+        model = ContentType
 
     name = factory.Sequence(lambda n: 'contenttypemap{0}'.format(n))
     app_label = 'bhp_content_type_map'

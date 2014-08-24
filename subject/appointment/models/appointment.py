@@ -130,26 +130,24 @@ class Appointment(BaseAppointment):
         self.appt_datetime, self.best_appt_datetime = self.validate_appt_datetime()
         self.check_window_period()
         self.validate_visit_instance(using=using)
-
-        self.check_time_point_completion(self)
-
         AppointmentHelper().check_appt_status(self, using)
+        self.check_time_point_status(self)
         super(Appointment, self).save(*args, **kwargs)
 
     def raw_save(self, *args, **kwargs):
         """Optional save to bypass stuff going on in the default save method."""
         super(Appointment, self).save(*args, **kwargs)
 
-    def check_time_point_completion(self, exception_cls):
-        """Prevents any further edits to the appointment once its confirmed
-        that both the appt_status and time_point_completion_status are set to done and closed."""
+    def check_time_point_status(self, exception_cls):
+        """Checks the timepoint status and prevents edits to the appointment if
+        time_point_status_status = closed."""
         exception_cls = exception_cls or ValidationError
         try:
-            TimePointCompletion = models.get_model('bhp_data_manager', 'TimePointCompletion')
-            time_point_completion = TimePointCompletion.objects.get(appointment=self)
-            if time_point_completion.status == 'closed':
-                raise ValidationError('This appointment is closed. See TimePointCompletion.')
-        except TimePointCompletion.DoesNotExist:
+            TimePointStatus = models.get_model('bhp_data_manager', 'TimePointStatus')
+            time_point_status = TimePointStatus.objects.get(appointment=self)
+            if time_point_status.status == 'closed':
+                raise ValidationError('The timepoint for this appointment is closed. See TimePointStatus.')
+        except TimePointStatus.DoesNotExist:
             pass
 
     def __unicode__(self):

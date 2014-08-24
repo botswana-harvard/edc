@@ -13,12 +13,12 @@ from ..models import MembershipForm, ScheduleGroup, VisitDefinition
 from ..classes import MembershipFormTuple, ScheduleGroupTuple
 
 
-class VisitScheduleTests(TestCase):
+class TestVisitSchedule(TestCase):
 
     def setUp(self):
-        content_type_map_helper = ContentTypeMapHelper()
-        content_type_map_helper.populate()
-        content_type_map_helper.sync()
+#         content_type_map_helper = ContentTypeMapHelper()
+#         content_type_map_helper.populate()
+#         content_type_map_helper.sync()
 
         try:
             site_lab_profiles.register(TestLabProfile())
