@@ -15,8 +15,8 @@ class TimePointCompletionForm(BaseModelForm):
         if cleaned_data.get('subject_withdrew') == 'Yes' and cleaned_data.get('reasons_withdrawn') == 'N/A':
             raise forms.ValidationError('If subject is withdrawing, REASON for withdrawal cannot be NOT APPLICABLE')
 
-        if cleaned_data.get('subject_withdrew') == 'Yes' and not cleaned_data.get('date_withdrawn'):
-            raise forms.ValidationError('If subject is withdrawing, please provide date of withdrawal')
+        if cleaned_data.get('subject_withdrew') == 'Yes' and not cleaned_data.get('withdraw_datetime'):
+            raise forms.ValidationError('If subject is withdrawing, please provide withdrawal date')
 
         self.instance.validate_status(forms.ValidationError)
         return cleaned_data
