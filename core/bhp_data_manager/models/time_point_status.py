@@ -70,7 +70,7 @@ class TimePointStatus(BaseModel):
         return "for {0} with {1} status".format(self.appointment, self.status.upper())
 
     def get_report_datetime(self):
-        return self.date_added
+        return self.close_datetime
 
     def save(self, *args, **kwargs):
         self.validate_status()
