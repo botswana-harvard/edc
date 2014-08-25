@@ -166,7 +166,7 @@
                        {% if visit_model_instance %}
                            <A href="{% url time_point_completion_meta|admin_urlname:'add' %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">time-point completion</A>
                        {% else %}
-                           <A href="{% url time_point_completion_meta|admin_urlname:'add' %}?next={{ subject_dashboard_url|default:"dashboard_url" }}&dashboard_type={{dashboard_type}}&dashboard_model={{dashboard_model}}&dashboard_id={{dashboard_id}}&show=appointments&subject_identifier={{ subject_identifier }}&registered_subject={{ registered_subject.pk }}">time-point completion</A>
+                           
                        {% endif %}
                     {% endif %}&nbsp;|&nbsp;
                     {% endblock time_point_completion %}
@@ -181,13 +181,13 @@
 
                 {% block infants %}{% endblock infants %}   
 
-                {% block partner %}{% endblock partner %}                    
+                {% block partner %}{% endblock partner %}
 
                 {% block maternal_consent %}{% endblock maternal_consent %}  
 
-                {% block locator %}{{ rendered_locator }}{% endblock locator %}                                                
+                {% block locator %}{{ rendered_locator }}{% endblock locator %}
 
-                {% block side_bar_right_1 %}{% endblock side_bar_right_1 %}                                                
+                {% block side_bar_right_1 %}{% endblock side_bar_right_1 %}
 
                 {% block action_items %}
                     <tr name="bottom right" >
