@@ -46,8 +46,6 @@ class BaseVisitTracking (BaseConsentedUuidModel):
     reason = models.CharField(
         verbose_name="What is the reason for this visit?",
         max_length=25,
-        # this is commented out and handled in the ModelForm class, see comment just below...
-        #choices=,
         help_text="<Override the field class for this model field attribute in ModelForm>",
         )
 

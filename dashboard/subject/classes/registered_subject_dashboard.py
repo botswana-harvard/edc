@@ -434,8 +434,10 @@ class RegisteredSubjectDashboard(Dashboard):
     def time_point_status(self):
         self._time_point_status = None
         if self.appointment:
-            if TimePointStatus.objects.filter(appointment=self.appointment):
-                self._time_point_status = TimePointStatus.objects.filter(appointment=self.appointment)[0]
+            try:
+                self._time_point_status = TimePointStatus.objects.get(appointment=self.appointment)
+            except TimePointStatus.DoesNotExist:
+                pass
         return self._time_point_status
 
     @property

@@ -131,14 +131,14 @@ class Appointment(BaseAppointment):
         self.check_window_period()
         self.validate_visit_instance(using=using)
         AppointmentHelper().check_appt_status(self, using)
-        self.check_time_point_status(self)
+        self.check_time_point_status()
         super(Appointment, self).save(*args, **kwargs)
 
     def raw_save(self, *args, **kwargs):
         """Optional save to bypass stuff going on in the default save method."""
         super(Appointment, self).save(*args, **kwargs)
 
-    def check_time_point_status(self, exception_cls):
+    def check_time_point_status(self, exception_cls=None):
         """Checks the timepoint status and prevents edits to the appointment if
         time_point_status_status = closed."""
         exception_cls = exception_cls or ValidationError
