@@ -1,5 +1,6 @@
 import json
 
+from django.db import IntegrityError
 from django.db.models import get_model
 
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
@@ -183,9 +184,9 @@ class BaseAppConfiguration(object):
         for catalogue_setup in self.consent_catalogue_list:
             content_type_map_string = catalogue_setup.get('content_type_map')
             catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))})
-            if not ConsentCatalogue.objects.filter(**catalogue_setup).exists():
+            try:
                 ConsentCatalogue.objects.create(**catalogue_setup)
-            else:
+            except IntegrityError:
                 catalogues = ConsentCatalogue.objects.filter(**catalogue_setup)
                 catalogues.update(**catalogue_setup)
                 for ct in catalogues:
