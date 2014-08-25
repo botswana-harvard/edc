@@ -10,7 +10,8 @@ from ...models import TestConsent, TestConsentWithMixin
 
 
 class BaseConsentBasicsFactory(BaseSubjectFactory):
-    ABSTRACT_FACTORY = True
+    class Meta:
+        abstract = True
 
     consent_reviewed = 'Yes'
     study_questions = 'Yes'
@@ -19,7 +20,8 @@ class BaseConsentBasicsFactory(BaseSubjectFactory):
 
 
 class BaseConsentFactory(BaseConsentBasicsFactory):
-    ABSTRACT_FACTORY = True
+    class Meta:
+        abstract = True
 
     study_site = factory.SubFactory(StudySiteFactory)
     consent_datetime = datetime.today()
@@ -28,7 +30,8 @@ class BaseConsentFactory(BaseConsentBasicsFactory):
 
 
 class BaseTestConsentFactory(BaseConsentFactory):
-    ABSTRACT_FACTORY = True
+    class Meta:
+        abstract = True
 
     user_provided_subject_identifier = None
     identity = factory.Sequence(lambda n: '{0}2{1}'.format(str(n).rjust(4, '0'), str(n).rjust(4, '0')))
@@ -39,8 +42,10 @@ class BaseTestConsentFactory(BaseConsentFactory):
 
 
 class TestConsentFactory(BaseConsentFactory):
-    FACTORY_FOR = TestConsent
+    class Meta:
+        model = TestConsent
 
 
 class TestConsentWithMixinFactory(BaseConsentFactory):
-    FACTORY_FOR = TestConsentWithMixin
+    class Meta:
+        model = TestConsentWithMixin

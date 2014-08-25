@@ -29,7 +29,7 @@ from edc.subject.visit_schedule.classes import MembershipFormHelper
 from edc.subject.visit_schedule.exceptions import MembershipFormError
 from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.core.bhp_data_manager.models import TimePointCompletion
+from edc.core.bhp_data_manager.models import TimePointStatus
 from edc.utils.collections import flatten
 
 from .scheduled_entry_context import ScheduledEntryContext
@@ -102,8 +102,8 @@ class RegisteredSubjectDashboard(Dashboard):
             visit_model=self.visit_model,
             visit_model_instance=self.visit_model_instance,
             visit_model_meta=self.visit_model._meta,
-            time_point_completion=self.time_point_completion,
-            time_point_completion_meta=TimePointCompletion._meta,
+            time_point_status=self.time_point_status,
+            time_point_status_meta=TimePointStatus._meta,
             )
         if self.show == 'forms':
             self.context.add(
@@ -431,12 +431,12 @@ class RegisteredSubjectDashboard(Dashboard):
         return self._subject_configuration
 
     @property
-    def time_point_completion(self):
-        self._time_point_completion = None
-        if self.registered_subject:
-            if TimePointCompletion.objects.filter(registered_subject=self.registered_subject):
-                self._time_point_completion = TimePointCompletion.objects.filter(registered_subject=self.registered_subject)[0]
-        return self._time_point_completion
+    def time_point_status(self):
+        self._time_point_status = None
+        if self.appointment:
+            if TimePointStatus.objects.filter(appointment=self.appointment):
+                self._time_point_status = TimePointStatus.objects.filter(appointment=self.appointment)[0]
+        return self._time_point_status
 
     @property
     def show(self):
