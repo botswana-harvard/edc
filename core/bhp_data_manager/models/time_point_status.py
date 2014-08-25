@@ -9,6 +9,7 @@ from edc.base.model.models import BaseModel
 from edc.choices.common import YES_NO_NA
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.subject.appointment.models import Appointment
+from edc.subject.appointment.constants import IN_PROGRESS, NEW
 
 
 class TimePointStatus(BaseModel):
@@ -78,7 +79,7 @@ class TimePointStatus(BaseModel):
     def validate_status(self, exception_cls=None):
         """Closing off only appt that are either done/incomplete/cancelled ONLY."""
         exception_cls = exception_cls or ValidationError
-        if self.status == 'closed' and self.appointment.appt_status in ['new', 'in_progress']:
+        if self.status == 'closed' and self.appointment.appt_status in [NEW, IN_PROGRESS]:
             raise exception_cls('Cannot close timepoint. Appointment status is {0}.'.format(self.appointment.appt_status.upper()))
 
     def dashboard(self):
