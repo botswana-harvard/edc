@@ -1,1 +1,1 @@
-from .time_point_completion_factory import TimePointCompletionFactory
+from .time_point_status_factory import TimePointStatusFactory

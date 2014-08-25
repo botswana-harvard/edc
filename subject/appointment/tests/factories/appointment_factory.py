@@ -1,14 +1,18 @@
 import factory
+
 from datetime import datetime
+
+from edc.base.model.tests.factories import BaseUuidModelFactory
+from edc.core.bhp_variables.tests.factories import StudySiteFactory
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
-from edc.core.bhp_variables.tests.factories import StudySiteFactory
-from edc.base.model.tests.factories import BaseUuidModelFactory
+
 from ...models import Appointment
 
 
 class AppointmentFactory(BaseUuidModelFactory):
-    FACTORY_FOR = Appointment
+    class Meta:
+        model = Appointment
 
     registered_subject = factory.SubFactory(RegisteredSubjectFactory)
     appt_datetime = datetime.today()
