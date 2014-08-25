@@ -28,6 +28,6 @@ def appointment_post_save(sender, instance, **kwargs):
     if isinstance(instance, Appointment):
         TimePointStatus = get_model('bhp_data_manager', 'TimePointStatus')
         try:
+            TimePointStatus.objects.get(appointment=instance)
+        except TimePointStatus.DoesNotExist:
             TimePointStatus.objects.create(appointment=instance)
-        except IntegrityError:
-            pass
