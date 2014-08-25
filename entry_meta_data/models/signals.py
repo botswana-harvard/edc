@@ -15,9 +15,9 @@ def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_f
     from ..helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
     if not raw:
         if isinstance(instance, BaseVisitTracking):
-            scheduled_entry_helper = ScheduledEntryMetaDataHelper(instance.appointment, sender)
+            scheduled_entry_helper = ScheduledEntryMetaDataHelper(instance.appointment, instance)
             scheduled_entry_helper.add_or_update_for_visit()
-            requisition_meta_data_helper = RequisitionMetaDataHelper(instance.appointment, sender)
+            requisition_meta_data_helper = RequisitionMetaDataHelper(instance.appointment, instance)
             requisition_meta_data_helper.add_or_update_for_visit()
             # update rule groups through the rule group controller, instance is a visit_instance
             site_rule_groups.update_rules_for_source_model(RegisteredSubject, instance)
