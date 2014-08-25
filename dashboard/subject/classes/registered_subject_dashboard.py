@@ -623,7 +623,7 @@ class RegisteredSubjectDashboard(Dashboard):
         """Renders the Scheduled Entry Forms section of the dashboard using the context class ScheduledEntryContext."""
         template = 'scheduled_entries.html'
         scheduled_entries = []
-        scheduled_entry_helper = ScheduledEntryMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
+        scheduled_entry_helper = ScheduledEntryMetaDataHelper(self.appointment_zero, self.visit_model_instance, self.visit_model_attrname)
         for meta_data_instance in scheduled_entry_helper.get_entries_for('clinic'):
             scheduled_entry_context = ScheduledEntryContext(meta_data_instance, self.appointment, self.visit_model)
             scheduled_entries.append(scheduled_entry_context.context)
@@ -650,7 +650,7 @@ class RegisteredSubjectDashboard(Dashboard):
         show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
         allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
         show_drop_down_requisitions = GlobalConfiguration.objects.get_attr_value('show_drop_down_requisitions')
-        requisition_helper = RequisitionMetaDataHelper(self.appointment, self.visit_model, self.visit_model_attrname)
+        requisition_helper = RequisitionMetaDataHelper(self.appointment, self.visit_model_instance, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
             if not show_not_required_requisitions and not requisition_context.required and not requisition_context.additional:

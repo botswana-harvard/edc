@@ -138,7 +138,7 @@ class AppointmentHelper(object):
             # have visit tracking, can only be Done, Incomplete, In Progress
             visit_model_instance = appointment.visit_definition.visit_tracking_content_type_map.model_class().objects.get(appointment=appointment)
             #if visit_model_instance.reason in visit_model_instance.get_visit_reason_no_follow_up_choices():
-            scheduled_entry_helper = ScheduledEntryMetaDataHelper(appointment, visit_model_instance.__class__)
+            scheduled_entry_helper = ScheduledEntryMetaDataHelper(appointment, visit_model_instance)
             if not scheduled_entry_helper.show_scheduled_entries():
                 # visit reason implies no data will be collected, so set appointment to Done
                 appointment.appt_status = DONE
