@@ -164,10 +164,10 @@ class FieldCryptor(object):
         secret = last_secret.get(hashed_value)
         if not secret:
             Crypt = get_model('crypto_fields', 'crypt')
-            if Crypt.objects.filter(hash=hashed_value).exists():
+            try:
                 crypt = Crypt.objects.values('secret').get(hash=hashed_value)
                 secret = crypt.get('secret')
                 last_secret.set(hashed_value, secret)
-            else:
-                secret = None
+            except Crypt.DoesNotExist:
+                pass
         return secret
