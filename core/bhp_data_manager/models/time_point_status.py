@@ -5,14 +5,19 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 from edc.audit.audit_trail import AuditTrail
-from edc.base.model.models import BaseModel
+try:
+    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
+except ImportError:
+    from edc.device.sync.models import BaseSyncUuidModel
 from edc.choices.common import YES_NO_NA
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.subject.appointment.models import Appointment
 from edc.subject.appointment.constants import IN_PROGRESS, NEW
 
+from ..managers import TimePointStatusManager
 
-class TimePointStatus(BaseModel):
+
+class TimePointStatus(BaseSyncUuidModel):
     """ All completed appointments are noted in this form.
 
     Only authorized users can access this form. This form allows
@@ -62,12 +67,15 @@ class TimePointStatus(BaseModel):
         null=True,
         blank=True)
 
-    objects = models.Manager()
+    objects = TimePointStatusManager()
 
     history = AuditTrail()
 
     def __unicode__(self):
         return "for {0} with {1} status".format(self.appointment, self.status.upper())
+
+    def natural_key(self):
+        return self.get_appointment().natural_key()
 
     def get_report_datetime(self):
         return self.close_datetime
