@@ -74,14 +74,6 @@ class Controller(object):
                         raise MapperError('The settings current community does not match the community the plots in the database belong to. Got {0} for current community in settings file and {1} for community plots belong to'.format(settings.CURRENT_COMMUNITY, getattr(items[0], mapper_class.map_area_field_attr)))
         return self.get_registry(settings.CURRENT_COMMUNITY)
 
-    def community_name(self):
-        """Returns the name of the current community."""
-        return self.get_current_mapper()().get_map_area()
-
-    def community_code(self):
-        """Returns the name of the current community code."""
-        return self.get_current_mapper()().get_map_code()
-
     def get_mapper_as_tuple(self):
         """Returns a list of tuples from the registry dictionary in the format of choices used by models."""
         return [(l, l) for l in self.get_as_list()]

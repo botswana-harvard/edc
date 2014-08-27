@@ -68,11 +68,10 @@ class Mapper(object):
             self.set_map_code(kwargs('map_code'))
 
     def __repr__(self):
-        try:
-            u = unicode(self)
-        except (UnicodeEncodeError, UnicodeDecodeError):
-            u = '[Bad Unicode data]'
-        return smart_str(u'<%s: %s>' % (self.__class__.__name__, u))
+        return 'Mapper({0.map_code!r}:{0.map_area!r})'.format(self)
+
+    def __str__(self):
+        return '({0.map_code!r}:{0.map_area!r})'.format(self)
 
     def _get_attr(self, attrname):
         if not attrname:  # attrname is the class variable name
