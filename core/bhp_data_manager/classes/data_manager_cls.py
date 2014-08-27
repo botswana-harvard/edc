@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group
 from django.core.exceptions import ImproperlyConfigured
+from django.db import IntegrityError
 
 
 class DataManagerCls(object):
@@ -14,10 +15,14 @@ class DataManagerCls(object):
             data_manager.prepare()
         """
 
-        if not Group.objects.filter(name='data_manager').exists():
+        try:
             Group.objects.create(name='data_manager')
-        if not Group.objects.filter(name='action_manager').exists():
+        except IntegrityError:
+            pass
+        try:
             Group.objects.create(name='action_manager')
+        except IntegrityError:
+            pass
 
     def check_groups(self):
         """Raises error if 'data_manager' and 'action_manager' groups are missing."""
