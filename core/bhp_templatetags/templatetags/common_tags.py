@@ -13,6 +13,12 @@ from edc.core.bhp_common.utils import formatted_age, convert_from_camel
 
 register = template.Library()
 
+from django import template
+from django.template.defaultfilters import stringfilter
+from django.utils.safestring import mark_safe
+
+register = template.Library()
+
 
 @register.simple_tag
 def hostname():
@@ -243,3 +249,30 @@ def mask_uuid(value, mask_string=None):
     if re_uuid.match(str(value)):
         return mask_string or '&ltuuid&gt'
     return value
+
+
+@register.filter(name='color_status')
+def color_status(value):
+    template = '<span style="color:{};">{}</span>'
+    if value == 'open':
+        value = template.format('green', value)
+    elif value == 'closed':
+        value = template.format('red', value)
+    elif value == 'feedback':
+        value = template.format('orange', value)
+    return mark_safe(value or '')
+
+
+@register.filter(name='mask_hiv_result')
+def mask_hiv_result(value):
+    if value == 'POS':
+        return 'e'
+    elif value == 'NEG':
+        return 'a'
+    elif value == 'IND':
+        return value
+    elif value == 'Declined':
+        return value
+    elif value == 'Not_performed':
+        return value
+    return '<??>'

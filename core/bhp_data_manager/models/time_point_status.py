@@ -72,7 +72,7 @@ class TimePointStatus(BaseSyncUuidModel):
     history = AuditTrail()
 
     def __unicode__(self):
-        return "for {0} with {1} status".format(self.appointment, self.status.upper())
+        return "{}: {}".format(self.appointment, self.status.upper())
 
     def natural_key(self):
         return self.get_appointment().natural_key()
@@ -84,11 +84,35 @@ class TimePointStatus(BaseSyncUuidModel):
         self.validate_status()
         super(TimePointStatus, self).save(*args, **kwargs)
 
-    def validate_status(self, exception_cls=None):
+    def status_display(self):
+        """Formats and returns the status for the dashboard."""
+        if self.status == 'open':
+            return '<span style="color:green;">Open</span>'
+        elif self.status == 'closed':
+            return '<span style="color:red;">Closed</span>'
+        elif self.status == 'feedback':
+            return '<span style="color:orange;">Feedback</span>'
+    status_display.allow_tags = True
+
+    def validate_status(self, instance=None, exception_cls=None):
         """Closing off only appt that are either done/incomplete/cancelled ONLY."""
         exception_cls = exception_cls or ValidationError
-        if self.status == 'closed' and self.appointment.appt_status in [NEW, IN_PROGRESS]:
-            raise exception_cls('Cannot close timepoint. Appointment status is {0}.'.format(self.appointment.appt_status.upper()))
+        instance = instance or self
+        if instance.status == 'closed' and instance.appointment.appt_status in [NEW, IN_PROGRESS]:
+            raise exception_cls('Cannot close timepoint. Appointment status is {0}.'.format(instance.appointment.appt_status.upper()))
+
+    @classmethod
+    def check_time_point_status(cls, appointment, exception_cls=None, using=None):
+        """Checks the timepoint status and prevents edits to the appointment if
+        time_point_status_status = closed."""
+        exception_cls = exception_cls or ValidationError
+        using = using or 'default'
+        try:
+            time_point_status = cls.objects.using(using).get(appointment=appointment)
+            if time_point_status.status == 'closed':
+                raise ValidationError('Data for this timepoint / appointment is closed. See TimePointStatus.')
+        except TimePointStatus.DoesNotExist:
+            pass
 
     def dashboard(self):
         ret = None
