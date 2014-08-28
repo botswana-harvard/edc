@@ -1,6 +1,9 @@
 import logging
+
 from django.core.management.base import BaseCommand
-from ...models import ContentTypeMap
+
+from ...classes import ContentTypeMapHelper
+# from ...models import ContentTypeMap
 
 
 logger = logging.getLogger(__name__)
@@ -19,8 +22,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print 'Populating / re-populating from django content type...'
-        ContentTypeMap.objects.populate()
+        ContentTypeMapHelper().populate()
         print 'Done.'
         print 'Syncing with membership forms, visit definitions, etc...'
-        ContentTypeMap.objects.sync()
+        ContentTypeMapHelper().sync()
         print 'Done. You may now check /admin/bhp_content_type_map/contenttypemap/.'
