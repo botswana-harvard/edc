@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase, SimpleTestCase, TransactionTestCase
+from django.test import TestCase
 
 from edc.core.bhp_variables.models import StudySite
 from edc.lab.lab_profile.classes import site_lab_profiles
@@ -17,7 +17,7 @@ from ..models import TimePointStatus
 from edc.testing.models.test_aliquot_type import TestAliquotType
 
 
-class TestTimePointStatus(SimpleTestCase):
+class TestTimePointStatus(TestCase):
 
     study_site = None
 

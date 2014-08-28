@@ -18,7 +18,7 @@ class TimePointStatusForm(BaseModelForm):
         if cleaned_data.get('subject_withdrew') == 'Yes' and not cleaned_data.get('withdraw_datetime'):
             raise ValidationError('If subject is withdrawing, please provide withdrawal date')
 
-        self.instance.validate_status(exception_cls=ValidationError)
+        self.instance.validate_status(TimePointStatus(**cleaned_data), ValidationError)
         return cleaned_data
 
     class Meta:

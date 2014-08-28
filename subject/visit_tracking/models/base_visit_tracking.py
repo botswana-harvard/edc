@@ -125,11 +125,22 @@ class BaseVisitTracking (BaseConsentedUuidModel):
 
     def __unicode__(self):
         return unicode(self.appointment)
-        #return '{0} {1}'.format(self.subject_identifier, self.report_datetime)
 
     def save(self, *args, **kwargs):
+        using = kwargs.get('using')
+        if self.id and not self.byass_time_point_status():
+            TimePointStatus = models.get_model('bhp_data_manager', 'TimePointStatus')
+            TimePointStatus.check_time_point_status(appointment=self.appointment, using=using)
         self.subject_identifier = self.get_subject_identifier()
         super(BaseVisitTracking, self).save(*args, **kwargs)
+
+    def byass_time_point_status(self):
+        """Returns False by default but if overridden and set to return
+        True, the TimePointStatus instance will not be checked in the save
+        method.
+
+        This does not effect the call from the ModelForm."""
+        return False
 
     def get_visit_reason_no_follow_up_choices(self):
         """Returns the visit reasons that do not imply any data collection; that is, the subject is not available."""

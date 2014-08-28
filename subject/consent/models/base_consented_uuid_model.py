@@ -1,4 +1,6 @@
+from django.db.models import get_model
 from django.conf import settings
+
 if 'edc.device.dispatch' in settings.INSTALLED_APPS:
     from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
 else:
@@ -9,7 +11,10 @@ from ..classes import ConsentHelper
 
 class BaseConsentedUuidModel(BaseSyncUuidModel):
 
-    """Base model class for all models that collect data requiring consent. """
+    """Base model class for all models that collect data requiring consent. 
+
+    This is not a consent model base class. It is used by scheduled models
+    with a key to a visit tracking model."""
 
     def is_consented_for_instance(self):
         """Confirms subject has a consent that covers data entry for this model."""
@@ -34,6 +39,13 @@ class BaseConsentedUuidModel(BaseSyncUuidModel):
         return True
 
     def save(self, *args, **kwargs):
+        using = kwargs.get('using')
+        if self.id:
+            TimePointStatus = get_model('bhp_data_manager', 'TimePointStatus')
+            try:
+                TimePointStatus.check_time_point_status(appointment=self.get_visit().appointment, using=using)
+            except AttributeError:
+                TimePointStatus.check_time_point_status(appointment=self.appointment, using=using)
         if 'is_off_study' in dir(self):
             if self.is_off_study():
                 raise SubjectOffStudyError('Model cannot be saved. Subject is off study. Perhaps catch this exception in forms clean() method.')

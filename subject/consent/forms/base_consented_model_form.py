@@ -1,5 +1,9 @@
 from django import forms
+
 from edc.base.form.forms import BaseModelForm
+from edc.core.bhp_common.utils import convert_from_camel
+from edc.core.bhp_data_manager.models import TimePointStatus
+
 from ..models import AttachedModel
 
 
@@ -27,9 +31,17 @@ class BaseConsentedModelForm(BaseModelForm):
     def clean(self):
         """Checks if subject has a valid consent for this subject model instance and versioned fields."""
         cleaned_data = self.cleaned_data
+        try:
+            appointment = cleaned_data.get(
+                convert_from_camel(self.visit_model()._meta.object_name)).appointment
+        except AttributeError:
+            appointment = cleaned_data.get('appointment')
+        TimePointStatus.check_time_point_status(
+            appointment=appointment,
+            exception_cls=forms.ValidationError)
         # get the helper class
         consent_helper_cls = self._meta.model().get_consent_helper_cls()
-        #check if consented to complete this form
+        # check if consented to complete this form
         consent_helper_cls((self._meta.model, cleaned_data), forms.ValidationError).is_consented_for_subject_instance()
         # Validates fields under consent version control and other checks.
         consent_helper_cls((self._meta.model, cleaned_data), forms.ValidationError).validate_versioned_fields()
