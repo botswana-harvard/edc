@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """A command line hasher that hashes value according to the Edc
-crypto_fields rsa-local algorithm.
+crypto_fields hash algorithm.
 
 If using the same salt, hasher will return the same value as the
 Edc in the model field to link to the secret. hasher returns a
@@ -14,6 +14,7 @@ Usage: python hasher.py <value>
 
 import hashlib
 import sys
+
 from salt import rsa_restricted_salt
 
 SALT = rsa_restricted_salt
