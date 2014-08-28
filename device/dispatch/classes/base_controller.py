@@ -4,7 +4,6 @@ from datetime import datetime
 from django.conf import settings
 from django.core.serializers.base import DeserializationError
 from django.db import IntegrityError
-from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.db.models import get_model
 from django.db.models import ForeignKey, OneToOneField, get_app, get_models
@@ -82,7 +81,7 @@ class BaseController(BaseProducer):
         super(BaseController, self).__init__(using_source, using_destination, **kwargs)
         self.fk_instances = []
         self.preparing_status = kwargs.get('preparing_netbook', None)
-        if not 'DISPATCH_APP_LABELS' in dir(settings):
+        if 'DISPATCH_APP_LABELS' not in dir(settings):
             raise ImproperlyConfigured('Attribute DISPATCH_APP_LABELS not found. Add to settings. e.g. DISPATCH_APP_LABELS = [\'mochudi_household\', \'mochudi_subject\', \'mochudi_lab\']')
         self.set_producer()
         return None
@@ -290,7 +289,7 @@ class BaseController(BaseProducer):
         self._session_container['class_counter'].update({instance._meta.object_name: cnt + 1})
 
     def get_session_container_class_counter_count(self, instance):
-        if self._session_container['class_counter'].get(instance._meta.object_name, None) == None:
+        if self._session_container['class_counter'].get(instance._meta.object_name, None) is None:
             self._session_container['class_counter'].update({instance._meta.object_name: 0})
         return self._session_container['class_counter'].get(instance._meta.object_name)
 
@@ -300,17 +299,15 @@ class BaseController(BaseProducer):
             model_cls = get_model(app, model)
         except:
             model_cls = model_or_app_model_tuple
-        #additional_base_model_class = model_cls
         self.model_to_json(model_cls, additional_base_model_class, fk_to_skip=fk_to_skip)
 
     def update_model_crpts(self, mld_cls_instances):
         """Grabs all crypt objects of models being dispatched. """
-        hash_keys = []
         crypt_objs_instances = []
         if not isinstance(mld_cls_instances, (list, QuerySet)):
             mld_cls_instances = [mld_cls_instances]
-        for mld_cls_instance in mld_cls_instances: # eg plot
-            #Getin model
+        for mld_cls_instance in mld_cls_instances:  # eg plot
+            # Get model
             model_cls = mld_cls_instance.__class__
             if '_meta' not in dir(model_cls):
                 continue
@@ -322,10 +319,10 @@ class BaseController(BaseProducer):
                     if hash_value:
                         crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
                         if crypt_objs_instance:
-                            #Successfully pulled a crypt record using hash generated from RSA instance.
+                            # Successfully pulled a crypt record using hash generated from RSA instance.
                             crypt_objs_instances.append(crypt_objs_instance[0])
                         else:
-                            #RSA hash dis not work, now we try AES generated hash
+                            # RSA hash dis not work, now we try AES generated hash
                             crypt = FieldCryptor('aes', 'local')
                             hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
                             if hash_value:
@@ -349,15 +346,14 @@ class BaseController(BaseProducer):
         ..warning:: This method assumes you have confirmed that the model_instances are "already dispatched" or not.
 
         """
-        model_instances = []
-        #Get all Crypts for this list of instances
+        # Get all Crypts for this list of instances
         crypts_dispatched = self.update_model_crpts(model_instance)
         # convert to list if not iterable
         if not isinstance(model_instance, (list, QuerySet)):
             model_instance = [model_instance]
         if isinstance(model_instance, QuerySet):
             model_instance = [m for m in model_instance]
-        #append crypts to all instances to be dispatched
+        # append crypts to all instances to be dispatched
         model_instances = crypts_dispatched + model_instance
         if self.has_incoming_transactions(model_instances):
             raise PendingTransactionError('One or more listed models have pending incoming transactions on \'{0}\'. Consume them first. Got \'{1}\'.'.format(self.get_using_source(), list(set(model_instances))))
@@ -373,11 +369,6 @@ class BaseController(BaseProducer):
                 self.get_fk_dependencies(model_instances, fk_to_skip)
                 break
             model_instances = self.fk_instances + model_instances
-            #model_instances = list(set(model_instances))
-            # skip instances that have already been dispatched during this session
-            # TODO: this is knocking out need instances for deserialization
-            #model_instances = [inst for inst in model_instances if inst not in self.get_session_container('serialized')]
-            #serialize
             if model_instances:
                 # serialize all
                 json_obj = serializers.serialize('json', model_instances, ensure_ascii=False, use_natural_keys=True, indent=2)
@@ -409,14 +400,18 @@ class BaseController(BaseProducer):
                         raise DeserializationError('Unable to deserialize object. Tries exceeded on {0}. Got {1}'.format(deserialized_object.object.__class__, e))
 
     def serialize_dependencies(self, d_obj, user_container, to_json_callback):
-        # check for foreign keys and, if found, send using the callback
-        # Ensures the sent instance is complete / stable
-        # TODO: any issue about natural keys?? this searched the destination on pk.
+        """Checks for foreign keys and, if found, sends using the callback.
+
+        Ensures the sent instance is complete / stable
+
+        TODO: any issue about natural keys?? this searched the destination on pk."""
         self.serialize_m2m(d_obj, user_container, to_json_callback)
 
     def serialize_m2m(self, d_obj):
-        # check for M2M. If found, populate the list table, then add the list items
-        # to the m2m field. See https://docs.djangoproject.com/en/dev/topics/db/examples/many_to_many/
+        """Checks for M2M.
+
+        If found, populate the list table, then add the list items to the m2m field.
+        See https://docs.djangoproject.com/en/dev/topics/db/examples/many_to_many/"""
         for m2m_rel_mgr in d_obj.object._meta.many_to_many:
             pk = getattr(d_obj.object, 'pk')
             # get class of this model
@@ -428,19 +423,19 @@ class BaseController(BaseProducer):
             # try something like test_item_m2m.m2m.all(), gets all() list_model instances for this m2m
             m2m_qs = getattr(inst, m2m).all()
             # create list_model instances on destination if they do not exist
-            #dst_list_item_natural_keys = []  # list of tuples returned by natural key on list item
+            # dst_list_item_natural_keys = []  # list of tuples returned by natural key on list item
             dst_list_item_pks = []
             for src_list_item in m2m_qs:
                 if not src_list_item.__class__.objects.using(self.get_using_destination()).filter(pk=src_list_item.pk).exists():
                     # no need to use callback, list models are not registered with dispatch
                     self._to_json(src_list_item, additional_base_model_class=BaseListModel)
                     # record source pk for use later
-                #dst_list_item_natural_keys.append(src_list_item.natural_key())
+                # dst_list_item_natural_keys.append(src_list_item.natural_key())
                 dst_list_item_pks.append(src_list_item.pk)
             # get instance of this model on destination
             dest_inst = cls.objects.using(self.get_using_destination()).get(pk=pk)
             # find the pk for each list model instance and add to the m2m "field"
-            #for values_tpl in dst_list_item_natural_keys:
+            # for values_tpl in dst_list_item_natural_keys:
             for pk in dst_list_item_pks:
                 # get the list_model instance on destination
                 item_inst = src_list_item.__class__.objects.using(self.get_using_destination()).get(pk=pk)
