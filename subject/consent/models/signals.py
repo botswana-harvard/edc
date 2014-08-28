@@ -1,10 +1,14 @@
-from django.db.models.signals import post_save, pre_save, post_delete
 from django.db.models import get_app, get_models
+from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
+
+from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
+
 from ..models import BaseConsent, BaseConsentedUuidModel
-from .consent_catalogue import ConsentCatalogue
+
 from .attached_model import AttachedModel
+from .consent_catalogue import ConsentCatalogue
 
 
 @receiver(pre_save, weak=False, dispatch_uid='is_consented_instance_on_pre_save')
@@ -27,16 +31,17 @@ def add_models_to_catalogue(sender, instance, **kwargs):
                 app = None
             if app:
                 # sync content_type_map
-                ContentTypeMap.objects.populate()
-                ContentTypeMap.objects.sync()
+                ContentTypeMapHelper().populate()
+                ContentTypeMapHelper().sync()
                 # add models to AttachedModel
                 models = get_models(app)
                 for model in models:
                     if 'consent' not in model._meta.object_name.lower() and 'audit' not in model._meta.object_name.lower():
-                        if ContentTypeMap.objects.filter(model=model._meta.object_name.lower()):
-                            content_type_map = ContentTypeMap.objects.get(model=model._meta.object_name.lower())
-                            if not AttachedModel.objects.filter(consent_catalogue=instance, content_type_map=content_type_map).exists():
-                                AttachedModel.objects.create(consent_catalogue=instance, content_type_map=content_type_map)
+                        content_type_map = ContentTypeMap.objects.get(model=model._meta.object_name.lower())
+                        try:
+                            AttachedModel.objects.get(consent_catalogue=instance, content_type_map=content_type_map)
+                        except AttachedModel.DoesNotExist:
+                            AttachedModel.objects.create(consent_catalogue=instance, content_type_map=content_type_map)
 
 
 @receiver(post_save, weak=False, dispatch_uid='update_consent_history')

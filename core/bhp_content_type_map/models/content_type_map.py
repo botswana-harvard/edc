@@ -22,7 +22,7 @@ class ContentTypeMap(BaseModel):
     name = models.CharField(
         verbose_name='Model verbose_name',
         max_length=50,
-        unique=True,
+        # unique=True, this is inccorrect, verbose_name is not unique
         db_index=True,
         )
 
