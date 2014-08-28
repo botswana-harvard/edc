@@ -1,5 +1,8 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import get_model, F
+from django.core.exceptions import MultipleObjectsReturned
+
+from ..models import ContentTypeMap
 
 
 class ContentTypeMapHelper(object):
@@ -8,28 +11,46 @@ class ContentTypeMapHelper(object):
         if not using:
             using = 'default'
         self.using = using
-        self.content_type_map_model_cls = get_model('bhp_content_type_map', 'contenttypemap')
+        self.content_type_map_model_cls = ContentTypeMap  # get_model('bhp_content_type_map', 'contenttypemap')
 
     def populate(self):
         """Populates ContentTypeMap with django's ContentTypecontent information."""
         content_types = ContentType.objects.using(self.using).all()
         for content_type in content_types:
-            if not self.content_type_map_model_cls.objects.filter(content_type=content_type):
-                if not self.content_type_map_model_cls.objects.using(self.using).filter(content_type__name=content_type.name).count() == 1:
-                    self.content_type_map_model_cls.objects.using(self.using).filter(content_type__name=content_type.name).delete()
-                if get_model(content_type.app_label, content_type.model):
-                    verbose_name = get_model(content_type.app_label, content_type.model)._meta.verbose_name
-                else:
-                    verbose_name = content_type.name
-                try:
-                    self.content_type_map_model_cls.objects.using(self.using).create(
-                        content_type=content_type,
-                        app_label=content_type.app_label,
-                        name=verbose_name,
-                        model=content_type.model,
-                        module_name=content_type.model)
-                except:
-                    pass
+            try:
+                self.content_type_map_model_cls.objects.get(content_type=content_type)
+                create = False
+            except self.content_type_map_model_cls.DoesNotExist:
+                create = True
+            except MultipleObjectsReturned:
+                self.content_type_map_model_cls.objects.filter(content_type=content_type).delete()
+                create = True
+            if create:
+                verbose_name = get_model(content_type.app_label, content_type.model)._meta.verbose_name
+                self.content_type_map_model_cls.objects.using(self.using).create(
+                    content_type=content_type,
+                    app_label=content_type.app_label,
+                    name=verbose_name,
+                    model=content_type.model,
+                    module_name=content_type.model)
+
+
+#             if not self.content_type_map_model_cls.objects.filter(content_type=content_type):
+#                 if not self.content_type_map_model_cls.objects.using(self.using).filter(content_type__name=content_type.name).count() == 1:
+#                     self.content_type_map_model_cls.objects.using(self.using).filter(content_type__name=content_type.name).delete()
+#                 if get_model(content_type.app_label, content_type.model):
+#                     verbose_name = get_model(content_type.app_label, content_type.model)._meta.verbose_name
+#                 else:
+#                     verbose_name = content_type.name
+#                 try:
+#                     self.content_type_map_model_cls.objects.using(self.using).create(
+#                         content_type=content_type,
+#                         app_label=content_type.app_label,
+#                         name=verbose_name,
+#                         model=content_type.model,
+#                         module_name=content_type.model)
+#                 except:
+#                     pass
 #        # make sure content_type_map_model_cls has as many records as djangos
 #        django_count = ContentType.objects.using(self.using).all().aggregate(Max('id'))
 #        bhp_count = self.content_type_map_model_cls.objects.using(self.using).all().aggregate(Max('id'))
