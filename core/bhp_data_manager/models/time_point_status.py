@@ -103,8 +103,8 @@ class TimePointStatus(BaseSyncUuidModel):
 
     @classmethod
     def check_time_point_status(cls, appointment, exception_cls=None, using=None):
-        """Checks the timepoint status and prevents edits to the appointment if
-        time_point_status_status = closed."""
+        """Checks the timepoint status and prevents edits to the model if
+        time_point_status_status == closed."""
         exception_cls = exception_cls or ValidationError
         using = using or 'default'
         try:
