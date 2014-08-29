@@ -20,9 +20,9 @@ class BaseProducer(BaseUsing):
         Producer = get_model('sync', 'Producer')
         if self._producer:
             raise ProducerError('Producer may not be changed once set. Create a new DispatchController instead.')
-        if Producer.objects.using(self.get_using_source()).filter(settings_key=self.get_using_destination(), is_active=True).exists():
+        try:
             self._producer = Producer.objects.using(self.get_using_source()).get(settings_key=self.get_using_destination(), is_active=True)
-        if not self._producer:
+        except Producer.DoesNotExist:
             raise ProducerError('Dispatcher cannot find a producer with settings key \'{0}\' '
                                 'on the source {1}.'.format(self.get_using_destination(), self.get_using_source()))
         # check the producers DATABASES key exists
