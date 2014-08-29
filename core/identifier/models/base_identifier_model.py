@@ -7,8 +7,7 @@ from .base_sequence import BaseSequence
 
 
 class BaseIdentifierModel(BaseSyncUuidModel):
-    """Store identifiers as allocated.
-    """
+    """Store identifiers as allocated."""
 
     identifier = models.CharField(max_length=36, unique=True, editable=False)
     padding = models.IntegerField(default=4, editable=False)
@@ -19,30 +18,35 @@ class BaseIdentifierModel(BaseSyncUuidModel):
     sequence_model_name = models.CharField(max_length=50, editable=False, default='sequence')
 
     def save(self, *args, **kwargs):
-        if not 'DEVICE_ID' in dir(settings):
-            raise ImproperlyConfigured('Settings attribute DEVICE_ID not found. Add DEVICE_ID = to your settings.py where DEVICE_ID is a project wide unique integer.')
-        if not self.id:
+        try:
             self.device_id = settings.DEVICE_ID
-            if self.is_derived == True:
+        except AttributeError:
+            raise ImproperlyConfigured('Settings attribute DEVICE_ID not found. Add DEVICE_ID '
+                                       'to your settings.py where DEVICE_ID is a project wide '
+                                       'unique integer.')
+        if not self.id:
+            if self.is_derived:
                 self.sequence_number = 0
             else:
-                if not self.sequence_app_label or not self.sequence_model_name:
-                    raise AttributeError('Attributes sequence_app_label and sequence_model_name may not be None. These are needed to \'get_model\' the Sequence table. Got {0}'.format((self.sequence_app_label, self.sequence_model_name)))
                 Sequence = models.get_model(self.sequence_app_label, self.sequence_model_name)
-                if not issubclass(Sequence, BaseSequence):
-                    raise TypeError('Expected Sequence model to be a subclass of BaseSequence. Using {0}. Got {1}'.format((self.sequence_app_label, self.sequence_model_name), Sequence))
-                sequence = Sequence.objects.using(kwargs.get('using', None)).create(device_id=settings.DEVICE_ID)
+                try:
+                    sequence = Sequence.objects.using(
+                        kwargs.get('using', None)).create(device_id=self.device_id)
+                except AttributeError:
+                    raise AttributeError('Unable to get model \'Sequence\' using Attributes '
+                                         'sequence_app_label and sequence_model_name. Got {}, '
+                                         '{}'.format(self.sequence_app_label,
+                                                     self.sequence_model_name))
                 self.sequence_number = sequence.pk
-        if self.identifier == None:
-            raise AttributeError('IdentifierModel attribute \'identifier\' cannot be None. Set as a unique uuid or a unique formatted identifier.')
-        if self.sequence_number == None:
-            raise AttributeError('IdentifierModel attribute \'sequence\' cannot be None.')
+        if not self.identifier:
+            raise AttributeError('IdentifierModel attribute \'identifier\' cannot be None. '
+                                 'Set as a unique uuid or a unique formatted identifier.')
         super(BaseIdentifierModel, self).save(*args, **kwargs)
 
     @property
     def formatted_sequence(self):
         """Returns a padded sequence segment for the identifier"""
-        if self.is_derived == True:
+        if self.is_derived:
             return ''
         return str(self.sequence_number).rjust(self.padding, '0')
 
