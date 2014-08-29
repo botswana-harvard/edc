@@ -309,12 +309,14 @@ class RegisteredSubjectDashboard(Dashboard):
     @property
     def visit_model_instance(self):
         """Returns the visit model instance but may be None."""
-        if self.appointment:
+        self._visit_model_instance = None
+        try:
             self._visit_model_instance = self.visit_model.objects.get(appointment=self.appointment)
-        elif self.dashboard_model_name == 'visit':
-            self._visit_model_instance = self.visit_model.objects.get(pk=self.dashboard_id)
-        else:
-            self._visit_model_instance = None
+        except self.visit_model.DoesNotExist:
+            try:
+                self._visit_model_instance = self.visit_model.objects.get(pk=self.dashboard_id)
+            except self.visit_model.DoesNotExist:
+                pass
         if self._visit_model_instance:
             if not isinstance(self._visit_model_instance, self.visit_model):
                 raise TypeError('Expected an instance of visit model class {0}.'.format(self.visit_model))
