@@ -197,7 +197,23 @@ class BaseAppConfiguration(object):
     def update_global(self):
         """Creates or updates global configuration options in app_configuration.
 
-        First ensures defaults exist, then, if user specification exists, overwrites the defaults or adds new."""
+        First ensures defaults exist, then, if user specification exists, overwrites the defaults or adds new.
+
+        See sample app_configuration where there is an attribute like this:
+
+            ...
+            global_configuration = {
+                'dashboard':
+                    {'show_not_required': True,
+                    'allow_additional_requisitions': False},
+                'appointment':
+                    {'allowed_iso_weekdays': '1234567',
+                     'use_same_weekday': True,
+                     'default_appt_type': 'default'},
+                }
+            ...
+
+        """
         configurations = [default_global_configuration]
         try:
             configurations.append(self.global_configuration)

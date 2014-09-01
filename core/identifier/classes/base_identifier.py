@@ -26,7 +26,7 @@ class BaseIdentifier(object):
             self.add_check_digit = True
         else:
             self.add_check_digit = add_check_digit
-        self.using = using
+        self.using = using or 'default'
         self.is_derived = is_derived
         if 'PROJECT_IDENTIFIER_PREFIX' not in dir(settings):
             raise ImproperlyConfigured('Missing settings attribute PROJECT_IDENTIFIER_PREFIX. Please add. For example, PROJECT_IDENTIFIER_PREFIX = \'041\' for project BHP041.')
