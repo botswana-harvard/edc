@@ -13,6 +13,9 @@
 <li><A href="/admin/auth/user/">User Management</A></li>
 <li><A href="/admin/auth/group/">Group Management</A></li>
 <li><A href="/edc/bhp_variables/studyspecific/">Study Specific Variables</A></li>
+{% if 'apps.bcpp_dispatch' in installed_apps %}
+<li><A href={% url 'load_producer_databases_url' %}>Load Producers</A></li>
+{% endif %}
 {% if 'edc.device.sync' in installed_apps and edc.device.dispatch not in installed_apps %}
 {% endif %}
 
