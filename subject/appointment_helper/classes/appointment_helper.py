@@ -179,9 +179,14 @@ class AppointmentHelper(object):
         return appointment
 
     def _get_default_appt_type(self, registered_subject):
+        """Returns the default appointment date fetched from either the subject
+        specific setting or the global setting."""
         default_appt_type = None
-        if SubjectConfiguration.objects.filter(subject_identifier=registered_subject.subject_identifier):
+        try:
             default_appt_type = SubjectConfiguration.objects.get(subject_identifier=registered_subject.subject_identifier).default_appt_type
-        if not default_appt_type:
-            default_appt_type = GlobalConfiguration.objects.get_attr_value('default_appt_type')
+        except SubjectConfiguration.DoesNotExist:
+            try:
+                default_appt_type = GlobalConfiguration.objects.get_attr_value('default_appt_type')
+            except GlobalConfiguration.DoesNotExist:
+                pass
         return default_appt_type
