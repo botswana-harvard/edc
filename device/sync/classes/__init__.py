@@ -3,3 +3,4 @@ from .serialize_to_transaction import SerializeToTransaction
 from .deserialize_from_transaction import DeserializeFromTransaction
 from .consumer import Consumer
 from .base_producer import BaseProducer
+from .password_filed import PasswordModelField
