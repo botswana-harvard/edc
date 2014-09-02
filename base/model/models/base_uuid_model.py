@@ -16,5 +16,13 @@ class BaseUuidModel(BaseModel):
         help_text="system field. Git repository branch:commit."
     )
 
+    def save(self, *args, **kwargs):
+        try:
+            update_fields = kwargs.get('update_fields', None) + ['revision', ]
+            kwargs.update({'update_fields': update_fields})
+        except TypeError:
+            pass
+        super(BaseUuidModel, self).save(*args, **kwargs)
+
     class Meta:
         abstract = True
