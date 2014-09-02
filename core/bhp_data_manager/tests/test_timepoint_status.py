@@ -1,13 +1,14 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
+from edc.constants import CLOSED
 from edc.core.bhp_variables.models import StudySite
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
+from edc.subject.appointment.constants import IN_PROGRESS, DONE, INCOMPLETE, NEW, CANCELLED
 from edc.subject.appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.testing.classes import TestAppConfiguration, TestVisitSchedule, TestLabProfile
-from edc.subject.appointment.constants import IN_PROGRESS, DONE, INCOMPLETE, NEW, CANCELLED
 from edc.testing.models import TestPanel
 from edc.testing.tests.factories import (TestVisitFactory, TestScheduledModel1Factory,
                                          TestScheduledModel2Factory, TestScheduledModel3Factory,
@@ -45,7 +46,7 @@ class TestTimePointStatus(TestCase):
         appointment = Appointment.objects.all()[0]
         self.assertEqual(appointment.appt_status, NEW)
         time_point_status = TimePointStatus.objects.get(appointment=appointment)
-        time_point_status.status = 'closed'
+        time_point_status.status = CLOSED
         self.assertRaisesMessage(ValidationError,
                                  ('Cannot close timepoint. Appointment '
                                   'status is {0}.').format(appointment.appt_status.upper()),
@@ -61,7 +62,7 @@ class TestTimePointStatus(TestCase):
         appointment = Appointment.objects.get(pk=appointment.pk)
         self.assertEqual(appointment.appt_status, NEW)  # new??
         time_point_status = TimePointStatus.objects.get(appointment=appointment)
-        time_point_status.status = 'closed'
+        time_point_status.status = CLOSED
         self.assertRaisesMessage(ValidationError,
                                  ('Cannot close timepoint. Appointment '
                                   'status is {0}.').format(appointment.appt_status.upper()),
@@ -90,7 +91,7 @@ class TestTimePointStatus(TestCase):
         appointment = Appointment.objects.get(pk=appointment.pk)
         self.assertEqual(appointment.appt_status, DONE)
         time_point_status = TimePointStatus.objects.get(appointment=appointment)
-        time_point_status.status = 'closed'
+        time_point_status.status = CLOSED
         time_point_status.save()
 
     def test_close4(self):
@@ -108,5 +109,5 @@ class TestTimePointStatus(TestCase):
         appointment = Appointment.objects.get(pk=appointment.pk)
         self.assertEqual(appointment.appt_status, INCOMPLETE)
         time_point_status = TimePointStatus.objects.get(appointment=appointment)
-        time_point_status.status = 'closed'
+        time_point_status.status = CLOSED
         time_point_status.save()

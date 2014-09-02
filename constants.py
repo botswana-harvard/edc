@@ -8,3 +8,5 @@ ADDITIONAL = True
 NOT_ADDITIONAL = False
 OPTIONAL = True
 NOT_APPLICABLE = 'N/A'
+CLOSED = 'closed'
+OPEN = 'open'

@@ -6,6 +6,8 @@ from datetime import datetime
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.management.base import BaseCommand, CommandError
 
+from edc.constants import CLOSED
+
 from ...models import ExportReceipt, ExportTransaction, ExportPlan
 
 
@@ -64,7 +66,7 @@ class Command(BaseCommand):
                                 received_datetime=datetime.today(),
                                 tx_pk=export_transaction.tx_pk,
                                 )
-                        export_transaction.status = 'closed'
+                        export_transaction.status = CLOSED
                         export_transaction.received = True
                         export_transaction.received_datetime = datetime.today()
                         export_transaction.save()
