@@ -2,20 +2,22 @@ import subprocess
 import os
 import re
 import socket
+
 from math import ceil
 from datetime import date
+
 from django import template
-from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.core.exceptions import ImproperlyConfigured
+from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
+
 from edc.core.bhp_common.utils import formatted_age, convert_from_camel
+from edc.constants import CLOSED, OPEN
 
 register = template.Library()
 
-from django import template
-from django.template.defaultfilters import stringfilter
-from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -254,9 +256,9 @@ def mask_uuid(value, mask_string=None):
 @register.filter(name='color_status')
 def color_status(value):
     template = '<span style="color:{};">{}</span>'
-    if value == 'open':
+    if value == OPEN:
         value = template.format('green', value)
-    elif value == 'closed':
+    elif value == CLOSED:
         value = template.format('red', value)
     elif value == 'feedback':
         value = template.format('orange', value)

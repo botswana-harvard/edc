@@ -9,6 +9,7 @@ try:
     from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
 except ImportError:
     from edc.device.sync.models import BaseSyncUuidModel
+from edc.constants import CLOSED, OPEN
 from edc.choices.common import YES_NO_NA
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.subject.appointment.models import Appointment
@@ -33,10 +34,10 @@ class TimePointStatus(BaseSyncUuidModel):
     status = models.CharField(
         max_length=15,
         choices=(
-            ('open', 'Open'),
+            (OPEN, 'Open'),
             ('feedback', 'Feedback'),
-            ('closed', 'Closed')),
-        default='open',
+            (CLOSED, 'Closed')),
+        default=OPEN,
         help_text='')
 
     comment = EncryptedTextField(
@@ -86,9 +87,9 @@ class TimePointStatus(BaseSyncUuidModel):
 
     def status_display(self):
         """Formats and returns the status for the dashboard."""
-        if self.status == 'open':
+        if self.status == OPEN:
             return '<span style="color:green;">Open</span>'
-        elif self.status == 'closed':
+        elif self.status == CLOSED:
             return '<span style="color:red;">Closed</span>'
         elif self.status == 'feedback':
             return '<span style="color:orange;">Feedback</span>'
@@ -98,7 +99,7 @@ class TimePointStatus(BaseSyncUuidModel):
         """Closing off only appt that are either done/incomplete/cancelled ONLY."""
         exception_cls = exception_cls or ValidationError
         instance = instance or self
-        if instance.status == 'closed' and instance.appointment.appt_status in [NEW, IN_PROGRESS]:
+        if instance.status == CLOSED and instance.appointment.appt_status in [NEW, IN_PROGRESS]:
             raise exception_cls('Cannot close timepoint. Appointment status is {0}.'.format(instance.appointment.appt_status.upper()))
 
     @classmethod
@@ -109,7 +110,7 @@ class TimePointStatus(BaseSyncUuidModel):
         using = using or 'default'
         try:
             time_point_status = cls.objects.using(using).get(appointment=appointment)
-            if time_point_status.status == 'closed':
+            if time_point_status.status == CLOSED:
                 raise ValidationError('Data for this timepoint / appointment is closed. See TimePointStatus.')
         except TimePointStatus.DoesNotExist:
             pass
