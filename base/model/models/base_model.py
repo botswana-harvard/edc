@@ -37,6 +37,15 @@ class BaseModel(TimeStampedModel):
         help_text="system field.",
     )
 
+    def save(self, *args, **kwargs):
+        try:
+            # don't allow update_fields to bypass these audit fields
+            update_fields = kwargs.get('update_fields', None) + ['user_created', 'user_modified', 'hostname_created', 'hostname_modified']
+            kwargs.update({'update_fields': update_fields})
+        except TypeError:
+            pass
+        super(BaseModel, self).save(*args, **kwargs)
+
     def get_absolute_url(self):
         if self.id:
             url = reverse('admin:{app_label}_{object_name}_change'.format(app_label=self._meta.app_label, object_name=self._meta.object_name.lower()), args=(self.id,))
