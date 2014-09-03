@@ -163,6 +163,7 @@ class RegisteredSubjectDashboard(Dashboard):
         """Returns to the value returned by the site_lab_tracker for this registered subject."""
         self._subject_hiv_history = None
         if self.registered_subject:
+            # TODO: this gets hit on every dashboard refresh and is very SLOW
             self._subject_hiv_history = site_lab_tracker.get_history_as_string('HIV', self.registered_subject.subject_identifier, self.registered_subject.subject_type)
         return self._subject_hiv_history
 

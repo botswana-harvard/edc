@@ -32,6 +32,7 @@ class ExportHistoryManager(models.Manager):
         try:
             ready_to_export_transaction = instance.ready_to_export_transaction
         except AttributeError:
+            # default behaviour is to always export to transaction
             ready_to_export_transaction = True
         if ready_to_export_transaction:
             if instance._meta.proxy_for_model:  # if this is a proxy model, get to the main model

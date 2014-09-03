@@ -55,26 +55,26 @@ class BaseAppConfiguration(object):
     def update_or_create_lab_clinic_api(self):
         """Configure lab clinic api list models."""
         for item in self.lab_clinic_api_setup.get('aliquot_type'):
-            if AliquotType.objects.filter(name=item.name):
+            try:
                 aliquot_type = AliquotType.objects.get(name=item.name)
                 aliquot_type.alpha_code = item.alpha_code
                 aliquot_type.numeric_code = item.numeric_code
                 aliquot_type.save()
-            else:
+            except AliquotType.DoesNotExist:
                 AliquotType.objects.create(
                     name=item.name,
                     alpha_code=item.alpha_code,
                     numeric_code=item.numeric_code)
         # update / create panels
         for item in self.lab_clinic_api_setup.get('panel'):
-            if Panel.objects.filter(name=item.name):
+            try:
                 panel = Panel.objects.get(name=item.name)
                 panel.panel_type = item.panel_type
                 panel.save()
-            else:
+            except Panel.DoesNotExist:
                 panel = Panel.objects.create(name=item.name, panel_type=item.panel_type)
             # add aliquots to panel
-            panel.aliquot_type.clear()
+            # panel.aliquot_type.clear()
             aliquot_type = AliquotType.objects.get(alpha_code=item.aliquot_type_alpha_code)
             panel.aliquot_type.add(aliquot_type)
 
