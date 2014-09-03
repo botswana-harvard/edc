@@ -37,7 +37,7 @@ class BaseConsentedModelForm(BaseModelForm):
         except AttributeError:
             appointment = cleaned_data.get('appointment')
         TimePointStatus.check_time_point_status(
-            appointment=appointment,
+            appointment,
             exception_cls=forms.ValidationError)
         # get the helper class
         consent_helper_cls = self._meta.model().get_consent_helper_cls()

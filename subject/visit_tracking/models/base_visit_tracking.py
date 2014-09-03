@@ -130,7 +130,7 @@ class BaseVisitTracking (BaseConsentedUuidModel):
         using = kwargs.get('using')
         if self.id and not self.byass_time_point_status():
             TimePointStatus = models.get_model('bhp_data_manager', 'TimePointStatus')
-            TimePointStatus.check_time_point_status(appointment=self.appointment, using=using)
+            TimePointStatus.check_time_point_status(self.appointment, using=using)
         self.subject_identifier = self.get_subject_identifier()
         super(BaseVisitTracking, self).save(*args, **kwargs)
 

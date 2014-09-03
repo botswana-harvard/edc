@@ -14,7 +14,7 @@ class BaseVisitTrackingForm(BaseConsentedModelForm):
     def clean(self):
         cleaned_data = self.cleaned_data
         TimePointStatus = get_model('bhp_data_manager', 'TimePointStatus')
-        TimePointStatus.check_time_point_status(appointment=cleaned_data.get('appointment'), exception_cls=forms.ValidationError)
+        TimePointStatus.check_time_point_status(cleaned_data.get('appointment'), exception_cls=forms.ValidationError)
         if 'edc.device.dispatch' in settings.INSTALLED_APPS:
             if cleaned_data.get('appointment', None):
                 appointment = cleaned_data.get('appointment')
