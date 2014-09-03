@@ -1,9 +1,12 @@
 from datetime import date, timedelta
-from django.db import models
+
 from django.core.urlresolvers import reverse
+from django.db import models
+
+from edc.base.model.models import BaseModel
+from edc.constants import CLOSED, OPEN
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.subject.registration.models import RegisteredSubject
-from edc.base.model.models import BaseModel
 
 
 class ActionItem(BaseModel):
@@ -23,13 +26,13 @@ class ActionItem(BaseModel):
         default='Normal')
     action_group = models.CharField(
         max_length=35,
-        #choices=[(item.get('name'), ' '.join(item.get('name').split('_'))) for item in Group.objects.values('name').all()] + [('no group', '<no group>')],
+        # choices=[(item.get('name'), ' '.join(item.get('name').split('_'))) for item in Group.objects.values('name').all()] + [('no group', '<no group>')],
         default='no group',
         help_text='You can only select a group to which you belong. Choices are based on Groups defined in Auth.')
     status = models.CharField(
         max_length=35,
-        choices=(('open', 'Open'), ('stalled', 'Stalled'), ('resolved', 'Resolved'), ('closed', 'Closed')),
-        default='Open',
+        choices=((OPEN, 'Open'), ('stalled', 'Stalled'), ('resolved', 'Resolved'), (CLOSED, 'Closed')),
+        default=OPEN,
         help_text='Only data managers or study physicians can \'close\' an action item')
     objects = models.Manager()
 

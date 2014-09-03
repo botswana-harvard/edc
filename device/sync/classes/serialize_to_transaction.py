@@ -19,29 +19,30 @@ class SerializeToTransaction(object):
             return False
         return True
 
-    def serialize(self, sender, instance, **kwargs):
+    def serialize(self, sender, instance, raw, created, using, **kwargs):
 
-        """ Serializes the model instance to an encrypted json object and saves the json object to the OutgoingTransaction model.
+        """ Serializes the model instance to an encrypted json object
+        and saves the json object to the OutgoingTransaction model.
 
-        Transaction producer name is based on the hostname (created or modified) field.
+        Transaction producer name is based on the hostname (created
+        or modified) field.
 
         Call this using the post_save and m2m_changed signal.
         """
-        if not kwargs.get('raw', False):  # raw=True if you are saving a json object, maybe??
-            using = kwargs.get('using', None)
+        if not raw:  # raw=True if you are saving a json object, maybe??
             action = 'U'
-            if kwargs.get('created'):
+            if created:
                 action = 'I'
             transaction_producer = TransactionProducer()
             if 'edc.device.sync' not in settings.INSTALLED_APPS:
                 return None
-            OutgoingTransaction = get_model('sync', 'outgoingtransaction')
+            OutgoingTransaction = get_model('sync', 'OutgoingTransaction')
             use_natural_keys = False
             if 'natural_key' in dir(sender):
                 use_natural_keys = True
             # if this is a proxy model, get to the main model
             if instance._meta.proxy_for_model:
-                instance = instance._meta.proxy_for_model.objects.get(id=instance.id)
+                instance = instance._meta.proxy_for_model.objects.using(using=using).get(id=instance.id)
             # serialize to json
             json_tx = serializers.serialize("json", [instance, ], ensure_ascii=False, use_natural_keys=use_natural_keys)
             try:

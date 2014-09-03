@@ -1,8 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
+
+from edc.constants import CLOSED, OPEN
 from edc.subject.registration.models import RegisteredSubject
+
 from ..forms import ActionItemForm
 from ..models import ActionItem
+
 from ..classes import data_manager
 from .base_admin import BaseAdmin
 
@@ -31,8 +35,8 @@ class ActionItemAdmin(BaseAdmin):
                 obj.action_group = user_groups[0]
             else:
                 pass
-            if obj.status == 'closed' and ('data_manager' not in user_groups and 'action_manager' not in user_groups):
-                obj.status = 'open'
+            if obj.status == CLOSED and ('data_manager' not in user_groups and 'action_manager' not in user_groups):
+                obj.status = OPEN
         super(ActionItemAdmin, self).save_model(request, obj, form, change)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

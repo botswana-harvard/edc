@@ -100,8 +100,8 @@ class BaseMetaDataHelper(object):
         """Gets next meta data instance based on the given entry order, used with the save_next button on a form."""
         next_meta_data_instance = None
         options = {
-           'registered_subject_id': self.registered_subject.pk,
-           'appointment_id': self.appointment_zero.pk,
+            'registered_subject_id': self.registered_subject.pk,
+            'appointment_id': self.appointment_zero.pk,
             'entry_status': REQUIRED,
             '{0}__entry_order__gt'.format(self.entry_attr): entry_order}
         if self.meta_data_model.objects.filter(**options):

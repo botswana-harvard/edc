@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 
+from edc.constants import NOT_APPLICABLE
 
 # choices
 BLANK_CHOICE_DASH = [('', '---------')]
@@ -296,13 +297,13 @@ YES_NO_DWTA = (
 YES_NO_NA_SPECIFY = (
     ('Yes', 'Yes, (Specify below)'),
     ('No', 'No'),
-    ('N/A', 'Not applicable'),
+    (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_NA = (
     ('Yes', 'Yes'),
     ('No', 'No'),
-    ('N/A', 'Not applicable'),
+    (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_NOT_EVALUATED = (
@@ -315,7 +316,7 @@ YES_NO_NOT_EVALUATED_NA = (
     ('Yes', 'Yes'),
     ('No', 'No'),
     ('Not_evaluated', 'Not evaluated'),
-    ('N/A', 'Not applicable'),
+    (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_NOT_DONE = (
@@ -340,7 +341,7 @@ YES_NO_UNKNOWN_NA = (
     ('Yes', 'Yes'),
     ('No', 'No'),
     ('Unknown', 'Unknown'),
-    ('N/A', 'Not applicable'),
+    (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_UNSURE = (
@@ -353,7 +354,7 @@ YES_NO_UNSURE_NA = (
     ('Yes', 'Yes'),
     ('No', 'No'),
     ('Not Sure', 'Not Sure'),
-    ('N/A', 'Not Applicable'),
+    (NOT_APPLICABLE, 'Not Applicable'),
 )
 
 YES_NO_DONT_KNOW = (
@@ -366,7 +367,7 @@ YES_NO_DONT_KNOW_NA = (
     ('Yes', 'Yes'),
     ('No', 'No'),
     ('Dont_know', 'Do not Know'),
-    ('N/A', 'Not applicable'),
+    (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_DOESNT_WORK = (

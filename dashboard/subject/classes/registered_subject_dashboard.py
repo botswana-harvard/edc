@@ -29,7 +29,7 @@ from edc.subject.visit_schedule.classes import MembershipFormHelper
 from edc.subject.visit_schedule.exceptions import MembershipFormError
 from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.core.bhp_data_manager.models import QualityInspection
+from edc.core.bhp_data_manager.models import TimePointStatus
 from edc.utils.collections import flatten
 
 from .scheduled_entry_context import ScheduledEntryContext
@@ -102,8 +102,8 @@ class RegisteredSubjectDashboard(Dashboard):
             visit_model=self.visit_model,
             visit_model_instance=self.visit_model_instance,
             visit_model_meta=self.visit_model._meta,
-            quality_inspection=self.quality_inspection,
-            quality_inspection_meta=QualityInspection._meta,
+            time_point_status=self.time_point_status,
+            time_point_status_meta=TimePointStatus._meta,
             )
         if self.show == 'forms':
             self.context.add(
@@ -163,6 +163,7 @@ class RegisteredSubjectDashboard(Dashboard):
         """Returns to the value returned by the site_lab_tracker for this registered subject."""
         self._subject_hiv_history = None
         if self.registered_subject:
+            # TODO: this gets hit on every dashboard refresh and is very SLOW
             self._subject_hiv_history = site_lab_tracker.get_history_as_string('HIV', self.registered_subject.subject_identifier, self.registered_subject.subject_type)
         return self._subject_hiv_history
 
@@ -309,12 +310,14 @@ class RegisteredSubjectDashboard(Dashboard):
     @property
     def visit_model_instance(self):
         """Returns the visit model instance but may be None."""
-        if self.appointment:
+        self._visit_model_instance = None
+        try:
             self._visit_model_instance = self.visit_model.objects.get(appointment=self.appointment)
-        elif self.dashboard_model_name == 'visit':
-            self._visit_model_instance = self.visit_model.objects.get(pk=self.dashboard_id)
-        else:
-            self._visit_model_instance = None
+        except self.visit_model.DoesNotExist:
+            try:
+                self._visit_model_instance = self.visit_model.objects.get(pk=self.dashboard_id)
+            except self.visit_model.DoesNotExist:
+                pass
         if self._visit_model_instance:
             if not isinstance(self._visit_model_instance, self.visit_model):
                 raise TypeError('Expected an instance of visit model class {0}.'.format(self.visit_model))
@@ -431,12 +434,14 @@ class RegisteredSubjectDashboard(Dashboard):
         return self._subject_configuration
 
     @property
-    def quality_inspection(self):
-        self._quality_inspection = None
-        if self.registered_subject:
-            if QualityInspection.objects.filter(registered_subject=self.registered_subject):
-                self._quality_inspection = QualityInspection.objects.filter(registered_subject=self.registered_subject)[0]
-        return self._quality_inspection
+    def time_point_status(self):
+        self._time_point_status = None
+        if self.appointment:
+            try:
+                self._time_point_status = TimePointStatus.objects.get(appointment=self.appointment)
+            except TimePointStatus.DoesNotExist:
+                pass
+        return self._time_point_status
 
     @property
     def show(self):
@@ -623,7 +628,7 @@ class RegisteredSubjectDashboard(Dashboard):
         """Renders the Scheduled Entry Forms section of the dashboard using the context class ScheduledEntryContext."""
         template = 'scheduled_entries.html'
         scheduled_entries = []
-        scheduled_entry_helper = ScheduledEntryMetaDataHelper(self.appointment_zero, self.visit_model, self.visit_model_attrname)
+        scheduled_entry_helper = ScheduledEntryMetaDataHelper(self.appointment_zero, self.visit_model_instance, self.visit_model_attrname)
         for meta_data_instance in scheduled_entry_helper.get_entries_for('clinic'):
             scheduled_entry_context = ScheduledEntryContext(meta_data_instance, self.appointment, self.visit_model)
             scheduled_entries.append(scheduled_entry_context.context)
@@ -650,7 +655,7 @@ class RegisteredSubjectDashboard(Dashboard):
         show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
         allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
         show_drop_down_requisitions = GlobalConfiguration.objects.get_attr_value('show_drop_down_requisitions')
-        requisition_helper = RequisitionMetaDataHelper(self.appointment, self.visit_model, self.visit_model_attrname)
+        requisition_helper = RequisitionMetaDataHelper(self.appointment, self.visit_model_instance, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
             requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
             if not show_not_required_requisitions and not requisition_context.required and not requisition_context.additional:

@@ -8,7 +8,6 @@ from edc.core.bhp_variables.models import StudySite
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.visit_schedule.models import VisitDefinition
-from edc.core.bhp_data_manager.models import QualityInspection
 
 from ..managers import AppointmentManager
 from ..choices import APPT_TYPE, APPT_STATUS
@@ -29,13 +28,11 @@ class Appointment(BaseAppointment):
 
     appt_close_datetime = models.DateTimeField(null=True, editable=False)
 
-    study_site = models.ForeignKey(
-        StudySite,
+    study_site = models.ForeignKey(StudySite,
         null=True,
         blank=False)
 
-    visit_definition = models.ForeignKey(
-        VisitDefinition,
+    visit_definition = models.ForeignKey(VisitDefinition,
         related_name='+',
         verbose_name=("Visit"),
         help_text=("For tracking within the window period of a visit, use the decimal convention. "
@@ -130,28 +127,18 @@ class Appointment(BaseAppointment):
         """Django save method"""
         from edc.subject.appointment_helper.classes import AppointmentHelper
         using = kwargs.get('using')
+        if self.id:
+            TimePointStatus = models.get_model('bhp_data_manager', 'TimePointStatus')
+            TimePointStatus.check_time_point_status(self, using=using)
         self.appt_datetime, self.best_appt_datetime = self.validate_appt_datetime()
         self.check_window_period()
         self.validate_visit_instance(using=using)
-        self.close_off_appointment()
         AppointmentHelper().check_appt_status(self, using)
         super(Appointment, self).save(*args, **kwargs)
 
     def raw_save(self, *args, **kwargs):
         """Optional save to bypass stuff going on in the default save method."""
         super(Appointment, self).save(*args, **kwargs)
-
-    def close_off_appointment(self):
-        """checks if the appointment status is done"""
-        if self.appt_status == 'done':
-            """confirms if the Quality Inspection form is auto filled, if not, create it (auto fill)"""
-            def confirm_quality_inspection_exists():
-                try:
-                    return QualityInspection.objects.filter(registered_subject=self.registered_subject, the_visit_code=self.visit_definition.code)
-                except QualityInspection.DoesNotExist:
-                    return False
-            if not confirm_quality_inspection_exists():
-                QualityInspection.objects.create(registered_subject=self.registered_subject, the_visit_code=self.visit_definition)
 
     def __unicode__(self):
         """Django."""

@@ -125,7 +125,7 @@ class BasePrepareDevice(BaseController):
                 if "history" in dir(model_cls):
                     if model_cls.history.using(using).all().count() > 0:
                         self.delete_audit_instances(model_cls)
-                    instance.delete(using=using)
+                    instance.delete()
                     print '    {0} -> {1} deleted..'.format(instance._meta.object_name, instance)
             except IntegrityError as e:
                 logger.info(e)
@@ -135,10 +135,10 @@ class BasePrepareDevice(BaseController):
                     if '_audit' in e.args[1]:
                         # assume Integrity error was because of an undeleted related Audit model
                         self.delete_audit_instances(model_cls)
-                        instance.delete(using=using)
+                        instance.delete()
                     else:
                         self.delete_depended_model_instances(model_cls)
-                        instance.delete(using=using)
+                        instance.delete()
                 elif 'Cannot add or update a child row' in e.args[1]:
                     if '_audit' in e.args[1]:
                         raise

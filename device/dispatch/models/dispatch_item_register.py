@@ -26,7 +26,7 @@ class DispatchItemRegister(BaseDispatch):
 # the controller class.
     def save(self, *args, **kwargs):
         """Confirms an instance does not exist for this item_identifier."""
-        using = kwargs.get('using', None)
+        using = kwargs.get('using')
         if self.__class__.objects.using(using).filter(
                 item_identifier=self.item_identifier,
                 is_dispatched=True,
@@ -50,3 +50,4 @@ class DispatchItemRegister(BaseDispatch):
         app_label = "dispatch"
         db_table = 'bhp_dispatch_dispatchitemregister'
         unique_together = (('dispatch_container_register', 'item_pk', 'item_identifier', 'is_dispatched'), )
+        index_together = [['item_app_label', 'item_model_name', 'item_pk', 'is_dispatched'], ]

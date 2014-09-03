@@ -5,8 +5,10 @@ from ...models import TestVisit
 
 
 class TestVisitFactory(BaseVisitTrackingFactory):
-    FACTORY_FOR = TestVisit
+    class Meta:
+        model = TestVisit
 
 
 class TestSimpleVisitFactory(BaseUuidModelFactory):
-    FACTORY_FOR = TestVisit
+    class Meta:
+        model = TestVisit

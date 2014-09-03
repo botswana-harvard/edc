@@ -6,6 +6,7 @@ from django.core import serializers
 from django.db.models import get_model
 from django.core.management.base import BaseCommand, CommandError
 
+from edc.constants import CLOSED
 from edc.core.crypto_fields.classes import FieldCryptor
 from edc.export.models.export_transaction import ExportTransaction
 from edc.notification.models import Notification, NotificationPlan
@@ -43,7 +44,7 @@ class Command(BaseCommand):
             export_transactions = ExportTransaction.objects.filter(
                 app_label=model._meta.app_label,
                 object_name=model._meta.object_name,
-                ).exclude(status__in=['closed', 'cancelled'], )  # if already exported but not closed, will be sent again
+                ).exclude(status__in=[CLOSED, 'cancelled'], )  # if already exported but not closed, will be sent again
             tx_count = export_transactions.count()
             transactions = []
             for export_transaction in export_transactions:

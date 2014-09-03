@@ -6,7 +6,7 @@ from django.test import TestCase
 from edc.testing.models import TestModel
 
 
-class TestsFields(TestCase):
+class TestFields(TestCase):
 
     def test_revision_field2(self):
         """can create a new model instance and revision is not none."""
@@ -21,13 +21,13 @@ class TestsFields(TestCase):
 
     def test_revision_field4(self):
         """new model instance has the current revision set."""
-        repo = Repo(settings.SOURCE_DIR, odbt=GitCmdObjectDB)
+        repo = Repo(settings.PROJECT_ROOT, odbt=GitCmdObjectDB)
         test_model = TestModel.objects.create()
         self.assertEqual(test_model.revision, '{0}:{1}'.format(unicode(repo.active_branch), unicode(repo.active_branch.commit)))
 
     def test_revision_field5(self):
         """create new model instance, try to set revision to an arbitrary value."""
-        repo = Repo(settings.SOURCE_DIR, odbt=GitCmdObjectDB)
+        repo = Repo(settings.PROJECT_ROOT, odbt=GitCmdObjectDB)
         test_model = TestModel.objects.create()
         test_model.revision = 'erik'
         test_model.save()

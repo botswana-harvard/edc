@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from edc.device.sync.models import BaseSyncUuidModel
 from edc.device.device.classes import Device
-from edc.core.bhp_using.classes import BaseUsing
+# from edc.core.bhp_using.classes import BaseUsing
 from ..exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError
 
 
@@ -37,18 +37,18 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         ..note:: only use this for models that do not exist in an app listed in the settings.DISPATCH_APP_LABELS but need to be included (which should not be very often)."""
         return False
 
-    def save_instance_to_correct_db(self, instance, using):
-        #If using argument comes from dispatch, we can trust it straight away. Otherwise need todo validation on it.
-        if self.using:
-            BaseUsing('default', using) #will throw an exception if using parameter is wrong.
-            instance.save(using)
-        else:
-            instance.save()
+#     def save_instance_to_correct_db(self, instance, using):
+#         """"If using argument comes from dispatch, we can trust it straight away. Otherwise need todo validation on it."""
+#         if self.using:
+#             BaseUsing('default', using)  # will throw an exception if using parameter is wrong.
+#             instance.save(using)
+#         else:
+#             instance.save()
 
     def is_dispatchable_model(self):
         if self.ignore_for_dispatch():
             return False
-        if not self._meta.app_label in settings.DISPATCH_APP_LABELS:
+        if self._meta.app_label not in settings.DISPATCH_APP_LABELS:
             if self.include_for_dispatch():
                 return True
             else:
@@ -208,7 +208,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         return dispatch_item
 
     def save(self, *args, **kwargs):
-        using = kwargs.get('using', None)
+        using = kwargs.get('using')
         if self.id:
             if self.is_dispatchable_model():
                 if self.is_dispatch_container_model():

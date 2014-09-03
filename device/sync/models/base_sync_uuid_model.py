@@ -24,12 +24,6 @@ class BaseSyncUuidModel(BaseUuidModel):
 
     """Base model for all UUID models and adds synchronization methods and signals. """
 
-   #def is_serialized(self, serialize=True):
-   #     if 'ALLOW_MODEL_SERIALIZATION' in dir(settings):
-   #         if settings.ALLOW_MODEL_SERIALIZATION:
-   #             return serialize
-   #     return False
-
     def is_serialized(self, serialize=True):
         if 'edc.device.sync' in settings.INSTALLED_APPS:
             from edc.apps.utils import Conf
@@ -43,14 +37,14 @@ class BaseSyncUuidModel(BaseUuidModel):
         """Default behaviour for all subclasses of this class is to serialize to outgoing transaction."""
         from ..models import OutgoingTransaction
         if not OutgoingTransaction.objects.filter(pk=incomming_transaction.id).exists():
-                                                OutgoingTransaction.objects.create(
-                                                    pk=incomming_transaction.id,
-                                                    tx_name=incomming_transaction.tx_name,
-                                                    tx_pk=incomming_transaction.tx_pk,
-                                                    tx=incomming_transaction.tx,
-                                                    timestamp=incomming_transaction.timestamp,
-                                                    producer=incomming_transaction.producer,
-                                                    action=incomming_transaction.action)
+            OutgoingTransaction.objects.create(
+                pk=incomming_transaction.id,
+                tx_name=incomming_transaction.tx_name,
+                tx_pk=incomming_transaction.tx_pk,
+                tx=incomming_transaction.tx,
+                timestamp=incomming_transaction.timestamp,
+                producer=incomming_transaction.producer,
+                action=incomming_transaction.action)
         self.deserialize_post()
 
     def deserialize_post(self):
@@ -71,7 +65,7 @@ class BaseSyncUuidModel(BaseUuidModel):
         """Override to return a foreignkey object for 'attrname', if possible, using criteria in self, otherwise return None"""
         raise ImproperlyConfigured('Method deserialize_get_missing_fk() must be overridden on model class {0}'.format(self._meta.object_name))
 
-    def save_to_inspector(self, fields, instance_pk):
+    def save_to_inspector(self, fields, instance_pk, using):
         """Override in concrete class"""
         return False
 
@@ -88,7 +82,6 @@ class BaseSyncUuidModel(BaseUuidModel):
             using = kwargs.get('using', 'default')
             OutgoingTransaction.objects.using(using).create(
                 tx_name=self._meta.object_name,
-                #app_label=self._meta.app_label,
                 tx_pk=self.pk,
                 tx=json_obj,
                 timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
