@@ -46,7 +46,8 @@ class BaseConsent(BaseSubject):
         help_text="This refers to the site or 'clinic area' where the subject is being consented."
         )
 
-    consent_datetime = models.DateTimeField("Consent date and time",
+    consent_datetime = models.DateTimeField(
+        verbose_name="Consent date and time",
         validators=[
             datetime_not_before_study_start,
             datetime_not_future, ],

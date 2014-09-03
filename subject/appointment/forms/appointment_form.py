@@ -1,6 +1,7 @@
 from datetime import date
 
 from django import forms
+from django.db.models import get_model
 from django.core.exceptions import ValidationError
 
 from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
@@ -18,6 +19,9 @@ class AppointmentForm(BaseModelForm):
     def clean(self):
 
         cleaned_data = self.cleaned_data
+        if self.instance:
+            TimePointStatus = get_model('bhp_data_manager', 'TimePointStatus')
+            TimePointStatus.check_time_point_status(appointment=self.instance, exception_cls=forms.ValidationError)
         if not cleaned_data.get("appt_datetime"):
             raise forms.ValidationError('Please provide the appointment date and time.')
         appt_datetime = cleaned_data.get("appt_datetime")

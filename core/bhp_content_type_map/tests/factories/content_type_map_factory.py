@@ -5,7 +5,8 @@ from .content_type_factory import ContentTypeFactory
 
 
 class ContentTypeMapFactory(BaseModelFactory):
-    FACTORY_FOR = ContentTypeMap
+    class Meta:
+        model = ContentTypeMap
 
     content_type = factory.SubFactory(ContentTypeFactory)
     name = factory.LazyAttribute(lambda o: '{0}'.format(o.content_type.model_class()._meta.verbose_name))

@@ -1,5 +1,6 @@
 import json
 
+from django.db import IntegrityError
 from django.db.models import get_model
 
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
@@ -54,26 +55,26 @@ class BaseAppConfiguration(object):
     def update_or_create_lab_clinic_api(self):
         """Configure lab clinic api list models."""
         for item in self.lab_clinic_api_setup.get('aliquot_type'):
-            if AliquotType.objects.filter(name=item.name):
+            try:
                 aliquot_type = AliquotType.objects.get(name=item.name)
                 aliquot_type.alpha_code = item.alpha_code
                 aliquot_type.numeric_code = item.numeric_code
                 aliquot_type.save()
-            else:
+            except AliquotType.DoesNotExist:
                 AliquotType.objects.create(
                     name=item.name,
                     alpha_code=item.alpha_code,
                     numeric_code=item.numeric_code)
         # update / create panels
         for item in self.lab_clinic_api_setup.get('panel'):
-            if Panel.objects.filter(name=item.name):
+            try:
                 panel = Panel.objects.get(name=item.name)
                 panel.panel_type = item.panel_type
                 panel.save()
-            else:
+            except Panel.DoesNotExist:
                 panel = Panel.objects.create(name=item.name, panel_type=item.panel_type)
             # add aliquots to panel
-            panel.aliquot_type.clear()
+            # panel.aliquot_type.clear()
             aliquot_type = AliquotType.objects.get(alpha_code=item.aliquot_type_alpha_code)
             panel.aliquot_type.add(aliquot_type)
 
@@ -183,9 +184,9 @@ class BaseAppConfiguration(object):
         for catalogue_setup in self.consent_catalogue_list:
             content_type_map_string = catalogue_setup.get('content_type_map')
             catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))})
-            if not ConsentCatalogue.objects.filter(**catalogue_setup).exists():
+            try:
                 ConsentCatalogue.objects.create(**catalogue_setup)
-            else:
+            except IntegrityError:
                 catalogues = ConsentCatalogue.objects.filter(**catalogue_setup)
                 catalogues.update(**catalogue_setup)
                 for ct in catalogues:
@@ -196,7 +197,23 @@ class BaseAppConfiguration(object):
     def update_global(self):
         """Creates or updates global configuration options in app_configuration.
 
-        First ensures defaults exist, then, if user specification exists, overwrites the defaults or adds new."""
+        First ensures defaults exist, then, if user specification exists, overwrites the defaults or adds new.
+
+        See sample app_configuration where there is an attribute like this:
+
+            ...
+            global_configuration = {
+                'dashboard':
+                    {'show_not_required': True,
+                    'allow_additional_requisitions': False},
+                'appointment':
+                    {'allowed_iso_weekdays': '1234567',
+                     'use_same_weekday': True,
+                     'default_appt_type': 'default'},
+                }
+            ...
+
+        """
         configurations = [default_global_configuration]
         try:
             configurations.append(self.global_configuration)

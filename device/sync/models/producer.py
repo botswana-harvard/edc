@@ -3,6 +3,7 @@ from django.conf import settings
 
 from edc.core.crypto_fields.fields import EncryptedCharField
 from edc.base.model.models import BaseUuidModel
+from edc.device.sync.classes import PasswordModelField
 
 
 class Producer(BaseUuidModel):
@@ -45,8 +46,9 @@ class Producer(BaseUuidModel):
         null=True,
         help_text=("provide the database name of the producer."))
 
-    db_password = EncryptedCharField(
+    db_password = PasswordModelField(
         verbose_name="Database password.",
+        max_length=250,
         null=True,
         db_index=True,
         help_text=("provide the password to database on the producer."))

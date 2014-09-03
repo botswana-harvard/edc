@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 
+from edc.constants import CLOSED
 from edc.device.sync.models import BaseSyncUuidModel
 
 from .export_tracking_fields_mixin import ExportTrackingFieldsMixin
@@ -40,7 +41,7 @@ class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
         choices=(
             ('new', 'New'),
             ('exported', 'Exported'),
-            ('closed', 'Closed'),
+            (CLOSED, 'Closed'),
             ('cancelled', 'Cancelled'),
             ),
         help_text='exported by export_transactions, closed by import_receipts'

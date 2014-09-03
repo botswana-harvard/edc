@@ -26,7 +26,7 @@ class BaseIdentifier(object):
             self.add_check_digit = True
         else:
             self.add_check_digit = add_check_digit
-        self.using = using
+        self.using = using or 'default'
         self.is_derived = is_derived
         if 'PROJECT_IDENTIFIER_PREFIX' not in dir(settings):
             raise ImproperlyConfigured('Missing settings attribute PROJECT_IDENTIFIER_PREFIX. Please add. For example, PROJECT_IDENTIFIER_PREFIX = \'041\' for project BHP041.')
@@ -134,15 +134,16 @@ class BaseIdentifier(object):
           add_check_digit: if true adds a check digit calculated using the numbers in the
             identifier. Letters are stripped out if they exist. (default: True)
           """
-        if self.add_check_digit == None:
+        if self.add_check_digit is None:
             raise AttributeError('Instance attribute add_check_digit has not been set. Options are True/False')
         if add_check_digit:
             self.add_check_digit = add_check_digit
         # update the format options dictionary
         format_options = self._get_identifier_prep(**kwargs)
-        if self.is_derived == None:
+        if self.is_derived is None:
             raise AttributeError('Instance attribute is_derived has not been set. Options are True/False')
-        self.identifier_model = self.get_identifier_history_model().objects.using(self.using).create(**self._get_identifier_history_model_options())
+        self.identifier_model = self.get_identifier_history_model().objects.using(
+            self.using).create(**self._get_identifier_history_model_options())
         format_options.update(sequence=self.identifier_model.formatted_sequence)
         if self.is_derived:
             # if derived, does not use a sequence number -- that is the sequence is in the base identifier,
@@ -153,15 +154,17 @@ class BaseIdentifier(object):
             new_identifier = self.identifier_format.format(**format_options)
         except KeyError:
             raise IndentifierFormatError('Missing key/pair for identifier format. '
-                'Got format {0} with dictionary {1}. Either correct the identifier '
-                'format or provide a value for each place holder in the identifier format.'.format(self.identifier_format, format_options))
+                                         'Got format {0} with dictionary {1}. Either correct the identifier '
+                                         'format or provide a value for each place holder in the identifier '
+                                         'format.'.format(self.identifier_format, format_options))
         # check if adding a check digit
         if self.add_check_digit:
             new_identifier = self.get_check_digit(new_identifier)
         # call custom post method
         new_identifier = self._get_identifier_post(new_identifier, **kwargs)
         if not new_identifier:
-            raise IdentifierError('Identifier cannot be None. Confirm overridden methods return the correct value. See BaseSubjectIdentifier')
+            raise IdentifierError('Identifier cannot be None. Confirm overridden methods return the '
+                                  'correct value. See BaseSubjectIdentifier')
         # update the identifier model
         if self.identifier_model:
             self.identifier_model.identifier = new_identifier

@@ -9,8 +9,4 @@ class ConfigurationManager(models.Manager):
         """Returns the attribute value in its original datatype assuming it can be converted."""
         obj = self.get(attribute=attribute_name)
         string_value = obj.value.strip(' "')
-        if obj.convert:
-            value = string_to_datatype(string_value)
-        else:
-            value = string_value
-        return value
+        return string_to_datatype(string_value) if obj.convert else string_value

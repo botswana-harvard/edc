@@ -1,1 +1,1 @@
-from .quality_inspection_factory import QualityInspectionFactory
+from .time_point_status_factory import TimePointStatusFactory

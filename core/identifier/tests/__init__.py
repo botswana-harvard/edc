@@ -1,2 +1,2 @@
-from .base_subject_identifier_methods_tests import BaseSubjectIdentifierMethodsTests
-from .identifier_methods_tests import IdentifierMethodsTests
+from .test_base_subject_identifier_methods import TestBaseSubjectIdentifierMethods
+from .test_identifier_methods import TestIdentifierMethods

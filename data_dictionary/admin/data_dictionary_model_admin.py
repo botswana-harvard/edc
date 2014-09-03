@@ -12,7 +12,7 @@ class DataDictionaryModelAdmin(admin.ModelAdmin):
     search_fields = ('model_name', 'field', 'prompt')
 
     actions = (
-        export_as_csv_action(exclude=['id', 'modified', 'user_created', 'user_modified', 'hostname_created', 'hostname_modified'], delimiter=';'),
-            'export_as_csv_action',
-            "Export to CSV")
+        export_as_csv_action(exclude=['id', 'modified', 'user_created', 'user_modified', 'hostname_created', 'hostname_modified'], delimiter='|'),
+        'export_as_csv_action',
+        "Export to CSV")
 admin.site.register(DataDictionaryModel, DataDictionaryModelAdmin)

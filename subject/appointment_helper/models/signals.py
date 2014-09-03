@@ -7,5 +7,6 @@ from .base_appointment_mixin import BaseAppointmentMixin
 @receiver(post_save, weak=False, dispatch_uid="prepare_appointments_on_post_save")
 def prepare_appointments_on_post_save(sender, instance, raw, created, using, **kwargs):
     """"""
-    if issubclass(sender, (BaseAppointmentHelperModel, BaseAppointmentMixin)):
-        instance.prepare_appointments(using)
+    if not raw:
+        if issubclass(sender, (BaseAppointmentHelperModel, BaseAppointmentMixin)):
+            instance.prepare_appointments(using)

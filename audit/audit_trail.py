@@ -113,13 +113,13 @@ class AuditTrail(object):
             models.signals.post_save.connect(_audit, sender=cls, weak=False, dispatch_uid='audit_on_save_{0}'.format(model._meta.object_name.lower()))
 
             # begin: erikvw added for serialization
-            def _serialize_on_save(sender, instance, **kwargs):
+            def _serialize_on_save(sender, instance, raw, created, using, **kwargs):
                 """ serialize the AUDIT model instance to the outgoing transaction model """
-                if not kwargs.get('raw'):
+                if not raw:
                     model = models.get_model(instance._meta.app_label, instance._meta.object_name.lower().replace('audit', ''))
                     if issubclass(model, BaseSyncUuidModel):
                         serialize_to_transaction = SerializeToTransaction()
-                        serialize_to_transaction.serialize(sender, instance, **kwargs)
+                        serialize_to_transaction.serialize(sender, instance, raw, created, using, **kwargs)
 #            connected = False
 #            for sig in models.signals.post_save.receivers:
 #                if sig[0][0] == 'audit_serialize_on_save':

@@ -5,10 +5,7 @@ from django.test import TestCase
 from ..classes import OperationalReportUtilities
 
 
-class OperationalReportTests(TestCase):
-
-    def setUp(self):
-        pass
+class TestOperationalReport(TestCase):
 
     def test_date_format(self):
         utilities = OperationalReportUtilities()
