@@ -43,9 +43,9 @@ class BaseConsentedUuidModel(BaseSyncUuidModel):
         if self.id:
             TimePointStatus = get_model('bhp_data_manager', 'TimePointStatus')
             try:
-                TimePointStatus.check_time_point_status(appointment=self.get_visit().appointment, using=using)
+                TimePointStatus.check_time_point_status(self.get_visit().appointment, using=using)
             except AttributeError:
-                TimePointStatus.check_time_point_status(appointment=self.appointment, using=using)
+                TimePointStatus.check_time_point_status(self.appointment, using=using)
         if 'is_off_study' in dir(self):
             if self.is_off_study():
                 raise SubjectOffStudyError('Model cannot be saved. Subject is off study. Perhaps catch this exception in forms clean() method.')

@@ -129,7 +129,7 @@ class Appointment(BaseAppointment):
         using = kwargs.get('using')
         if self.id:
             TimePointStatus = models.get_model('bhp_data_manager', 'TimePointStatus')
-            TimePointStatus.check_time_point_status(appointment=self, using=using)
+            TimePointStatus.check_time_point_status(self, using=using)
         self.appt_datetime, self.best_appt_datetime = self.validate_appt_datetime()
         self.check_window_period()
         self.validate_visit_instance(using=using)
