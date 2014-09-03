@@ -11,10 +11,9 @@ from .scheduled_entry_meta_data import ScheduledEntryMetaData
 
 @receiver(post_save, weak=False, dispatch_uid="entry_meta_data_on_post_save")
 def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_fields, **kwargs):
-
-    from ..helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
     if not raw:
         if isinstance(instance, BaseVisitTracking):
+            from ..helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
             scheduled_entry_helper = ScheduledEntryMetaDataHelper(instance.appointment, instance)
             scheduled_entry_helper.add_or_update_for_visit()
             requisition_meta_data_helper = RequisitionMetaDataHelper(instance.appointment, instance)
