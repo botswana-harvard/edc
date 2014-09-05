@@ -149,9 +149,8 @@ class AppointmentHelper(object):
                 if appointment.appt_status in [DONE, INCOMPLETE]:
                     # test if Done or Incomplete
 
-                    if ((ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status__iexact=NEW).exists() or RequisitionMetaData.objects.filter(appointment=appointment, entry_status__iexact=NEW).exists())
-                        and not appointment.allow_missing_forms()):
-                        #objs = ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status='NEW')
+                    if ((ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status__iexact=NEW).exists() or
+                         RequisitionMetaData.objects.filter(appointment=appointment, entry_status__iexact=NEW).exists())):
                         appointment.appt_status = INCOMPLETE
                     else:
                         appointment.appt_status = DONE
