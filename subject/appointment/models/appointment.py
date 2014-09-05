@@ -173,21 +173,6 @@ class Appointment(BaseAppointment):
         """Returns the appointment datetime as the report_datetime."""
         return self.appt_datetime
 
-    def allow_missing_forms(self):
-        """ This method will look for the existence of a model record that allows it to close visit as done even though not all forms filled eg participation model in BCPP """
-        from django.db.models import get_model
-        from edc.subject.entry.models import Entry
-        from .base_participation_model import BaseParticipationModel
-        scheduled_entries = Entry.objects.all()
-        for entry in scheduled_entries:
-            model_class = get_model(entry.app_label, entry.model_name)
-            if issubclass(model_class, BaseParticipationModel):
-                if model_class.objects.filter(subject_visit__appointment=self).exists():
-                    model_instance = model_class.objects.get(subject_visit__appointment=self)
-                    if 'allow_missing_forms' in dir(model_instance):
-                        return model_instance.allow_missing_forms()
-        return False
-
     @property
     def complete(self):
         """Returns True if the appointment status is DONE."""
