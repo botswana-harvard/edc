@@ -12,13 +12,15 @@ class BaseConsentModelAdmin(BaseModelAdmin):
 
         super(BaseConsentModelAdmin, self).__init__(*args, **kwargs)
         self.search_fields = ['id', 'subject_identifier', 'first_name', 'last_name', 'identity', ]
-        self.list_display = ['subject_identifier', 'is_verified', 'first_name', 'initials', 'gender', 'dob',
-                             'consent_datetime', 'created', 'modified', 'user_created', 'user_modified', ]
+        self.list_display = ['subject_identifier', 'is_verified', 'is_verified_datetime', 'first_name',
+                             'initials', 'gender', 'dob', 'consent_datetime', 'created', 'modified',
+                             'user_created', 'user_modified', ]
         self.actions.append(flag_as_verified_against_paper)
         self.actions.append(unflag_as_verified_against_paper)
         self.list_filter = [
             'gender',
             'is_verified',
+            'is_verified_datetime',
             'language',
             'may_store_samples',
             'study_site',
