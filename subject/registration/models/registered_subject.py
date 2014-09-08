@@ -191,9 +191,9 @@ class RegisteredSubject(BaseSubject):
     def is_dispatchable_model(self):
         return True
 
-    def bypass_for_edit_dispatched_as_item(self):
+    def bypass_for_edit_dispatched_as_item(self, using=None):
         # requery myself
-        obj = self.__class__.objects.get(pk=self.pk)
+        obj = self.__class__.objects.using(using).get(pk=self.pk)
         # dont allow values in these fields to change if dispatched
         may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['study_site_id', 'registration_status', 'modified']]
         for k, v in may_not_change_these_fields:
