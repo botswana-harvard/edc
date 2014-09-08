@@ -205,10 +205,10 @@ class BaseConsent(BaseSubject):
     def get_subject_type(self):
         raise ImproperlyConfigured('Method must be overridden to return a subject_type. e.g. \'subject\', \'maternal\', \'infant\', etc')
 
-    def bypass_for_edit_dispatched_as_item(self):
+    def bypass_for_edit_dispatched_as_item(self, using=None):
         # requery myself
-        obj = self.__class__.objects.get(pk=self.pk)
-        #dont allow values in these fields to change if dispatched
+        obj = self.__class__.objects.using(using).get(pk=self.pk)
+        # dont allow values in these fields to change if dispatched
         may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['is_verified_datetime', 'is_verified']]
         for k, v in may_not_change_these_fields:
             if k[0] != '_':
