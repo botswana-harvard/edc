@@ -48,13 +48,13 @@ class Consumer(object):
             print '    tx_pk=\'{0}\''.format(incoming_transaction.tx_pk)
             action = 'failed'
             try:
-                self._disconnect_signals(incoming_transaction.tx_name.lower())
+                # self._disconnect_signals(incoming_transaction.tx_name.lower())
                 if deserialize_from_transaction.deserialize(incoming_transaction, using, check_hostname=check_hostname):
                     action = 'saved'
-                self._reconnect_signals()
+                # self._reconnect_signals()
                 print '    {0}'.format(action)
             except DeserializationError as e:
-                self._reconnect_signals()
+                # self._reconnect_signals()
                 print '    {0} {1}'.format(action, e)
                 pass  # raise DeserializationError(e)
         self.post_sync(using, lock_name, **kwargs)
