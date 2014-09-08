@@ -45,39 +45,44 @@ class DeserializeFromTransaction(object):
                     is_success = False
                 else:
                     is_success = False
+                    # save using ModelBase save() method (skips all the subclassed save() methods)
+                    # post_save, etc signals will fire
                     try:
-                        # save using ModelBase save() method (skips all the subclassed save() methods)
-                        # post_save, etc signals will fire
-                        if 'deserialize_prep' in dir(obj.object):
-                            # if there is anything special you wish to do to change on the instance
-                            # override this method on your model
-                            obj.object.deserialize_prep()
-                        try:
-                            # force insert even if it is an update
-                            # to trigger an integrity error if it is an update
-                            obj.save(using=using)
-                            obj.object._deserialize_post(incoming_transaction)
-                            print '    OK - normal save on {0}'.format(using)
-                            is_success = True
-                        except:
-                            # insert failed so unique contraints blocked the forced insert above
-                            # check if there is a helper method
-                            print '    force insert failed'
-                            if 'deserialize_on_duplicate' in dir(obj.object) and obj.object.deserialize_on_duplicate():
-                                # obj.object.deserialize_on_duplicate()
-                                obj.save(using=using)
-                                obj.object._deserialize_post(incoming_transaction)
-                                print '    OK update succeeded after deserialize_on_duplicate on using={0}'.format(using)
-                                is_success = True
-                            else:
-                                obj.save(using=using)
-                                obj.object._deserialize_post(incoming_transaction)
-                                print '    OK update succeeded as is on using={0}'.format(using)
-                                is_success = True
+                        obj.object.deserialize_prep()
+                    except AttributeError:
+                        pass
+                    try:
+                        # force insert even if it is an update
+                        # to trigger an integrity error if it is an update
+                        obj.save(using=using)
+                        obj.object._deserialize_post(incoming_transaction)
+                        print '    OK - normal save on {0}'.format(using)
+                        is_success = True
                     except IntegrityError as error:
+                        # insert failed so unique contraints blocked the forced insert above
+                        # check if there is a helper method
+                        print '    force insert failed'
+#                             if obj.object.deserialize_on_duplicate():
+#                                 # obj.object.deserialize_on_duplicate()
+#                                 try:
+#                                     obj.save(using=using)
+#                                     obj.object._deserialize_post(incoming_transaction)
+#                                     print '    OK update succeeded after deserialize_on_duplicate on using={0}'.format(using)
+#                                     is_success = True
+#                                 except:
+#                                     raise
+#                             else:
+#                        try:
+#                             obj.save(using=using)
+#                             obj.object._deserialize_post(incoming_transaction)
+#                             print '    OK update succeeded as is on using={0}'.format(using)
+#                             is_success = True
+#                         except:
+#                             raise
+#                     except IntegrityError as error:
                         # failed both insert and update, why?
-                        print '    integrity error'
-                        if 'Cannot add or update a child row' in error.args[1]:
+#                         print '    integrity error'
+                        if 'Cannot add or update a child row' in error.args[1]:  # is this style deprecated?
                             # which foreign key is failing?
                             if 'audit' in obj.object._meta.db_table:
                                 # audit tables do not have access to the helper methods

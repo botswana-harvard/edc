@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
+from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 
 from edc.device.device.classes import Device
 from edc.device.sync.models import BaseSyncUuidModel
@@ -20,8 +21,12 @@ nullhandler = logger.addHandler(NullHandler())
 
 
 class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
-
     """Base model for all UUID models and adds dispatch methods and signals. """
+
+    def __init__(self, *args, **kwargs):
+        self._user_container_instance = None
+        self.using = 'default'
+        super(BaseDispatchSyncUuidModel, self).__init__(*args, **kwargs)
 
     def is_dispatch_container_model(self):
         """Flags a model as a container model that if dispatched
@@ -64,7 +69,11 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                                    'container. Missing method '
                                    'dispatched_as_container_identifier_attr()'.format(self._meta.object_name))
 
-    def is_dispatched(self):
+    def is_dispatched(self, using=None):
+        """Returns True is the model instance is dispatched otherwise False.
+
+        The model instance may be a container or an item within a container."""
+        self.using = using or self.using
         if self.is_dispatch_container_model():
             return self.is_dispatched_as_container()
         else:
@@ -73,17 +82,30 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
     def is_dispatched_as_container(self, using=None):
         """Determines if a model instance is dispatched as a container.
 
+        The container is at the top of the dispatch hierarchy.
+
         For example: a household model instance may serve as a
         container for all household members and data."""
-        is_dispatched = False
+        self.using = using or self.using
         if self.is_dispatch_container_model():
-            DispatchContainerRegister = get_model('dispatch', 'DispatchContainerRegister')
-            if DispatchContainerRegister:
-                is_dispatched = DispatchContainerRegister.objects.using(using).filter(
-                    container_identifier=getattr(self, self.dispatched_as_container_identifier_attr()),
-                    is_dispatched=True,
-                    return_datetime__isnull=True).exists()
-        return is_dispatched
+            try:
+                return self.dispatched_container_item.is_dispatched
+            except AttributeError:
+                return False
+
+    @property
+    def dispatched_container_item(self):
+        """Returns an instance from DispatchContainerRegister for a dispatched container item or None.
+
+        .. seealso::, :func:`dispatched_item`"""
+        DispatchContainerRegister = get_model('dispatch', 'DispatchContainerRegister')
+        try:
+            return DispatchContainerRegister.objects.using(self.using).get(
+                container_identifier=getattr(self, self.dispatched_as_container_identifier_attr()),
+                is_dispatched=True,
+                return_datetime__isnull=True)
+        except DispatchContainerRegister.DoesNotExist:
+            return None
 
     def is_current_device_server(self):
         return Device().is_server
@@ -91,6 +113,9 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
     def is_dispatched_within_user_container(self, using=None):
         """Returns True if the model class is dispatched within a
         user container.
+
+        Using the look_up attrs defined on the model, queries
+        up the relational hierarchy to the container model.
 
         ..note:: an item is considered dispatched if it's container
                  is dispatched. It usually is also registered as a
@@ -107,55 +132,79 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
             not have a corresponding DispatchItemRegister. This might happen
             if the subject_consent is created on the producer and re-synced
             with the source before the Household is returned."""
-        is_dispatched = False
-        if self.dispatch_container_lookup():
-            user_container_model_cls, lookup_attrs = self.dispatch_container_lookup()
-            if isinstance(user_container_model_cls, (list, tuple)):
-                user_container_model_cls = get_model(user_container_model_cls[0], user_container_model_cls[1])
-            if not isinstance(lookup_attrs, basestring):
-                raise TypeError('Method dispatch_container_lookup must return a (model class/tuple, list) '
-                                'that points to the user container')
-            lookup_attrs = lookup_attrs.split('__')
-            # last item in the list must be the container identifier
-#            if not lookup_attrs[-1:] == [user_container_model_cls().dispatched_as_container_identifier_attr()]:
-#                raise ImproperlyConfigured('Expect last list item to be {0}. Got {1}. '
-#                                           'Model method dispatch_container_lookup() '
-#                                           'must return a lookup attr string that ends in the container '
-#                                           'identifier field name.'.format(
-#                                                user_container_model_cls().dispatched_as_container_identifier_attr(),
-#                                               lookup_attrs[-1:]))
+        return self.user_container_instance.is_dispatched()
 
-            lookup_value = self  # why is this set to self?
+    @property
+    def user_container_model_cls(self):
+        """Returns the model class at the top of the dispatch heirarchy."""
+        user_container_model_cls = self.dispatch_container_lookup()[0]
+        if isinstance(user_container_model_cls, (list, tuple)):
+            user_container_model_cls = get_model(user_container_model_cls[0], user_container_model_cls[1])
+        return user_container_model_cls
 
-            # FIXME: if lookup value gets set to None below (e.g. attribute Plot is None and the user container is Plot)
-            #        that means the user_container value is not known and is_dispatched will be false.
-            #        this condition should not occur!
+    @property
+    def lookup_attrs(self):
+        """Returns an ordered list of attribute names split from a query_string
+        where the last attribute is the field name of the model class
+        at the top of the dispatch hierarchy.
 
-            for attrname in lookup_attrs:
-                lookup_value = getattr(lookup_value, attrname, None)  # is this supposed to default to self?
-            if not lookup_value:
-                raise DispatchContainerError('Expected to get a value for the user_container '
-                                             'model \'{0}\' on dispatch_container_lookup for '
-                                             'model \'{1}\'.'.format(user_container_model_cls, self.__class__))
-            container_attr = user_container_model_cls().dispatched_as_container_identifier_attr()
-            options = {container_attr: lookup_value}
-            if user_container_model_cls.objects.using(using).filter(**options).exists():
-                # found user container instance, is it dispatched?
-                is_dispatched = user_container_model_cls.objects.using(using).get(
-                    **options).is_dispatched_as_container(using)
-        return is_dispatched
+        ..seealso:: :func:`user_container_model_cls`"""
+        lookup_attrs = self.dispatch_container_lookup()[1]
+        if not isinstance(lookup_attrs, basestring):
+            raise TypeError('Method dispatch_container_lookup must return a (model class/tuple, list) '
+                            'that points to the user container')
+        return lookup_attrs.split('__')
+
+    @property
+    def does_not_exist_exceptions(self):
+        """Prepares and returns a list of DoesNotExist exceptions for self and each related model."""
+        return tuple(set(
+            [field.related.parent_model.DoesNotExist for field in self._meta.fields
+             if isinstance(field, (ForeignKey, ManyToManyField, OneToOneField))] +
+            [self.DoesNotExist])
+            )
+
+    @property
+    def user_container_instance(self):
+        """Returns the instance of the model at the top of the dispatch
+        hierarchy."""
+        # if self.dispatch_container_lookup():
+        lookup = None
+        for attrname in self.lookup_attrs:
+            try:
+                # find the instance at the top of the dispatch hierarchy
+                user_container_instance = lookup or self
+                # ... and the attr value from the instance
+                lookup = getattr(user_container_instance, attrname, None)
+            except self.does_not_exist_exceptions:
+                # if the foreign_key that relates to the dispatch
+                # container has not been set, it is not possible
+                # to determine the dispatch status. This error should
+                # not be excepted.
+                raise DispatchContainerError(
+                    'Unable to lookup the instance for user_container '
+                    '{0} on model {1}. Failed on {2}.{3}'.format(
+                        self.user_container_model_cls._meta.object_name,
+                        self.__class__._meta.object_name,
+                        user_container_instance.__class__._meta.object_name,
+                        attrname))
+        return user_container_instance
+
+#     @user_container_instance.setter
+#     def user_container_instance(self, instance):
+#         self._user_container_instance = instance
 
     def dispatch_container_lookup(self):
         """Returns a query string in the django format.
 
         User must override.
 
-        if the model has no path to the user_container, such as 
+        if the model has no path to the user_container, such as
         Appointment or RegisteredSubject, override like this::
 
             def dispatch_container_lookup(self):
                 return None
-        if the model does have a relational path to the 
+        if the model does have a relational path to the
         user_container, override like this::
 
             def dispatch_container_lookup(self):
@@ -176,8 +225,9 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         raise ImproperlyConfigured('Model {0} is not configured for dispatch. '
                                    'Missing method \'dispatch_container_lookup\''.format(self._meta.object_name))
 
-    def _bypass_for_edit(self):
-        if self.bypass_for_edit_dispatched_as_item():
+    def _bypass_for_edit(self, using=None):
+        using = using or 'default'
+        if self.bypass_for_edit_dispatched_as_item(using):
             if not self.id:
                 raise AlreadyDispatchedItem('Model {0}-{1}, although dispatched, may only be '
                                             'conditionally edited. New instances are not '
@@ -185,7 +235,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
             return True
         return False
 
-    def bypass_for_edit_dispatched_as_item(self):
+    def bypass_for_edit_dispatched_as_item(self, using=None):
         """Users may override to allow a model to be edited even thoug it is dispatched.
 
         .. warning:: avoid using this. it only allows edits. you are responsible to
@@ -199,7 +249,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         is_dispatched = False
         if self.is_dispatchable_model():
             if self.id:
-                if self.get_dispatched_item(using):
+                if self.dispatched_item(using):
                     is_dispatched = True
                 if not is_dispatched:
                     if not self.is_dispatch_container_model():
@@ -214,11 +264,17 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                                                 'Got {0}'.format(is_dispatched))
         return is_dispatched
 
-    def get_dispatched_item(self, using=None):
+    def dispatched_item(self, using=None):
         """Checks the DispatchItemRegister and returns the
         dispatch_item instance if one exists for this model
-        instance; that is, this model instance is "dispatched"."""
+        instance; that is, this model instance is "dispatched".
+
+        .. warning:: this is not the same as determining if a model
+                     is dispatched within a container. To determine if
+                     an instance is dispatched, use :func:`is_dispatched`.
+        """
         dispatch_item = None
+        using = using or 'default'
         if self.id:
             if self.is_dispatchable_model():
                 DispatchItemRegister = get_model('dispatch', 'DispatchItemRegister')
@@ -237,7 +293,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         if self.id:
             if self.is_dispatchable_model():
                 if self.is_dispatch_container_model():
-                    if self.is_dispatched_as_container(using) and not self._bypass_for_edit():
+                    if self.is_dispatched_as_container(using) and not self._bypass_for_edit(using):
                         raise AlreadyDispatchedContainer('Model {0}-{1} is currently dispatched '
                                                          'as a container for other dispatched '
                                                          'items.'.format(self._meta.object_name, self.pk))
