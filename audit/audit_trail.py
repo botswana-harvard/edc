@@ -77,8 +77,8 @@ class AuditTrail(object):
                         else:
                             return field_arr[2]
 
-            def _audit(sender, instance, created, **kwargs):
-                if not kwargs.get('raw'):
+            def _audit(sender, instance, raw, created, using, **kwargs):
+                if not raw:
                     # Write model changes to the audit model.
                     # instance is the current (non-audit) model.
                     kwargs = {}

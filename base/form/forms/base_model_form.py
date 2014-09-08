@@ -6,6 +6,7 @@ from django.db.models.query import QuerySet
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
 from ..classes import LogicCheck
+from edc.device.dispatch.exceptions import DispatchContainerError
 
 
 class BaseModelForm(forms.ModelForm):
@@ -67,8 +68,15 @@ class BaseModelForm(forms.ModelForm):
         cleaned_data = self.cleaned_data
         # check if dispatched
         try:
-            if self.instance.is_dispatched():
-                raise forms.ValidationError('Updates not allowed. This form is currently dispatched.')
+            model_instance = self._meta.model(**cleaned_data)
+            if model_instance.is_dispatched():
+                raise forms.ValidationError(
+                    'Updates not allowed. This form is part of the '
+                    'dataset for a \'{}\' that is currently dispatched to {}.'.format(
+                        model_instance.dispatch_container_lookup()[0]._meta.verbose_name,
+                        model_instance.user_container_instance.dispatched_container_item.producer.name
+                        )
+                )
         except AttributeError:
             pass
         # encrypted fields may have their own validation code to run.

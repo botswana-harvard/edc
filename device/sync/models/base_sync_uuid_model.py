@@ -58,7 +58,7 @@ class BaseSyncUuidModel(BaseUuidModel):
         evaluate your criteria here and return True or False. If False is returned to the deserializer,
         the object will not be saved and the transaction WILL be flagged as consumed WITHOUT error.
         """
-        logger.info('method deserialize_on_duplicate is not defined, returning True')
+        # logger.info('method deserialize_on_duplicate is not defined, returning True')
         return True
 
     def deserialize_get_missing_fk(self, attrname):
