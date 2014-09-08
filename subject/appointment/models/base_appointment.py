@@ -55,7 +55,11 @@ class BaseAppointment (BaseSyncUuidModel):
         return retval
 
     def dispatch_container_lookup(self):
-        return None
+        pass
+
+    def ignore_for_dispatch(self):
+        """Returns True to avoid looking up for is_dispatched."""
+        return True
 
     def include_for_dispatch(self):
         return True
