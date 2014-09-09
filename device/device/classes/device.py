@@ -10,13 +10,9 @@ class Device(object):
 
     Tries settings.py (with DEVICE_ID settings attribute).
     Must be a number."""
-    #reserved device ids. DONT CHANGE, ASK ONE IF UNSURE.
-    #70 is the Ranaka server,
-    #71 Digawana server,
-    #91 Molapowabojang serve,
-    #92 Otse server
-    SERVER_DEVICE_ID_LIST = [91, 92, 93, 94, 95, 96, 97, 99, 70, 71]  # TODO: needs to be in settings
-    MIDDLEMAN_DEVICE_ID_LIST = [98]  # TODO: needs to be in settings
+
+    SERVER_DEVICE_ID_LIST = settings.SERVER_DEVICE_ID_LIST
+    MIDDLEMAN_DEVICE_ID_LIST = settings.MIDDLEMAN_DEVICE_ID_LIST
 
     def __init__(self, device_id=None, settings_attr=None):
         self._device_id = None
