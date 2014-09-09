@@ -68,7 +68,11 @@ class BaseModelForm(forms.ModelForm):
         cleaned_data = self.cleaned_data
         # check if dispatched
         try:
-            model_instance = self._meta.model(**cleaned_data)
+            options = {}
+            for key, value in cleaned_data.iteritems():
+                if not isinstance(value, QuerySet):  # m2m fields
+                    options.update({key: value})
+            model_instance = self._meta.model(pk=self.instance.pk, **options)
             if model_instance.is_dispatched():
                 raise forms.ValidationError(
                     'Updates not allowed. This form is part of the '
