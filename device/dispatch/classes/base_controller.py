@@ -23,7 +23,7 @@ from edc.device.sync.exceptions import PendingTransactionError
 from edc.core.crypto_fields.fields import BaseEncryptedField
 from ..exceptions import ControllerBaseModelError
 from .controller_register import registered_controllers
-from .signal_manager import SignalManager
+# from .signal_manager import SignalManager
 
 
 logger = logging.getLogger(__name__)
@@ -76,7 +76,7 @@ class BaseController(BaseProducer):
         self._controller_state = None
         self._model_pk_container = {}
         self._session_container = {}
-        self.signal_manager = SignalManager()
+        # self.signal_manager = SignalManager()
         self.initialize_session_container()
         super(BaseController, self).__init__(using_source, using_destination, **kwargs)
         self.fk_instances = []
@@ -235,7 +235,7 @@ class BaseController(BaseProducer):
 
     def _disconnect_signals(self, obj):
         """Disconnects signals before saving the serialized object in _to_json."""
-        self.signal_manager.disconnect(obj)
+        # self.signal_manager.disconnect(obj)
         self.disconnect_signals()
 
     def disconnect_signals(self):
@@ -246,7 +246,7 @@ class BaseController(BaseProducer):
 
     def _reconnect_signals(self):
         """Reconnects signals after saving the serialized object in _to_json."""
-        self.signal_manager.reconnect()
+        # self.signal_manager.reconnect()
         self.reconnect_signals()
 
     def reconnect_signals(self):
