@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 try:
     from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
@@ -53,16 +54,6 @@ class BaseAppointment (BaseSyncUuidModel):
         if self.appt_status.lower() == 'new':
             retval = True
         return retval
-
-    def dispatch_container_lookup(self):
-        pass
-
-    def ignore_for_dispatch(self):
-        """Returns True to avoid looking up for is_dispatched."""
-        return True
-
-    def include_for_dispatch(self):
-        return True
 
     class Meta:
         abstract = True

@@ -178,6 +178,21 @@ class Appointment(BaseAppointment):
         """Returns True if the appointment status is DONE."""
         return self.appt_status == DONE
 
+    def dispatch_container_lookup(self):
+        return (self.__class__, 'id')
+
+    def is_dispatched(self):
+        """Returns the dispatched status based on the visit tracking
+        form's id_dispatched response."""
+        Visit = self.visit_definition.visit_tracking_content_type_map.model_class()
+        return Visit.objects.get(appointment=self).is_dispatched()
+
+#     def is_dispatchable_model(self):
+#         return True
+
+    def include_for_dispatch(self):
+        return True
+
     class Meta:
         """Django model Meta."""
         app_label = 'appointment'
