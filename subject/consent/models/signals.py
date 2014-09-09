@@ -1,7 +1,8 @@
-from django.db.models import get_app, get_models
+from django.db.models import get_app, get_models, get_model
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
 
+from edc.base.model.constants import BASE_MODEL_UPDATE_FIELDS, BASE_UUID_MODEL_UPDATE_FIELDS
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 
@@ -9,6 +10,56 @@ from ..models import BaseConsent, BaseConsentedUuidModel
 
 from .attached_model import AttachedModel
 from .consent_catalogue import ConsentCatalogue
+
+
+@receiver(post_save, weak=False, dispatch_uid='update_or_create_registered_subject_on_post_save')
+def update_or_create_registered_subject_on_post_save(sender, instance, raw, created, using, **kwargs):
+    """Updates or creates an instance of RegisteredSubject on the sender instance.
+
+    Sender instance is a Consent"""
+    if not raw:
+        if isinstance(instance, (BaseConsent, )):
+            try:
+                # if instance.registered_subject:
+                # has attr and is set to an instance of registered subject -- update
+                for field_name, value in instance.registered_subject_options.iteritems():
+                    setattr(instance.registered_subject, field_name, value)
+                # RULE: subject identifier is ONLY allocated by a consent:
+                instance.registered_subject.subject_identifier = instance.subject_identifier
+                instance.registered_subject.save(using=using)
+#                 else:
+#                     # has attr and is not set to an instance of registered subject -- get/create
+#                     # should not occur
+#                     RegisteredSubject = get_model('registration', 'registeredsubject')
+#                     try:
+#                         instance.registered_subject = RegisteredSubject.objects.using(using).get(
+#                             subject_identifier=instance.subject_identifier)
+#                         for field_name, value in instance.registered_subject_options.iteritems():
+#                             setattr(instance.registered_subject, field_name, value)
+#                         if created:
+#                             instance.registered_subject.subject_identifier = instance.subject_identifier
+#                         instance.registered_subject.save(using=using)
+#                     except RegisteredSubject.DoesNotExist:
+#                         RegisteredSubject.objects.using(using).create(
+#                             subject_identifier=instance.subject_identifier,
+#                             **instance.registered_subject_options)
+            except AttributeError as attribute_error:
+                # this should not be used
+                # self does not have a foreign key to RegisteredSubject but RegisteredSubject
+                # still needs to be created or updated
+                RegisteredSubject = get_model('registration', 'registeredsubject')
+                try:
+                    registered_subject = RegisteredSubject.objects.using(using).get(
+                        subject_identifier=instance.subject_identifier)
+                    for field_name, value in instance.registered_subject_options.iteritems():
+                        setattr(registered_subject, field_name, value)
+                    if created:
+                        registered_subject.subject_identifier = instance.subject_identifier
+                    registered_subject.save(using=using)
+                except RegisteredSubject.DoesNotExist:
+                    RegisteredSubject.objects.using(using).create(
+                        subject_identifier=instance.subject_identifier,
+                        **instance.registered_subject_options)
 
 
 @receiver(pre_save, weak=False, dispatch_uid='is_consented_instance_on_pre_save')

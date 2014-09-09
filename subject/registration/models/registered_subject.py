@@ -185,8 +185,11 @@ class RegisteredSubject(BaseSubject):
     def is_serialized(self):
         return super(RegisteredSubject, self).is_serialized(True)
 
-    def dispatch_container_lookup(self, using=None):
-        return None
+    def dispatch_container_lookup(self):
+        return (self.__class__, 'id')
+
+    def is_dispatched(self):
+        return False
 
     def is_dispatchable_model(self):
         return True

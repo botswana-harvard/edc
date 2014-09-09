@@ -99,57 +99,22 @@ class BaseSubject (BaseSyncUuidModel):
             return True
         return False
 
-    def _get_or_created_registered_subject(self, using):
-        ret = None
-        if 'registered_subject' in dir(self):
-            if self.registered_subject:
-                ret = self.registered_subject
-        if not ret:
-            options = self._get_registered_subject_options()
-            RegisteredSubject = get_model('registration', 'registeredsubject')
-            if not RegisteredSubject.objects.using(using).filter(subject_identifier=self.subject_identifier):
-                registered_subject = RegisteredSubject.objects.using(using).create(
-                    subject_identifier=self.subject_identifier, **options)
-                created = True
-            else:
-                registered_subject = RegisteredSubject.objects.using(using).get(
-                    subject_identifier=self.subject_identifier)
-                created = False
-            if not created:
-                self._update_registered_subject(using, registered_subject)
-            ret = registered_subject
-        return ret
-
-    def _get_registered_subject_options(self):
-        """Returns a dictionary of RegisteredSubject attributes
-        ({field, value}) to be used, for example, as the defaults
-        kwarg RegisteredSubject.objects.get_or_create()."""
-        options = {
-            'study_site': self.study_site,
-            'dob': self.dob,
-            'is_dob_estimated': self.is_dob_estimated,
-            'gender': self.gender,
-            'initials': self.initials,
-            'identity': self.identity,
-            'identity_type': self.identity_type,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'subject_type': self.get_subject_type(),
-            }
-        if self.last_name:
-            options.update({'registration_status': 'consented'})
-        return options
-
-    def _update_registered_subject(self, using, registered_subject=None):
-        """Updates the registered_subject attribute using options from self."""
-        options = self._get_registered_subject_options()
-        if not registered_subject:
-            registered_subject = self.registered_subject
-        for k in registered_subject.__dict__.iterkeys():
-            if k in options:
-                setattr(registered_subject, k, options.get(k))
-        registered_subject.save(using=using)
-        return registered_subject
+#     def _get_or_created_registered_subject(self, using):
+#         registered_subject = None
+#         if 'registered_subject' in dir(self):
+#             if self.registered_subject:
+#                 registered_subject = self.registered_subject
+#         if not registered_subject:
+#             RegisteredSubject = get_model('registration', 'registeredsubject')
+#             try:
+#                 registered_subject = RegisteredSubject.objects.using(using).get(
+#                     subject_identifier=self.subject_identifier)
+#                 self._update_registered_subject(using, registered_subject)
+#             except RegisteredSubject.DoesNotExist:
+#                 options = self._get_registered_subject_options()
+#                 registered_subject = RegisteredSubject.objects.using(using).create(
+#                     subject_identifier=self.subject_identifier, **options)
+#         return registered_subject
 
     def post_save_get_or_create_registered_subject(self, **kwargs):
         """Creates or \'gets and updates\' the registered
@@ -188,12 +153,11 @@ class BaseSubject (BaseSyncUuidModel):
         ..note:: this is important for the link between
                  dashboard and membership form category."""
 
-        return None
+        return self.subject_type
 
     def save(self, *args, **kwargs):
         using = kwargs.get('using')
-        if not self.is_registered_subject():
-            self.subject_type = self.get_subject_type()
+        self.subject_type = self.get_subject_type()
         self.insert_dummy_identifier()
         self._check_if_duplicate_subject_identifier(using)
         self.check_if_may_change_subject_identifier(using)
