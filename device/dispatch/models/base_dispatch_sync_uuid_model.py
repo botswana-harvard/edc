@@ -248,20 +248,20 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         """Returns the models 'dispatched' status in model DispatchItemRegister."""
         is_dispatched = False
         if self.is_dispatchable_model():
-            if self.id:
-                if self.dispatched_item(using):
-                    is_dispatched = True
-                if not is_dispatched:
-                    if not self.is_dispatch_container_model():
-                        # if item is not registered with DispatchItemRegister AND
-                        # we are not checking on behalf of
-                        # a user_container ...
-                        if not is_dispatched and not user_container:
-                            is_dispatched = self.is_dispatched_within_user_container(using)
-                            if not isinstance(is_dispatched, bool):
-                                raise TypeError('Expected a boolean as a return value from '
-                                                'method is_dispatched_within_user_container(). '
-                                                'Got {0}'.format(is_dispatched))
+            #if self.id:
+            if self.dispatched_item(using):
+                is_dispatched = True
+            if not is_dispatched:
+                if not self.is_dispatch_container_model():
+                    # if item is not registered with DispatchItemRegister AND
+                    # we are not checking on behalf of
+                    # a user_container ...
+                    if not is_dispatched and not user_container:
+                        is_dispatched = self.is_dispatched_within_user_container(using)
+                        if not isinstance(is_dispatched, bool):
+                            raise TypeError('Expected a boolean as a return value from '
+                                            'method is_dispatched_within_user_container(). '
+                                            'Got {0}'.format(is_dispatched))
         return is_dispatched
 
     def dispatched_item(self, using=None):
