@@ -28,6 +28,7 @@ class DeserializeFromTransaction(object):
 
     def deserialize(self, incoming_transaction, using, **kwargs):
         # may bypass this check for for testing ...
+        using = using or 'default'
         check_hostname = kwargs.get('check_hostname', True)
         is_success = False
         tr = FieldCryptor('aes', 'local').decrypt(incoming_transaction.tx)
@@ -59,29 +60,6 @@ class DeserializeFromTransaction(object):
                         print '    OK - normal save on {0}'.format(using)
                         is_success = True
                     except IntegrityError as error:
-                        # insert failed so unique contraints blocked the forced insert above
-                        # check if there is a helper method
-                        print '    force insert failed'
-#                             if obj.object.deserialize_on_duplicate():
-#                                 # obj.object.deserialize_on_duplicate()
-#                                 try:
-#                                     obj.save(using=using)
-#                                     obj.object._deserialize_post(incoming_transaction)
-#                                     print '    OK update succeeded after deserialize_on_duplicate on using={0}'.format(using)
-#                                     is_success = True
-#                                 except:
-#                                     raise
-#                             else:
-#                        try:
-#                             obj.save(using=using)
-#                             obj.object._deserialize_post(incoming_transaction)
-#                             print '    OK update succeeded as is on using={0}'.format(using)
-#                             is_success = True
-#                         except:
-#                             raise
-#                     except IntegrityError as error:
-                        # failed both insert and update, why?
-#                         print '    integrity error'
                         if 'Cannot add or update a child row' in error.args[1]:  # is this style deprecated?
                             # which foreign key is failing?
                             if 'audit' in obj.object._meta.db_table:
