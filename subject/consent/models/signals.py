@@ -80,12 +80,9 @@ def add_models_to_catalogue(sender, instance, raw, **kwargs):
             if instance.add_for_app:
                 try:
                     app = get_app(instance.add_for_app)
-                except:
-                    app = None
-                if app:
                     # sync content_type_map
-                    ContentTypeMapHelper().populate()
-                    ContentTypeMapHelper().sync()
+                    # ContentTypeMapHelper().populate()
+                    # ContentTypeMapHelper().sync()
                     # add models to AttachedModel
                     models = get_models(app)
                     for model in models:
@@ -95,6 +92,8 @@ def add_models_to_catalogue(sender, instance, raw, **kwargs):
                                 AttachedModel.objects.get(consent_catalogue=instance, content_type_map=content_type_map)
                             except AttachedModel.DoesNotExist:
                                 AttachedModel.objects.create(consent_catalogue=instance, content_type_map=content_type_map)
+                except AttributeError:
+                    pass
 
 
 @receiver(post_save, weak=False, dispatch_uid='update_consent_history')
