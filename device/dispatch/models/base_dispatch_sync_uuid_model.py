@@ -208,7 +208,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         user_container, override like this::
 
             def dispatch_container_lookup(self):
-                return 'django__style__path__to__container'
+                return (container_model_cls, 'django__style__path__to__container')
 
         For example:
             with a relational structure like this::
@@ -220,7 +220,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
             where 'household' is the user container with 
             identifier attr 'household_identifier',
             <self> would return something like this:
-                'household_structure_member__household_structure__household__household_identifier'
+                (Household, 'household_structure_member__household_structure__household__household_identifier')
         """
         raise ImproperlyConfigured('Model {0} is not configured for dispatch. '
                                    'Missing method \'dispatch_container_lookup\''.format(self._meta.object_name))
@@ -293,13 +293,15 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         if self.id:
             if self.is_dispatchable_model():
                 if self.is_dispatch_container_model():
-                    if self.is_dispatched_as_container(using) and not self._bypass_for_edit(using):
-                        raise AlreadyDispatchedContainer('Model {0}-{1} is currently dispatched '
-                                                         'as a container for other dispatched '
-                                                         'items.'.format(self._meta.object_name, self.pk))
-                if self.is_dispatched_as_item(using) and not self._bypass_for_edit():
-                    raise AlreadyDispatchedItem('Model {0}-{1} is currently dispatched'.format(self._meta.object_name,
-                                                                                               self.pk))
+                    if not self._bypass_for_edit(using):
+                        if self.is_dispatched_as_container(using):
+                            raise AlreadyDispatchedContainer('Model {0}-{1} is currently dispatched '
+                                                             'as a container for other dispatched '
+                                                             'items.'.format(self._meta.object_name, self.pk))
+                if not self._bypass_for_edit(using):
+                    if self.is_dispatched_as_item(using):
+                        raise AlreadyDispatchedItem('Model {0}-{1} is currently dispatched'.format(self._meta.object_name,
+                                                                                                   self.pk))
         super(BaseDispatchSyncUuidModel, self).save(*args, **kwargs)
 
     class Meta:
