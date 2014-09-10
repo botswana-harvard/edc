@@ -153,7 +153,7 @@ class BaseConsent(BaseSubject):
         Also, calls user method :func:`save_new_consent`"""
         try:
             registered_subject = getattr(self, 'registered_subject')
-        except:
+        except AttributeError:
             registered_subject = None
         self.subject_identifier = self.save_new_consent(using=using, subject_identifier=self.subject_identifier)
         re_pk = re.compile('[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}')
@@ -189,8 +189,28 @@ class BaseConsent(BaseSubject):
         # if adding, call _save_new_consent()
         if not self.id:
             self._save_new_consent(kwargs.get('using', None))
-    
         super(BaseConsent, self).save(*args, **kwargs)
+
+    @property
+    def registered_subject_options(self):
+        """Returns a dictionary of RegisteredSubject attributes
+        ({field, value}) to be used, for example, as the defaults
+        kwarg RegisteredSubject.objects.get_or_create()."""
+        options = {
+            'study_site': self.study_site,
+            'dob': self.dob,
+            'is_dob_estimated': self.is_dob_estimated,
+            'gender': self.gender,
+            'initials': self.initials,
+            'identity': self.identity,
+            'identity_type': self.identity_type,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'subject_type': self.get_subject_type(),
+            }
+        if self.last_name:
+            options.update({'registration_status': 'consented'})
+        return options
 
     def formatted_age_at_consent(self):
         return formatted_age(self.dob, self.consent_datetime)
@@ -205,10 +225,10 @@ class BaseConsent(BaseSubject):
     def get_subject_type(self):
         raise ImproperlyConfigured('Method must be overridden to return a subject_type. e.g. \'subject\', \'maternal\', \'infant\', etc')
 
-    def bypass_for_edit_dispatched_as_item(self):
+    def bypass_for_edit_dispatched_as_item(self, using=None):
         # requery myself
-        obj = self.__class__.objects.get(pk=self.pk)
-        #dont allow values in these fields to change if dispatched
+        obj = self.__class__.objects.using(using).get(pk=self.pk)
+        # dont allow values in these fields to change if dispatched
         may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['is_verified_datetime', 'is_verified']]
         for k, v in may_not_change_these_fields:
             if k[0] != '_':

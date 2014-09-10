@@ -3,6 +3,7 @@ from django.db import models
 
 from edc.base.model.models import BaseModel
 
+from ..exceptions import ContentTypeMapError
 from ..managers import ContentTypeMapManager
 
 
@@ -22,7 +23,6 @@ class ContentTypeMap(BaseModel):
     name = models.CharField(
         verbose_name='Model verbose_name',
         max_length=50,
-        # unique=True, this is inccorrect, verbose_name is not unique
         db_index=True,
         )
 
@@ -47,11 +47,12 @@ class ContentTypeMap(BaseModel):
         return self.content_type.natural_key()
 
     def model_class(self):
-        if not self.content_type.name.lower() == self.name.lower():
-            raise TypeError('ContentTypeMap is not in sync with ContentType for verbose_name %s. Run sync_content_type management command.' % self.name)
-        if not self.content_type.model == self.model:
-            raise TypeError('ContentTypeMap is not in sync with ContentType for model %s. Run sync_content_type management command.' % self.model)
-
+        if self.content_type.name.lower() != self.name.lower():
+            raise ContentTypeMapError('ContentTypeMap is not in sync with ContentType for verbose_name {}. '
+                                      'Run sync_content_type management command.'.format(self.name))
+        if self.content_type.model != self.model:
+            raise ContentTypeMapError('ContentTypeMap is not in sync with ContentType for model {}. '
+                                      'Run sync_content_type management command.'.format(self.name))
         return self.content_type.model_class()
 
     def __unicode__(self):

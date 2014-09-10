@@ -68,6 +68,9 @@ class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
 
     objects = ExportTransactionManager()
 
+    def __unicode__(self):
+        return '{} {} {}'.format(self.object_name, self.status, self.export_uuid)
+
     def natural_key(self):
         return (self.export_uuid,)
 
@@ -76,8 +79,13 @@ class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
         return 'dashboard?'
 
     def render(self):
-        url = reverse('view_transaction_url', kwargs={'app_label': self._meta.app_label, 'model_name': self._meta.object_name.lower(), 'pk': self.pk})
-        ret = """<a href="{url}" class="add-another" id="add_id_report" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="View transaction"/></a>""".format(url=url)
+        url = reverse('view_transaction_url',
+                      kwargs={'app_label': self._meta.app_label,
+                              'model_name': self._meta.object_name.lower(),
+                              'pk': self.pk})
+        ret = ('<a href="{url}" class="add-another" id="add_id_report" onclick="return '
+               'showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" '
+               'width="10" height="10" alt="View transaction"/></a>').format(url=url)
         return ret
     render.allow_tags = True
 

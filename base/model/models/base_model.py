@@ -2,12 +2,17 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
+from ..constants import BASE_MODEL_UPDATE_FIELDS
 from ..fields import HostnameCreationField, HostnameModificationField
 
 
 class BaseModel(TimeStampedModel):
 
-    """Base model class for all models. Adds created and modified values for user, date and hostname (computer). """
+    """Base model class for all models. Adds created and modified'
+    values for user, date and hostname (computer). 
+
+
+    Note: ANY additional fields """
 
     user_created = models.CharField(
         max_length=250,
@@ -40,7 +45,7 @@ class BaseModel(TimeStampedModel):
     def save(self, *args, **kwargs):
         try:
             # don't allow update_fields to bypass these audit fields
-            update_fields = kwargs.get('update_fields', None) + ['user_created', 'user_modified', 'hostname_created', 'hostname_modified']
+            update_fields = kwargs.get('update_fields', None) + BASE_MODEL_UPDATE_FIELDS
             kwargs.update({'update_fields': update_fields})
         except TypeError:
             pass
