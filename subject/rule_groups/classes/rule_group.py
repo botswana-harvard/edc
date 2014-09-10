@@ -64,9 +64,14 @@ class BaseRuleGroup(type):
                                 else:
                                     model_cls = get_model(meta.app_label, model_name)
                                 if not model_cls:
-                                    raise AttributeError('Attribute \'target_model\' in rule \'{0}.{1}\' contains a model_name that does not exist. app_label=\'{2}\', model_name=\'{3}\'.'.format(name, rule_name, meta.app_label, model_name))
+                                    raise AttributeError('Attribute \'target_model\' in rule \'{0}.{1}\' '
+                                                         'contains a model_name that does not exist. '
+                                                         'app_label=\'{2}\', model_name=\'{3}\'.'.format(
+                                                             name, rule_name, meta.app_label, model_name))
                                 if not issubclass(model_cls, BaseModel):
-                                    raise AttributeError('Invalid value in target model list. Must be a model name class or tuple (app_label, model_name). Got {0}'.format(model_cls))
+                                    raise AttributeError('Invalid value in target model list. Must be '
+                                                         'a model name class or tuple (app_label, '
+                                                         'model_name). Got {0}'.format(model_cls))
 
                                 rule.target_model_list.append(model_cls)
                         rule.source_model = source_model
