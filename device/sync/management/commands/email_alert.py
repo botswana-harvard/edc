@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime
 import socket
 from optparse import make_option
 
@@ -24,23 +24,19 @@ class Command(BaseCommand):
             action='store_true',
             default=False,
             help=('Send an email nofication.')),
-     )
+        )
 
     def handle(self, *args, **options):
-        #body = "No Statistics Provided"
         email_sender = 'django@bhp.org.bw'
         recipient_list = []
-        stats = self.prepare_stats()
-
         tot = IncomingTransaction.objects.filter(is_consumed=False, is_ignored=False).count()
         body = "\nA summary of unconsumed incoming transactions"
         body += "\n{0} Incoming transactions\n".format(tot)
-        if stats:
-            body += "\nTotal:\t:Transaction name"
-            body += "\n__________________________"
-            for stat in stats:
-                body += "\n{0}\t:{1}".format(stat['tx_count'], stat['tx_name'])
-            body += "\n\t -------------------\t"
+        body += "\nTotal:\t:Transaction name"
+        body += "\n__________________________"
+        for stat in self.stats:
+            body += "\n{0}\t:{1}".format(stat['tx_count'], stat['tx_name'])
+        body += "\n\t -------------------\t"
 
         if not args:
             CommandError('Invalid options, Try --help for a list of valid options')
@@ -48,16 +44,20 @@ class Command(BaseCommand):
             print args
             recipient_list = args[0].split(',')
             print "sending email to {0}".format(recipient_list)
+            # TODO: if connection is not up the report will not be delivered
+            # e.g. no retry -- what about using edc.notification
             self.send_email(email_sender, recipient_list, body)
         else:
             raise CommandError('Unknown option, Try --help for a list of valid options')
         print "Successfully sent email to {0}".format(recipient_list)
 
     def send_email(self, email_sender, recipient_list, body):
-        subject = "{0}, {1}: BCPP incoming transactions stats".format(socket.gethostname(), date.today())
+        subject = "{}: incoming tx report for {}".format(socket.gethostname(),
+                                                         datetime.today().strftime('%Y%m%d%H%M'),)
         send_mail(subject, body, email_sender, recipient_list, fail_silently=False)
 
-    def prepare_stats(self):
+    @property
+    def stats(self):
         return IncomingTransaction.objects.values('tx_name').filter(
             is_consumed=False, is_ignored=False
             ).annotate(
