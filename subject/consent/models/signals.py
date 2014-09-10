@@ -80,10 +80,6 @@ def add_models_to_catalogue(sender, instance, raw, **kwargs):
             if instance.add_for_app:
                 try:
                     app = get_app(instance.add_for_app)
-                    # sync content_type_map
-                    # ContentTypeMapHelper().populate()
-                    # ContentTypeMapHelper().sync()
-                    # add models to AttachedModel
                     models = get_models(app)
                     for model in models:
                         if 'consent' not in model._meta.object_name.lower() and 'audit' not in model._meta.object_name.lower():
