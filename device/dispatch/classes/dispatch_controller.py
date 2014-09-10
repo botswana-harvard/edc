@@ -34,7 +34,8 @@ class DispatchController(BaseDispatchController):
                  user_container_identifier,
                  dispatch_url,
                  **kwargs):
-        super(DispatchController, self).__init__(using_source,
+        super(DispatchController, self).__init__(
+            using_source,
             using_destination,
             user_container_app_label,
             user_container_model_name,
@@ -43,8 +44,6 @@ class DispatchController(BaseDispatchController):
             **kwargs)
         self._dispatch_url = None
         self._set_dispatch_url(dispatch_url)
-
-
 
     def dispatch(self, debug=None, **kwargs):
         """Dispatches items to a device by creating a dispatch item instance.
@@ -203,7 +202,7 @@ class DispatchController(BaseDispatchController):
         ..seealso:: module :mod:`bhp_appointment`
         """
         Appointments = get_model('appointment', 'Appointment')
-        #appointments = Appointments.objects.filter(registered_subject=registered_subject)
+        # appointments = Appointments.objects.filter(registered_subject=registered_subject)
         appointments = Appointments.objects.filter(registered_subject=registered_subject,
                                                    appt_datetime__range=(start_datetime,
                                                                          end_datetime))
@@ -231,7 +230,7 @@ class DispatchController(BaseDispatchController):
             visit_field_attname = VisitModelHelper.get_field_name(scheduled_model_class)
             options = kwargs.get('options', {})
             options.update({'{0}__appointment__registered_subject'.format(visit_field_attname): registered_subject})
-            #options.update({'{0}__household_structure_member'.format(visit_field_attname): household_structure_member})
+            # options.update({'{0}__household_structure_member'.format(visit_field_attname): household_structure_member})
             scheduled_instances = scheduled_model_class.objects.filter(**options)
             if scheduled_instances:
                 self.dispatch_user_items_as_json(scheduled_instances, user_container)
@@ -297,7 +296,7 @@ class DispatchController(BaseDispatchController):
                     break
             if not any_dispatched:
                 for qs in queryset:
-                    #Calls dispatch_prep, dispatch_prep is overidden in bcpp_dispatch_controller
+                    # Calls dispatch_prep, dispatch_prep is overidden in bcpp_dispatch_controller
                     self.dispatch()
 #                 self.dispatch_crypt()
 #                 self.dispatch_registered_subjects()

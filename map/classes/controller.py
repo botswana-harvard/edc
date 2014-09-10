@@ -5,6 +5,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
 
+from edc.device.device.classes import device
+
 from ..exceptions import MapperError
 
 from .mapper import Mapper
@@ -55,24 +57,41 @@ class Controller(object):
         return lst
 
     def get_current_mapper(self):
-        """Returns the mapper for the current community using the settings attribute CURRENT_COMMUNITY as a key.
+        """Returns the mapper for the current community."""
+        return self.get_registry(self.valid_community_configuration)
 
-        If CURRENT_COMMUNITY_CHECK is set to True or is not set, the value of CURRENT_COMMUNITY will be checked
-        against plot information before returning the mapper."""
+    @property
+    def valid_community_configuration(self):
+        """Returns the current community after some validation.
+
+        Uses the settings attribute CURRENT_COMMUNITY as the key.
+
+        If CURRENT_COMMUNITY_CHECK is set to True or is not set,
+        the value of CURRENT_COMMUNITY will be checked against
+        plot information before returning the mapper."""
+        try:
+            current_community = settings.CURRENT_COMMUNITY
+        except AttributeError:
+            raise MapperError('Missing settings attribute CURRENT_COMMUNITY. '
+                              'Please update settings.py. e.g. CURRENT_COMMUNITY = \'otse\'.')
         try:
             community_check = settings.CURRENT_COMMUNITY_CHECK
         except AttributeError:
             community_check = True
         if community_check:
-            if 'CURRENT_COMMUNITY' not in dir(settings) or not settings.CURRENT_COMMUNITY:
-                raise MapperError('Ensure settings.CURRENT_COMMUNITY exists and is not \'None\'.')
-            if not settings.DEVICE_ID == '99':
-                mapper_class = self.get_registry(settings.CURRENT_COMMUNITY)()
-                items = mapper_class.get_item_model_cls().objects.all()
-                if items:
-                    if items and not getattr(items[0], mapper_class.map_area_field_attr) == settings.CURRENT_COMMUNITY:
-                        raise MapperError('The settings current community does not match the community the plots in the database belong to. Got {0} for current community in settings file and {1} for community plots belong to'.format(settings.CURRENT_COMMUNITY, getattr(items[0], mapper_class.map_area_field_attr)))
-        return self.get_registry(settings.CURRENT_COMMUNITY)
+            if not device.is_server:
+                mapper_class = self.get_registry(current_community)
+                correct_identifiers = mapper_class().get_item_model_cls().objects.filter(
+                    plot_identifier__startswith=mapper_class.map_code).count()
+                all_identifiers = mapper_class().get_item_model_cls().objects.all().count()
+                if correct_identifiers != all_identifiers:
+                    raise MapperError('Settings attribute CURRENT_COMMUNITY does not match the plot identifiers. '
+                                      'Got {1}/{2} plot identifiers starting with {3}'.format(
+                                          correct_identifiers,
+                                          all_identifiers,
+                                          current_community,)
+                                      )
+        return current_community
 
     def get_mapper_as_tuple(self):
         """Returns a list of tuples from the registry dictionary in the format of choices used by models."""
