@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.db import models
-try:
+if 'edc.device.dispatch' in settings.INSTALLED_APPS:
     from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
-except ImportError:
+else:
     from edc.device.sync.models import BaseSyncUuidModel
 from ..choices import APPT_STATUS
 
