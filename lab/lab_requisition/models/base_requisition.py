@@ -1,7 +1,7 @@
-from django.core.serializers.base import SerializationError
 from django.core.urlresolvers import reverse
 from django.db import models
 
+from edc.base.model.constants import BASE_MODEL_UPDATE_FIELDS, BASE_UUID_MODEL_UPDATE_FIELDS
 from edc.lab.lab_clinic_api.models import TestCode
 
 from .base_base_requisition import BaseBaseRequisition
@@ -33,7 +33,9 @@ class BaseRequisition (BaseBaseRequisition):
         # requery myself
         obj = self.__class__.objects.using(using).get(pk=self.pk)
         # dont allow values in these fields to change if dispatched
-        may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['is_receive', 'is_receive_datetime', 'is_labelled', 'is_labelled_datetime', 'protocol', 'specimen_identifier', 'is_packed', 'packing_list_id', 'is_lis', ]]
+        may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in [
+            'is_receive', 'is_receive_datetime', 'is_labelled', 'is_labelled_datetime', 'protocol',
+            'specimen_identifier', 'is_packed', 'packing_list_id', 'is_lis', ] + BASE_MODEL_UPDATE_FIELDS + BASE_UUID_MODEL_UPDATE_FIELDS]
         for k, v in may_not_change_these_fields:
             if k[0] != '_':
                 if getattr(self, k) != v:
