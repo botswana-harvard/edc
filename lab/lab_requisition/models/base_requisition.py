@@ -28,6 +28,18 @@ class BaseRequisition (BaseBaseRequisition):
     def dispatch_container_lookup(self, using=None):
         return None
 
+    def bypass_for_edit_dispatched_as_item(self, using=None):
+        """Allow bypass only if doing lab actions."""
+        # requery myself
+        obj = self.__class__.objects.using(using).get(pk=self.pk)
+        # dont allow values in these fields to change if dispatched
+        may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['is_receive', 'is_receive_datetime', 'is_labelled', 'is_labelled_datetime', 'protocol', 'specimen_identifier', 'is_packed', 'packing_list_id', 'is_lis', ]]
+        for k, v in may_not_change_these_fields:
+            if k[0] != '_':
+                if getattr(self, k) != v:
+                    return False
+        return True
+
     def natural_key(self):
         return (self.requisition_identifier,)
 
