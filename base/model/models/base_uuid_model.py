@@ -1,3 +1,4 @@
+from ..constants import BASE_UUID_MODEL_UPDATE_FIELDS
 from ..fields import UUIDAutoField, RevisionField
 
 from .base_model import BaseModel
@@ -18,7 +19,7 @@ class BaseUuidModel(BaseModel):
 
     def save(self, *args, **kwargs):
         try:
-            update_fields = kwargs.get('update_fields', None) + ['revision', ]
+            update_fields = kwargs.get('update_fields', None) + BASE_UUID_MODEL_UPDATE_FIELDS
             kwargs.update({'update_fields': update_fields})
         except TypeError:
             pass
