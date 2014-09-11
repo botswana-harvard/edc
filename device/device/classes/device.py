@@ -36,7 +36,8 @@ class Device(object):
     @property
     def is_middleman(self):
         """Returns True if the device_id is is in settings.MIDDLEMAN_DEVICE_ID_LIST."""
-        return self.device_id in map(str, map(int, self.MIDDLEMAN_DEVICE_ID_LIST))
+        if self.MIDDLEMAN_DEVICE_ID_LIST:
+            return self.device_id in map(str, map(int, self.MIDDLEMAN_DEVICE_ID_LIST))
 
     def is_producer_name_server(self, name):
         if not name:
