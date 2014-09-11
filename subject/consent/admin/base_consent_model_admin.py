@@ -12,13 +12,15 @@ class BaseConsentModelAdmin(BaseModelAdmin):
 
         super(BaseConsentModelAdmin, self).__init__(*args, **kwargs)
         self.search_fields = ['id', 'subject_identifier', 'first_name', 'last_name', 'identity', ]
-        self.list_display = ['subject_identifier', 'is_verified', 'first_name', 'initials', 'gender', 'dob',
-                             'consent_datetime', 'created', 'modified', 'user_created', 'user_modified', ]
+        self.list_display = ['subject_identifier', 'is_verified', 'is_verified_datetime', 'first_name',
+                             'initials', 'gender', 'dob', 'consent_datetime', 'created', 'modified',
+                             'user_created', 'user_modified', ]
         self.actions.append(flag_as_verified_against_paper)
         self.actions.append(unflag_as_verified_against_paper)
         self.list_filter = [
             'gender',
             'is_verified',
+            'is_verified_datetime',
             'language',
             'may_store_samples',
             'study_site',
@@ -79,12 +81,12 @@ class BaseConsentModelAdmin(BaseModelAdmin):
                 'consent_datetime',) + self.readonly_fields
         else:
             return ('subject_identifier', 'subject_identifier_as_pk',) + self.readonly_fields
-        
+
     def save_model(self, request, obj, form, change):
-        if not change:         
+        if not change:
             consent_catalogue = ConsentCatalogue.objects.all().order_by('start_datetime')
             for version in consent_catalogue:
                 if obj.consent_datetime >= version.start_datetime:
-                    obj.consent_version_on_entry=version.version
-                    obj.consent_version_recent=version.version
-            super(BaseConsentModelAdmin, self).save_model(request, obj, form, change)
+                    obj.consent_version_on_entry = version.version
+                    obj.consent_version_recent = version.version
+        super(BaseConsentModelAdmin, self).save_model(request, obj, form, change)
