@@ -6,9 +6,6 @@ from django.db.models import get_model
 from edc.apps.app_configuration.exceptions import AppConfigurationError
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
-#from edc.subject.entry.models import Entry, LabEntry, RequisitionPanel
-
-#from ..models import MembershipForm, ScheduleGroup, VisitDefinition
 
 EntryTuple = namedtuple('EntryTuple', 'order app_label model_name default_entry_status additional')
 MembershipFormTuple = namedtuple('MembershipFormTuple', 'name model visible')
