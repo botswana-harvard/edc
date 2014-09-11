@@ -29,7 +29,7 @@ class Consumer(object):
         if not using:
             using = None
         if not device.is_server:
-            raise TypeError('Cannot consume in a device thats not a server. Got settings DEVICE_ID==\'{0}\' instead of 99'.format(device))
+            raise TypeError('Cannot consume in a device thats not a server. Got settings DEVICE_ID==\'{0}\' instead of 99'.format(device.device_id))
         IncomingTransaction = get_model('sync', 'IncomingTransaction')
         check_hostname = kwargs.get('check_hostname', True)
         deserialize_from_transaction = DeserializeFromTransaction()
