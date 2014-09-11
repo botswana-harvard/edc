@@ -90,9 +90,9 @@ class VisitScheduleConfiguration(object):
         """Rebuild, WARNING which DELETES meta data."""
         Appointment = get_model('appointment', 'appointment')
         Entry = get_model('entry', 'entry')
-        MembershipForm = get_model('visitschedule', 'membershipform')
-        VisitDefinition = get_model('visitschedule', 'visitdefinition')
-        ScheduleGroup = get_model('visitschedule', 'schedulegroup')
+        MembershipForm = get_model('visit_schedule', 'membershipform')
+        VisitDefinition = get_model('visit_schedule', 'visitdefinition')
+        ScheduleGroup = get_model('visit_schedule', 'schedulegroup')
         self.verify()
         for code in self.visit_definitions.iterkeys():
             if VisitDefinition.objects.filter(code=code):
@@ -111,9 +111,9 @@ class VisitScheduleConfiguration(object):
         Entry = get_model('entry', 'entry')
         RequisitionPanel = get_model('entry', 'requisitionpanel')
         LabEntry = get_model('entry', 'labentry')
-        MembershipForm = get_model('visitschedule', 'membershipform')
-        VisitDefinition = get_model('visitschedule', 'visitdefinition')
-        ScheduleGroup = get_model('visitschedule', 'schedulegroup')
+        MembershipForm = get_model('visit_schedule', 'membershipform')
+        VisitDefinition = get_model('visit_schedule', 'visitdefinition')
+        ScheduleGroup = get_model('visit_schedule', 'schedulegroup')
         self.verify()
         while True:
             try:
