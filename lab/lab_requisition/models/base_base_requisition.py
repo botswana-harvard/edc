@@ -260,7 +260,7 @@ class BaseBaseRequisition (BaseUuidModel):
             requisition_label.print_label(request, self, self.item_count_total)
             self.is_labelled = True
             self.modified = datetime.today()
-            self.save()
+            self.save(update_fields=['is_labelled', 'modified'])
 
     class Meta:
         abstract = True
