@@ -2,11 +2,11 @@ import logging
 
 from datetime import datetime, timedelta
 
-from django.conf import settings
 from django.core.serializers.base import DeserializationError
 from django.db.models import get_model
 
-from edc.device.device.classes import Device
+from edc.device.device.classes import device
+
 from ..exceptions import TransactionConsumerError
 
 from .deserialize_from_transaction import DeserializeFromTransaction
@@ -23,21 +23,13 @@ nullhandler = logger.addHandler(NullHandler())
 
 class Consumer(object):
 
-    def __init__(self):
-        from edc.device.dispatch.classes import SignalManager
-        self.signal_manager = SignalManager()
-        self._device = Device()
-
-    def get_device(self):
-        return self._device
-
     def consume(self, using=None, lock_name=None, **kwargs):
         """Consumes ALL incoming transactions on \'using\' in order by ('producer', 'timestamp')."""
         self.pre_sync(using, lock_name, **kwargs)
         if not using:
             using = None
-        if not self.get_device().is_server:
-            raise TypeError('Cannot consume in a device thats not a server. Got settings DEVICE_ID==\'{0}\' instead of 99'.format(self.get_device()))
+        if not device.is_server:
+            raise TypeError('Cannot consume in a device thats not a server. Got settings DEVICE_ID==\'{0}\' instead of 99'.format(device.device_id))
         IncomingTransaction = get_model('sync', 'IncomingTransaction')
         check_hostname = kwargs.get('check_hostname', True)
         deserialize_from_transaction = DeserializeFromTransaction()
@@ -48,13 +40,10 @@ class Consumer(object):
             print '    tx_pk=\'{0}\''.format(incoming_transaction.tx_pk)
             action = 'failed'
             try:
-                self._disconnect_signals(incoming_transaction.tx_name.lower())
                 if deserialize_from_transaction.deserialize(incoming_transaction, using, check_hostname=check_hostname):
                     action = 'saved'
-                self._reconnect_signals()
                 print '    {0}'.format(action)
             except DeserializationError as e:
-                self._reconnect_signals()
                 print '    {0} {1}'.format(action, e)
                 pass  # raise DeserializationError(e)
         self.post_sync(using, lock_name, **kwargs)
@@ -65,23 +54,6 @@ class Consumer(object):
     def post_sync(self, using=None, lock_name=None, **kwargs):
         pass
 
-    def _disconnect_signals(self, obj):
-        self.signal_manager.disconnect(obj)
-        self.disconnect_signals()
-
-    def disconnect_signals(self):
-        """Disconnects app specific signals if overriden."""
-        pass
-
-    def _reconnect_signals(self):
-        self.signal_manager.reconnect()
-        self.reconnect_signals()
-        #self.signal_manager.reconnect()
-
-    def reconnect_signals(self):
-        """Reconnects app specific signals if overriden."""
-        pass
-
     def get_consume_feedback(self):
         from ..models import IncomingTransaction
         today = datetime.now()
@@ -89,8 +61,9 @@ class Consumer(object):
         consumed_today = IncomingTransaction.objects.filter(created__range=(today - margin, today + margin), is_consumed=True)
         not_consumed_today = IncomingTransaction.objects.filter(created__range=(today - margin, today + margin), is_consumed=False)
         not_consumed_not_ignored_today = not_consumed_today.filter(is_ignored=True)
-        message = '\'{0}\' transactions where CONSUMED today, \n \'{1}\' transactions FAILED to consume today, \n \'{2}\' of those that failed to consume have been set as IGNORED.'.format(
-                    consumed_today.count(), not_consumed_today.count(), not_consumed_not_ignored_today.count())
+        message = ('\'{0}\' transactions where CONSUMED today, \n \'{1}\' transactions FAILED to consume '
+                   'today, \n \'{2}\' of those that failed to consume have been set as IGNORED.').format(
+                       consumed_today.count(), not_consumed_today.count(), not_consumed_not_ignored_today.count())
         return message
 
     def fetch_outgoing(self, using_source, using_destination=None):

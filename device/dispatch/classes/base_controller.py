@@ -23,7 +23,7 @@ from edc.device.sync.exceptions import PendingTransactionError
 from edc.core.crypto_fields.fields import BaseEncryptedField
 from ..exceptions import ControllerBaseModelError
 from .controller_register import registered_controllers
-from .signal_manager import SignalManager
+# from .signal_manager import SignalManager
 
 
 logger = logging.getLogger(__name__)
@@ -76,7 +76,7 @@ class BaseController(BaseProducer):
         self._controller_state = None
         self._model_pk_container = {}
         self._session_container = {}
-        self.signal_manager = SignalManager()
+        # self.signal_manager = SignalManager()
         self.initialize_session_container()
         super(BaseController, self).__init__(using_source, using_destination, **kwargs)
         self.fk_instances = []
@@ -233,27 +233,27 @@ class BaseController(BaseProducer):
                             self.get_fk_dependencies([this_fk])
                         self.add_to_session_container((cls, pk), 'fk_dependencies')
 
-    def _disconnect_signals(self, obj):
-        """Disconnects signals before saving the serialized object in _to_json."""
-        self.signal_manager.disconnect(obj)
-        self.disconnect_signals()
-
-    def disconnect_signals(self):
-        """Disconnects signals before saving the serialized object in _to_json.
-
-        Users may override to add additional signals"""
-        pass
-
-    def _reconnect_signals(self):
-        """Reconnects signals after saving the serialized object in _to_json."""
-        self.signal_manager.reconnect()
-        self.reconnect_signals()
-
-    def reconnect_signals(self):
-        """Reconnects signals after saving the serialized object in _to_json.
-
-        Users may override to add additional signals"""
-        pass
+#     def _disconnect_signals(self, obj):
+#         """Disconnects signals before saving the serialized object in _to_json."""
+#         # self.signal_manager.disconnect(obj)
+#         self.disconnect_signals()
+# 
+#     def disconnect_signals(self):
+#         """Disconnects signals before saving the serialized object in _to_json.
+# 
+#         Users may override to add additional signals"""
+#         pass
+# 
+#     def _reconnect_signals(self):
+#         """Reconnects signals after saving the serialized object in _to_json."""
+#         # self.signal_manager.reconnect()
+#         self.reconnect_signals()
+# 
+#     def reconnect_signals(self):
+#         """Reconnects signals after saving the serialized object in _to_json.
+# 
+#         Users may override to add additional signals"""
+#         pass
 
     def add_to_session_container(self, instance, key):
         if instance not in self._session_container[key]:
@@ -297,7 +297,9 @@ class BaseController(BaseProducer):
         try:
             app, model = model_or_app_model_tuple
             model_cls = get_model(app, model)
-        except:
+            if not model_cls:
+                raise ValueError
+        except ValueError:
             model_cls = model_or_app_model_tuple
         self.model_to_json(model_cls, additional_base_model_class, fk_to_skip=fk_to_skip)
 
@@ -381,18 +383,18 @@ class BaseController(BaseProducer):
                     for deserialized_object in deserialized_objects:
                         try:
                             if deserialized_object not in saved:
-                                self._disconnect_signals(deserialized_object.object)
+                                # self._disconnect_signals(deserialized_object.object)
                                 # save deserialized_object to destination
                                 deserialized_object.object.save(using=self.get_using_destination())
                                 self.serialize_m2m(deserialized_object)
-                                self._reconnect_signals()
+                                # self._reconnect_signals()
                                 saved.append(deserialized_object)
                                 self.add_to_session_container(instance, 'serialized')
                                 self.update_session_container_class_counter(instance)
                         except IntegrityError as e:
                             if e.args[1].find('Duplicate entry') != -1 and e.args[1].find('hash') != -1:
                                 saved.append(deserialized_object)
-                            self._reconnect_signals()
+                            # self._reconnect_signals()
                             continue
                     if len(saved) == len(deserialized_objects):
                         break

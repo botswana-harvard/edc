@@ -18,7 +18,7 @@ class BaseVisitTrackingForm(BaseConsentedModelForm):
         if 'edc.device.dispatch' in settings.INSTALLED_APPS:
             if cleaned_data.get('appointment', None):
                 appointment = cleaned_data.get('appointment')
-                dispatch_item = appointment.get_dispatched_item()
+                dispatch_item = appointment.dispatched_item()
                 if dispatch_item:
                     forms.ValidationError("Data for {0} is currently dispatched to netbook {1}. "
                                           "This form may not be modified.".format(appointment.registered_subject.subject_identifier,
