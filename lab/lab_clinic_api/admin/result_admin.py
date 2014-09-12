@@ -1,6 +1,8 @@
 from django.contrib import admin
+from collections import OrderedDict
 
 from edc.base.modeladmin.admin import BaseModelAdmin
+from edc.export.actions import export_as_csv_action
 
 from ..actions import flag_as_reviewed, unflag_as_reviewed
 from ..forms import ResultForm
@@ -30,6 +32,18 @@ class ResultAdmin(BaseModelAdmin):
     radio_fields = {"release_status": admin.VERTICAL}
     list_filter = ("release_status", 'reviewed', "result_datetime", 'import_datetime')
     list_per_page = 15
+
+    actions = [
+        export_as_csv_action("CSV Export: adds subject_identifier, gender, dob",
+            fields=[],
+            delimiter=',',
+            exclude=['id', 'revision', 'hostname_created', 'hostname_modified', 'user_created','user_modified'],
+            extra_fields=OrderedDict(
+                {'gender': 'order__aliquot__receive__registered_subject__gender',
+                'dob': 'order__aliquot__receive__registered_subject__dob'}),
+                ),
+        flag_as_reviewed,
+        unflag_as_reviewed,]
 
     def get_readonly_fields(self, request, obj):
         return [field.name for field in obj._meta.fields if field.editable]

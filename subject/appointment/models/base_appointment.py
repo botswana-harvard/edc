@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.db import models
-try:
+if 'edc.device.dispatch' in settings.INSTALLED_APPS:
     from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
-except ImportError:
+else:
     from edc.device.sync.models import BaseSyncUuidModel
 from ..choices import APPT_STATUS
 
@@ -53,12 +54,6 @@ class BaseAppointment (BaseSyncUuidModel):
         if self.appt_status.lower() == 'new':
             retval = True
         return retval
-
-    def dispatch_container_lookup(self):
-        return None
-
-    def include_for_dispatch(self):
-        return True
 
     class Meta:
         abstract = True

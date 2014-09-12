@@ -14,7 +14,7 @@ def flag_as_received(modeladmin, request, queryset, **kwargs):
         if qs.is_drawn.lower() == 'yes':
             qs.is_receive = True
             qs.is_receive_datetime = datetime.today()
-            qs.save()
+            qs.save(update_fields=['is_receive', 'is_receive_datetime'])
             lab_profile = site_lab_profiles.get(qs._meta.object_name)
             lab_profile().receive(qs)
         else:
@@ -30,14 +30,14 @@ def flag_as_not_received(modeladmin, request, queryset):
     for qs in queryset:
         qs.is_receive = False
         qs.is_receive_datetime = datetime.today()
-        qs.save()
+        qs.save(update_fields=['is_receive', 'is_receive_datetime'])
 flag_as_not_received.short_description = "UNDO RECEIVE: flags as not received"
 
 
 def flag_as_not_labelled(modeladmin, request, queryset):
     for qs in queryset:
         qs.is_labelled = False
-        qs.save()
+        qs.save(update_fields=['is_labelled'])
 
 flag_as_not_labelled.short_description = "UN-LABEL: flag as NOT labelled"
 
@@ -46,7 +46,7 @@ def receive_on_dmis(modeladmin, request, queryset):
     export_dmis = ExportDmis()
     for qs in queryset:
         qs.comment, qs.is_lis = export_dmis.receive(qs)
-        qs.save()
+        qs.save(update_fields=['is_lis'])
 flag_as_not_labelled.short_description = "DMIS-receive: receive sample on the dmis (for BHHRL LAB STAFF ONLY)"
 
 

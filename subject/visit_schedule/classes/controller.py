@@ -25,11 +25,14 @@ class Controller(object):
     def set_registry(self, visit_schedule_configuration):
         if not issubclass(visit_schedule_configuration, VisitScheduleConfiguration):
             raise AlreadyRegistered('Expected an instance of VisitScheduleConfiguration.')
-        if not visit_schedule_configuration.name in self._registry:
+        if visit_schedule_configuration.name not in self._registry:
             # register the instance
             self._registry.update({visit_schedule_configuration.name: visit_schedule_configuration()})
         else:
-            raise AlreadyRegistered('Visit Schedule for name {0}.{1} is already registered.'.format(visit_schedule_configuration.app_label, visit_schedule_configuration.name))
+            raise AlreadyRegistered('Visit Schedule for name {0}.{1} '
+                                    'is already registered.'.format(
+                                        visit_schedule_configuration.app_label,
+                                        visit_schedule_configuration.name))
 
     def get_visit_schedules(self):
         """Returns the an ordered dictionary of visit_schedule_configurations"""
@@ -62,7 +65,7 @@ class Controller(object):
             try:
                 before_import_registry = copy.copy(site_visit_schedules._registry)
                 import_module('%s.visit_schedule' % app)
-            except:
+            except ImportError:
                 site_visit_schedules._registry = before_import_registry
                 if module_has_submodule(mod, 'visit_schedule'):
                     raise

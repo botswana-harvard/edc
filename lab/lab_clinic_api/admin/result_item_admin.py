@@ -1,4 +1,5 @@
 from django.contrib import admin
+from collections import OrderedDict
 
 from edc.base.modeladmin.admin import BaseModelAdmin
 from edc.export.actions import export_as_csv_action
@@ -41,14 +42,15 @@ class ResultItemAdmin(BaseModelAdmin):
         "result_item_quantifier": admin.VERTICAL,
         "validation_status": admin.VERTICAL}
     actions = [
-        export_as_csv_action("CSV Export: (adds subject_identifier, gender, dob",
+        export_as_csv_action("CSV Export: adds subject_identifier, gender, dob",
             fields=[],
-            exclude=['id', ],
-            extra_fields=[
-                {'gender': 'result__order__aliquot__receive__registered_subject__gender'},
-                {'dob': 'result__order__aliquot__receive__registered_subject__dob'},
-                ]),
-       recalculate_grading, ]
+            delimiter=',',
+            exclude=['id', 'revision', 'hostname_created', 'hostname_modified', 'user_created','user_modified'],
+            extra_fields=OrderedDict(
+                {'gender': 'result__order__aliquot__receive__registered_subject__gender',
+                'dob': 'result__order__aliquot__receive__registered_subject__dob'}),
+                ),
+        recalculate_grading,]
     list_per_page = 35
 
     def get_readonly_fields(self, request, obj):
