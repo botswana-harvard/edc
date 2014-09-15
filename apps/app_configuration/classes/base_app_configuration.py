@@ -15,8 +15,7 @@ from edc.subject.consent.models import ConsentCatalogue
 from edc.subject.entry.models import RequisitionPanel
 from edc.utils import datatype_to_string
 
-from lis.labeling.models import LabelPrinter
-from lis.labeling.models import ZplTemplate
+from lis.labeling.models import LabelPrinter, ZplTemplate, Client
 
 from .defaults import default_global_configuration
 
@@ -164,15 +163,29 @@ class BaseAppConfiguration(object):
 
         for printer_setup in self.labeling_setup.get('label_printer', []):
             try:
-                label_printer = LabelPrinter.objects.get(cups_printer_name=printer_setup.cups_printer_name)
+                label_printer = LabelPrinter.objects.get(cups_printer_name=printer_setup.cups_printer_name,
+                                                         cups_server_hostname=printer_setup.cups_server_hostname)
                 label_printer.cups_server_ip = printer_setup.cups_server_ip
                 label_printer.default = printer_setup.default
                 label_printer.save(update_fields=['cups_server_ip', 'default'])
             except LabelPrinter.DoesNotExist:
                 LabelPrinter.objects.create(
                     cups_printer_name=printer_setup.cups_printer_name,
+                    cups_server_hostname=printer_setup.cups_server_hostname,
                     cups_server_ip=printer_setup.cups_server_ip,
                     default=printer_setup.default,
+                    )
+        for client_setup in self.labeling_setup.get('client', []):
+            try:
+                client = Client.objects.get(name=client_setup.hostname)
+                client.label_printer = LabelPrinter.objects.get(cups_printer_name=client_setup.printer_name,
+                                                                cups_server_hostname=client_setup.cups_hostname)
+                client.save(update_fields=['label_printer'])
+            except Client.DoesNotExist:
+                Client.objects.create(
+                    name=client_setup.hostname,
+                    label_printer=LabelPrinter.objects.get(cups_printer_name=client_setup.printer_name,
+                                                           cups_server_hostname=client_setup.cups_hostname),
                     )
         for zpl_template_setup in self.labeling_setup.get('zpl_template', []):
             try:
