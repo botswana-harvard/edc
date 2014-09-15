@@ -35,7 +35,16 @@ class DeserializeFromTransaction(object):
 
         for obj in serializers.deserialize("json", tr):
             # if you get an error deserializing a datetime, confirm dev version of json.py
-            if incoming_transaction.action == 'I' or incoming_transaction.action == 'U':
+            if incoming_transaction.action == 'D':
+                #If the transactions is a DELETE then let the model itself deal with how
+                #it handles this action by overiding method deserialize_prep() in the model.
+                obj.object.deserialize_prep(action='D')
+                incoming_transaction.is_ignored = False
+                incoming_transaction.is_consumed = True
+                incoming_transaction.consumer = str(TransactionProducer())
+                incoming_transaction.save(using=using)
+                is_success = True
+            elif incoming_transaction.action == 'I' or incoming_transaction.action == 'U':
                 # check if tx originanted from me
                 # print "created %s : modified %s" % (obj.object.hostname_created, obj.object.hostname_modified)
                 incoming_transaction.is_ignored = False
