@@ -29,7 +29,7 @@ class BaseSyncUuidModel(BaseUuidModel):
             from edc.apps.utils import Conf
             return Conf.get('ALLOW_MODEL_SERIALIZATION')
 
-    def deserialize_prep(self):
+    def deserialize_prep(self, **kwargs):
         """Users may override to manipulate the incoming object before calling save()"""
         pass
 
