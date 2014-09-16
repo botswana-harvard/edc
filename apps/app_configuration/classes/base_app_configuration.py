@@ -202,6 +202,7 @@ class BaseAppConfiguration(object):
 
     def update_or_create_consent_catalogue(self):
         """Updates configuration in the :mod:`consent` module."""
+
         for catalogue_setup in self.consent_catalogue_list:
             content_type_map = ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))
             try:
