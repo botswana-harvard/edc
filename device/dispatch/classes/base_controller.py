@@ -391,12 +391,12 @@ class BaseController(BaseProducer):
                                 saved.append(deserialized_object)
                                 self.add_to_session_container(instance, 'serialized')
                                 self.update_session_container_class_counter(instance)
-                        except ValueError as value_error:
-                            if 'the current database router prevents this relation' in str(value_error):
-                                raise ValueError('{} Perhaps the related instance does '
-                                                 'not yet exist on \'{}\'. Try dispatching '
-                                                 'the related instance first.'.format(
-                                                     str(value_error), self.get_using_destination()))
+#                         except ValueError as value_error:
+#                             if 'the current database router prevents this relation' in str(value_error):
+#                                 raise ValueError('{} Perhaps the related instance does '
+#                                                  'not yet exist on \'{}\'. Try dispatching '
+#                                                  'the related instance first.'.format(
+#                                                      str(value_error), self.get_using_destination()))
                         except IntegrityError as e:
                             if e.args[1].find('Duplicate entry') != -1 and e.args[1].find('hash') != -1:
                                 saved.append(deserialized_object)
