@@ -34,7 +34,7 @@ class Consumer(object):
         check_hostname = kwargs.get('check_hostname', True)
         deserialize_from_transaction = DeserializeFromTransaction()
         tot = IncomingTransaction.objects.using(using).filter(is_consumed=False).count()
-        for n, incoming_transaction in enumerate(IncomingTransaction.objects.using(using).filter(is_consumed=False, is_ignored=False).order_by('producer', 'timestamp')):
+        for n, incoming_transaction in enumerate(IncomingTransaction.objects.using(using).filter(is_consumed=False, is_ignored=False).order_by('timestamp', 'producer')):
             action = ''
             print '{0} / {1} {2} {3}'.format(n + 1, tot, incoming_transaction.producer, incoming_transaction.tx_name)
             print '    tx_pk=\'{0}\''.format(incoming_transaction.tx_pk)
