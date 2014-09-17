@@ -1,12 +1,10 @@
 from django import forms
-from django.conf import settings
 from django.db.models import OneToOneField, ForeignKey, get_model
 from django.db.models.query import QuerySet
 
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
 from ..classes import LogicCheck
-from edc.device.dispatch.exceptions import DispatchContainerError
 
 
 class BaseModelForm(forms.ModelForm):
@@ -29,7 +27,7 @@ class BaseModelForm(forms.ModelForm):
                             self.fields[attr].queryset = self.instance.get_visit().__class__.objects.filter(pk=self.instance.get_visit().pk)
                         except KeyError:
                             pass
-                except:
+                except AttributeError:
                     pass
 
         # if in admin edit mode, populate registered_subject's queryset
@@ -40,7 +38,7 @@ class BaseModelForm(forms.ModelForm):
                             self.fields['registered_subject'].queryset = self.instance.registered_subject.__class__.objects.filter(pk=self.instance.registered_subject.pk)
                 else:
                     self.fields['registered_subject'].queryset = self.instance.registered_subject.__class__.objects.none()
-            except:
+            except AttributeError:
                 if 'registered_subject' not in self.initial and 'registered_subject' not in self.data:
                     RegisteredSubject = get_model('registration', 'RegisteredSubject')
                     self.fields['registered_subject'].queryset = RegisteredSubject.objects.none()
