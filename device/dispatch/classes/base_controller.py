@@ -1,29 +1,34 @@
-import socket
 import logging
+import socket
+
 from datetime import datetime
+
 from django.conf import settings
-from django.core.serializers.base import DeserializationError
-from django.db import IntegrityError
-from django.db.models.query import QuerySet
-from django.db.models import get_model
-from django.db.models import ForeignKey, OneToOneField, get_app, get_models
 from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
+from django.core.serializers.base import DeserializationError
+from django.db import IntegrityError
+from django.db.models import ForeignKey, OneToOneField, get_app, get_models
 from django.db.models import Q, Count, Max
+from django.db.models import get_model
+from django.db.models.query import QuerySet
+
 from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
+
 from edc.base.model.models import BaseListModel
-from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc.core.bhp_variables.models import StudySite
-from edc.entry_meta_data.models import BaseEntryMetaData
-from edc.device.sync.classes import BaseProducer
 from edc.core.crypto_fields.classes import FieldCryptor
-from edc.core.crypto_fields.models import Crypt
-from edc.device.sync.helpers import TransactionHelper
-from edc.device.sync.exceptions import PendingTransactionError
 from edc.core.crypto_fields.fields import BaseEncryptedField
+from edc.core.crypto_fields.models import Crypt
+from edc.device.sync.classes import BaseProducer
+from edc.device.sync.exceptions import PendingTransactionError
+from edc.device.sync.helpers import TransactionHelper
+from edc.entry_meta_data.models import BaseEntryMetaData
+from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
+
 from ..exceptions import ControllerBaseModelError
+
 from .controller_register import registered_controllers
-# from .signal_manager import SignalManager
 
 
 logger = logging.getLogger(__name__)
