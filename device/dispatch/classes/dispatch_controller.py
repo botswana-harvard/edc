@@ -50,7 +50,7 @@ class DispatchController(BaseDispatchController):
 
         ..note:: calls the user overridden method :func:`pre_dispatch`, :func:`dispatch_prep` and :func:`post_dispatch`."""
         # check for pending transactions
-        if self.has_outgoing_transactions():
+        if self.has_outgoing_transactions_producer():
             msg = 'Producer \'{0}\' has pending outgoing transactions. Run bhp_sync first.'.format(self.get_producer_name())
         else:
             user_container = self.get_user_container_instance()  # move to pre_dispatch
