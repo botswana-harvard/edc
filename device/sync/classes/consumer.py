@@ -33,7 +33,8 @@ class Consumer(object):
                             'Got settings DEVICE_ID==\'{0}\' instead of 99'.format(device.device_id))
         deserialize_from_transaction = DeserializeFromTransaction()
         IncomingTransaction = get_model('sync', 'IncomingTransaction')
-        total_incoming_transactions = IncomingTransaction.objects.using(using).filter(is_consumed=False).count()
+        total_incoming_transactions = IncomingTransaction.objects.using(using).filter(is_consumed=False,
+                                                                                      is_ignored=False).count()
         for index, incoming_transaction in enumerate(
                 IncomingTransaction.objects.using(using).filter(
                     is_consumed=False,
