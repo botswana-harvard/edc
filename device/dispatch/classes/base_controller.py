@@ -106,6 +106,13 @@ class BaseController(BaseProducer):
         """
         return TransactionHelper().has_outgoing(self.get_using_destination())
 
+    def has_outgoing_transactions_producer(self):
+        """Check if destination has pending Outgoing Transactions by checking is_consumed in
+           bhp_sync.outgoing_transactions.
+        """
+        producer_hostname = self.get_using_destination().split('-')[0]
+        return TransactionHelper().has_outgoing_for_producer(producer_hostname, self.get_using_destination())
+
     def has_incoming_transactions(self, models=None):
         """Check if source has pending Incoming Transactions for this producer and model(s).
         """
