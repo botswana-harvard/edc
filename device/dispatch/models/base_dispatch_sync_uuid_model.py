@@ -225,17 +225,17 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         raise ImproperlyConfigured('Model {0} is not configured for dispatch. '
                                    'Missing method \'dispatch_container_lookup\''.format(self._meta.object_name))
 
-    def _bypass_for_edit(self, using=None, update_fields=None):
+    def _bypass_for_edit(self, using=None):
         using = using or 'default'
-        if not self.bypass_for_edit_dispatched_as_item(using, update_fields):
-            if not self.id:
-                raise AlreadyDispatchedItem('Model {0}-{1}, although dispatched, may only be '
-                                            'conditionally edited. New instances are not '
-                                            'allowed.'.format(self._meta.object_name, self.pk))
-            return True
-        return False
+#         if self.bypass_for_edit_dispatched_as_item(using):
+#             if not self.id:
+#                 raise AlreadyDispatchedItem('Model {0}-{1}, although dispatched, may only be '
+#                                             'conditionally edited. New instances are not '
+#                                             'allowed.'.format(self._meta.object_name, self.pk))
+#             return True
+        return True
 
-    def bypass_for_edit_dispatched_as_item(self, using=None, update_fields=None):
+    def bypass_for_edit_dispatched_as_item(self, using=None):
         """Users may override to allow a model to be edited even thoug it is dispatched.
 
         .. warning:: avoid using this. it only allows edits. you are responsible to
@@ -290,16 +290,15 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
 
     def save(self, *args, **kwargs):
         using = kwargs.get('using')
-        update_fields = kwargs.get('update_fields')
         if self.id:
             if self.is_dispatchable_model():
                 if self.is_dispatch_container_model():
-                    if not self._bypass_for_edit(using, update_fields):
+                    if not self._bypass_for_edit(using):
                         if self.is_dispatched_as_container(using):
                             raise AlreadyDispatchedContainer('Model {0}-{1} is currently dispatched '
                                                              'as a container for other dispatched '
                                                              'items.'.format(self._meta.object_name, self.pk))
-                if not self._bypass_for_edit(using, update_fields):
+                if not self._bypass_for_edit(using):
                     if self.is_dispatched_as_item(using):
                         raise AlreadyDispatchedItem('Model {0}-{1} is currently dispatched'.format(self._meta.object_name,
                                                                                                    self.pk))

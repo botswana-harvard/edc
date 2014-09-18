@@ -17,8 +17,13 @@ class TransactionHelper(object):
         return IncomingTransaction.objects.using(using).filter(tx_name__in=models, is_consumed=False).exclude(is_ignored=True).exists()
 
     def has_outgoing(self, using=None):
+        return OutgoingTransaction.objects.using(using).filter(is_consumed_server=False, is_consumed_middleman=False).exists()
+
+    def has_outgoing_for_producer(self, producer, using=None):
         """Returns True if there are Outgoing Transactions where is_consumed_server=False,
         is_consumed_middleman=False."""
-        return OutgoingTransaction.objects.using(using).filter(
-            is_consumed_server=False,
-            is_consumed_middleman=False).exists()
+        if not using:
+            using = 'default'
+        return OutgoingTransaction.objects.using(using).filter(hostname_modified=producer, is_consumed_server=False, is_consumed_middleman=False).exclude(is_ignored=True).exists()
+
+

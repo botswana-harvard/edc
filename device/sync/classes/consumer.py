@@ -38,7 +38,7 @@ class Consumer(object):
         for index, incoming_transaction in enumerate(
                 IncomingTransaction.objects.using(using).filter(
                     is_consumed=False,
-                    is_ignored=False).order_by('producer', 'timestamp')):
+                    is_ignored=False).order_by('timestamp', 'producer')):
             action = ''
             print '{0} / {1} {2} {3}'.format(index + 1, total_incoming_transactions,
                                              incoming_transaction.producer,
