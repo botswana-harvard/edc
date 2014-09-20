@@ -225,7 +225,7 @@ class BaseConsent(BaseSubject):
     def get_subject_type(self):
         raise ImproperlyConfigured('Method must be overridden to return a subject_type. e.g. \'subject\', \'maternal\', \'infant\', etc')
 
-    def bypass_for_edit_dispatched_as_item(self, using=None):
+    def bypass_for_edit_dispatched_as_item(self, using=None, update_fields=None):
         """Allow bypass only if doing consent verification."""
         # requery myself
         obj = self.__class__.objects.using(using).get(pk=self.pk)
