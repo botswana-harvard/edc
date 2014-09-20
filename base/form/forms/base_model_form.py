@@ -27,7 +27,7 @@ class BaseModelForm(forms.ModelForm):
                             self.fields[attr].queryset = self.instance.get_visit().__class__.objects.filter(pk=self.instance.get_visit().pk)
                         except KeyError:
                             pass
-                except AttributeError:
+                except:
                     pass
 
         # if in admin edit mode, populate registered_subject's queryset
@@ -38,7 +38,7 @@ class BaseModelForm(forms.ModelForm):
                             self.fields['registered_subject'].queryset = self.instance.registered_subject.__class__.objects.filter(pk=self.instance.registered_subject.pk)
                 else:
                     self.fields['registered_subject'].queryset = self.instance.registered_subject.__class__.objects.none()
-            except AttributeError:
+            except:
                 if 'registered_subject' not in self.initial and 'registered_subject' not in self.data:
                     RegisteredSubject = get_model('registration', 'RegisteredSubject')
                     self.fields['registered_subject'].queryset = RegisteredSubject.objects.none()
