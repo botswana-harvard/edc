@@ -5,7 +5,7 @@ from django.contrib import messages
 from edc.lab.lab_profile.classes import site_lab_profiles
 
 from lis.exim.lab_export.classes import ExportDmis
-from lis.labeling.exceptions import PrinterException
+from lis.labeling.exceptions import LabelPrinterError
 
 
 def flag_as_received(modeladmin, request, queryset, **kwargs):
@@ -64,7 +64,7 @@ def print_requisition_label(modeladmin, request, requisitions):
                                      'Requisition {0} has not been received. Labels '
                                      'cannot be printed until the specimen is '
                                      'received.'.format(requisition.requisition_identifier,))
-    except PrinterException as e:
+    except LabelPrinterError as e:
         messages.add_message(request, messages.ERROR, e.value)
 
 print_requisition_label.short_description = "LABEL: print requisition label"

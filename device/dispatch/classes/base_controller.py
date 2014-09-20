@@ -1,29 +1,34 @@
-import socket
 import logging
+import socket
+
 from datetime import datetime
+
 from django.conf import settings
-from django.core.serializers.base import DeserializationError
-from django.db import IntegrityError
-from django.db.models.query import QuerySet
-from django.db.models import get_model
-from django.db.models import ForeignKey, OneToOneField, get_app, get_models
 from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
+from django.core.serializers.base import DeserializationError
+from django.db import IntegrityError
+from django.db.models import ForeignKey, OneToOneField, get_app, get_models
 from django.db.models import Q, Count, Max
+from django.db.models import get_model
+from django.db.models.query import QuerySet
+
 from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
+
 from edc.base.model.models import BaseListModel
-from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc.core.bhp_variables.models import StudySite
-from edc.entry_meta_data.models import BaseEntryMetaData
-from edc.device.sync.classes import BaseProducer
 from edc.core.crypto_fields.classes import FieldCryptor
-from edc.core.crypto_fields.models import Crypt
-from edc.device.sync.helpers import TransactionHelper
-from edc.device.sync.exceptions import PendingTransactionError
 from edc.core.crypto_fields.fields import BaseEncryptedField
+from edc.core.crypto_fields.models import Crypt
+from edc.device.sync.classes import BaseProducer
+from edc.device.sync.exceptions import PendingTransactionError
+from edc.device.sync.helpers import TransactionHelper
+from edc.entry_meta_data.models import BaseEntryMetaData
+from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
+
 from ..exceptions import ControllerBaseModelError
+
 from .controller_register import registered_controllers
-# from .signal_manager import SignalManager
 
 
 logger = logging.getLogger(__name__)
@@ -105,6 +110,13 @@ class BaseController(BaseProducer):
            bhp_sync.outgoing_transactions.
         """
         return TransactionHelper().has_outgoing(self.get_using_destination())
+
+    def has_outgoing_transactions_producer(self):
+        """Check if destination has pending Outgoing Transactions by checking is_consumed in
+           bhp_sync.outgoing_transactions.
+        """
+        producer_hostname = self.get_using_destination().split('-')[0]
+        return TransactionHelper().has_outgoing_for_producer(producer_hostname, self.get_using_destination())
 
     def has_incoming_transactions(self, models=None):
         """Check if source has pending Incoming Transactions for this producer and model(s).
@@ -391,6 +403,12 @@ class BaseController(BaseProducer):
                                 saved.append(deserialized_object)
                                 self.add_to_session_container(instance, 'serialized')
                                 self.update_session_container_class_counter(instance)
+#                         except ValueError as value_error:
+#                             if 'the current database router prevents this relation' in str(value_error):
+#                                 raise ValueError('{} Perhaps the related instance does '
+#                                                  'not yet exist on \'{}\'. Try dispatching '
+#                                                  'the related instance first.'.format(
+#                                                      str(value_error), self.get_using_destination()))
                         except IntegrityError as e:
                             if e.args[1].find('Duplicate entry') != -1 and e.args[1].find('hash') != -1:
                                 saved.append(deserialized_object)

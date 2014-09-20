@@ -1,12 +1,10 @@
 from django import forms
-from django.conf import settings
 from django.db.models import OneToOneField, ForeignKey, get_model
 from django.db.models.query import QuerySet
 
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
 from ..classes import LogicCheck
-from edc.device.dispatch.exceptions import DispatchContainerError
 
 
 class BaseModelForm(forms.ModelForm):
