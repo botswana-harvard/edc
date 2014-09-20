@@ -28,7 +28,7 @@ class BaseRequisition (BaseBaseRequisition):
     def dispatch_container_lookup(self, using=None):
         return None
 
-    def bypass_for_edit_dispatched_as_item(self, using=None):
+    def bypass_for_edit_dispatched_as_item(self, using=None, update_fields=None):
         """Allow bypass only if doing lab actions."""
         # requery myself
         obj = self.__class__.objects.using(using).get(pk=self.pk)
