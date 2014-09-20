@@ -28,16 +28,3 @@ class TransactionProducer(object):
 
     def __str__(self):
         return self.value
-
-    def has_outgoing_transactions(self, using, **kwargs):
-        retval = False
-        #using = kwargs.get('using', 'default')
-        producer_name = kwargs.get('producer_name', self.value)
-        OutgoingTransaction = get_model('sync', 'outgoingtransaction')
-        Producer = get_model('sync', 'producer')
-        if OutgoingTransaction.objects.using(using).all().exists():
-            if not Producer.objects.using(using).filter(name=producer_name).exists():
-                logger.warning('Unknown Producer {0}. Not checking for outgoing transactions. (Note: using database key \'{1}\')'.format(producer_name, using))
-            if OutgoingTransaction.objects.using(using).filter(producer=producer_name, is_consumed=False).exists():
-                retval = True
-        return retval
