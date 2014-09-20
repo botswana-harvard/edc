@@ -227,13 +227,13 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
 
     def _bypass_for_edit(self, using=None):
         using = using or 'default'
-        if self.bypass_for_edit_dispatched_as_item(using):
-            if not self.id:
-                raise AlreadyDispatchedItem('Model {0}-{1}, although dispatched, may only be '
-                                            'conditionally edited. New instances are not '
-                                            'allowed.'.format(self._meta.object_name, self.pk))
-            return True
-        return False
+#         if self.bypass_for_edit_dispatched_as_item(using):
+#             if not self.id:
+#                 raise AlreadyDispatchedItem('Model {0}-{1}, although dispatched, may only be '
+#                                             'conditionally edited. New instances are not '
+#                                             'allowed.'.format(self._meta.object_name, self.pk))
+#             return True
+        return True
 
     def bypass_for_edit_dispatched_as_item(self, using=None):
         """Users may override to allow a model to be edited even thoug it is dispatched.
