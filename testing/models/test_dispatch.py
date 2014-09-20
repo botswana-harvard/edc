@@ -177,10 +177,10 @@ class TestDspItemBypass(BaseDispatchSyncUuidModel):
     def __unicode__(self):
         return self.test_item_identifier
 
-    def bypass_for_edit_dispatched_as_item(self, using=None):
+    def bypass_for_edit_dispatched_as_item(self, using=None, update_fields=None):
         # requery myself
         obj = self.__class__.objects.using(using).get(pk=self.pk)
-        #dont allow values in these fields to change if dispatched (means only f1, f2 can change)
+        # dont allow values in these fields to change if dispatched (means only f1, f2 can change)
         may_not_change = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['f1', 'f2']]
         for k, v in may_not_change:
             if k[0] != '_':

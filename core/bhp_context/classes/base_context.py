@@ -1,7 +1,7 @@
 import socket
 import copy
+
 from django.conf import settings
-from edc.core.bhp_common.utils import os_variables
 
 
 class BaseContext(object):
@@ -17,12 +17,11 @@ class BaseContext(object):
         self._default_items = {}
         try:
             main_app_label = settings.MAIN_APP_LABEL
-        except:
+        except AttributeError:
             main_app_label = ''
         self._default_items.update({
             "app_label": main_app_label,
             "hostname": socket.gethostname(),
-            "os_variables": os_variables(),
             })
 
     def _get_default_items(self):
