@@ -6,14 +6,21 @@ from .base_dispatch import BaseDispatch
 class DispatchContainerRegister(BaseDispatch):
 
     container_app_label = models.CharField(max_length=35)
+
     container_model_name = models.CharField(max_length=35)
+
     container_identifier_attrname = models.CharField(max_length=35)
+
     container_identifier = models.CharField(max_length=35)
+
     container_pk = models.CharField(max_length=50)
+
     dispatched_using = models.CharField(max_length=35, null=True)
+
     dispatch_items = models.TextField(
         max_length=500,
         help_text='Dispatch items. One per line.')
+
     objects = models.Manager()
 
     def save(self, *args, **kwargs):
