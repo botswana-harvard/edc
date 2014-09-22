@@ -116,7 +116,7 @@ class BaseDispatchController(BaseDispatch):
         """Confirm this controller can still be used to dispatch -- has not returned it's items."""
         if not self.get_container_register_instance().is_ready():
             raise AlreadyReturnedController('This controller has already returned it\'s items. To dispatch new items, create a new instance.')
-        #if not self.session_container_ready():
+        # if not self.session_container_ready():
         #    raise DispatchControllerError('Invalid controller state. Session container has items but the user_container has not yet been dispatched. Got {0}'.format(self._session_container))
         return True
 
@@ -184,8 +184,10 @@ class BaseDispatchController(BaseDispatch):
                     # confirm all items are of dispatchable models
                     not_dispatchable = [item for item in user_items if not item.is_dispatchable_model()]
                     if not_dispatchable:
-                        raise DispatchItemError('All instances must be configured for dispatch. Found {0} that are not. Got {1}'.format(len(not_dispatchable), not_dispatchable))
-                    #already_dispatched_items = DispatchItemRegister.objects.filter(item_pk__in=[item.pk for item in user_items])
+                        raise DispatchItemError('All instances must be configured for dispatch. Found {0} '
+                                                'that are not. Got {1}. See method \'is_dispatchable_model\''
+                                                ''.format(len(not_dispatchable), not_dispatchable))
+                    # already_dispatched_items = DispatchItemRegister.objects.filter(item_pk__in=[item.pk for item in user_items])
                     already_dispatched_items = [user_instance for user_instance in user_items if user_instance.is_dispatched_as_item(using=self.get_using_source(), user_container=user_container)]
                     if already_dispatched_items:
                         raise AlreadyDispatchedItem('{0} models are already dispatched. Got {1}'.format(len(already_dispatched_items), already_dispatched_items))

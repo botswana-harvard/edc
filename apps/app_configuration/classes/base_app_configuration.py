@@ -15,10 +15,10 @@ from edc.subject.consent.models import ConsentCatalogue
 from edc.subject.entry.models import RequisitionPanel
 from edc.utils import datatype_to_string
 
-from lis.labeling.models import LabelPrinter
-from lis.labeling.models import ZplTemplate
+from lis.labeling.models import LabelPrinter, ZplTemplate, Client
 
 from .defaults import default_global_configuration
+
 from ..models import GlobalConfiguration
 
 
@@ -36,7 +36,7 @@ class BaseAppConfiguration(object):
     labeling_setup = {}
     holidays_setup = {}
 
-    def __init__(self):
+    def prepare(self):
         """Updates content type maps then runs each configuration method with the corresponding class attribute.
 
         Configuration methods update default data in supporting tables."""
@@ -91,64 +91,71 @@ class BaseAppConfiguration(object):
             profile_item_model = site_lab_profiles.group_models.get('profile_item')
             # update / create aliquot_types
             for item in setup_items.get('aliquot_type'):
-                if aliquot_type_model.objects.filter(name=item.name):
+                try:
                     aliquot_type = aliquot_type_model.objects.get(name=item.name)
                     aliquot_type.alpha_code = item.alpha_code
                     aliquot_type.numeric_code = item.numeric_code
-                    aliquot_type.save()
-                else:
-                    aliquot_type_model.objects.create(name=item.name, alpha_code=item.alpha_code, numeric_code=item.numeric_code)
+                    aliquot_type.save(update_fields=['alpha_code', 'numeric_code'])
+                except aliquot_type_model.DoesNotExist:
+                    aliquot_type_model.objects.create(name=item.name,
+                                                      alpha_code=item.alpha_code,
+                                                      numeric_code=item.numeric_code)
             # update / create panels
             for item in setup_items.get('panel'):
-                if panel_model.objects.filter(name=item.name):
+                try:
                     panel = panel_model.objects.get(name=item.name)
                     panel.panel_type = item.panel_type
-                    panel.save()
-                else:
-                    panel = panel_model.objects.create(name=item.name, panel_type=item.panel_type)
+                    panel.save(update_fields=['panel_type'])
+                except panel_model.DoesNotExist:
+                    panel = panel_model.objects.create(name=item.name,
+                                                       panel_type=item.panel_type)
                 # add aliquots to panel
                 panel.aliquot_type.clear()
                 aliquot_type = aliquot_type_model.objects.get(alpha_code=item.aliquot_type_alpha_code)
                 panel.aliquot_type.add(aliquot_type)
                 # create lab entry requisition panels based on this panel info
-                if RequisitionPanel.objects.filter(name=item.name):
+                try:
                     requisition_panel = RequisitionPanel.objects.get(name=item.name)
                     requisition_panel.aliquot_type_alpha_code = item.aliquot_type_alpha_code
-                    requisition_panel.save()
-                else:
-                    requisition_panel = RequisitionPanel.objects.create(name=item.name, aliquot_type_alpha_code=item.aliquot_type_alpha_code)
+                    requisition_panel.save(update_fields=['aliquot_type_alpha_code'])
+                except RequisitionPanel.DoesNotExist:
+                    requisition_panel = RequisitionPanel.objects.create(
+                        name=item.name, aliquot_type_alpha_code=item.aliquot_type_alpha_code)
             # create profiles
             for item in setup_items.get('profile'):
                 aliquot_type = aliquot_type_model.objects.get(alpha_code=item.alpha_code)
-                if not profile_model.objects.filter(name=item.profile_name):
-                    profile_model.objects.create(name=item.profile_name, aliquot_type=aliquot_type)
-                else:
+                try:
                     profile = profile_model.objects.get(name=item.profile_name)
                     profile.aliquot_type = aliquot_type
-                    profile.save()
+                    profile.save(update_fields=['aliquot_type'])
+                except profile_model.DoesNotExist:
+                    profile_model.objects.create(name=item.profile_name, aliquot_type=aliquot_type)
             # add profile items
             for item in setup_items.get('profile_item'):
                 profile = profile_model.objects.get(name=item.profile_name)
                 aliquot_type = aliquot_type_model.objects.get(alpha_code=item.alpha_code)
-                if not profile_item_model.objects.filter(profile=profile, aliquot_type=aliquot_type):
-                    profile_item_model.objects.create(profile=profile, aliquot_type=aliquot_type, volume=item.volume, count=item.count)
-                else:
+                try:
                     profile_item = profile_item_model.objects.get(profile=profile, aliquot_type=aliquot_type)
                     profile_item.volume = item.volume
                     profile_item.count = item.count
-                    profile_item.save()
+                    profile_item.save(update_fields=['volume', 'count'])
+                except profile_item_model.DoesNotExist:
+                    profile_item_model.objects.create(
+                        profile=profile, aliquot_type=aliquot_type, volume=item.volume, count=item.count)
 
     def update_or_create_study_variables(self):
         """Updates configuration in the :mod:`bhp_variables` module."""
         if StudySpecific.objects.all().count() == 0:
             StudySpecific.objects.create(**self.study_variables_setup)
         else:
-            specifics = StudySpecific.objects.all()
-            specifics.update(**self.study_variables_setup)
-            for sp in specifics:
+            study_specifics = StudySpecific.objects.all()
+            study_specifics.update(**self.study_variables_setup)
+            for study_specific in study_specifics:
                 # This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
-                sp.save()
-        if not StudySite.objects.filter(site_code=self.study_site_setup.get('site_code')).exists():
+                study_specific.save()
+        try:
+            StudySite.objects.get(site_code=self.study_site_setup.get('site_code'))
+        except StudySite.DoesNotExist:
             StudySite.objects.create(**self.study_site_setup)
 
     def update_or_create_labeling(self):
@@ -156,43 +163,68 @@ class BaseAppConfiguration(object):
 
         for printer_setup in self.labeling_setup.get('label_printer', []):
             try:
-                label_printer = LabelPrinter.objects.get(cups_printer_name=printer_setup.cups_printer_name)
+                label_printer = LabelPrinter.objects.get(cups_printer_name=printer_setup.cups_printer_name,
+                                                         cups_server_hostname=printer_setup.cups_server_hostname)
                 label_printer.cups_server_ip = printer_setup.cups_server_ip
                 label_printer.default = printer_setup.default
-                label_printer.save()
+                label_printer.save(update_fields=['cups_server_ip', 'default'])
             except LabelPrinter.DoesNotExist:
                 LabelPrinter.objects.create(
                     cups_printer_name=printer_setup.cups_printer_name,
+                    cups_server_hostname=printer_setup.cups_server_hostname,
                     cups_server_ip=printer_setup.cups_server_ip,
                     default=printer_setup.default,
-                )
+                    )
+        for client_setup in self.labeling_setup.get('client', []):
+            try:
+                client = Client.objects.get(name=client_setup.hostname)
+                client.label_printer = LabelPrinter.objects.get(cups_printer_name=client_setup.printer_name,
+                                                                cups_server_hostname=client_setup.cups_hostname)
+                client.save(update_fields=['label_printer'])
+            except Client.DoesNotExist:
+                Client.objects.create(
+                    name=client_setup.hostname,
+                    label_printer=LabelPrinter.objects.get(cups_printer_name=client_setup.printer_name,
+                                                           cups_server_hostname=client_setup.cups_hostname),
+                    )
         for zpl_template_setup in self.labeling_setup.get('zpl_template', []):
             try:
                 zpl_template = ZplTemplate.objects.get(name=zpl_template_setup.name)
                 zpl_template.template = zpl_template_setup.template
                 zpl_template.default = zpl_template_setup.default
-                zpl_template.save()
+                zpl_template.save(update_fields=['template', 'default'])
             except ZplTemplate.DoesNotExist:
                 ZplTemplate.objects.create(
                     name=zpl_template_setup.name,
                     template=zpl_template_setup.template,
                     default=zpl_template_setup.default,
-                )
+                    )
 
     def update_or_create_consent_catalogue(self):
         """Updates configuration in the :mod:`consent` module."""
+
         for catalogue_setup in self.consent_catalogue_list:
-            content_type_map_string = catalogue_setup.get('content_type_map')
-            catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))})
+            content_type_map = ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))
             try:
-                ConsentCatalogue.objects.create(**catalogue_setup)
-            except IntegrityError:
-                catalogues = ConsentCatalogue.objects.filter(**catalogue_setup)
-                catalogues.update(**catalogue_setup)
-                for ct in catalogues:
-                    # This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
-                    ct.save()
-            catalogue_setup.update({'content_type_map': content_type_map_string})
+                consent_catalogue = ConsentCatalogue.objects.get(
+                    name=catalogue_setup.get('name'),
+                    version=catalogue_setup.get('version'))
+                consent_catalogue.content_type_map = content_type_map
+                consent_catalogue.consent_type = catalogue_setup.get('consent_type')
+                consent_catalogue.start_datetime = catalogue_setup.get('start_datetime')
+                consent_catalogue.end_datetime = catalogue_setup.get('end_datetime')
+                consent_catalogue.add_for_app = catalogue_setup.get('add_for_app')
+                consent_catalogue.save()
+            except ConsentCatalogue.DoesNotExist:
+                ConsentCatalogue.objects.create(
+                    name=catalogue_setup.get('name'),
+                    version=catalogue_setup.get('version'),
+                    content_type_map=content_type_map,
+                    consent_type=catalogue_setup.get('consent_type'),
+                    start_datetime=catalogue_setup.get('start_datetime'),
+                    end_datetime=catalogue_setup.get('end_datetime'),
+                    add_for_app=catalogue_setup.get('add_for_app'),
+                    )
 
     def update_global(self):
         """Creates or updates global configuration options in app_configuration.
