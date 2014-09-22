@@ -15,7 +15,7 @@ class BaseModelForm(forms.ModelForm):
         # if in admin edit mode, populate visit model's queryset
         # if not in admin, e.g. coming from the dashboard, might
         # throw an exception.
-        
+
         if self.instance:
             if 'get_visit' in dir(self.instance):
                 try:
@@ -65,13 +65,22 @@ class BaseModelForm(forms.ModelForm):
         """Calls crypto clean methods, OTHER/Specify and some functionality for bhp_dispatch."""
         cleaned_data = self.cleaned_data
         # check if dispatched
-        # if 'edc.device.dispatch' in settings.INSTALLED_APPS:
-        #    if 'is_dispatched' in dir(self._meta.model()):
-        #        if self._meta.model().is_dispatched():#this does not work {self._meta.model()}
-        #                                              #The form about to be saved looses its foreign key objects
-        #                                              #which later causes a problem in is_dispatched_within_user_container
-        #                                              #using lookup_value = getattr(lookup_value, attrname, None).
-        #            raise forms.ValidationError('Cannot update. Form is currently dispatched')
+        try:
+            options = {}
+            for key, value in cleaned_data.iteritems():
+                if not isinstance(value, QuerySet):  # m2m fields
+                    options.update({key: value})
+            model_instance = self._meta.model(pk=self.instance.pk, **options)
+            if model_instance.is_dispatched():
+                raise forms.ValidationError(
+                    'Updates not allowed. This form is part of the '
+                    'dataset for a \'{}\' that is currently dispatched to {}.'.format(
+                        model_instance.dispatch_container_lookup()[0]._meta.verbose_name,
+                        model_instance.user_container_instance.dispatched_container_item.producer.name
+                        )
+                )
+        except AttributeError:
+            pass
         # encrypted fields may have their own validation code to run.
         # See the custom field objects in edc.core.crypto_fields.
         try:
