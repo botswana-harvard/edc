@@ -33,6 +33,9 @@ class ExportReceipt(BaseSyncUuidModel):
         help_text='date ACK received'
         )
 
+    def __unicode__(self):
+        return '{} {}'.format(self.object_name, self.export_uuid)
+
     def dashboard(self):
         # TODO: get this dashboard url
         return 'dashboard?'
