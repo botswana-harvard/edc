@@ -217,7 +217,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                         household_structure
                             household.household_identifier
 
-            where 'household' is the user container with 
+            where 'household' is the user container with
             identifier attr 'household_identifier',
             <self> would return something like this:
                 (Household, 'household_structure_member__household_structure__household__household_identifier')
@@ -227,16 +227,18 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
 
     def _bypass_for_edit(self, using=None):
         using = using or 'default'
-#         if self.bypass_for_edit_dispatched_as_item(using):
-#             if not self.id:
-#                 raise AlreadyDispatchedItem('Model {0}-{1}, although dispatched, may only be '
-#                                             'conditionally edited. New instances are not '
-#                                             'allowed.'.format(self._meta.object_name, self.pk))
-#             return True
+        if self.bypass_for_edit_dispatched_as_item(using):
+            if not self.id:
+                raise AlreadyDispatchedItem('Model {0}-{1}, although dispatched, may only be '
+                                            'conditionally edited. New instances are not '
+                                            'allowed.'.format(self._meta.object_name, self.pk))
+            return True
         return True
 
     def bypass_for_edit_dispatched_as_item(self, using=None):
-        """Users may override to allow a model to be edited even thoug it is dispatched.
+        """Users may override to allow a model to be edited even though it is dispatched.
+
+        To block editing dispatched items, raise an AlreadyDispatchedItem exception.
 
         .. warning:: avoid using this. it only allows edits. you are responsible to
                   ensure your actions will not lead to data conflicts. so it is best to also
@@ -248,7 +250,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         """Returns the models 'dispatched' status in model DispatchItemRegister."""
         is_dispatched = False
         if self.is_dispatchable_model():
-            #if self.id:
+            # if self.id:
             if self.dispatched_item(using):
                 is_dispatched = True
             if not is_dispatched:
