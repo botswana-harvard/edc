@@ -185,21 +185,23 @@ class RegisteredSubject(BaseSubject):
     def is_serialized(self):
         return super(RegisteredSubject, self).is_serialized(True)
 
-    def dispatch_container_lookup(self, using=None):
-        return None
+    def dispatch_container_lookup(self):
+        return (self.__class__, 'id')
+
+    def is_dispatched(self):
+        return False
 
     def is_dispatchable_model(self):
         return True
 
-    def bypass_for_edit_dispatched_as_item(self):
+    def bypass_for_edit_dispatched_as_item(self, using=None, update_fields=None):
         # requery myself
-        obj = self.__class__.objects.get(pk=self.pk)
+        obj = self.__class__.objects.using(using).get(pk=self.pk)
         # dont allow values in these fields to change if dispatched
-        may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['study_site_id', 'registration_status', 'modified']]
+        may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['study_site_id', 'registration_status', 'modified'] and not k.startswith('_')]
         for k, v in may_not_change_these_fields:
-            if k[0] != '_':
-                if getattr(self, k) != v:
-                    return False
+            if getattr(self, k) != v:
+                return False
         return True
 
     def __unicode__(self):
