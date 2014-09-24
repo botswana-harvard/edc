@@ -5,20 +5,30 @@ from .dispatch_container_register import DispatchContainerRegister
 
 
 class DispatchItemRegister(BaseDispatch):
+
     dispatch_container_register = models.ForeignKey(DispatchContainerRegister)
+
     item_app_label = models.CharField(max_length=35)
+
     item_model_name = models.CharField(max_length=35)
+
     item_identifier_attrname = models.CharField(max_length=35)
+
     item_identifier = models.CharField(max_length=40)
+
     item_pk = models.CharField(max_length=50)
+
     dispatch_host = models.CharField(max_length=35, null=True)
+
     dispatch_using = models.CharField(max_length=35, null=True)
+
     registered_subjects = models.TextField(
         verbose_name='List of Registered Subjects',
         null=True,
         blank=True,
         help_text="List of Registered Subjects linked to this DispatchItem"
         )
+
     objects = models.Manager()
 
 # temp removed - erikvw (fails on unknown producer when setting dispatched to False)

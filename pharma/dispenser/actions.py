@@ -1,5 +1,5 @@
 from django.contrib import messages
-from lis.labeling.exceptions import PrinterException
+from lis.labeling.exceptions import LabelPrinterError
 from .classes import DispensingLabel
 
 
@@ -13,7 +13,7 @@ def print_dispensing_label(modeladmin, request, dispensings):
                 dispensing.copies,
                 dispensing.identifier
                 )
-        except PrinterException as e:
+        except LabelPrinterError as e:
             messages.add_message(request, messages.ERROR, e.value)
 
 
