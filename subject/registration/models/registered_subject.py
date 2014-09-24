@@ -194,7 +194,7 @@ class RegisteredSubject(BaseSubject):
     def is_dispatchable_model(self):
         return True
 
-    def bypass_for_edit_dispatched_as_item(self, using=None):
+    def bypass_for_edit_dispatched_as_item(self, using=None, update_fields=None):
         # requery myself
         obj = self.__class__.objects.using(using).get(pk=self.pk)
         # dont allow values in these fields to change if dispatched

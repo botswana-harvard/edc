@@ -202,18 +202,29 @@ class BaseAppConfiguration(object):
 
     def update_or_create_consent_catalogue(self):
         """Updates configuration in the :mod:`consent` module."""
+
         for catalogue_setup in self.consent_catalogue_list:
-            content_type_map_string = catalogue_setup.get('content_type_map')
-            catalogue_setup.update({'content_type_map': ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))})
+            content_type_map = ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))
             try:
-                ConsentCatalogue.objects.create(**catalogue_setup)
-            except IntegrityError:
-                catalogues = ConsentCatalogue.objects.filter(**catalogue_setup)
-                catalogues.update(**catalogue_setup)
-                for ct in catalogues:
-                    # This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
-                    ct.save()
-            catalogue_setup.update({'content_type_map': content_type_map_string})
+                consent_catalogue = ConsentCatalogue.objects.get(
+                    name=catalogue_setup.get('name'),
+                    version=catalogue_setup.get('version'))
+                consent_catalogue.content_type_map = content_type_map
+                consent_catalogue.consent_type = catalogue_setup.get('consent_type')
+                consent_catalogue.start_datetime = catalogue_setup.get('start_datetime')
+                consent_catalogue.end_datetime = catalogue_setup.get('end_datetime')
+                consent_catalogue.add_for_app = catalogue_setup.get('add_for_app')
+                consent_catalogue.save()
+            except ConsentCatalogue.DoesNotExist:
+                ConsentCatalogue.objects.create(
+                    name=catalogue_setup.get('name'),
+                    version=catalogue_setup.get('version'),
+                    content_type_map=content_type_map,
+                    consent_type=catalogue_setup.get('consent_type'),
+                    start_datetime=catalogue_setup.get('start_datetime'),
+                    end_datetime=catalogue_setup.get('end_datetime'),
+                    add_for_app=catalogue_setup.get('add_for_app'),
+                    )
 
     def update_global(self):
         """Creates or updates global configuration options in app_configuration.
