@@ -25,26 +25,34 @@ class Consumer(object):
 
     def consume(self, using=None, lock_name=None, **kwargs):
         """Consumes ALL incoming transactions on \'using\' in order by ('producer', 'timestamp')."""
-        self.pre_sync(using, lock_name, **kwargs)
-        if not using:
-            using = None
-        if not device.is_server:
-            raise TypeError('Cannot consume in a device thats not a server. Got settings DEVICE_ID==\'{0}\' instead of 99'.format(device.device_id))
-        IncomingTransaction = get_model('sync', 'IncomingTransaction')
         check_hostname = kwargs.get('check_hostname', True)
+        using = using or 'default'
+        self.pre_sync(using, lock_name, **kwargs)
+        if not device.is_server:
+            raise TypeError('Cannot consume in a device thats not a server. '
+                            'Got settings DEVICE_ID==\'{0}\' instead of 99'.format(device.device_id))
         deserialize_from_transaction = DeserializeFromTransaction()
-        tot = IncomingTransaction.objects.using(using).filter(is_consumed=False).count()
-        for n, incoming_transaction in enumerate(IncomingTransaction.objects.using(using).filter(is_consumed=False, is_ignored=False).order_by('producer', 'timestamp')):
+        IncomingTransaction = get_model('sync', 'IncomingTransaction')
+        total_incoming_transactions = IncomingTransaction.objects.using(using).filter(is_consumed=False,
+                                                                                      is_ignored=False).count()
+        for index, incoming_transaction in enumerate(
+                IncomingTransaction.objects.using(using).filter(
+                    is_consumed=False,
+                    is_ignored=False).order_by('timestamp', 'producer')):
             action = ''
-            print '{0} / {1} {2} {3}'.format(n + 1, tot, incoming_transaction.producer, incoming_transaction.tx_name)
+            print '{0} / {1} {2} {3}'.format(index + 1, total_incoming_transactions,
+                                             incoming_transaction.producer,
+                                             incoming_transaction.tx_name)
             print '    tx_pk=\'{0}\''.format(incoming_transaction.tx_pk)
             action = 'failed'
             try:
-                if deserialize_from_transaction.deserialize(incoming_transaction, using, check_hostname=check_hostname):
+                if deserialize_from_transaction.deserialize(incoming_transaction,
+                                                            using,
+                                                            check_hostname=check_hostname):
                     action = 'saved'
                 print '    {0}'.format(action)
-            except DeserializationError as e:
-                print '    {0} {1}'.format(action, e)
+            except DeserializationError as deserialization_error:
+                print '    {0} {1}'.format(action, str(deserialization_error))
                 pass  # raise DeserializationError(e)
         self.post_sync(using, lock_name, **kwargs)
 

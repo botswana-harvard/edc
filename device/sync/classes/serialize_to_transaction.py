@@ -29,7 +29,7 @@ class SerializeToTransaction(object):
 
         Call this using the post_save and m2m_changed signal.
         """
-        if not raw:  # raw=True if you are saving a json object, maybe??
+        if not raw:  # raw=True if you are deserializing
             action = 'U'
             if created:
                 action = 'I'
@@ -42,7 +42,7 @@ class SerializeToTransaction(object):
                 use_natural_keys = True
             # if this is a proxy model, get to the main model
             if instance._meta.proxy_for_model:
-                instance = instance._meta.proxy_for_model.objects.using(using=using).get(id=instance.id)
+                instance = instance._meta.proxy_for_model.objects.using(using).get(id=instance.id)
             # serialize to json
             json_tx = serializers.serialize("json", [instance, ], ensure_ascii=False, use_natural_keys=use_natural_keys)
             try:
@@ -52,8 +52,6 @@ class SerializeToTransaction(object):
                 pass
             except AttributeError:
                 pass
-            except:
-                raise
             return OutgoingTransaction.objects.using(using).create(
                 tx_name=instance._meta.object_name,
                 tx_pk=instance.id,
