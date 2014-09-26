@@ -1,4 +1,4 @@
-from .transaction_producer import TransactionProducer
+from .transaction_producer import TransactionProducer, transaction_producer
 from .serialize_to_transaction import SerializeToTransaction
 from .deserialize_from_transaction import DeserializeFromTransaction
 from .consumer import Consumer
