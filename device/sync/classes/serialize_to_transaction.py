@@ -6,7 +6,7 @@ from django.db.models import get_model
 
 from edc.core.crypto_fields.classes import FieldCryptor
 
-from .transaction_producer import TransactionProducer
+from .transaction_producer import transaction_producer
 
 
 class SerializeToTransaction(object):
@@ -33,7 +33,6 @@ class SerializeToTransaction(object):
             action = 'U'
             if created:
                 action = 'I'
-            transaction_producer = TransactionProducer()
             if 'edc.device.sync' not in settings.INSTALLED_APPS:
                 return None
             OutgoingTransaction = get_model('sync', 'OutgoingTransaction')
@@ -57,5 +56,5 @@ class SerializeToTransaction(object):
                 tx_pk=instance.id,
                 tx=json_tx,
                 timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
-                producer=str(transaction_producer),
+                producer=transaction_producer,
                 action=action)

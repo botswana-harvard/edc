@@ -9,7 +9,7 @@ from django.db.utils import IntegrityError
 
 from edc.core.crypto_fields.classes import FieldCryptor
 
-from .transaction_producer import TransactionProducer
+from .transaction_producer import transaction_producer
 
 
 class DeserializeFromTransaction(object):
@@ -41,7 +41,7 @@ class DeserializeFromTransaction(object):
                 obj.object.deserialize_prep(action='D')
                 incoming_transaction.is_ignored = False
                 incoming_transaction.is_consumed = True
-                incoming_transaction.consumer = str(TransactionProducer())
+                incoming_transaction.consumer = transaction_producer
                 incoming_transaction.save(using=using)
                 is_success = True
             elif incoming_transaction.action == 'I' or incoming_transaction.action == 'U':
@@ -50,9 +50,11 @@ class DeserializeFromTransaction(object):
                 incoming_transaction.is_ignored = False
                 print '    {0}'.format(obj.object._meta.object_name)
                 if obj.object.hostname_modified == socket.gethostname() and check_hostname:
-                    # ignore your own transactions
-                    print '    skipping - not consuming my own transactions (using={})'.format(using)
-                    is_success = False
+                    # ignore your own transactions and mark them as is_ignored=True
+                    print '    skipping - not consuming my own transactions (using={0})'.format(using)
+                    incoming_transaction.is_ignored = True
+                    incoming_transaction.save()
+                    is_success = True
                 else:
                     is_success = False
                     # save using ModelBase save() method (skips all the subclassed save() methods)
@@ -162,6 +164,6 @@ class DeserializeFromTransaction(object):
                         raise
                     if is_success:
                         incoming_transaction.is_consumed = True
-                        incoming_transaction.consumer = str(TransactionProducer())
+                        incoming_transaction.consumer = transaction_producer
                         incoming_transaction.save(using=using)
         return is_success
