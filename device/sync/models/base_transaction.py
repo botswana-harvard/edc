@@ -69,10 +69,10 @@ class BaseTransaction(BaseUuidModel):
         )
 
     error = models.TextField(
-         max_length=1000,
-         null=True,
-         blank=True,
-         )
+        max_length=1000,
+        null=True,
+        blank=True,
+        )
 
     batch_seq = models.IntegerField(null=True, blank=True)
 
