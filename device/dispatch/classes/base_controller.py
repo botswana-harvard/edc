@@ -73,10 +73,15 @@ class BaseController(BaseProducer):
             ``server_device_id``: settings.DEVICE_ID for server (default='99')
 
         Settings:
-            DISPATCH_APP_LABELS = a list of app_labels for apps that contain models to be monitored by dispatch. Models in apps not
-                                  here will be ignored by default. To ignore a model that exists in an app listed here, override the
-                                  :func:`ignore_for_dispatch` method on the model. See model base class :class:`BaseSyncUuidModel` in
-                                  module :mod:`bhp_sync`. For example: DISPATCH_APP_LABELS = ['mochudi_household', 'mochudi_subject', 'mochudi_lab']
+            DISPATCH_APP_LABELS = a list of app_labels for apps that contain models
+                to be monitored by dispatch. Models in apps not
+                here will be ignored by default. To ignore a model that
+                exists in an app listed here, override the
+                :func:`ignore_for_dispatch` method on the model. See
+                model base class :class:`BaseSyncUuidModel` in
+                module :mod:`bhp_sync`.
+                For example:
+                    DISPATCH_APP_LABELS = ['mochudi_household', 'mochudi_subject', 'mochudi_lab']
             """
         self._controller_state = None
         self._model_pk_container = {}
@@ -87,7 +92,10 @@ class BaseController(BaseProducer):
         self.fk_instances = []
         self.preparing_status = kwargs.get('preparing_netbook', None)
         if 'DISPATCH_APP_LABELS' not in dir(settings):
-            raise ImproperlyConfigured('Attribute DISPATCH_APP_LABELS not found. Add to settings. e.g. DISPATCH_APP_LABELS = [\'mochudi_household\', \'mochudi_subject\', \'mochudi_lab\']')
+            raise ImproperlyConfigured('Attribute DISPATCH_APP_LABELS not found. '
+                                       'Add to settings. e.g. DISPATCH_APP_LABELS '
+                                       '= [\'mochudi_household\', \'mochudi_subject\', '
+                                       '\'mochudi_lab\']')
         self.set_producer()
         return None
 
@@ -116,7 +124,8 @@ class BaseController(BaseProducer):
            bhp_sync.outgoing_transactions.
         """
         producer_hostname = self.get_using_destination().split('-')[0]
-        return TransactionHelper().has_outgoing_for_producer(producer_hostname, self.get_using_destination())
+        return TransactionHelper().has_outgoing_for_producer(producer_hostname,
+                                                             self.get_using_destination())
 
     def has_incoming_transactions(self, models=None):
         """Check if source has pending Incoming Transactions for this producer and model(s).
@@ -130,7 +139,8 @@ class BaseController(BaseProducer):
                     models = [model for model in models]
                 if not isinstance(models, list):
                     models = [models]
-                if TransactionHelper().has_incoming_for_model([model._meta.object_name for model in models], self.get_using_source()):
+                if TransactionHelper().has_incoming_for_model(
+                        [model._meta.object_name for model in models], self.get_using_source()):
                     retval = True
         return retval
 
@@ -154,14 +164,18 @@ class BaseController(BaseProducer):
         options = []
         # get hostnames from source and populate default dictionary
         if 'hostname_modified' in [field.name for field in model_cls._meta.fields]:
-            hostnames = model_cls.objects.using(self.get_using_source()).values('hostname_modified').annotate(Count('hostname_modified')).order_by()
+            hostnames = model_cls.objects.using(self.get_using_source()).values(
+                'hostname_modified').annotate(Count('hostname_modified')).order_by()
             for item in hostnames:
-                options.append({'hostname_modified': item.get('hostname_modified'), 'modified__gt': datetime(1900, 1, 1)})
-            valuesset = model_cls.objects.using(self.get_using_destination()).values('hostname_modified').all().annotate(Max('modified')).order_by()
+                options.append({'hostname_modified': item.get('hostname_modified'),
+                                'modified__gt': datetime(1900, 1, 1)})
+            valuesset = model_cls.objects.using(self.get_using_destination()).values(
+                'hostname_modified').all().annotate(Max('modified')).order_by()
             for item in valuesset:
                 for n, dct in enumerate(options):
                     if dct.get('hostname_modified') == item.get('hostname_modified'):
-                        dct.update({'hostname_modified': item.get('hostname_modified'), 'modified__gt': item.get('modified__max')})
+                        dct.update({'hostname_modified': item.get('hostname_modified'),
+                                    'modified__gt': item.get('modified__max')})
                         options[n] = dct
         return options
 
@@ -170,15 +184,22 @@ class BaseController(BaseProducer):
         self._to_json(model_cls.objects.all(), additional_base_model_class, fk_to_skip=fk_to_skip)
 
     def is_allowed_base_model_cls(self, cls, additional_base_model_class=None):
-        """Returns True or raises an exception if the class is a subclass of a base model class allowed for serialization."""
+        """Returns True or raises an exception if the class is a subclass
+        of a base model class allowed for serialization."""
         if not issubclass(cls, self._get_allowed_base_models(additional_base_model_class)):
-            raise ControllerBaseModelError('For dispatch, user model \'{0}\' must be a subclass of \'{1}\'. Got {2}'.format(cls, self._get_allowed_base_models()))
+            raise ControllerBaseModelError('For dispatch, user model \'{0}\' must '
+                                           'be a subclass of \'{1}\'. Got {2}'.format(
+                                               cls, self._get_allowed_base_models()))
         return True
 
     def is_allowed_base_model_instance(self, inst, additional_base_model_class=None):
-        """Returns True or raises an exception if the class is an instance of a base model class allowed for serialization."""
+        """Returns True or raises an exception if the class
+        is an instance of a base model class allowed for serialization."""
         if not isinstance(inst, self._get_allowed_base_models(additional_base_model_class)):
-            raise ControllerBaseModelError('For dispatch, user model \'{0}\' must be an instance of \'{1}\'. Got {2}'.format(inst._meta.object_name, self._get_allowed_base_models(), inst.__class__))
+            raise ControllerBaseModelError('For dispatch, user model \'{0}\' must be '
+                                           'an instance of \'{1}\'. Got {2}'.format(
+                                               inst._meta.object_name,
+                                               self._get_allowed_base_models(), inst.__class__))
         return True
 
     def _get_allowed_base_models(self, additional_base_model_class=None):
@@ -191,7 +212,10 @@ class BaseController(BaseProducer):
             if not isinstance(additional_base_model_class, (list, tuple)):
                 additional_base_model_class = [additional_base_model_class]
             base_model_class = base_model_class + additional_base_model_class
-        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, ScheduleGroup, StudySite, BaseHistoryModel, BaseEntryMetaData, BaseEncryptedField]
+        base_model_class = base_model_class + [BaseListModel, BaseLabListModel,
+                                               BaseLabListUuidModel, VisitDefinition,
+                                               ScheduleGroup, StudySite, BaseHistoryModel,
+                                               BaseEntryMetaData, BaseEncryptedField]
         return tuple(base_model_class)
 
     def get_allowed_base_models(self):
@@ -208,7 +232,9 @@ class BaseController(BaseProducer):
         base_model_class = self.get_base_models_for_default_serialization()
         if not isinstance(base_model_class, list):
             raise TypeError('Expected base_model classes as a list. Got{0}'.format(base_model_class))
-        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel, VisitDefinition, StudySite, BaseHistoryModel, BaseEntryMetaData]
+        base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel,
+                                               VisitDefinition, StudySite, BaseHistoryModel,
+                                               BaseEntryMetaData]
         return tuple(set(base_model_class))
 
     def get_base_models_for_default_serialization(self):
@@ -244,28 +270,6 @@ class BaseController(BaseProducer):
                             self.fk_instances.append(this_fk)
                             self.get_fk_dependencies([this_fk])
                         self.add_to_session_container((cls, pk), 'fk_dependencies')
-
-#     def _disconnect_signals(self, obj):
-#         """Disconnects signals before saving the serialized object in _to_json."""
-#         # self.signal_manager.disconnect(obj)
-#         self.disconnect_signals()
-# 
-#     def disconnect_signals(self):
-#         """Disconnects signals before saving the serialized object in _to_json.
-# 
-#         Users may override to add additional signals"""
-#         pass
-# 
-#     def _reconnect_signals(self):
-#         """Reconnects signals after saving the serialized object in _to_json."""
-#         # self.signal_manager.reconnect()
-#         self.reconnect_signals()
-# 
-#     def reconnect_signals(self):
-#         """Reconnects signals after saving the serialized object in _to_json.
-# 
-#         Users may override to add additional signals"""
-#         pass
 
     def add_to_session_container(self, instance, key):
         if instance not in self._session_container[key]:
@@ -354,10 +358,11 @@ class BaseController(BaseProducer):
 
         Args:
             model_instances: a model instance, list of model instances, or QuerySet
-            additional_base_model_class: add a single or list of additional Base classes that the model instances inherit from.
-                use sparingly.
+            additional_base_model_class: add a single or list of additional
+            Base classes that the model instances inherit from. use sparingly.
 
-        ..warning:: This method assumes you have confirmed that the model_instances are "already dispatched" or not.
+        ..warning:: This method assumes you have confirmed that the
+                    model_instances are "already dispatched" or not.
 
         """
         # Get all Crypts for this list of instances
@@ -370,7 +375,10 @@ class BaseController(BaseProducer):
         # append crypts to all instances to be dispatched
         model_instances = crypts_dispatched + model_instance
         if self.has_incoming_transactions(model_instances):
-            raise PendingTransactionError('One or more listed models have pending incoming transactions on \'{0}\'. Consume them first. Got \'{1}\'.'.format(self.get_using_source(), list(set(model_instances))))
+            raise PendingTransactionError('One or more listed models have pending incoming '
+                                          'transactions on \'{0}\'. Consume them first. Got '
+                                          '\'{1}\'.'.format(self.get_using_source(),
+                                                            list(set(model_instances))))
         if model_instances:
             for instance in model_instances:
                 # confirm all model_instances are of the correct base class
@@ -385,7 +393,8 @@ class BaseController(BaseProducer):
             model_instances = self.fk_instances + model_instances
             if model_instances:
                 # serialize all
-                json_obj = serializers.serialize('json', model_instances, ensure_ascii=False, use_natural_keys=True, indent=2)
+                json_obj = serializers.serialize('json', model_instances,
+                                                 ensure_ascii=False, use_natural_keys=True, indent=2)
                 # deserialize all
                 deserialized_objects = list(serializers.deserialize("json", json_obj, use_natural_keys=True))
                 saved = []
@@ -395,29 +404,32 @@ class BaseController(BaseProducer):
                     for deserialized_object in deserialized_objects:
                         try:
                             if deserialized_object not in saved:
-                                # self._disconnect_signals(deserialized_object.object)
                                 # save deserialized_object to destination
                                 deserialized_object.object.save(using=self.get_using_destination())
                                 self.serialize_m2m(deserialized_object)
-                                # self._reconnect_signals()
                                 saved.append(deserialized_object)
                                 self.add_to_session_container(instance, 'serialized')
                                 self.update_session_container_class_counter(instance)
-#                         except ValueError as value_error:
-#                             if 'the current database router prevents this relation' in str(value_error):
-#                                 raise ValueError('{} Perhaps the related instance does '
-#                                                  'not yet exist on \'{}\'. Try dispatching '
-#                                                  'the related instance first.'.format(
-#                                                      str(value_error), self.get_using_destination()))
-                        except IntegrityError as e:
-                            if e.args[1].find('Duplicate entry') != -1 and e.args[1].find('hash') != -1:
+                        except IntegrityError as integrity_error:
+                            if integrity_error.args[1].find('Duplicate entry') != -1 and integrity_error.args[1].find('hash') != -1:
                                 saved.append(deserialized_object)
-                            # self._reconnect_signals()
+#                             TODO: change the handling of the exception to something like this:
+#                             if 'Duplicate entry' in str(integrity_error):  # and 'hash' not in str(integrity_error):
+#                                 saved.append(deserialized_object)
+#                             elif 'columns hash, algorithm, mode are not unique' in str(integrity_error):
+#                                 # don't worry about duplicate Crypts?
+#                                 saved.append(deserialized_object)
+#                             else:
+#                                 # only include this if you are OK passing ALL integrity errors
+#                                 saved.append(deserialized_object)
                             continue
                     if len(saved) == len(deserialized_objects):
                         break
                     if tries > 20:
-                        raise DeserializationError('Unable to deserialize object. Tries exceeded on {0}. Got {1}'.format(deserialized_object.object.__class__, e))
+                        raise DeserializationError('Unable to deserialize object. Tries exceeded '
+                                                   'on {0}. Got {1}'.format(
+                                                       deserialized_object.object.__class__,
+                                                       str(integrity_error)))
 
     def serialize_dependencies(self, d_obj, user_container, to_json_callback):
         """Checks for foreign keys and, if found, sends using the callback.
@@ -446,7 +458,8 @@ class BaseController(BaseProducer):
             # dst_list_item_natural_keys = []  # list of tuples returned by natural key on list item
             dst_list_item_pks = []
             for src_list_item in m2m_qs:
-                if not src_list_item.__class__.objects.using(self.get_using_destination()).filter(pk=src_list_item.pk).exists():
+                if not src_list_item.__class__.objects.using(
+                        self.get_using_destination()).filter(pk=src_list_item.pk).exists():
                     # no need to use callback, list models are not registered with dispatch
                     self._to_json(src_list_item, additional_base_model_class=BaseListModel)
                     # record source pk for use later

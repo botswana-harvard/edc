@@ -3,9 +3,7 @@ from django.db import models
 
 from edc.base.model.models import BaseUuidModel
 
-from ..classes import TransactionProducer
-
-transaction_producer = TransactionProducer()
+from ..classes import transaction_producer
 
 
 class BaseTransaction(BaseUuidModel):
@@ -23,7 +21,7 @@ class BaseTransaction(BaseUuidModel):
 
     producer = models.CharField(
         max_length=50,
-        default=str(transaction_producer),
+        default=transaction_producer,
         db_index=True,
         help_text='Producer instance',
         )
@@ -69,10 +67,10 @@ class BaseTransaction(BaseUuidModel):
         )
 
     error = models.TextField(
-         max_length=1000,
-         null=True,
-         blank=True,
-         )
+        max_length=1000,
+        null=True,
+        blank=True,
+        )
 
     batch_seq = models.IntegerField(null=True, blank=True)
 
