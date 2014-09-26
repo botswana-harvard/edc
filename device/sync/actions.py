@@ -125,6 +125,7 @@ def decrypt_incomingtransaction(modeladmin, request, queryset):
         qs.save()
 decrypt_incomingtransaction.short_description = "Decrypt the incoming transaction"
 
+
 def set_incomingtransaction_audits_to_ignored(modeladmin, request, queryset):
     """ set incoming audit transaction to ignore = True """
     for qs in queryset:
@@ -134,6 +135,7 @@ def set_incomingtransaction_audits_to_ignored(modeladmin, request, queryset):
             qs.save()
 set_incomingtransaction_audits_to_ignored.short_description = "Set audit transactions ignore status (is_ignored=True)"
 
+
 def reset_incomingtransaction_audits(modeladmin, request, queryset):
     """ set incoming audit transaction to ignore = False """
     for qs in queryset:
@@ -142,3 +144,14 @@ def reset_incomingtransaction_audits(modeladmin, request, queryset):
             qs.error = None
             qs.save()
 reset_incomingtransaction_audits.short_description = "Reset audit transactions ignore status (is_ignored=False)"
+
+
+def toggle_producer_is_active(modeladmin, request, queryset):
+    """ Toggle field is_active"""
+    for qs in queryset:
+        if qs.is_active:
+            qs.is_active = False
+        else:
+            qs.is_active = True
+        qs.save()
+toggle_producer_is_active.short_description = "Toggle producer as active or not active (is_active=True/False)"

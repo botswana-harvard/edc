@@ -9,7 +9,7 @@ from ..fields import HostnameCreationField, HostnameModificationField
 class BaseModel(TimeStampedModel):
 
     """Base model class for all models. Adds created and modified'
-    values for user, date and hostname (computer). 
+    values for user, date and hostname (computer).
 
 
     Note: ANY additional fields """
