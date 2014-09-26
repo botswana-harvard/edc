@@ -10,15 +10,15 @@ from .base_transaction import BaseTransaction
 
 
 class IncomingTransaction(BaseTransaction):
-
     """ Transactions received from a remote producer and to be consumed locally. """
     is_consumed = models.BooleanField(
         default=False,
-        db_index=True,
-    )
+        db_index=True)
+
     is_self = models.BooleanField(
         default=False,
         db_index=True)
+
     objects = IncomingTransactionManager()
 
     def save(self, *args, **kwargs):
