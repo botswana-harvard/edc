@@ -288,6 +288,16 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                     pass
         return dispatch_item
 
+    @property
+    def dispatched_to(self):
+        """Returns the producer name that this model instance is
+        dispatched to otherwise None.
+        """
+        try:
+            return self.dispatched_container_item.producer.name
+        except AttributeError:
+            return None
+
     def save(self, *args, **kwargs):
         using = kwargs.get('using')
         update_fields = kwargs.get('update_fields') or None
