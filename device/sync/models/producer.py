@@ -33,6 +33,7 @@ class Producer(BaseUuidModel):
         db_index=True,
         help_text=("provide the database name of the producer."))
 
+    # TODO: change this in next revision! should be db_name
     db_user_name = EncryptedCharField(
         verbose_name="Database name.",
         null=True,

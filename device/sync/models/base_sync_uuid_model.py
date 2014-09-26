@@ -9,7 +9,7 @@ from django.db.models import get_model
 
 from edc.base.model.models import BaseUuidModel
 
-from ..classes import TransactionProducer
+from ..classes import transaction_producer
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ class BaseSyncUuidModel(BaseUuidModel):
 
     def delete(self, *args, **kwargs):
         """Creates a delete transaction on delete"""
-        transaction_producer = TransactionProducer()
+        transaction_producer = transaction_producer
         if 'transaction_producer' in kwargs:
             transaction_producer = kwargs.get('transaction_producer')
             del kwargs['transaction_producer']
@@ -85,7 +85,7 @@ class BaseSyncUuidModel(BaseUuidModel):
                 tx_pk=self.pk,
                 tx=json_obj,
                 timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
-                producer=str(transaction_producer),
+                producer=transaction_producer,
                 action='D')
         super(BaseSyncUuidModel, self).delete(*args, **kwargs)
 
