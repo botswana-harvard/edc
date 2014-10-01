@@ -30,7 +30,7 @@ class TransactionProducer(object):
                     if 'database' in line:
                         database_name = line.split('=')[1].strip()
                         break
-        except KeyError:
+        except (KeyError, TypeError):
             database_name = settings.DATABASES.get('default').get('NAME')
         if not database_name:
             raise TypeError('Unable to determine the \'default\' database name of this django project.')
@@ -38,9 +38,9 @@ class TransactionProducer(object):
                                             database_name.lower())
 
     def __repr__(self):
-        return 'TransactionProducer({})'.format(self.producer_name)
+        return 'TransactionProducer({0.producer_name!r})'.format(self)
 
     def __str__(self):
-        return self.producer_name
+        return self.producer_name or ''
 
 transaction_producer = str(TransactionProducer())
