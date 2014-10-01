@@ -165,6 +165,8 @@ class FieldCryptor(object):
         if not secret:
             Crypt = get_model('crypto_fields', 'crypt')
             try:
+                # TODO: this ignores "using" which is a serious problem
+                # for working with multiple databases
                 crypt = Crypt.objects.values('secret').get(hash=hashed_value)
                 secret = crypt.get('secret')
                 last_secret.set(hashed_value, secret)
