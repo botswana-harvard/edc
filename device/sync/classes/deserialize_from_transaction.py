@@ -3,13 +3,14 @@ import json
 import socket
 
 from django.core import serializers
-from django.db import connection
-from django.db.models import ForeignKey
+from django.db import connection, transaction
+from django.db.models import ForeignKey, get_model
 from django.db.utils import IntegrityError
 
 from edc.core.crypto_fields.classes import FieldCryptor
 
 from .transaction_producer import transaction_producer
+from django.db.models.fields.related import OneToOneField
 
 
 class DeserializeFromTransaction(object):
@@ -64,22 +65,29 @@ class DeserializeFromTransaction(object):
                     except AttributeError:
                         pass
                     try:
-                        # force insert even if it is an update
-                        # to trigger an integrity error if it is an update
-                        obj.save(using=using)
-                        obj.object._deserialize_post(incoming_transaction)
-                        print '    OK - normal save on {0}'.format(using)
-                        is_success = True
-                    except IntegrityError as error:
-                        if 'Cannot add or update a child row' in error.args[1]:  # is this style deprecated?
-                            # which foreign key is failing?
+                        msg = '    OK - normal save on {0}'.format(using)
+                        with transaction.atomic():
+                            obj.save(using=using)
+                            is_success = True
+#                             obj.object._deserialize_post(incoming_transaction)
+#                             print msg
+#                             is_success = True
+                    except IntegrityError as integrity_error:
+                        if 'Cannot add or update a child row' in str(integrity_error):
                             if 'audit' in obj.object._meta.db_table:
-                                # audit tables do not have access to the helper methods
-                                # for field in foreign_key_error:
-                                #    # it is OK to just set the fk to None
-                                #    setattr(obj.object, field.name, None)
-                                print '    audit instance, ignoring... on using={0}'.format(using)
-                                incoming_transaction.is_ignored = True
+                                # TODO: now that audit uses natural keys, saving should
+                                # no longer raise an Integrity Error once all old
+                                # transactions are processed - erikvw 20140930
+                                print '    try again from \'cannot add or update a child row\''
+                                audited_model_cls = get_model(obj.object._meta.app_label, obj.object._meta.model_name.replace('audit', ''))
+                                audited_obj = audited_model_cls.objects.get(pk=obj.object._audit_id)
+                                for field in obj.object._meta.fields:
+                                    if isinstance(field, (OneToOneField, ForeignKey)):
+                                        # it is OK to just set the fk to None on audit tables
+                                        setattr(obj.object, field.name, getattr(audited_obj, field.name))
+                                # try again
+                                obj.save(using=using)
+                                is_success = True
                             else:
                                 foreign_key_error = []
                                 for field in obj.object._meta.fields:
@@ -99,7 +107,7 @@ class DeserializeFromTransaction(object):
                                     is_success = True
                                 except:
                                     incoming_transaction.is_ignored = True
-                        elif 'Duplicate' in error.args[1]:
+                        elif 'Duplicate' in str(integrity_error):
                             # if the integrity error refers to a duplicate
                             # check the unique_together meta class value to attempt to
                             # locate the existing pk.
@@ -162,6 +170,9 @@ class DeserializeFromTransaction(object):
                         print connection.queries
                         print "        [b] Unexpected error:", sys.exc_info()
                         raise
+                    obj.object._deserialize_post(incoming_transaction)
+                    print msg
+                    is_success = is_success
                     if is_success:
                         incoming_transaction.is_consumed = True
                         incoming_transaction.consumer = transaction_producer
