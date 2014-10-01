@@ -4,9 +4,9 @@ from ..models import Producer
 from edc.device.sync.exceptions import ProducerError
 
 
-def load_producer_db_settings(producer_name=None):
+def load_producer_db_settings(producer_name=None, refresh=None):
     """Updates the settings.DATABASES dictionary with the connections to the
-    producer databases.
+    producer databases for setting_keys that do already exist.
 
     Raise a ProducerError exception if the producer does not exist or producer details
     are incomplete.
@@ -36,15 +36,16 @@ def load_producer_db_settings(producer_name=None):
                                     producer.db_user,
                                     '*****' if producer.db_password else None,
                                     producer.producer_ip))
-        settings.DATABASES[producer.settings_key] = {
-            'ENGINE': 'django.db.backends.mysql',
-            'OPTIONS': {
-                'init_command': 'SET storage_engine=INNODB',
-            },
-            'NAME': producer.db_user_name,
-            'USER': producer.db_user,
-            'PASSWORD': producer.db_password,
-            'HOST': producer.producer_ip,
-            'PORT': producer.port,
-        }
+        if not settings.DATABASES.get(producer.settings_key, None):
+            settings.DATABASES[producer.settings_key] = {
+                'ENGINE': 'django.db.backends.mysql',
+                'OPTIONS': {
+                    'init_command': 'SET storage_engine=INNODB',
+                },
+                'NAME': producer.db_user_name,
+                'USER': producer.db_user,
+                'PASSWORD': producer.db_password,
+                'HOST': producer.producer_ip,
+                'PORT': producer.port,
+            }
     return "Added {0} Producers to settings.DATABASE.".format(len(producers))
