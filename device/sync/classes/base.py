@@ -35,6 +35,6 @@ class Base(object):
         return self._using
 
     def verify_using(self, value):
-        if not value in settings.DATABASES.keys():
+        if value not in settings.DATABASES.keys():
             raise ImproperlyConfigured('Cannot find key "{0}" in settings.DATABASES.'.format(value))
         return True
