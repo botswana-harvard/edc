@@ -223,10 +223,10 @@ def create_audit_model(cls, **kwargs):
         '_deserialize_post': BaseSyncUuidModel()._deserialize_post,
     }
 
-#     try:
-#         attrs['natural_key'] = cls.natural_key
-#     except AttributeError:
-#         pass
+    try:
+        attrs['natural_key'] = cls.natural_key
+    except AttributeError:
+        pass
 
     if 'save_change_type' in kwargs and kwargs['save_change_type']:
         attrs['_audit_change_type'] = models.CharField(max_length=1)
