@@ -1,6 +1,22 @@
 from django.contrib import messages
+
 from edc.core.crypto_fields.classes import FieldCryptor
+
 from .classes import SerializeToTransaction
+from .exceptions import ProducerError
+from .utils import update_producer_from_settings
+
+
+def update_producer_from_settings_file(modeladmin, request, queryset):
+    for qs in queryset:
+        try:
+            producer = update_producer_from_settings(qs)
+            messages.add_message(request, messages.SUCCESS,
+                                 'Producer {} has been updated.'.format(producer))
+        except ProducerError as producer_error:
+            messages.add_message(request, messages.ERROR, str(producer_error))
+update_producer_from_settings_file.short_description = (
+    "Update active producer from settings file (settings_key must match)")
 
 
 def serialize(modeladmin, request, queryset):
@@ -33,7 +49,8 @@ def reset_outgoing_transaction_server_as_not_consumed(modeladmin, request, query
         qs.is_consumed_server = False
         qs.consumer = None
         qs.save()
-reset_outgoing_transaction_server_as_not_consumed.short_description = "Set transactions as NOT consumed by Server(is_consumed_server=False)"
+reset_outgoing_transaction_server_as_not_consumed.short_description = (
+    "Set transactions as NOT consumed by Server(is_consumed_server=False)")
 
 
 def reset_outgoing_transaction_server_as_consumed(modeladmin, request, queryset):
@@ -42,7 +59,8 @@ def reset_outgoing_transaction_server_as_consumed(modeladmin, request, queryset)
         qs.is_consumed_server = True
         qs.consumer = None
         qs.save()
-reset_outgoing_transaction_server_as_consumed.short_description = "Set transactions as consumed by Server(is_consumed_server=True)"
+reset_outgoing_transaction_server_as_consumed.short_description = (
+    "Set transactions as consumed by Server(is_consumed_server=True)")
 
 
 def reset_outgoing_transaction_middle_as_not_consumed(modeladmin, request, queryset):
@@ -51,7 +69,8 @@ def reset_outgoing_transaction_middle_as_not_consumed(modeladmin, request, query
         qs.is_consumed_middleman = False
         qs.consumer = None
         qs.save()
-reset_outgoing_transaction_middle_as_not_consumed.short_description = "Set transactions as NOT consumed by MiddleMan(is_consumed_middleman=False)"
+reset_outgoing_transaction_middle_as_not_consumed.short_description = (
+    "Set transactions as NOT consumed by MiddleMan(is_consumed_middleman=False)")
 
 
 def reset_outgoing_transaction_middle_as_consumed(modeladmin, request, queryset):
@@ -60,7 +79,8 @@ def reset_outgoing_transaction_middle_as_consumed(modeladmin, request, queryset)
         qs.is_consumed_middleman = True
         qs.consumer = None
         qs.save()
-reset_outgoing_transaction_middle_as_consumed.short_description = "Set transactions as consumed by MiddleMan(is_consumed_middleman=True)"
+reset_outgoing_transaction_middle_as_consumed.short_description = (
+    "Set transactions as consumed by MiddleMan(is_consumed_middleman=True)")
 
 
 def reset_transaction_as_consumed(modeladmin, request, queryset):
@@ -77,7 +97,8 @@ def reset_transaction_as_ignored_and_consumed(modeladmin, request, queryset):
         qs.is_consumed = True
         qs.is_ignored = True
         qs.save()
-reset_transaction_as_ignored_and_consumed.short_description = "Set transactions as ignored and consumed (is_ignored=True, is_consumed=True)"
+reset_transaction_as_ignored_and_consumed.short_description = (
+    "Set transactions as ignored and consumed (is_ignored=True, is_consumed=True)")
 
 
 def reset_producer_status(modeladmin, request, queryset):

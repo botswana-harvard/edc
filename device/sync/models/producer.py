@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 
 from edc.core.crypto_fields.fields import EncryptedCharField
 from edc.base.model.models import BaseUuidModel
@@ -20,6 +19,7 @@ class Producer(BaseUuidModel):
 
     url = models.CharField(max_length=64)
 
+    # TODO: change this in next revision! should be db_host
     producer_ip = EncryptedCharField(
         verbose_name="Producer IP address.",
         null=True,
@@ -77,20 +77,6 @@ class Producer(BaseUuidModel):
         blank=True)
 
     objects = models.Manager()
-
-    def save(self, *args, **kwargs):
-        settings.DATABASES[self.settings_key] = {
-            'ENGINE': 'django.db.backends.mysql',
-            'OPTIONS': {
-                'init_command': 'SET storage_engine=INNODB',
-            },
-            'NAME': self.db_user_name,
-            'USER': self.db_user,
-            'PASSWORD': self.db_password,
-            'HOST': self.producer_ip,
-            'PORT': self.port,
-        }
-        super(Producer, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
