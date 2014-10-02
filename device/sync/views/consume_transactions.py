@@ -232,8 +232,9 @@ class ConsumeTransactions(object):
     @property
     def redirect_url(self):
         if self.app_name:
-            return redirect('/dispatch/{0}/sync/{1}/'.format(self.app_name, self.producer.name))
-        return redirect('/bhp_sync/consumed/{0}/'.format(self.producer.name))
+            return reverse('bcpp_sync_url', args=(self.producer.name, ))
+        else:
+            return reverse('sync_consumed', args=(self.producer.name, ))
 
 
 @login_required
