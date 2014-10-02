@@ -15,6 +15,12 @@ def is_dispatched(item_identifier):
     return locked
 
 
+@register.filter(name='is_dispatched_item')
+def is_dispatched_item(instance):
+    """Returns dispatch status of the item based on the identifier."""
+    return instance.is_dispatched_as_item()
+
+
 @register.filter(name='dispatched_to')
 def dispatched_to(item_identifier):
     """Returns the producer dispatch to based on the identifier."""
