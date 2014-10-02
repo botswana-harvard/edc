@@ -27,6 +27,6 @@ urlpatterns += patterns('',
         view_transaction, name='view_transaction_url',),
     url(r'^view/(?P<model_name>\w+)/(?P<pk>[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12})/',
         view_transaction, name='view_transaction_url',),
-    url(r'^consumed/(?P<selected_producer>[a-z0-9\-\_\.]+)/', index,),
+    url(r'^consumed/(?P<selected_producer>[a-z0-9\-\_\.]+)/', index, name='sync_consumed'),
     url(r'^$', index, name='sync_index_url'),
     )
