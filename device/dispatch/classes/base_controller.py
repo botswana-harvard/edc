@@ -411,9 +411,11 @@ class BaseController(BaseProducer):
                                 self.add_to_session_container(instance, 'serialized')
                                 self.update_session_container_class_counter(instance)
                         except IntegrityError as integrity_error:
+                            raise IntegrityError('{}. Got {}.'.format(deserialized_object, str(integrity_error)))
                             if integrity_error.args[1].find('Duplicate entry') != -1 and integrity_error.args[1].find('hash') != -1:
                                 saved.append(deserialized_object)
-#                             TODO: change the handling of the exception to something like this:
+                            #  TODO: change the handling of the exception to something like this:
+                            #         as is raises IndexError: tuple index out of range
 #                             if 'Duplicate entry' in str(integrity_error):  # and 'hash' not in str(integrity_error):
 #                                 saved.append(deserialized_object)
 #                             elif 'columns hash, algorithm, mode are not unique' in str(integrity_error):
