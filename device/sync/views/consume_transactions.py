@@ -29,17 +29,24 @@ class ConsumeTransactions(object):
             api_key = request.user.api_key.key
         except AttributeError as attribute_error:
             if 'object has no attribute \'api_key\'' in str(attribute_error):
-                raise ValueError('ApiKey does not exist for user %s. Check if tastypie was added to installed apps or Perhaps run create_api_key().' % (self.request.user,))
+                raise ValueError('ApiKey does not exist for user {}. Check if tastypie '
+                                 'was added to installed apps or Perhaps run '
+                                 'create_api_key().'.format(self.request.user))
             elif 'object has no attribute \'key\'' in str(attribute_error):
-                raise ValueError('ApiKey not found for user {}. Perhaps run create_api_key().' % (self.request.user,))
+                raise ValueError('ApiKey not found for user {}. Perhaps run '
+                                 'create_api_key().'.format(self.request.user))
             raise
         except:
-            raise ValueError('ApiKey not found for user {}. Perhaps run create_api_key().'.format(self.request.user,))
+            raise ValueError('ApiKey not found for user {}. Perhaps run '
+                             'create_api_key().'.format(self.request.user,))
         self.url_data = {'host': self.producer.url,
                          'producer': self.producer.name,
                          'limit': self.producer.json_limit,
                          'username': self.request.user.username,
                          'api_key': api_key}
+
+    def __repr__(self):
+        return 'ConsumeTransactions(<request>, {0.producer!r}, {0.app_name!r})'.format(self)
 
     def consume(self):
         # specify producer "name" of the server you are connecting to
