@@ -80,14 +80,17 @@ class DeserializeFromTransaction(object):
                                 # transactions are processed - erikvw 20140930
                                 print '    try again from \'cannot add or update a child row\''
                                 audited_model_cls = get_model(obj.object._meta.app_label, obj.object._meta.model_name.replace('audit', ''))
-                                audited_obj = audited_model_cls.objects.get(pk=obj.object._audit_id)
-                                for field in obj.object._meta.fields:
-                                    if isinstance(field, (OneToOneField, ForeignKey)):
-                                        # it is OK to just set the fk to None on audit tables
-                                        setattr(obj.object, field.name, getattr(audited_obj, field.name))
-                                # try again
-                                obj.save(using=using)
-                                is_success = True
+                                try:
+                                    audited_obj = audited_model_cls.objects.get(pk=obj.object._audit_id)
+                                    for field in obj.object._meta.fields:
+                                        if isinstance(field, (OneToOneField, ForeignKey)):
+                                            # it is OK to just set the fk to None on audit tables
+                                            setattr(obj.object, field.name, getattr(audited_obj, field.name))
+                                    # try again
+                                    obj.save(using=using)
+                                    is_success = True
+                                except audited_model_cls.DoesNotExist:
+                                    pass
                             else:
                                 foreign_key_error = []
                                 for field in obj.object._meta.fields:
