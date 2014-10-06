@@ -38,7 +38,7 @@ class BaseUsing(object):
         if self.device.is_server and using_source != 'default':
             raise UsingSourceError('Argument \'<using_source\'> must be \'default\' if running on the server (check settings.DEVICE).')
         if not self.device.is_server and using_source == 'default':
-            raise UsingSourceError('Argument \'<using_source\'> must be \'server\' if running a device (check settings.DEVICE).')      
+            raise UsingSourceError('Argument \'<using_source\'> must be \'server\' if running a device (check settings.DEVICE).')
 #         if settings.DEVICE_ID == self.server_device_id and using_source != 'default':
 #             raise UsingSourceError('Argument \'<using_source\'> must be \'default\' if running on the server (check settings.DEVICE).')
 #         if settings.DEVICE_ID != self.server_device_id and using_source == 'default':
@@ -58,7 +58,7 @@ class BaseUsing(object):
             raise UsingDestinationError('Parameters \'using_destination\' cannot be None')
         if using_destination == 'server':
             raise UsingDestinationError('Argument \'<using_destination\'> cannot be \'server\'.')
-        #if settings.DEVICE_ID == self.server_device_id and using_destination == 'default':
+        # if settings.DEVICE_ID == self.server_device_id and using_destination == 'default':
         if self.device.is_server and using_destination == 'default':
             raise UsingDestinationError('Argument \'<using_destination\'> cannot be \'default\' if running on the server (check settings.DEVICE).')
         if self.is_valid_using(using_destination, 'destination'):

@@ -22,7 +22,6 @@ class DispatchItemRegisterAdmin(BaseModelAdmin):
         'return_datetime'
         )
     list_filter = (
-        'dispatch_container_register',
         'producer',
         'item_model_name',
         'created',
