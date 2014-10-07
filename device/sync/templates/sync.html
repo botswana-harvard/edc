@@ -12,8 +12,8 @@
 <h3>Synchronize Devices with Server</h3>
 <ul>
 <LI>You are host "{{ hostname }}".
-<LI>Your locally generated transactions can be found <A href="{% url outgoingtransaction_cls|get_meta|admin_urlname:'changelist' %}">here</A>
-<LI>View all <A href="{% url producer_cls|get_meta|admin_urlname:'changelist' %}">Producers</A>
+<LI>Your locally generated transactions can be found <A href="{% url 'admin:sync_outgoingtransaction_changelist' %}">here</A>
+<LI>View all <A href="{% url 'admin:sync_producer_changelist' %}?is_active__exact=1">Producers</A>
 </UL>
 
 {% block usb_sync %}(USB Sync not available){% endblock usb_sync %}
@@ -47,7 +47,7 @@
     {% block consuming_app %}
     	<td><A href="{% url 'sync_consume_producer_url' producer=producer.name %}">synchronize with server</A></td>
     {% endblock consuming_app %}
-    <td><A href="{% url outgoingtransaction_cls|get_meta|admin_urlname:'changelist' %}?is_consumed_server__exact=0&producer={{ producer.name }}">producer outgoing transactions</A></td>    
+    <td><A href="{% url 'admin:sync_outgoingtransaction_changelist' %}?is_consumed_server__exact=0&producer={{ producer.name }}">producer outgoing transactions</A></td>    
     {% if show_checkin_link %}
         <td><A href="/{{ CHECKOUT_APP }}/return/{{ producer.name }}/">Return in netbook</A></td>
     {% endif %}
