@@ -21,13 +21,10 @@ class SectionIndexView(BaseSectionIndexView):
             urlpattern += url_patterns(
                 '{app_name}.views'.format(app_name=self.app_name),
                 url(r'^(?P<selected_section>{section_name})/$'.format(section_name=section_name),
-                view,
-                name="section_index_url".format(section_name=section_name)))
+                    view, name="section_index_url".format(section_name=section_name)))
         urlpattern += url_patterns(
-                '{app_name}.views'.format(app_name=self.app_name),
-                url(r'',
-                view,
-                name="section_index_url"))
+            '{app_name}.views'.format(app_name=self.app_name),
+            url(r'', view, name="section_index_url"))
         return urlpattern
 
     def _view(self, request, *args, **kwargs):
@@ -36,10 +33,10 @@ class SectionIndexView(BaseSectionIndexView):
             """Renders the view."""
             self.selected_section = kwargs.get('selected_section')
             return render_to_response(
-                      'section_index.html',
-                      {'sections': self.get_section_list(),
-                       'selected_section': self.selected_section},
-                      context_instance=RequestContext(request))
+                'section_index.html',
+                {'sections': self.get_section_list(),
+                 'selected_section': self.selected_section},
+                context_instance=RequestContext(request))
         return view(request, *args, **kwargs)
 
 section_index_view = SectionIndexView()
