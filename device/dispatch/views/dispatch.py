@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 from edc.device.dispatch.exceptions import (AlreadyDispatchedContainer, AlreadyDispatchedItem,
                                             AlreadyDispatched)
@@ -13,6 +14,7 @@ from ..forms import DispatchForm
 from ..models import DispatchItemRegister
 
 
+@login_required
 def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs):
     """Receives a list of user container identifiers and user selects
     the producer to dispatch to.
