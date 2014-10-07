@@ -23,7 +23,7 @@ nullhandler = logger.addHandler(NullHandler())
 
 class Consumer(object):
 
-    def consume(self, using=None, lock_name=None, **kwargs):
+    def consume(self, using=None, lock_name=None, model_name=None, **kwargs):
         """Consumes ALL incoming transactions on \'using\' in order by ('producer', 'timestamp')."""
         check_hostname = kwargs.get('check_hostname', True)
         using = using or 'default'
@@ -33,12 +33,14 @@ class Consumer(object):
                             'Got settings DEVICE_ID==\'{0}\' instead of 99'.format(device.device_id))
         deserialize_from_transaction = DeserializeFromTransaction()
         IncomingTransaction = get_model('sync', 'IncomingTransaction')
-        total_incoming_transactions = IncomingTransaction.objects.using(using).filter(is_consumed=False,
-                                                                                      is_ignored=False).count()
-        for index, incoming_transaction in enumerate(
-                IncomingTransaction.objects.using(using).filter(
-                    is_consumed=False,
-                    is_ignored=False).order_by('timestamp', 'producer')):
+        if model_name:
+            total_incoming_transactions = IncomingTransaction.objects.using(using).filter(is_consumed=False,
+                                                                                          is_ignored=False,
+                                                                                          tx_name=model_name).count()
+        else:
+            total_incoming_transactions = IncomingTransaction.objects.using(using).filter(is_consumed=False,
+                                                                                          is_ignored=False).count()
+        for index, incoming_transaction in self.enumerated_incomming(using, model_name):
             action = ''
             print '{0} / {1} {2} {3}'.format(index + 1, total_incoming_transactions,
                                              incoming_transaction.producer,
@@ -55,6 +57,18 @@ class Consumer(object):
                 print '    {0} {1}'.format(action, str(deserialization_error))
                 pass  # raise DeserializationError(e)
         self.post_sync(using, lock_name, **kwargs)
+
+    def enumerated_incomming(self, using, model_name):
+        IncomingTransaction = get_model('sync', 'IncomingTransaction')
+        if model_name:
+            return enumerate(IncomingTransaction.objects.using(using).filter(
+                        is_consumed=False,
+                        is_ignored=False,
+                        tx_name=model_name).order_by('timestamp', 'producer'))
+        else:
+            return enumerate(IncomingTransaction.objects.using(using).filter(
+                        is_consumed=False,
+                        is_ignored=False).order_by('timestamp', 'producer'))
 
     def pre_sync(self, using=None, lock_name=None, **kwargs):
         pass
