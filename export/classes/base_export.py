@@ -23,12 +23,12 @@ class BaseExport(object):
         self._file_obj = None
         self._header_from_m2m_complete = False
         self._model = None
+        self._m2m_value_delimiter = ';'
 
         self.encrypt = encrypt
         self.delimiter = str(delimiter) or ','
         self.header_row = []
         self.include_header_row = header
-        self.m2m_value_delimiter = ';'
         try:
             self.model = modeladmin.model
         except AttributeError:
