@@ -14,6 +14,6 @@ class SectionAdministrationView(BaseSectionView):
     section_name = 'administration'
     section_display_name = 'Administration'
     section_display_index = 140
-    # section_template =
+    # section_template = 'section_administration.html'
 
 site_sections.register(SectionAdministrationView)
