@@ -71,9 +71,9 @@ class BaseSyncUuidModel(BaseUuidModel):
 
     def delete(self, *args, **kwargs):
         """Creates a delete transaction on delete"""
-        transaction_producer = transaction_producer
+        producer = transaction_producer
         if 'transaction_producer' in kwargs:
-            transaction_producer = kwargs.get('transaction_producer')
+            producer = kwargs.get('transaction_producer')
             del kwargs['transaction_producer']
 
         if self.is_serialized() and not self._meta.proxy:
@@ -85,7 +85,7 @@ class BaseSyncUuidModel(BaseUuidModel):
                 tx_pk=self.pk,
                 tx=json_obj,
                 timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
-                producer=transaction_producer,
+                producer=producer,
                 action='D')
         super(BaseSyncUuidModel, self).delete(*args, **kwargs)
 
