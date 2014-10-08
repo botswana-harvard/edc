@@ -190,10 +190,6 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                         attrname))
         return user_container_instance
 
-#     @user_container_instance.setter
-#     def user_container_instance(self, instance):
-#         self._user_container_instance = instance
-
     def dispatch_container_lookup(self):
         """Returns a query string in the django format.
 
@@ -217,7 +213,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                         household_structure
                             household.household_identifier
 
-            where 'household' is the user container with 
+            where 'household' is the user container with
             identifier attr 'household_identifier',
             <self> would return something like this:
                 (Household, 'household_structure_member__household_structure__household__household_identifier')
@@ -248,7 +244,6 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         """Returns the models 'dispatched' status in model DispatchItemRegister."""
         is_dispatched = False
         if self.is_dispatchable_model():
-            #if self.id:
             if self.dispatched_item(using):
                 is_dispatched = True
             if not is_dispatched:
@@ -311,8 +306,8 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                                                              'items.'.format(self._meta.object_name, self.pk))
                 if not self._bypass_for_edit(using, update_fields):
                     if self.is_dispatched_as_item(using):
-                        raise AlreadyDispatchedItem('Model {0}-{1} is currently dispatched'.format(self._meta.object_name,
-                                                                                                   self.pk))
+                        raise AlreadyDispatchedItem('Model {0}-{1} is currently dispatched'.format(
+                            self._meta.object_name, self.pk))
         super(BaseDispatchSyncUuidModel, self).save(*args, **kwargs)
 
     class Meta:
