@@ -22,12 +22,8 @@ class IncomingTransaction(BaseTransaction):
     objects = IncomingTransactionManager()
 
     def save(self, *args, **kwargs):
-        """ An incoming transaction produced by self may exist, but is not wanted, if received by fanout from a consumer of
-        transactions of self (this producer). that is (hostname_modified==hostname)."""
-        # TODO: for IncomingTransaction perhaps just cancel save instead??
         if self.hostname_modified == socket.gethostname():
-            # self.is_consumed = True
-            self.is_self = True
+            self.is_self = True  # FIXME: is this needed?
         if self.is_consumed and not self.consumed_datetime:
             self.consumed_datetime = datetime.today()
         super(IncomingTransaction, self).save(*args, **kwargs)
