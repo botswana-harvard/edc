@@ -1,8 +1,9 @@
-from django.shortcuts import render_to_response
-from django.db.models import get_model
-from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.db.models import TextField
+from django.db.models import get_model
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.core.crypto_fields.classes import FieldCryptor
 
@@ -27,6 +28,6 @@ def view_transaction(request, **kwargs):
                 textfields.update({field.name: value})
         else:
             charfields.update({field.name: getattr(model_instance, field.name)})
-    return render_to_response('transaction.html',
-        {'charfields': charfields, 'textfields': textfields},
+    return render_to_response('transaction.html', {
+        'charfields': charfields, 'textfields': textfields},
         context_instance=RequestContext(request))
