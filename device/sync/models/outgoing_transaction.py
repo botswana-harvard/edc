@@ -7,7 +7,7 @@ from .base_transaction import BaseTransaction
 
 class OutgoingTransaction(BaseTransaction):
 
-    """ transactions produced locally to be consumed/sent to a queue or consumer """
+    """ Transactions produced locally to be consumed/sent to a queue or consumer """
     is_consumed_middleman = models.BooleanField(
         default=False,
         db_index=True,
@@ -22,7 +22,7 @@ class OutgoingTransaction(BaseTransaction):
 
     def save(self, *args, **kwargs):
         if self.is_consumed_server and not self.consumed_datetime:
-                self.consumed_datetime = datetime.today()
+            self.consumed_datetime = datetime.today()
         super(OutgoingTransaction, self).save(*args, **kwargs)
 
     class Meta:
