@@ -17,6 +17,7 @@ class BaseTransaction(BaseUuidModel):
 
     tx_pk = models.CharField(
         max_length=36,
+        db_index=True,
         )
 
     producer = models.CharField(
