@@ -40,18 +40,18 @@ class UploadTransactionFile(BaseUuidModel):
             date_string = self.file_name.split('_')[2].split('.')[0][:8]
             self.file_date = date(int(date_string[:4]), int(date_string[4:6]), int(date_string[6:8]))
             self.identifier = self.file_name.split('_')[1]
-            self.check_for_transactions()
+            #self.check_for_transactions()
             if self.consume:
                 self.consume_transactions()
         super(UploadTransactionFile, self).save(*args, **kwargs)
 
-    def check_for_transactions(self, transaction_file=None, exception_cls=None):
-        transaction_file = transaction_file or self.transaction_file
-        transaction_file.open()
-        exception_cls = exception_cls or ValidationError
-        deserializer = DeserializeFromTransaction()
-        if not deserializer.deserialize_json_file(transaction_file):
-            raise exception_cls('File does not contain any transactions. Got {0}'.format(transaction_file.name))
+#     def check_for_transactions(self, transaction_file=None, exception_cls=None):
+#         transaction_file = transaction_file or self.transaction_file
+#         transaction_file.open()
+#         exception_cls = exception_cls or ValidationError
+#         deserializer = DeserializeFromTransaction()
+#         if not deserializer.deserialize_json_file(transaction_file):
+#             raise exception_cls('File does not contain any transactions. Got {0}'.format(transaction_file.name))
 
     def consume_transactions(self):
         if self.today_set_as_skip_day():
@@ -97,8 +97,9 @@ class UploadTransactionFile(BaseUuidModel):
         return False
 
     def first_upload_or_skip_day(self):
-        # This is the first upload or skip day record.
-        if (self.__class__.objects.all().count() == 0) and (UploadSkipDays.objects.all().count() == 0):
+        # This is the first upload or skip day record. Specific to a particular identifier
+        if ((self.__class__.objects.filter(identifier__iexact=self.identifier).count() == 0)
+            and (UploadSkipDays.objects.filter(identifier__iexact=self.identifier).count() == 0)):
             return True
         return False
 
