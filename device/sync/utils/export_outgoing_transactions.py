@@ -11,7 +11,8 @@ from ..models import OutgoingTransaction
 def export_outgoing_transactions(path):
     """Serializes OutgoingTransactions to a file from a netbook to the
     MIDDLEMAN and updates transactions as consumed by the middleman
-    (is_consumed_middleman = True)."""
+    (is_consumed_middleman = True). In this case storage used which might
+    be a USB or local file system are considered to be a MIDDLEMAN."""
     exported = 0
     path = path or os.path.join('/tmp', 'edc_tx_{}.json'.format(str(datetime.now().strftime("%Y%m%d%H%M"))))
     try:
