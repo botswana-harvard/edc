@@ -21,7 +21,7 @@ class Command(BaseCommand):
             default=False,
             help=('Fully qualified path.')),
         )
-
+    
     def handle(self, *args, **options):
         if options['path']:
             if not args or len(args) != 1:
