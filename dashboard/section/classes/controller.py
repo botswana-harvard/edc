@@ -1,9 +1,10 @@
 import copy
-from django.http import HttpRequest
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
+
 from .base_section_view import BaseSectionView
 from .helpers import SectionNamedTpl
 
@@ -39,21 +40,30 @@ class Controller(object):
         self._indexed_section_tuples = None
         self._indexed_section_display_names = None
 
-    def register(self, section_view_cls):
-        """Registers section_view_classes to the registry dictionary as {section_view_cls.sectionname: section_view_cls}."""
-        self.set_registry(section_view_cls)
+    def register(self, section_view_cls, replaces=None):
+        """Registers section_view_classes to the registry dictionary
+        as {section_view_cls.sectionname: section_view_cls}."""
+        self.set_registry(section_view_cls, replaces=replaces)
 
-    def set_registry(self, section_view_cls):
+    def set_registry(self, section_view_cls, replaces=None):
+        """Adds the class to the registry by section_name.
+
+        Kwargs:
+          * replaces: dictionary key of class to replace if it exists. Default(None)
+        """
         if not isinstance(section_view_cls(), BaseSectionView):
             raise AlreadyRegistered('Expected an instance of BaseSectionView. Got {0}.'.format(section_view_cls))
 #         if not section_view_cls().get_section_name():
 #             raise AttributeError('Attribute section_name cannot be None for class {0}'.format(section_view_cls))
-        if section_view_cls().get_section_name() in self._registry:
-            raise AlreadyRegistered('A section view class of type {1} is already registered ({0})'.format(section_view_cls, section_view_cls().get_section_name()))
+        if (section_view_cls().get_section_name() in self._registry and
+                section_view_cls().get_section_name() != replaces):
+            raise AlreadyRegistered('A section view class of type {1} is already '
+                                    'registered ({0})'.format(section_view_cls, section_view_cls().get_section_name()))
         if 'DENIED_SECTIONS_FOR_GROUP' in dir(settings) and 'LOGGED_IN_USER_GROUP' in dir(settings):
-            logged_in_user_group = settings.LOGGED_IN_USER_GROUP  # settings.LOGGED_IN_USER_GROUP must be changed. Only temporary untill i figure out how to get logged in USER from within a class properly.
+            logged_in_user_group = settings.LOGGED_IN_USER_GROUP  # settings.LOGGED_IN_USER_GROUP must be changed.
+            # FIXME: Only temporary until i figure out how to get logged in USER from within a class properly.
             if settings.DENIED_SECTIONS_FOR_GROUP.get(logged_in_user_group, None):
-                #denied_sections_for_user should be a tuple of section names
+                # denied_sections_for_user should be a tuple of section names
                 denied_sections_for_user = settings.DENIED_SECTIONS_FOR_GROUP.get(logged_in_user_group)
                 if not section_view_cls().get_section_name() in denied_sections_for_user:
                     self._registry[section_view_cls().get_section_name()] = section_view_cls()
@@ -62,8 +72,9 @@ class Controller(object):
 
     def get(self, section_name):
         """Returns a dictionary value, s section_view_inst, for the given section name."""
-        if not section_name in self._registry:
-            raise TypeError('Invalid section name. Got {0}. Expected any of {1}'.format(section_name, self.get_section_names()))
+        if section_name not in self._registry:
+            raise TypeError('Invalid section name. Got {0}. Expected any of {1}'.format(
+                section_name, self.get_section_names()))
         return self._registry.get(section_name)
 
     def get_registry(self, section_name=None):
@@ -124,9 +135,12 @@ class Controller(object):
         lst = list(set(self._section_display_indexes))
         lst.sort()
         if lst != self._section_display_indexes:
-            raise ImproperlyConfigured('Section classes must have a unique section_display_index. '
-                                       'Got {0} from site_sections {1}. Check the section cls in '
-                                       'each app. Section tuples are {2}'.format(self._section_display_indexes, site_sections.get_section_names(), site_sections.get_section_tuples()))
+            raise ImproperlyConfigured(
+                'Section classes must have a unique section_display_index. '
+                'Got {0} from site_sections {1}. Check the section cls in '
+                'each app. Section tuples are {2}'.format(
+                    self._section_display_indexes, site_sections.get_section_names(),
+                    site_sections.get_section_tuples()))
 
     def get_section_display_indexes(self):
         """Returns an ordered list of section display indexes."""
@@ -135,10 +149,13 @@ class Controller(object):
         return self._section_display_indexes
 
     def set_section_tuples(self):
-        """Sets to a list of named tuples with section information of the format (section_name, display_name, display_index)."""
+        """Sets to a list of named tuples with section information
+        of the format (section_name, display_name, display_index)."""
         self._section_tuples = []
         for inst in self.get_registry().itervalues():
-            tpl = SectionNamedTpl(section_name=inst.get_section_name(), display_name=inst.get_section_display_name(), display_index=inst.get_section_display_index())
+            tpl = SectionNamedTpl(section_name=inst.get_section_name(),
+                                  display_name=inst.get_section_display_name(),
+                                  display_index=inst.get_section_display_index())
             if tpl not in self._section_tuples:
                 self._section_tuples.append(tpl)
         return self._section_tuples
