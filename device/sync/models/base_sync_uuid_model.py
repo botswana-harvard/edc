@@ -1,15 +1,10 @@
 import logging
 
-from datetime import datetime
-
 from django.conf import settings
-from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 
 from edc.base.model.models import BaseUuidModel
-
-from ..classes import TransactionProducer
 
 logger = logging.getLogger(__name__)
 
@@ -22,29 +17,46 @@ nullhandler = logger.addHandler(NullHandler())
 
 class BaseSyncUuidModel(BaseUuidModel):
 
-    """Base model for all UUID models and adds synchronization methods and signals. """
+    """Base model for all UUID models and adds synchronization
+    methods and signals. """
 
     def is_serialized(self, serialize=True):
-        if 'edc.device.sync' in settings.INSTALLED_APPS:
-            from edc.apps.utils import Conf
-            return Conf.get('ALLOW_MODEL_SERIALIZATION')
+        """Returns True only if ALLOW_MODEL_SERIALIZATION is explicitly
+        set to True in settings.
 
-    def deserialize_prep(self):
+        ALLOW_MODEL_SERIALIZATION is a required settings attribute for this module.
+        """
+        try:
+            return settings.ALLOW_MODEL_SERIALIZATION
+        except AttributeError:
+            raise ImproperlyConfigured(
+                'Model uses base classes from edc.sync. Add attribute '
+                '\'ALLOW_MODEL_SERIALIZATION = True\' to settings to enable '
+                'serialization of transactions (or = False to disable).')
+
+    def deserialize_prep(self, **kwargs):
         """Users may override to manipulate the incoming object before calling save()"""
         pass
 
-    def _deserialize_post(self, incomming_transaction):
-        """Default behaviour for all subclasses of this class is to serialize to outgoing transaction."""
-        from ..models import OutgoingTransaction
-        if not OutgoingTransaction.objects.filter(pk=incomming_transaction.id).exists():
+    def _deserialize_post(self, incoming_transaction):
+        """Default behavior for all subclasses of this class is to
+        serialize to outgoing transaction.
+
+        Note: this is necessary because a deserialized object will not create
+              an Outgoing Transaction by default since the "raw" parameter is True
+              on deserialization."""
+        OutgoingTransaction = get_model('sync', 'outgoingtransaction')
+        try:
+            OutgoingTransaction.objects.get(pk=incoming_transaction.id)
+        except OutgoingTransaction.DoesNotExist:
             OutgoingTransaction.objects.create(
-                pk=incomming_transaction.id,
-                tx_name=incomming_transaction.tx_name,
-                tx_pk=incomming_transaction.tx_pk,
-                tx=incomming_transaction.tx,
-                timestamp=incomming_transaction.timestamp,
-                producer=incomming_transaction.producer,
-                action=incomming_transaction.action)
+                pk=incoming_transaction.id,
+                tx_name=incoming_transaction.tx_name,
+                tx_pk=incoming_transaction.tx_pk,
+                tx=incoming_transaction.tx,
+                timestamp=incoming_transaction.timestamp,
+                producer=incoming_transaction.producer,
+                action=incoming_transaction.action)
         self.deserialize_post()
 
     def deserialize_post(self):
@@ -52,42 +64,26 @@ class BaseSyncUuidModel(BaseUuidModel):
         pass
 
     def deserialize_on_duplicate(self):
-        """Users may override this to determine how to handle a duplicate error on deserialization.
+        """Users may override this to determine how to handle a duplicate
+        error on deserialization.
 
-        If you have a way to help decide if a duplicate should overwrite the existing record or not,
-        evaluate your criteria here and return True or False. If False is returned to the deserializer,
-        the object will not be saved and the transaction WILL be flagged as consumed WITHOUT error.
+        If you have a way to help decide if a duplicate should overwrite
+        the existing record or not, evaluate your criteria here and return
+        True or False. If False is returned to the deserializer, the
+        object will not be saved and the transaction WILL be flagged
+        as consumed WITHOUT error.
         """
-        # logger.info('method deserialize_on_duplicate is not defined, returning True')
         return True
 
     def deserialize_get_missing_fk(self, attrname):
-        """Override to return a foreignkey object for 'attrname', if possible, using criteria in self, otherwise return None"""
-        raise ImproperlyConfigured('Method deserialize_get_missing_fk() must be overridden on model class {0}'.format(self._meta.object_name))
+        """Override to return a foreignkey object for 'attrname',
+        if possible, using criteria in self, otherwise return None"""
+        raise ImproperlyConfigured('Method deserialize_get_missing_fk() must '
+                                   'be overridden on model class {0}'.format(self._meta.object_name))
 
     def save_to_inspector(self, fields, instance_pk, using):
-        """Override in concrete class"""
+        """Override in concrete class."""
         return False
-
-    def delete(self, *args, **kwargs):
-        """Creates a delete transaction on delete"""
-        transaction_producer = TransactionProducer()
-        if 'transaction_producer' in kwargs:
-            transaction_producer = kwargs.get('transaction_producer')
-            del kwargs['transaction_producer']
-
-        if self.is_serialized() and not self._meta.proxy:
-            OutgoingTransaction = get_model('sync', 'outgoingtransaction')
-            json_obj = serializers.serialize("json", self.__class__.objects.filter(pk=self.pk), use_natural_keys=True)
-            using = kwargs.get('using', 'default')
-            OutgoingTransaction.objects.using(using).create(
-                tx_name=self._meta.object_name,
-                tx_pk=self.pk,
-                tx=json_obj,
-                timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
-                producer=str(transaction_producer),
-                action='D')
-        super(BaseSyncUuidModel, self).delete(*args, **kwargs)
 
     class Meta:
         abstract = True

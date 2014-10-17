@@ -46,18 +46,27 @@ class DispatchController(BaseDispatchController):
         self._set_dispatch_url(dispatch_url)
 
     def dispatch(self, debug=None, **kwargs):
-        """Dispatches items to a device by creating a dispatch item instance.
+        """Dispatches items to a device by creating a dispatch item
+        instance.
 
-        ..note:: calls the user overridden method :func:`pre_dispatch`, :func:`dispatch_prep` and :func:`post_dispatch`."""
+        ..note:: calls the user overridden method :func:`pre_dispatch`,
+                 :func:`dispatch_prep` and :func:`post_dispatch`."""
         # check for pending transactions
-        if self.has_outgoing_transactions():
-            msg = 'Producer \'{0}\' has pending outgoing transactions. Run bhp_sync first.'.format(self.get_producer_name())
+        if self.has_outgoing_transactions_producer():
+            msg = ('Producer \'{0}\' has pending outgoing transactions. '
+                   'Run bhp_sync first.').format(self.get_producer_name())
         else:
-            user_container = self.get_user_container_instance()  # move to pre_dispatch
-            if user_container.is_dispatched_as_item():  # move to pre_dispatch
+            # TODO: already dispatched checks to pre_dispatch
+            user_container = self.get_user_container_instance()
+            if user_container.is_dispatched_as_item():
                 if debug:
-                    raise AlreadyDispatchedContainer('Container {0} is already dispatched. Got {1}.'.format(user_container._meta.object_name, self.get_user_container_identifier()))
-                msg = '{0} is already dispatched. Got {1}.'.format(user_container._meta.object_name, self.get_user_container_identifier())  # move to pre_dispatch
+                    raise AlreadyDispatchedContainer('Container {0} is already dispatched. '
+                                                     'Got {1}.'.format(user_container._meta.object_name,
+                                                                       self.get_user_container_identifier()))
+                msg = '{} \'{}\' is already dispatched to producer \'{}\'.'.format(
+                    user_container._meta.object_name,
+                    self.get_user_container_identifier(),
+                    self.get_producer_name())
                 registered_controllers.deregister(self)
             else:
                 self._pre_dispatch(user_container, **kwargs)
