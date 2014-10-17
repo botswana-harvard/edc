@@ -25,10 +25,13 @@ class ActionItemAdmin(BaseAdmin):
 
     def save_model(self, request, obj, form, change):
         # check for bhp_data_manager user groups
+        #group = data_manager.prepare()
         data_manager.check_groups()
         user = request.user
         if not user.is_superuser:
-            user_groups = [group.name for group in Group.objects.filter(user__username=request.user)]
+            #A user should be able to assign an action item to any other user group
+            user_groups = [group.name for group in Group.objects.all()]
+#             user_groups = [group.name for group in Group.objects.filter(user__username=request.user)]
             if not user_groups:
                 obj.action_group = 'no group'
             elif obj.action_group not in user_groups:
