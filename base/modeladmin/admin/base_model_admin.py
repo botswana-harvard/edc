@@ -143,7 +143,7 @@ class BaseModelAdmin (admin.ModelAdmin):
                     [kwargs.update({key: value}) for key, value in request.GET.iteritems() if key not in ['next', 'dashboard_id', 'dashboard_model', 'dashboard_type', 'show']]
                     if kwargs:
                         url = reverse(next_url_name, kwargs=kwargs)
-                except:
+                except NoReverseMatch:
                     # ok, failed to reverse with exactly what was given
                     dashboard_id = request.GET.get('dashboard_id')
                     dashboard_model = request.GET.get('dashboard_model')
@@ -308,7 +308,7 @@ class BaseModelAdmin (admin.ModelAdmin):
                 if k in dir(obj):
                     try:
                         kwargs.update({str(k): getattr(obj, k)})
-                    except:
+                    except AttributeError:
                         pass
         if 'next' in kwargs:
             del kwargs['next']

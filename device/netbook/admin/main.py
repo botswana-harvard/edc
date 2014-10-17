@@ -1,7 +1,8 @@
 from django.contrib import admin
+
 from edc.base.modeladmin.admin import BaseModelAdmin
+
 from ..models import Netbook, NetbookUser
-# from ..actions import netbook_uphosts
 
 
 class NetbookAdmin (BaseModelAdmin):
@@ -18,8 +19,6 @@ class NetbookAdmin (BaseModelAdmin):
         )
     list_per_page = 25
     list_filter = ('is_active', 'is_alive')
-
-#     actions = [netbook_uphosts]
 
 admin.site.register(Netbook, NetbookAdmin)
 

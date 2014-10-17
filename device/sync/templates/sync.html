@@ -1,20 +1,22 @@
 {% extends "section.html"%}
+{% load i18n %}
+{% load admin_urls %}
+{% load common_tags %}
 
 {% block breadcrumbs %}
-
-    <div class="breadcrumbs">
-        <a href="/{{ home }}">Home</a>
-        &rsaquo; Synchronize with Community Server
-    </div>
-    
+    <div class="breadcrumbs"><a href="{% url "section_index_url"  %}">Home</a> &rsaquo; <a href="{% url "section_url" 'administration' %}">Administration</a> &rsaquo; Synchronize Devices with Server</div>
 {% endblock %}
 
 
 {% block content %}
-<P>You are {{ hostname }}.</P>
-<P>Your locally generated transactions can be found <A href="/admin/sync/outgoingtransaction/">here</A></P>
-<A href="/admin/sync/producer/">Producers</A>
-{% block usb_sync %}{% endblock usb_sync %}
+<h3>Synchronize Devices with Server</h3>
+<ul>
+<LI>You are host "{{ hostname }}".
+<LI>Your locally generated transactions can be found <A href="{% url 'admin:sync_outgoingtransaction_changelist' %}">here</A>
+<LI>View all <A href="{% url 'admin:sync_producer_changelist' %}?is_active__exact=1">Producers</A>
+</UL>
+
+{% block usb_sync %}(USB Sync not available){% endblock usb_sync %}
 
 <table>
 <thead>
@@ -24,7 +26,9 @@
 <th>Sync URL</th>
 <th>Transactions</th>
 <th>URL</th>
+
 {% if show_checkin_link %}<th>Return URL</th>{% endif %}
+
 <th>Last Sync</th>
 <th>Status</th>
 </thead>
@@ -41,9 +45,9 @@
     	<td><A href="/dispatch/return/{{ producer.name }}/">unlock {{ producer.name }}</A></td>
     {% endblock return_app %}
     {% block consuming_app %}
-    	<td><A href="/bhp_sync/consume/{{ producer.name }}/">synchronize with server</A></td>
+    	<td><A href="{% url 'sync_consume_producer_url' producer=producer.name %}">synchronize with server</A></td>
     {% endblock consuming_app %}
-    <td><A href="{{ producer.url }}admin/sync/outgoingtransaction/?is_consumed__exact=0&producer={{ producer.name }}">producer outgoing transactions</A></td>    
+    <td><A href="{% url 'admin:sync_outgoingtransaction_changelist' %}?is_consumed_server__exact=0&producer={{ producer.name }}">producer outgoing transactions</A></td>    
     {% if show_checkin_link %}
         <td><A href="/{{ CHECKOUT_APP }}/return/{{ producer.name }}/">Return in netbook</A></td>
     {% endif %}
@@ -55,6 +59,8 @@
 {% endfor %}
 </tbody>
 </table>
+
 {% block play_transactions %}{% endblock play_transactions %}
+
 {% endblock content %}
 
