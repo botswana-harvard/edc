@@ -19,14 +19,16 @@
 {% endblock users_and_settings %}
 
 {% block device_sync %}
-    <H5>Device Synchronization</H5>
-    <ul>
-    <li><A href="{% url 'sync_index_url' %}">Synchronize devices with Community Server (Return)</A></li>
-    {% block device_sync_export %}
-        <li><A href="{% url 'sync_export_outgoing_url' %}">Export outgoing transactions to file</A></li>
-    {% endblock device_sync_export %}
-    {% block device_inspector %}{% endblock device_inspector %}
-    </ul>
+    {% if 'edc.device.sync' in installed_apps %}
+	    <H5>Device Synchronization</H5>
+	    <ul>
+	    <li><A href="{% url 'sync_index_url' %}">Synchronize devices with Community Server (Return)</A></li>
+	    {% block device_sync_export %}
+	        <li><A href="{% url 'sync_export_outgoing_url' %}">Export outgoing transactions to file</A></li>
+	    {% endblock device_sync_export %}
+	    {% block device_inspector %}{% endblock device_inspector %}
+	    </ul>
+    {% endif %}
 {% endblock device_sync %}
 
 {% block edc_birt_reports %}
