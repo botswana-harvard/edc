@@ -10,8 +10,7 @@ from ...models import IncomingTransaction
 
 
 class Command(BaseCommand):
-    """ Sends an email or sms notification to a list of recipients if not labs results have been
-    imported into the local EDC 24 hrs
+    """ Sends an email to a list of recipients if about incoming transactions status
     """
     args = ('--email <email> --body <email_body>')
 

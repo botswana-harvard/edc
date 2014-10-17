@@ -190,10 +190,6 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                         attrname))
         return user_container_instance
 
-#     @user_container_instance.setter
-#     def user_container_instance(self, instance):
-#         self._user_container_instance = instance
-
     def dispatch_container_lookup(self):
         """Returns a query string in the django format.
 
@@ -217,7 +213,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                         household_structure
                             household.household_identifier
 
-            where 'household' is the user container with 
+            where 'household' is the user container with
             identifier attr 'household_identifier',
             <self> would return something like this:
                 (Household, 'household_structure_member__household_structure__household__household_identifier')
@@ -225,17 +221,17 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         raise ImproperlyConfigured('Model {0} is not configured for dispatch. '
                                    'Missing method \'dispatch_container_lookup\''.format(self._meta.object_name))
 
-    def _bypass_for_edit(self, using=None):
+    def _bypass_for_edit(self, using=None, update_fields=None):
         using = using or 'default'
-        if self.bypass_for_edit_dispatched_as_item(using):
+        if not self.bypass_for_edit_dispatched_as_item(using, update_fields):
             if not self.id:
                 raise AlreadyDispatchedItem('Model {0}-{1}, although dispatched, may only be '
                                             'conditionally edited. New instances are not '
                                             'allowed.'.format(self._meta.object_name, self.pk))
             return True
-        return False
+        return True
 
-    def bypass_for_edit_dispatched_as_item(self, using=None):
+    def bypass_for_edit_dispatched_as_item(self, using=None, update_fields=None):
         """Users may override to allow a model to be edited even thoug it is dispatched.
 
         .. warning:: avoid using this. it only allows edits. you are responsible to
@@ -248,7 +244,6 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
         """Returns the models 'dispatched' status in model DispatchItemRegister."""
         is_dispatched = False
         if self.is_dispatchable_model():
-            #if self.id:
             if self.dispatched_item(using):
                 is_dispatched = True
             if not is_dispatched:
@@ -288,20 +283,31 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
                     pass
         return dispatch_item
 
+    @property
+    def dispatched_to(self):
+        """Returns the producer name that this model instance is
+        dispatched to otherwise None.
+        """
+        try:
+            return self.dispatched_container_item.producer.name
+        except AttributeError:
+            return None
+
     def save(self, *args, **kwargs):
         using = kwargs.get('using')
+        update_fields = kwargs.get('update_fields') or None
         if self.id:
             if self.is_dispatchable_model():
                 if self.is_dispatch_container_model():
-                    if not self._bypass_for_edit(using):
+                    if not self._bypass_for_edit(using, update_fields):
                         if self.is_dispatched_as_container(using):
                             raise AlreadyDispatchedContainer('Model {0}-{1} is currently dispatched '
                                                              'as a container for other dispatched '
                                                              'items.'.format(self._meta.object_name, self.pk))
-                if not self._bypass_for_edit(using):
+                if not self._bypass_for_edit(using, update_fields):
                     if self.is_dispatched_as_item(using):
-                        raise AlreadyDispatchedItem('Model {0}-{1} is currently dispatched'.format(self._meta.object_name,
-                                                                                                   self.pk))
+                        raise AlreadyDispatchedItem('Model {0}-{1} is currently dispatched'.format(
+                            self._meta.object_name, self.pk))
         super(BaseDispatchSyncUuidModel, self).save(*args, **kwargs)
 
     class Meta:
