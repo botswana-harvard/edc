@@ -56,7 +56,6 @@ class BaseSubject (BaseSyncUuidModel):
                                    message=('Ensure initials consist of letters '
                                             'only in upper case, no spaces.')), ],
         null=True,
-        max_length=100,
         )
 
     dob = models.DateField(
