@@ -14,7 +14,7 @@ def flag_as_received(modeladmin, request, queryset, **kwargs):
         if qs.is_drawn.lower() == 'yes':
             qs.is_receive = True
             qs.is_receive_datetime = datetime.today()
-            qs.save(update_fields=['is_receive', 'is_receive_datetime'])
+            qs.save(update_fields=['is_receive', 'is_receive_datetime' ])
             lab_profile = site_lab_profiles.get(qs._meta.object_name)
             lab_profile().receive(qs)
         else:
