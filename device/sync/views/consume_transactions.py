@@ -42,6 +42,7 @@ class ConsumeTransactions(object):
         self.url_data = {'host': self.producer.url,
                          'producer': self.producer.name,
                          'limit': self.producer.json_limit,
+                         'resource': 'outgoingtransaction',
                          'username': self.request.user.username,
                          'api_key': api_key}
 
@@ -217,6 +218,7 @@ class ConsumeTransactions(object):
                 # was, just grab all eligible(i.e not synced by Server yet) tansanctions
                 # in MiddleManTransaction table
                 self.url_data.update(api_tx='api_mmtr')
+                self.url_data.update(resource='middlemantransaction')
             elif self.remote_is_site_server:
                 # I am a master server pulling from site servers, we pull from
                 # OutgoingTransactions. We dont care who the original producer is, just grab them all.
@@ -226,7 +228,7 @@ class ConsumeTransactions(object):
                 # eligible(i.e not synced by Server yet) transactions from OutgoingTransactions table
                 # however pass the producer for filtering on the other side.
                 self.url_data.update(api_tx='api_otsr')
-        return ('{host}bhp_sync/{api_tx}/outgoingtransaction/?format=json&limit={limit}'
+        return ('{host}bhp_sync/{api_tx}/{resource}/?format=json&limit={limit}'
                 '&username={username}&api_key={api_key}').format(**self.url_data)
 
     @property
