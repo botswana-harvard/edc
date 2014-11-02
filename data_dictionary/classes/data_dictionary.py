@@ -2,7 +2,6 @@ from collections import OrderedDict
 
 from django.contrib import admin
 from django.db.models import get_app, get_models
-from django.db.models.fields import NOT_PROVIDED
 
 from ..models import DataDictionaryModel
 
