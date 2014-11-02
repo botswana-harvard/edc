@@ -1,8 +1,10 @@
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
+
 from lis.specimen.lab_result_item.classes import ResultItemFlag
 from lis.exim.lab_import_lis.classes import LisDataImporter
 from lis.exim.lab_import_dmis.classes import Dmis
+
 from ..models import Result, Order, ResultItem
 
 
@@ -24,7 +26,9 @@ class EdcLabResults(object):
         last_updated = None
         if update:
             last_updated = self.update(subject_identifier)
-        resulted = Result.objects.filter(order__aliquot__receive__registered_subject__subject_identifier=subject_identifier).order_by('-order__aliquot__receive__drawn_datetime')
+        resulted = Result.objects.filter(
+            order__aliquot__receive__registered_subject__subject_identifier=subject_identifier).order_by(
+                '-order__aliquot__receive__drawn_datetime')
         if update:
             for result in resulted:
                 for result_item in ResultItem.objects.filter(result=result):
