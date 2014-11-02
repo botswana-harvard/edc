@@ -1,5 +1,3 @@
-import subprocess
-import os
 import re
 import socket
 
@@ -13,8 +11,10 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 
-from edc.core.bhp_common.utils import formatted_age, convert_from_camel
+from edc.core.bhp_common.utils import formatted_age
 from edc.constants import CLOSED, OPEN
+from edc.base.model.fields.helpers.revision import site_revision
+
 
 register = template.Library()
 
@@ -35,35 +35,41 @@ def current_time(format_string):
 @register.simple_tag
 def project_title():
     if 'PROJECT_TITLE' not in dir(settings):
-        raise ImproperlyConfigured('Attribute settings.PROJECT_TITLE not found. Please add PROJECT_TITLE=\'<long name of my project>\' to the settings file.')
+        raise ImproperlyConfigured('Attribute settings.PROJECT_TITLE not found. Please '
+                                   'add PROJECT_TITLE=\'<long name of my project>\' to the settings file.')
     return settings.PROJECT_TITLE
 
 
 @register.simple_tag
 def project_number():
     if 'PROJECT_NUMBER' not in dir(settings):
-        raise ImproperlyConfigured('Attribute settings.PROJECT_NUMBER not found. Please add PROJECT_NUMBER=\'<project number, e.g. BHP041>\' to the settings file.')
+        raise ImproperlyConfigured('Attribute settings.PROJECT_NUMBER not found. Please '
+                                   'add PROJECT_NUMBER=\'<project number, e.g. BHP041>\' to the settings file.')
     return settings.PROJECT_NUMBER
 
 
 @register.simple_tag
 def app_name():
     if 'APP_NAME' not in dir(settings):
-        raise ImproperlyConfigured('Attribute settings.APP_NAME not found. Please add APP_NAME=\'<short name of my project>\' to the settings file.')
+        raise ImproperlyConfigured('Attribute settings.APP_NAME not found. Please add '
+                                   'APP_NAME=\'<short name of my project>\' to the settings file.')
     return settings.APP_NAME
 
 
 @register.simple_tag
 def protocol_revision():
     if 'PROTOCOL_REVISION' not in dir(settings):
-        raise ImproperlyConfigured('Attribute settings.PROTOCOL_REVISION not found. Please add PROTOCOL_REVISION=\'<document version and date>\' to the settings file.')
+        raise ImproperlyConfigured('Attribute settings.PROTOCOL_REVISION not found. '
+                                   'Please add PROTOCOL_REVISION=\'<document version '
+                                   'and date>\' to the settings file.')
     return settings.PROTOCOL_REVISION
 
 
 @register.simple_tag
 def institution():
     if 'INSTITUTION' not in dir(settings):
-        raise ImproperlyConfigured('Attribute settings.INSTITUTION not found. Please add INSTITUTION=\'<institution name>\' to the settings file.')
+        raise ImproperlyConfigured('Attribute settings.INSTITUTION not found. Please '
+                                   'add INSTITUTION=\'<institution name>\' to the settings file.')
     return settings.INSTITUTION
 
 
@@ -75,6 +81,12 @@ def get_model_name(model):
 @register.simple_tag
 def get_app_label(model):
     return model._meta.app_label
+
+
+@register.simple_tag
+def revision_tag():
+    """Returns the git site_revision."""
+    return '{} ({})'.format(site_revision.tag, site_revision.branch)
 
 
 @register.filter(name='model_verbose_name')
@@ -99,7 +111,7 @@ def subject_identifier(value, mask=None):
     retval = ''
     if value:
         pattern = re.compile('[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}')
-        if not 'subject_identifier' in dir(value):
+        if 'subject_identifier' not in dir(value):
             retval = ''
         elif pattern.match(value.subject_identifier):
             retval = '{0}'.format(mask or 'subject_identifier not set')
@@ -115,7 +127,9 @@ def admin_url_from_contenttype(contenttype):
     try:
         rev_url = reverse(view)
     except:
-        raise TypeError('NoReverseMatch while rendering reverse for %s_%s in admin_url_from_contenttype. Is model registered in admin?' % (contenttype.app_label, contenttype.model))
+        raise TypeError('NoReverseMatch while rendering reverse for %s_%s in '
+                        'admin_url_from_contenttype. Is model registered in '
+                        'admin?' % (contenttype.app_label, contenttype.model))
     return rev_url
 
 
@@ -173,22 +187,6 @@ def get_item(items, key):
         except:
             pass
     return None
-
-
-@register.filter(name='get_revision')
-def get_revision(opts):
-    """Returns the svn revision number for the model\'s file using Opts (_meta)."""
-    try:
-        rev = subprocess.check_output(
-            ['svn', 'info', '{0}.py'.format(convert_from_camel(opts.object_name))],
-            cwd=os.path.join(settings.DIRNAME, '/'.join([opts.app_label, 'models/']))
-            )
-        #s = re.search('Revision: [0-9]+', rev)
-        s = re.search('Last Changed Rev: [0-9]+', rev)
-        return s.group().split(': ')[1]
-    except:
-        pass
-    return '?'
 
 
 @register.filter(name='get_field')
