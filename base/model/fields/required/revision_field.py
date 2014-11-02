@@ -18,12 +18,9 @@ class RevisionField (CharField):
         CharField.__init__(self, *args, **kwargs)
 
     def pre_save(self, model, add):
-        value = self.get_revision()
+        value = site_revision.revision
         setattr(model, self.attname, value)
         return value
-
-    def get_revision(self):
-        return site_revision.get_revision()
 
     def get_internal_type(self):
         return "CharField"
