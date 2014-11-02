@@ -1,16 +1,21 @@
 from datetime import datetime
 from django.db import models
+
 from edc.audit.audit_trail import AuditTrail
 from edc.device.sync.models import BaseSyncUuidModel
+
+from .destination import Destination
 
 
 class BasePackingList(BaseSyncUuidModel):
 
     list_datetime = models.DateTimeField(
+        verbose_name='Packed on',
         default=datetime.today(),
         )
 
     list_comment = models.CharField(
+        verbose_name='Instructions',
         max_length=100,
         null=True,
         blank=True,
@@ -26,6 +31,15 @@ class BasePackingList(BaseSyncUuidModel):
         null=True,
         )
 
+    destination = models.OneToOneField(Destination,
+        verbose_name='Ship Specimens To',
+        null=True)
+
+    received = models.BooleanField(
+        default=False,
+        help_text='Shipped items are all received at destination',
+        editable=False)
+
     history = AuditTrail()
 
     def reference(self):
@@ -36,10 +50,11 @@ class BasePackingList(BaseSyncUuidModel):
         return len(lst)
 
     def view_list_items(self):
-        return '<a href="/admin/{app_label}/{object_name}item/?q={pk}">{count} items</a>'.format(app_label=self._meta.app_label,
-                                                                                                 object_name=self._meta.object_name.lower(),
-                                                                                                 pk=self.id,
-                                                                                                 count=self.specimen_count())
+        return '<a href="/admin/{app_label}/{object_name}item/?q={pk}">{count} items</a>'.format(
+            app_label=self._meta.app_label,
+            object_name=self._meta.object_name.lower(),
+            pk=self.id,
+            count=self.specimen_count())
     view_list_items.allow_tags = True
 
     def __unicode__(self):
@@ -55,5 +70,4 @@ class BasePackingList(BaseSyncUuidModel):
 
     class Meta:
         abstract = True
-        #app_label = 'lab_packing'
         ordering = ['list_datetime', ]
