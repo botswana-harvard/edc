@@ -81,6 +81,8 @@ class BaseModelForm(forms.ModelForm):
                 )
         except AttributeError:
             pass
+        except TypeError:
+            pass
         # encrypted fields may have their own validation code to run.
         # See the custom field objects in edc.core.crypto_fields.
         try:
