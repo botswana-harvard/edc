@@ -2,7 +2,6 @@ from datetime import datetime
 import re
 import uuid
 
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
@@ -16,8 +15,6 @@ from edc.choices.common import YES_NO
 from edc.core.bhp_string.classes import StringHelper
 from edc.core.bhp_variables.models import StudySite
 from edc.device.device.classes import Device
-# from edc.lab.lab_clinic_api.models import AliquotType
-# from edc.lab.lab_clinic_api.models import Panel
 
 from ..choices import PRIORITY, REASON_NOT_DRAWN, ITEM_TYPE
 from ..classes import RequisitionLabel
@@ -38,6 +35,7 @@ class BaseBaseRequisition (BaseUuidModel):
         verbose_name='Requisition Date'
         )
 
+    # TODO: remove this field. See aliquots instead.
     specimen_identifier = models.CharField(
         verbose_name='Specimen Id',
         max_length=50,
@@ -161,11 +159,11 @@ class BaseBaseRequisition (BaseUuidModel):
     def get_visit(self):
         raise ImproperlyConfigured('Method must be overridden')
 
-    #TODO: remove this, should be get_subject_identifier
+    # TODO: remove this, should be get_subject_identifier
     def get_infant_identifier(self):
         return self.get_visit().appointment.registered_subject.subject_identifier
 
-    #TODO: remove this, should be get_subject_identifier
+    # TODO: remove this, should be get_subject_identifier
     def subject(self):
         return self.get_subject_identifier()
 
@@ -186,14 +184,19 @@ class BaseBaseRequisition (BaseUuidModel):
         return (self.requisition_identifier, )
 
     def save(self, *args, **kwargs):
-        if not kwargs.get('suppress_autocreate_on_deserialize', False):
-            if self.is_drawn.lower() == 'yes' and not self.value_is_requisition_identifier():
-                self.requisition_identifier = self.prepare_requisition_identifier()
-            if self.is_drawn.lower() == 'no' and not self.value_is_uuid():
-                self.requisition_identifier = str(uuid.uuid4())
-            if self.is_receive:
-                # do not create a specimen identifier unless received
-                self.specimen_identifier = self.prepare_specimen_identifier()
+        # update_fields = kwargs.get('update_fields')
+        if self.is_drawn.lower() == 'yes' and not self.value_is_requisition_identifier():
+            self.requisition_identifier = self.prepare_requisition_identifier()
+        if self.is_drawn.lower() == 'no' and not self.value_is_uuid():
+            self.requisition_identifier = str(uuid.uuid4())
+#         removed: SEE ALIQUOTS (requisition is not a specimen)
+#         if self.is_receive and not self.specimen_identifier:
+#             self.specimen_identifier = '{0}{1}{2}'.format(
+#                 settings.PROJECT_IDENTIFIER_PREFIX,
+#                 self.get_site_code(),
+#                 self.requisition_identifier)
+#             # if update_fields was specified, add specimen_identifier to the list
+#             update_fields = update_fields.append('specimen_identifier') if update_fields else update_fields
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
 
     def value_is_requisition_identifier(self):
@@ -219,15 +222,6 @@ class BaseBaseRequisition (BaseUuidModel):
         except AttributeError:
             raise ImproperlyConfigured('Site may not be None. Either include the field for user input or override method get_site_code() on the concrete model.')
         return site_code
-
-    def prepare_specimen_identifier(self, **kwargs):
-        """ Adds protocol, site to the identifier"""
-        self.protocol = settings.PROJECT_NUMBER
-        opts = {}
-        opts['prefix'] = settings.PROJECT_IDENTIFIER_PREFIX
-        opts['requisition_identifier'] = self.requisition_identifier
-        opts['site'] = self.get_site_code()
-        return '{prefix}{site}{requisition_identifier}'.format(**opts)
 
     def prepare_requisition_identifier(self, **kwargs):
         """Generate and returns a locally unique requisition identifier for a device (adds device id)"""

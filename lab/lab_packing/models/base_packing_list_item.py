@@ -41,7 +41,18 @@ class BasePackingListItem(BaseSyncUuidModel):
 
     old_panel_id = models.CharField(max_length=50, null=True)
 
-    #history = AuditTrail()
+    received = models.BooleanField(
+        default=False,
+        help_text='Shipped items are all received at destination',
+        editable=False)
+
+    received_datetime = models.DateTimeField(
+        null=True,
+        help_text='Date and time shipped item was received at destination',
+        editable=False)
+
+    def __unicode__(self):
+        return '{} {}'.format(self.item_reference, self.item_datetime.strftime('%Y-%m-%d'))
 
     def gender(self):
         """Users may override."""
