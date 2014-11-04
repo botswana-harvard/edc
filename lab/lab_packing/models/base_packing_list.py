@@ -49,6 +49,8 @@ class BasePackingList(BaseSyncUuidModel):
         return ''
 
     def save(self, *args, **kwargs):
+        if not self.list_datetime:
+            self.list_datetime = datetime.now()
         if not self.timestamp:
             self.timestamp = datetime.today().strftime('%Y%m%d%H%M%S%f')
         super(BasePackingList, self).save(*args, **kwargs)
