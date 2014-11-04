@@ -29,7 +29,7 @@ class Controller(object):
     def set_registry(self, rule_group):
         if not issubclass(rule_group, RuleGroup):
             raise AlreadyRegistered('Expected an instance of RuleGroup.')
-        if not rule_group.app_label in self._registry:
+        if rule_group.app_label not in self._registry:
             self._registry.update({rule_group.app_label: []})
         if rule_group in self._registry.get(rule_group.app_label):
             raise AlreadyRegistered('The rule {0} is already registered for module {1}'.format(rule_group.__name__, rule_group.app_label))
