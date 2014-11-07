@@ -47,6 +47,9 @@ class BasePackingListForm(BaseRequisitionForm):
                             if requisition.objects.filter(specimen_identifier=specimen_identifier):
                                 found = True
                                 break
+                            elif requisition.objects.filter(requisition_identifier=specimen_identifier[4:-4]):
+                                found = True
+                                break
                         except FieldError:
                             if requisition.objects.filter(aliquot_identifier=specimen_identifier):
                                 found = True
