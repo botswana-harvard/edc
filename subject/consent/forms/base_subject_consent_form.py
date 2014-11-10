@@ -61,7 +61,7 @@ class BaseSubjectConsentForm(BaseModelForm):
                     raise forms.ValidationError('Subject is a minor. "guardian_name" is required but missing from the form. Please add this field to the form.')
                 elif not cleaned_data.get("guardian_name", None):
                     raise forms.ValidationError(u'Subject\'s age is %s. Subject is a minor. Guardian\'s name is required here and with signature on the paper document.' % (formatted_age(cleaned_data.get('dob'), date.today())))
-                #elif not re.match(r'\w+\,\ \w+', cleaned_data.get("guardian_name", '')):
+                # elif not re.match(r'\w+\,\ \w+', cleaned_data.get("guardian_name", '')):
                 #    raise forms.ValidationError('Invalid format for guardian name. Expected format \'FIRSTNAME, LASTNAME\'.')
                 else:
                     pass
