@@ -12,6 +12,7 @@ from django.utils.encoding import smart_str
 from edc.base.model.models import BaseUuidModel
 
 from ..exceptions import MapperError
+from django.core.exceptions import ImproperlyConfigured
 
 
 class Mapper(object):
@@ -541,13 +542,14 @@ class Mapper(object):
         target lat/lon and raises an exception if not.
 
         Wrapper for :func:`gps_validator`"""
-        verify = True
-        if 'VERIFY_GPS' in dir(settings):
-            verify = settings.VERIFY_GPS
-        if verify:
-            dist = self.gps_distance_between_points(lat, lon, center_lat, center_lon, radius)
-            if dist > radius:
-                raise exception_cls('GPS {0} {1} is more than {2} meters from the target location {3}/{4}. '
-                                    'Got {5}m.'.format(lat, lon, radius * 1000, center_lat,
-                                                       center_lon, dist * 1000))
+        try:
+            if settings.VERIFY_GPS:
+                dist = self.gps_distance_between_points(lat, lon, center_lat, center_lon, radius)
+                if dist > radius:
+                    raise exception_cls('GPS {0} {1} is more than {2} meters from the target location {3}/{4}. '
+                                        'Got {5}m.'.format(lat, lon, radius * 1000, center_lat,
+                                                           center_lon, dist * 1000))
+        except AttributeError:
+            raise ImproperlyConfigured(
+                'Missing settings attribute VERIFY_GPS. Add VERIFY_GPS = True/False to settings.py')
         return True
