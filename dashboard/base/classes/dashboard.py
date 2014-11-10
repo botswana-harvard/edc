@@ -23,7 +23,7 @@ class Dashboard(object):
     template = None
 
     def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None):
-
+        self._dashboard_model = None
         self.dashboard_type_list = dashboard_type_list
         self.dashboard_models = dashboard_models
         self.dashboard_type = dashboard_type
