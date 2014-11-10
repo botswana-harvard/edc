@@ -218,7 +218,14 @@ class BaseModelAdmin (admin.ModelAdmin):
         else:
             kwargs = {}
             [kwargs.update({key: value}) for key, value in request.GET.iteritems() if key != 'next']
-            url = reverse(next_url_name, kwargs=kwargs)
+            try:
+                url = reverse(next_url_name, kwargs=kwargs)
+            except NoReverseMatch:
+                try:
+                    # try reversing to the url from just section_name
+                    url = reverse(next_url_name, kwargs={'section_name': kwargs.get('section_name')})
+                except NoReverseMatch:
+                    raise NoReverseMatch('response_change failed to reverse url \'{0}\' with kwargs {1}. Is this a dashboard url?'.format(next_url_name, kwargs))
             custom_http_response_redirect = HttpResponseRedirect(url)
             request.session['filtered'] = None
         return custom_http_response_redirect
@@ -295,7 +302,11 @@ class BaseModelAdmin (admin.ModelAdmin):
                 kwargs = self.convert_get_to_kwargs(request, obj)
                 url = reverse(next_url_name, kwargs=kwargs)
             except NoReverseMatch:
-                raise NoReverseMatch('response_add failed to reverse url \'{0}\' with kwargs {1}. Is this a dashboard url?'.format(next_url_name, kwargs))
+                try:
+                    # try reversing to the url from just section_name
+                    url = reverse(next_url_name, kwargs={'section_name': kwargs.get('section_name')})
+                except NoReverseMatch:
+                    raise NoReverseMatch('response_add failed to reverse url \'{0}\' with kwargs {1}. Is this a dashboard url?'.format(next_url_name, kwargs))
             except:
                 raise
         return url
