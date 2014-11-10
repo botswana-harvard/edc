@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.core import serializers
 from django.db.models import get_model
 
+from edc.core.crypto_fields.classes import FieldCryptor
 
 from ..classes import SerializeToTransaction, transaction_producer
 
@@ -64,19 +65,26 @@ def deserialize_on_post_save(sender, instance, raw, created, using, **kwargs):
     as long as the transaction is not consumed or in error"""
 
 
-@receiver(post_delete, weak=False, dispatch_uid="deserialize_on_post_delete")
+@receiver(post_delete, weak=False, dispatch_uid="serialize_on_post_delete")
 def serialize_on_post_delete(sender, instance, using, **kwargs):
     """Creates an serialized OutgoingTransaction when a model instance is deleted."""
     using = using or 'default'
     try:
         if instance.is_serialized() and not instance._meta.proxy:
             OutgoingTransaction = get_model('sync', 'outgoingtransaction')
-            json_obj = serializers.serialize(
-                "json", instance.__class__.objects.filter(pk=instance.pk), use_natural_keys=True)
+            json_obj = serializers.serialize("json", [instance, ], ensure_ascii=False,
+                                                    use_natural_keys=True)
+            try:
+                # encrypt before saving to OutgoingTransaction
+                json_tx = FieldCryptor('aes', 'local').encrypt(json_obj)
+            except NameError:
+                pass
+            except AttributeError:
+                pass
             OutgoingTransaction.objects.using(using).create(
                 tx_name=instance._meta.object_name,
                 tx_pk=instance.pk,
-                tx=json_obj,
+                tx=json_tx,
                 timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
                 producer=transaction_producer,
                 action='D')
