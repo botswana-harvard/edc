@@ -33,7 +33,8 @@ class LabEntry(BaseWindowPeriodItem):
         max_length=25,
         choices=ENTRY_WINDOW,
         default='VISIT',
-        help_text='Base the entry window period on the visit window period or specify a form specific window period',
+        help_text=('Base the entry window period on the visit window period '
+                   'or specify a form specific window period'),
         )
 
     default_entry_status = models.CharField(
@@ -42,18 +43,24 @@ class LabEntry(BaseWindowPeriodItem):
         default=REQUIRED,
         )
 
-    additional = models.BooleanField(default=False, help_text='If True lists the lab_entry in additional requisitions')
+    additional = models.BooleanField(
+        default=False,
+        help_text='If True lists the lab_entry in additional requisitions')
 
     objects = LabEntryManager()
 
     def save(self, *args, **kwargs):
         model = models.get_model(self.app_label, self.model_name)
         if not model:
-            raise TypeError('Lab Entry \'{2}\' cannot determine requisition_panel model from app_label=\'{0}\' and model_name=\'{1}\''.format(self.app_label, self.model_name, self))
+            raise TypeError('Lab Entry \'{2}\' cannot determine requisition_panel model '
+                            'from app_label=\'{0}\' and model_name=\'{1}\''.format(
+                                self.app_label, self.model_name, self))
         try:
             model.entry_meta_data_manager
         except AttributeError:
-            raise EntryManagerError('Models linked by the LabEntry class require a meta data manager. Add entry_meta_data_manager=RequisitionMetaDataManager() to model {0}.{1}'.format(self.app_label, self.model_name))
+            raise EntryManagerError('Models linked by the LabEntry class require a meta data manager. '
+                                    'Add entry_meta_data_manager=RequisitionMetaDataManager() to '
+                                    'model {0}.{1}'.format(self.app_label, self.model_name))
         super(LabEntry, self).save(*args, **kwargs)
 
     def natural_key(self):
