@@ -48,7 +48,7 @@ class RegisteredSubjectDashboard(Dashboard):
         self._appointment_zero = None
         self._appointment_code = None
         self._appointment_continuation_count = None
-
+        self._registered_subject = None
         dashboard_models = dashboard_models or {}
         dashboard_models.update({'appointment': Appointment})
         if visit_model:  # usually None, except in testing, usually proved by the subclass. needed now regardless since passing method for one of the dashboard models below
@@ -140,7 +140,7 @@ class RegisteredSubjectDashboard(Dashboard):
         """Verify the dashboard model has a way to get to registered_subject."""
         for model in value.itervalues():
             if model:
-                if not 'get_registered_subject' in dir(model):
+                if 'get_registered_subject' not in dir(model):
                     raise ImproperlyConfigured('RegisteredSubjectDashboard dashboard_model {0} must have method registered_subject. See {1}.'.format(model, self))
 
     def add_visit_message(self, message):
