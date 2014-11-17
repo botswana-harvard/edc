@@ -115,16 +115,7 @@ class VisitScheduleConfiguration(object):
         while True:
             try:
                 for membership_form in self.membership_forms.itervalues():
-                    if not MembershipForm.objects.filter(category=membership_form.name):
-                        MembershipForm.objects.create(
-                            category=membership_form.name,
-                            app_label=membership_form.model._meta.app_label,
-                            model_name=membership_form.model._meta.object_name,
-                            content_type_map=ContentTypeMap.objects.get(
-                                app_label=membership_form.model._meta.app_label,
-                                module_name=membership_form.model._meta.object_name.lower()),
-                            visible=membership_form.visible)
-                    else:
+                    try:
                         obj = MembershipForm.objects.get(category=membership_form.name)
                         obj.app_label = membership_form.model._meta.app_label
                         obj.model_name = membership_form.model._meta.object_name
@@ -133,20 +124,33 @@ class VisitScheduleConfiguration(object):
                             module_name=membership_form.model._meta.object_name.lower())
                         obj.visible = membership_form.visible
                         obj.save()
+                    except MembershipForm.DoesNotExist:
+                        MembershipForm.objects.filter(
+                            content_type_map=ContentTypeMap.objects.get(
+                                app_label=membership_form.model._meta.app_label,
+                                module_name=membership_form.model._meta.object_name.lower())).delete()
+                        MembershipForm.objects.create(
+                            category=membership_form.name,
+                            app_label=membership_form.model._meta.app_label,
+                            model_name=membership_form.model._meta.object_name,
+                            content_type_map=ContentTypeMap.objects.get(
+                                app_label=membership_form.model._meta.app_label,
+                                module_name=membership_form.model._meta.object_name.lower()),
+                            visible=membership_form.visible)
                 for group_name, schedule_group in self.schedule_groups.iteritems():
-                    if not ScheduleGroup.objects.filter(group_name=schedule_group.name):
-                        ScheduleGroup.objects.create(
-                            group_name=group_name,
-                            membership_form=MembershipForm.objects.get(category=schedule_group.membership_form_name),
-                            grouping_key=schedule_group.grouping_key,
-                            comment=schedule_group.comment)
-                    else:
+                    try:
                         obj = ScheduleGroup.objects.get(group_name=group_name)
                         obj.group_name = group_name
                         obj.membership_form = MembershipForm.objects.get(category=schedule_group.membership_form_name)
                         obj.grouping_key = schedule_group.grouping_key
                         obj.comment = schedule_group.comment
                         obj.save()
+                    except ScheduleGroup.DoesNotExist:
+                        ScheduleGroup.objects.create(
+                            group_name=group_name,
+                            membership_form=MembershipForm.objects.get(category=schedule_group.membership_form_name),
+                            grouping_key=schedule_group.grouping_key,
+                            comment=schedule_group.comment)
                 for code, visit_definition in self.visit_definitions.iteritems():
                     visit_tracking_content_type_map = ContentTypeMap.objects.get(
                         app_label=visit_definition.get('visit_tracking_model')._meta.app_label,
@@ -240,5 +244,11 @@ class VisitScheduleConfiguration(object):
                             lab_entry.delete()
             except ContentTypeMap.DoesNotExist:
                 self.sync_content_type_map()
+                if not get_model(entry_item.app_label, entry_item.model_name.lower()):
+                    raise ImproperlyConfigured('Model referenced in visit schedule does not exist. Got {}.{}'.format(entry_item.app_label, entry_item.model_name.lower()))
+                try:
+                    ContentTypeMap.objects.get(app_label=entry_item.app_label, module_name=entry_item.model_name.lower())
+                except ContentTypeMap.DoesNotExist:
+                    raise ImproperlyConfigured('Model referenced in visit schedule \'{}\' is not in content type. Is the APP installed? Got {}.{}'.format(self.name, entry_item.app_label, entry_item.model_name.lower()))
                 continue
             break
