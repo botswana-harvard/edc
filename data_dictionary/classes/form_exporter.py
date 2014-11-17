@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from django.contrib import admin
-from django.core.exceptions import FieldError
+from django.core.exceptions import FieldError, ImproperlyConfigured
 from django.db.models import get_app, get_models, get_model
 
 from edc.base.model.fields.helpers.revision import site_revision
@@ -127,7 +127,11 @@ class FormExporter(object):
 
     def export_by_visit(self, code):
         forms = []
-        visit_definition = VisitDefinition.objects.get(code=code)
+        try:
+            visit_definition = VisitDefinition.objects.get(code=code)
+        except VisitDefinition.DoesNotExist:
+            raise ImproperlyConfigured('VisitDefinition matching query does not exist. Have the '
+                                       'configurations been loaded? See urls.py.')
         print '==={0.code}: {0.title}==='.format(visit_definition)
         for entry in Entry.objects.filter(visit_definition=visit_definition).order_by('entry_order'):
             self.model = entry.content_type_map.model_class()
