@@ -48,15 +48,15 @@ class ContentTypeMap(BaseModel):
 
     def model_class(self):
         if self.content_type.name.lower() != self.name.lower():
-            raise ContentTypeMapError('ContentTypeMap is not in sync with ContentType for verbose_name {}. '
-                                      'Run sync_content_type management command.'.format(self.name))
+            raise ContentTypeMapError('ContentTypeMap.name \'{}\' is not in sync with ContentType.name \'{}\'. '
+                                      'Run sync_content_type management command.'.format(self.name, self.content_type.name))
         if self.content_type.model != self.model:
-            raise ContentTypeMapError('ContentTypeMap is not in sync with ContentType for model {}. '
-                                      'Run sync_content_type management command.'.format(self.name))
+            raise ContentTypeMapError('ContentTypeMap.model \'{}\' is not in sync with ContentType.model \'{}\'. '
+                                      'Run sync_content_type management command.'.format(self.model, self.content_type.model))
         return self.content_type.model_class()
 
     def __unicode__(self):
-        return unicode(self.content_type)
+        return '{}.{}'.format(self.content_type.app_label, self.content_type.model)
 
     class Meta:
         app_label = 'bhp_content_type_map'
