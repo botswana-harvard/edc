@@ -6,6 +6,7 @@ from django.db.models import get_model
 from edc.apps.app_configuration.exceptions import AppConfigurationError
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
+from django.db.utils import IntegrityError
 
 EntryTuple = namedtuple('EntryTuple', 'order app_label model_name default_entry_status additional')
 MembershipFormTuple = namedtuple('MembershipFormTuple', 'name model visible')
@@ -222,23 +223,26 @@ class VisitScheduleConfiguration(object):
                         try:
                             lab_entry = LabEntry.objects.get(
                                 requisition_panel=requisition_panel,
-                                app_label=requisition_item.app_label,
-                                model_name=requisition_item.model_name,
                                 visit_definition=visit_definition_instance)
+                            lab_entry.app_label = requisition_item.app_label
+                            lab_entry.model_name = requisition_item.model_name
                             lab_entry.entry_order = requisition_item.entry_order
                             lab_entry.default_entry_status = requisition_item.default_entry_status
                             lab_entry.additional = requisition_item.additional
-                            lab_entry.save(update_fields=['entry_order', 'default_entry_status', 'additional'])
+                            lab_entry.save(update_fields=['app_label', 'model_name', 'entry_order', 'default_entry_status', 'additional'])
                         except LabEntry.DoesNotExist:
-                            LabEntry.objects.create(
-                                app_label=requisition_item.app_label,
-                                model_name=requisition_item.model_name,
-                                requisition_panel=requisition_panel,
-                                visit_definition=visit_definition_instance,
-                                entry_order=requisition_item.entry_order,
-                                default_entry_status=requisition_item.default_entry_status,
-                                additional=requisition_item.additional
-                                )
+                            try:
+                                LabEntry.objects.create(
+                                    app_label=requisition_item.app_label,
+                                    model_name=requisition_item.model_name,
+                                    requisition_panel=requisition_panel,
+                                    visit_definition=visit_definition_instance,
+                                    entry_order=requisition_item.entry_order,
+                                    default_entry_status=requisition_item.default_entry_status,
+                                    additional=requisition_item.additional
+                                    )
+                            except IntegrityError:
+                                raise IntegrityError('{} {} {}.{}'.format(visit_definition_instance, requisition_panel, requisition_item.app_label, requisition_item.model_name,))
                     for lab_entry in LabEntry.objects.filter(visit_definition=visit_definition_instance):
                         if (lab_entry.app_label, lab_entry.model_name) not in [(item.app_label, item.model_name) for item in visit_definition.get('requisitions')]:
                             lab_entry.delete()
