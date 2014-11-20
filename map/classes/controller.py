@@ -1,5 +1,7 @@
 import copy
 
+from collections import OrderedDict
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
@@ -25,8 +27,26 @@ class Controller(object):
     """ Main controller of :class:`Mapping` objects. """
 
     def __init__(self):
-        self._registry = {}
+        self._registry = OrderedDict()
+        self._registry_by_code = OrderedDict()
         self.autodiscovered = False
+
+    def __iter__(self):
+        return self._registry.itervalues()
+
+    def sort_by_code(self):
+        """Sorts the registries by map_code."""
+        codes = []
+        mappers = OrderedDict()
+        mappers_by_code = OrderedDict()
+        for mapper in self._registry_by_code.itervalues():
+            codes.append(mapper.map_code)
+        codes.sort()
+        for code in codes:
+            mappers.update({self._registry_by_code.get(code).map_area: self._registry_by_code.get(code)})
+            mappers_by_code.update({self._registry_by_code.get(code).map_code: self._registry_by_code.get(code)})
+        self._registry = mappers
+        self._registry_by_code = mappers_by_code
 
     def set_registry(self, mapper_cls):
         """Registers a given mapper class to the site registry."""
@@ -36,10 +56,15 @@ class Controller(object):
         if mapper_cls.map_area in self._registry:
             raise AlreadyRegistered('The mapper class {0} is already registered ({1})'.format(mapper_cls, mapper_cls.map_area))
         self._registry[mapper_cls.map_area] = mapper_cls
+        self._registry_by_code[mapper_cls.map_code] = mapper_cls
 
     def get(self, name):
         """Returns a key, value pair from the dictionary for the given key."""
         return self._registry.get(name)
+
+    def get_by_code(self, code):
+        """Returns a key, value pair from the dictionary for the given key."""
+        return self._registry_by_code.get(code)
 
     def get_registry(self, name=None):
         """Returns the site mapper registry dictionary."""
