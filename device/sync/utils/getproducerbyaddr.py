@@ -5,7 +5,6 @@ from edc.device.sync.exceptions import ProducerError
 
 
 def getproducerbyaddr(producer):
-
     try:
         hostname, aliases, ips = socket.gethostbyaddr(producer.producer_ip)
     except AttributeError:
@@ -15,7 +14,7 @@ def getproducerbyaddr(producer):
             raise ProducerError(
                 'Invalid IP for producer {}. Got {}'.format(producer.name, producer.producer_ip))
         raise ProducerError((
-            'Cannot find producer {} using IP={}. Please confirm both that the '
-            'the IP address in the Producer model and that the '
-            'machine is online and available to the server.').format(producer.name, producer.producer_ip))
+            'Cannot find producer hostname {} using IP={}. Please confirm both that the '
+            'the IP address and hostname in the Producer model are available '
+            'in DNS or the server\'s hosts file.').format(producer.name, producer.producer_ip))
     return hostname, aliases, ips
