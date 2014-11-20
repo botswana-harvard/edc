@@ -10,11 +10,6 @@ from .destination import Destination
 class BasePackingList(BaseSyncUuidModel):
 
     list_datetime = models.DateTimeField(
-<<<<<<< HEAD
-        verbose_name='Packed on',
-        default=datetime.today(),
-=======
->>>>>>> hotfix/1.8.32
         )
 
     list_comment = models.CharField(
