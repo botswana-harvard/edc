@@ -1,6 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import F
 from django.core.exceptions import MultipleObjectsReturned
+from django.db.models import F
+
 
 from ..exceptions import ContentTypeMapError
 from ..models import ContentTypeMap
@@ -23,17 +24,17 @@ class ContentTypeMapHelper(object):
                 pass
             except MultipleObjectsReturned:
                 ContentTypeMap.objects.filter(content_type=content_type).delete()
+            except AttributeError:
+                ContentTypeMap.objects.filter(content_type=content_type).delete()
             finally:
                 if create:
                     try:
-                        verbose_name = content_type.model_class()._meta.verbose_name
-                        # print 'Creating ContentTypeMap: {0}'.format(verbose_name)
                         ContentTypeMap.objects.using(self.using).create(
                             content_type=content_type,
                             app_label=content_type.app_label,
-                            name=verbose_name,
+                            name=content_type.model_class()._meta.verbose_name,
                             model=content_type.model,
-                            module_name=content_type.model)
+                            module_name=content_type.model_class()._meta.module_name)
                     except AttributeError as attribute_error:
                         if 'object has no attribute \'_meta\'' in str(attribute_error):
                             pass
@@ -47,13 +48,13 @@ class ContentTypeMapHelper(object):
             try:
                 model = content_type_map.model_class()
                 try:
-                    content_type = ContentType.objects.using(self.using).get(app_label=model._meta.app_label,
-                                                                             model=model._meta.module_name)
+                    content_type = ContentType.objects.using(self.using).get(
+                        app_label=model._meta.app_label, model=model._meta.object_name.lower())
                     content_type_map.content_type = content_type
                     content_type_map.save(update_fields=['content_type'])
                 except ContentType.DoesNotExist:
                     pass
-            except ContentTypeMapError:
-                print 'Deleting stale ContentTypeMap {} {}'.format(content_type_map.app_label,
-                                                                   content_type_map.model)
+            except ContentTypeMapError as err_message:
+                print 'Deleting stale ContentTypeMap {}.{}. Got {}'.format(
+                    content_type_map.app_label, content_type_map.model, err_message)
                 content_type_map.delete()

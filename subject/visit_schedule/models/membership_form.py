@@ -10,7 +10,8 @@ from ..managers import MembershipFormManager
 
 class MembershipForm(BaseUuidModel):
 
-    """Model to list forms to be linked to a ShceduleGroup as "registration" forms to that group"""
+    """Model to list forms to be linked to a ScheduleGroup as
+    "registration" forms to that group"""
 
     content_type_map = models.OneToOneField(
         ContentTypeMap,
@@ -45,7 +46,7 @@ class MembershipForm(BaseUuidModel):
         from edc.subject.appointment_helper.models import BaseAppointmentMixin
         cls = self.content_type_map.model_class()
         # inspect for registered subject attribute
-        if not 'registered_subject' in dir(cls):
+        if 'registered_subject' not in dir(cls):
             raise ValidationError('Membership forms must have a key to model RegisteredSubject. Got {0}'.format(cls))
         if not issubclass(cls, BaseAppointmentMixin):
             raise ImproperlyConfigured('MembershipForm attribute content_type_map must refer to a model class that is a subclass of BaseAppointmentMixin. Got {0}'.format(cls))
