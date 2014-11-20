@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
+from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -16,15 +16,17 @@ class Migration(SchemaMigration):
             ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
-            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('_audit_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
             ('offstudy_date', self.gf('django.db.models.fields.DateField')()),
             ('reason', self.gf('django.db.models.fields.CharField')(max_length=30)),
             ('reason_other', self.gf('django.db.models.fields.CharField')(max_length=35, blank=True)),
             ('has_scheduled_data', self.gf('django.db.models.fields.CharField')(default='Yes', max_length=10)),
             ('comment', self.gf('django.db.models.fields.TextField')(max_length=250, null=True, blank=True)),
-            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('_audit_timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('_audit_change_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36)),
+            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('registered_subject', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testbaseoffstudy', to=orm['registration.RegisteredSubject'])),
         ))
         db.send_create_signal('testing', ['TestBaseOffStudyAudit'])
@@ -38,6 +40,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('registered_subject', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['registration.RegisteredSubject'], unique=True)),
             ('offstudy_date', self.gf('django.db.models.fields.DateField')()),
             ('reason', self.gf('django.db.models.fields.CharField')(max_length=30)),
@@ -56,6 +59,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('registered_subject', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['registration.RegisteredSubject'], unique=True)),
             ('registration_datetime', self.gf('django.db.models.fields.DateTimeField')()),
         ))
@@ -70,6 +74,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('registered_subject', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['registration.RegisteredSubject'])),
             ('consent_datetime', self.gf('django.db.models.fields.DateTimeField')()),
             ('consent_pk', self.gf('django.db.models.fields.CharField')(max_length=50)),
@@ -87,16 +92,17 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('subject_identifier_as_pk', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, db_index=True)),
             ('first_name', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True)),
             ('last_name', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True)),
-            ('initials', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('initials', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True)),
             ('dob', self.gf('django.db.models.fields.DateField')(null=True)),
             ('is_dob_estimated', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
             ('gender', self.gf('django.db.models.fields.CharField')(max_length=1, null=True)),
             ('subject_type', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
             ('subject_identifier', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=50, blank=True)),
-            ('study_site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bhp_variables.StudySite'])),
+            ('study_site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bhp_variables.StudySite'], null=True)),
             ('consent_datetime', self.gf('django.db.models.fields.DateTimeField')()),
             ('guardian_name', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True, blank=True)),
             ('may_store_samples', self.gf('django.db.models.fields.CharField')(max_length=3)),
@@ -106,13 +112,13 @@ class Migration(SchemaMigration):
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=250, null=True, blank=True)),
             ('consent_version_on_entry', self.gf('django.db.models.fields.IntegerField')(default=1)),
             ('consent_version_recent', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('consent_reviewed', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
-            ('study_questions', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
-            ('assessment_score', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
-            ('consent_copy', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
             ('language', self.gf('django.db.models.fields.CharField')(default='not specified', max_length=25)),
             ('is_verified', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_verified_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True)),
+            ('consent_reviewed', self.gf('django.db.models.fields.CharField')(max_length=3, null=True)),
+            ('study_questions', self.gf('django.db.models.fields.CharField')(max_length=3, null=True)),
+            ('assessment_score', self.gf('django.db.models.fields.CharField')(max_length=3, null=True)),
+            ('consent_copy', self.gf('django.db.models.fields.CharField')(max_length=3, null=True)),
             ('registered_subject', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['registration.RegisteredSubject'], unique=True, null=True)),
             ('user_provided_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=35, null=True)),
             ('identity', self.gf('django.db.models.fields.CharField')(max_length=78L, unique=True, null=True, blank=True)),
@@ -130,16 +136,17 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('subject_identifier_as_pk', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, db_index=True)),
             ('first_name', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True)),
             ('last_name', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True)),
-            ('initials', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('initials', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True)),
             ('dob', self.gf('django.db.models.fields.DateField')(null=True)),
             ('is_dob_estimated', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
             ('gender', self.gf('django.db.models.fields.CharField')(max_length=1, null=True)),
             ('subject_type', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
             ('subject_identifier', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=50, blank=True)),
-            ('study_site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bhp_variables.StudySite'])),
+            ('study_site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bhp_variables.StudySite'], null=True)),
             ('consent_datetime', self.gf('django.db.models.fields.DateTimeField')()),
             ('guardian_name', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True, blank=True)),
             ('may_store_samples', self.gf('django.db.models.fields.CharField')(max_length=3)),
@@ -149,13 +156,13 @@ class Migration(SchemaMigration):
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=250, null=True, blank=True)),
             ('consent_version_on_entry', self.gf('django.db.models.fields.IntegerField')(default=1)),
             ('consent_version_recent', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('consent_reviewed', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
-            ('study_questions', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
-            ('assessment_score', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
-            ('consent_copy', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
             ('language', self.gf('django.db.models.fields.CharField')(default='not specified', max_length=25)),
             ('is_verified', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_verified_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True)),
+            ('consent_reviewed', self.gf('django.db.models.fields.CharField')(max_length=3, null=True)),
+            ('study_questions', self.gf('django.db.models.fields.CharField')(max_length=3, null=True)),
+            ('assessment_score', self.gf('django.db.models.fields.CharField')(max_length=3, null=True)),
+            ('consent_copy', self.gf('django.db.models.fields.CharField')(max_length=3, null=True)),
             ('registered_subject', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['registration.RegisteredSubject'], unique=True, null=True)),
             ('user_provided_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=35, null=True)),
             ('identity', self.gf('django.db.models.fields.CharField')(max_length=78L, unique=True, null=True, blank=True)),
@@ -173,16 +180,17 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('subject_identifier_as_pk', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, db_index=True)),
             ('first_name', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True)),
             ('last_name', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True)),
-            ('initials', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('initials', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True)),
             ('dob', self.gf('django.db.models.fields.DateField')(null=True)),
             ('is_dob_estimated', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
             ('gender', self.gf('django.db.models.fields.CharField')(max_length=1, null=True)),
             ('subject_type', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
             ('subject_identifier', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=50, blank=True)),
-            ('study_site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bhp_variables.StudySite'])),
+            ('study_site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bhp_variables.StudySite'], null=True)),
             ('consent_datetime', self.gf('django.db.models.fields.DateTimeField')()),
             ('guardian_name', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True, blank=True)),
             ('may_store_samples', self.gf('django.db.models.fields.CharField')(max_length=3)),
@@ -192,10 +200,6 @@ class Migration(SchemaMigration):
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=250, null=True, blank=True)),
             ('consent_version_on_entry', self.gf('django.db.models.fields.IntegerField')(default=1)),
             ('consent_version_recent', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('consent_reviewed', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
-            ('study_questions', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
-            ('assessment_score', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
-            ('consent_copy', self.gf('django.db.models.fields.CharField')(max_length=3, null=True, blank=True)),
             ('language', self.gf('django.db.models.fields.CharField')(default='not specified', max_length=25)),
             ('is_verified', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_verified_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True)),
@@ -215,6 +219,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('appointment', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['appointment.Appointment'], unique=True)),
             ('report_datetime', self.gf('django.db.models.fields.DateTimeField')()),
             ('reason', self.gf('django.db.models.fields.CharField')(max_length=25)),
@@ -235,6 +240,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('appointment', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['appointment.Appointment'], unique=True)),
             ('report_datetime', self.gf('django.db.models.fields.DateTimeField')()),
             ('reason', self.gf('django.db.models.fields.CharField')(max_length=25)),
@@ -255,6 +261,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('appointment', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['appointment.Appointment'], unique=True)),
             ('report_datetime', self.gf('django.db.models.fields.DateTimeField')()),
             ('reason', self.gf('django.db.models.fields.CharField')(max_length=25)),
@@ -275,6 +282,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('appointment', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['appointment.Appointment'], unique=True)),
             ('report_datetime', self.gf('django.db.models.fields.DateTimeField')()),
             ('reason', self.gf('django.db.models.fields.CharField')(max_length=25)),
@@ -295,9 +303,88 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('exported', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('exported_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True)),
+            ('export_change_type', self.gf('django.db.models.fields.CharField')(default='I', max_length=1)),
+            ('export_uuid', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
             ('test_visit', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['testing.TestVisit'], unique=True)),
+            ('report_datetime', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2014, 11, 17, 0, 0))),
+            ('f1', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f2', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f3', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f4', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
         ))
         db.send_create_signal('testing', ['TestScheduledModel'])
+
+        # Adding model 'TestScheduledModel1'
+        db.create_table(u'testing_testscheduledmodel1', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('exported', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('exported_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True)),
+            ('export_change_type', self.gf('django.db.models.fields.CharField')(default='I', max_length=1)),
+            ('export_uuid', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('test_visit', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['testing.TestVisit'], unique=True)),
+            ('report_datetime', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2014, 11, 17, 0, 0))),
+            ('f1', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f2', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f3', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f4', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+        ))
+        db.send_create_signal('testing', ['TestScheduledModel1'])
+
+        # Adding model 'TestScheduledModel2'
+        db.create_table(u'testing_testscheduledmodel2', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('exported', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('exported_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True)),
+            ('export_change_type', self.gf('django.db.models.fields.CharField')(default='I', max_length=1)),
+            ('export_uuid', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('test_visit', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['testing.TestVisit'], unique=True)),
+            ('report_datetime', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2014, 11, 17, 0, 0))),
+            ('f1', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f2', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f3', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f4', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+        ))
+        db.send_create_signal('testing', ['TestScheduledModel2'])
+
+        # Adding model 'TestScheduledModel3'
+        db.create_table(u'testing_testscheduledmodel3', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('exported', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('exported_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True)),
+            ('export_change_type', self.gf('django.db.models.fields.CharField')(default='I', max_length=1)),
+            ('export_uuid', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('test_visit', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['testing.TestVisit'], unique=True)),
+            ('report_datetime', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2014, 11, 17, 0, 0))),
+            ('f1', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f2', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f3', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f4', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+        ))
+        db.send_create_signal('testing', ['TestScheduledModel3'])
 
         # Adding model 'TestForeignKey'
         db.create_table(u'testing_testforeignkey', (
@@ -342,6 +429,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('registered_subject', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['registration.RegisteredSubject'], unique=True)),
             ('test_foreign_key', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestForeignKey'])),
@@ -349,12 +437,13 @@ class Migration(SchemaMigration):
         db.send_create_signal('testing', ['TestSubjectUuidModel'])
 
         # Adding M2M table for field test_m2m on 'TestSubjectUuidModel'
-        db.create_table(u'testing_testsubjectuuidmodel_test_m2m', (
+        m2m_table_name = db.shorten_name(u'testing_testsubjectuuidmodel_test_m2m')
+        db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('testsubjectuuidmodel', models.ForeignKey(orm['testing.testsubjectuuidmodel'], null=False)),
             ('testm2m', models.ForeignKey(orm['testing.testm2m'], null=False))
         ))
-        db.create_unique(u'testing_testsubjectuuidmodel_test_m2m', ['testsubjectuuidmodel_id', 'testm2m_id'])
+        db.create_unique(m2m_table_name, ['testsubjectuuidmodel_id', 'testm2m_id'])
 
         # Adding model 'TestOffStudy'
         db.create_table(u'testing_testoffstudy', (
@@ -365,6 +454,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('registered_subject', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['registration.RegisteredSubject'], unique=True)),
             ('offstudy_date', self.gf('django.db.models.fields.DateField')()),
             ('reason', self.gf('django.db.models.fields.CharField')(max_length=30)),
@@ -383,6 +473,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('f1', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('f2', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('f3', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
@@ -390,6 +481,108 @@ class Migration(SchemaMigration):
             ('f5', self.gf('django.db.models.fields.CharField')(max_length=10)),
         ))
         db.send_create_signal('testing', ['TestModel'])
+
+        # Adding model 'TestModel1'
+        db.create_table(u'testing_testmodel1', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('f1', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('f2', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('f3', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f4', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f5', self.gf('django.db.models.fields.CharField')(max_length=10)),
+        ))
+        db.send_create_signal('testing', ['TestModel1'])
+
+        # Adding model 'TestModel2'
+        db.create_table(u'testing_testmodel2', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('f1', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('f2', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('f3', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f4', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f5', self.gf('django.db.models.fields.CharField')(max_length=10)),
+        ))
+        db.send_create_signal('testing', ['TestModel2'])
+
+        # Adding model 'TestModel3'
+        db.create_table(u'testing_testmodel3', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('f1', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('f2', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('f3', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f4', self.gf('django.db.models.fields.CharField')(max_length=10, null=True)),
+            ('f5', self.gf('django.db.models.fields.CharField')(max_length=10)),
+        ))
+        db.send_create_signal('testing', ['TestModel3'])
+
+        # Adding model 'TestAliquotType'
+        db.create_table(u'testing_testaliquottype', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('alpha_code', self.gf('django.db.models.fields.CharField')(unique=True, max_length=15)),
+            ('numeric_code', self.gf('django.db.models.fields.CharField')(unique=True, max_length=2)),
+        ))
+        db.send_create_signal('testing', ['TestAliquotType'])
+
+        # Adding model 'TestPanel'
+        db.create_table(u'testing_testpanel', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50, db_index=True)),
+            ('comment', self.gf('django.db.models.fields.CharField')(max_length=250, blank=True)),
+            ('panel_type', self.gf('django.db.models.fields.CharField')(default='TEST', max_length=15)),
+        ))
+        db.send_create_signal('testing', ['TestPanel'])
+
+        # Adding M2M table for field test_code on 'TestPanel'
+        m2m_table_name = db.shorten_name(u'testing_testpanel_test_code')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('testpanel', models.ForeignKey(orm['testing.testpanel'], null=False)),
+            ('testcode', models.ForeignKey(orm['lab_clinic_api.testcode'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['testpanel_id', 'testcode_id'])
+
+        # Adding M2M table for field aliquot_type on 'TestPanel'
+        m2m_table_name = db.shorten_name(u'testing_testpanel_aliquot_type')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('testpanel', models.ForeignKey(orm['testing.testpanel'], null=False)),
+            ('testaliquottype', models.ForeignKey(orm['testing.testaliquottype'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['testpanel_id', 'testaliquottype_id'])
 
         # Adding model 'TestRequisitionAudit'
         db.create_table(u'testing_testrequisition_audit', (
@@ -399,22 +592,21 @@ class Migration(SchemaMigration):
             ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
-            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
-            ('requisition_identifier', self.gf('django.db.models.fields.CharField')(max_length=25)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('_audit_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
+            ('requisition_identifier', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('requisition_datetime', self.gf('django.db.models.fields.DateTimeField')()),
-            ('specimen_identifier', self.gf('django.db.models.fields.CharField')(max_length=25, null=True, blank=True)),
+            ('specimen_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('protocol', self.gf('django.db.models.fields.CharField')(max_length=10, null=True, blank=True)),
-            ('site', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testrequisition', to=orm['bhp_variables.StudySite'])),
+            ('site', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testrequisition', null=True, to=orm['bhp_variables.StudySite'])),
             ('clinician_initials', self.gf('django.db.models.fields.CharField')(default='--', max_length=3, null=True, blank=True)),
-            ('aliquot_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testrequisition', to=orm['lab_clinic_api.AliquotType'])),
-            ('panel', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testrequisition', to=orm['lab_clinic_api.Panel'])),
             ('priority', self.gf('django.db.models.fields.CharField')(default='normal', max_length=25)),
             ('is_drawn', self.gf('django.db.models.fields.CharField')(default='Yes', max_length=3)),
             ('reason_not_drawn', self.gf('django.db.models.fields.CharField')(max_length=25, null=True, blank=True)),
             ('drawn_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('item_type', self.gf('django.db.models.fields.CharField')(default='tube', max_length=25)),
             ('item_count_total', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('estimated_volume', self.gf('django.db.models.fields.DecimalField')(default=5.0, max_digits=7, decimal_places=1)),
+            ('estimated_volume', self.gf('django.db.models.fields.DecimalField')(default=5.0, max_digits=7, decimal_places=2)),
             ('comments', self.gf('django.db.models.fields.TextField')(max_length=25, null=True, blank=True)),
             ('is_receive', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_receive_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
@@ -422,10 +614,14 @@ class Migration(SchemaMigration):
             ('is_labelled', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_labelled_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('is_lis', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
             ('test_visit', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testrequisition', to=orm['testing.TestVisit'])),
-            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('panel', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testrequisition', to=orm['testing.TestPanel'])),
+            ('aliquot_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testrequisition', to=orm['testing.TestAliquotType'])),
             ('_audit_timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('_audit_change_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36)),
+            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
         ))
         db.send_create_signal('testing', ['TestRequisitionAudit'])
 
@@ -438,21 +634,20 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
-            ('requisition_identifier', self.gf('django.db.models.fields.CharField')(unique=True, max_length=25)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('requisition_identifier', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50)),
             ('requisition_datetime', self.gf('django.db.models.fields.DateTimeField')()),
-            ('specimen_identifier', self.gf('django.db.models.fields.CharField')(max_length=25, unique=True, null=True, blank=True)),
+            ('specimen_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, unique=True, null=True, blank=True)),
             ('protocol', self.gf('django.db.models.fields.CharField')(max_length=10, null=True, blank=True)),
-            ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bhp_variables.StudySite'])),
+            ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bhp_variables.StudySite'], null=True)),
             ('clinician_initials', self.gf('django.db.models.fields.CharField')(default='--', max_length=3, null=True, blank=True)),
-            ('aliquot_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['lab_clinic_api.AliquotType'])),
-            ('panel', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['lab_clinic_api.Panel'])),
             ('priority', self.gf('django.db.models.fields.CharField')(default='normal', max_length=25)),
             ('is_drawn', self.gf('django.db.models.fields.CharField')(default='Yes', max_length=3)),
             ('reason_not_drawn', self.gf('django.db.models.fields.CharField')(max_length=25, null=True, blank=True)),
             ('drawn_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('item_type', self.gf('django.db.models.fields.CharField')(default='tube', max_length=25)),
             ('item_count_total', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('estimated_volume', self.gf('django.db.models.fields.DecimalField')(default=5.0, max_digits=7, decimal_places=1)),
+            ('estimated_volume', self.gf('django.db.models.fields.DecimalField')(default=5.0, max_digits=7, decimal_places=2)),
             ('comments', self.gf('django.db.models.fields.TextField')(max_length=25, null=True, blank=True)),
             ('is_receive', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_receive_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
@@ -460,17 +655,21 @@ class Migration(SchemaMigration):
             ('is_labelled', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_labelled_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('is_lis', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
             ('test_visit', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestVisit'])),
+            ('panel', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestPanel'])),
+            ('aliquot_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestAliquotType'])),
         ))
         db.send_create_signal('testing', ['TestRequisition'])
 
         # Adding M2M table for field test_code on 'TestRequisition'
-        db.create_table(u'testing_testrequisition_test_code', (
+        m2m_table_name = db.shorten_name(u'testing_testrequisition_test_code')
+        db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('testrequisition', models.ForeignKey(orm['testing.testrequisition'], null=False)),
             ('testcode', models.ForeignKey(orm['lab_clinic_api.testcode'], null=False))
         ))
-        db.create_unique(u'testing_testrequisition_test_code', ['testrequisition_id', 'testcode_id'])
+        db.create_unique(m2m_table_name, ['testrequisition_id', 'testcode_id'])
 
         # Adding model 'TestSubjectResultModel'
         db.create_table(u'testing_testsubjectresultmodel', (
@@ -481,6 +680,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('test_visit', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestVisit'], null=True)),
             ('subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=25, db_index=True)),
             ('report_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, db_index=True)),
@@ -498,13 +698,15 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('registered_subject', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['registration.RegisteredSubject'], unique=True, null=True)),
-            ('report_datetime', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 9, 30, 0, 0))),
-            ('date_signed', self.gf('django.db.models.fields.DateField')(default=datetime.datetime(2013, 9, 30, 0, 0))),
+            ('report_datetime', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2014, 11, 17, 0, 0))),
+            ('date_signed', self.gf('django.db.models.fields.DateField')(default=datetime.datetime(2014, 11, 17, 0, 0))),
             ('mail_address', self.gf('django.db.models.fields.CharField')(max_length=500, null=True, blank=True)),
             ('home_visit_permission', self.gf('django.db.models.fields.CharField')(max_length=25)),
             ('physical_address', self.gf('django.db.models.fields.CharField')(max_length=500, null=True, blank=True)),
             ('may_follow_up', self.gf('django.db.models.fields.CharField')(max_length=25)),
+            ('may_sms_follow_up', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
             ('subject_cell', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True, blank=True)),
             ('subject_cell_alt', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True, blank=True)),
             ('subject_phone', self.gf('django.db.models.fields.CharField')(max_length=78L, null=True, blank=True)),
@@ -530,6 +732,7 @@ class Migration(SchemaMigration):
             ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('_audit_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
             ('firstname', self.gf('django.db.models.fields.CharField')(max_length=78L)),
             ('lastname', self.gf('django.db.models.fields.CharField')(max_length=78L)),
             ('char1', self.gf('django.db.models.fields.CharField')(max_length=78L)),
@@ -540,10 +743,10 @@ class Migration(SchemaMigration):
             ('text2', self.gf('django.db.models.fields.CharField')(max_length=78L)),
             ('firstname2', self.gf('django.db.models.fields.CharField')(max_length=78L)),
             ('text3', self.gf('django.db.models.fields.CharField')(max_length=78L)),
-            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('_audit_timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('_audit_change_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
             (u'id', self.gf('django.db.models.fields.IntegerField')(db_index=True)),
+            ('_audit_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
         ))
         db.send_create_signal('testing', ['EncryptedTestModelAudit'])
 
@@ -594,12 +797,14 @@ class Migration(SchemaMigration):
             ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
-            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('_audit_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
             ('test_container_identifier', self.gf('django.db.models.fields.CharField')(max_length=35)),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('_audit_timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('_audit_change_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36)),
+            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
         ))
         db.send_create_signal('testing', ['TestDspContainerAudit'])
 
@@ -612,6 +817,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('test_container_identifier', self.gf('django.db.models.fields.CharField')(unique=True, max_length=35)),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
         ))
@@ -625,13 +831,15 @@ class Migration(SchemaMigration):
             ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
-            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('_audit_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
             ('test_item_identifier', self.gf('django.db.models.fields.CharField')(max_length=35)),
             ('test_container', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testdspitem', to=orm['testing.TestDspContainer'])),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('_audit_timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('_audit_change_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36)),
+            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
         ))
         db.send_create_signal('testing', ['TestDspItemAudit'])
 
@@ -644,6 +852,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('test_item_identifier', self.gf('django.db.models.fields.CharField')(unique=True, max_length=35)),
             ('test_container', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestDspContainer'])),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
@@ -651,12 +860,13 @@ class Migration(SchemaMigration):
         db.send_create_signal('testing', ['TestDspItem'])
 
         # Adding M2M table for field test_m2m on 'TestDspItem'
-        db.create_table(u'testing_testdspitem_test_m2m', (
+        m2m_table_name = db.shorten_name(u'testing_testdspitem_test_m2m')
+        db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('testdspitem', models.ForeignKey(orm['testing.testdspitem'], null=False)),
             ('testm2m', models.ForeignKey(orm['testing.testm2m'], null=False))
         ))
-        db.create_unique(u'testing_testdspitem_test_m2m', ['testdspitem_id', 'testm2m_id'])
+        db.create_unique(m2m_table_name, ['testdspitem_id', 'testm2m_id'])
 
         # Adding model 'TestDspItemTwoAudit'
         db.create_table(u'testing_testdspitemtwo_audit', (
@@ -666,13 +876,15 @@ class Migration(SchemaMigration):
             ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
-            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('_audit_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
             ('test_item_identifier', self.gf('django.db.models.fields.CharField')(max_length=35)),
             ('test_item', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testdspitemtwo', to=orm['testing.TestDspItem'])),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('_audit_timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('_audit_change_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36)),
+            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
         ))
         db.send_create_signal('testing', ['TestDspItemTwoAudit'])
 
@@ -685,6 +897,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('test_item_identifier', self.gf('django.db.models.fields.CharField')(unique=True, max_length=35)),
             ('test_item', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestDspItem'])),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
@@ -699,13 +912,15 @@ class Migration(SchemaMigration):
             ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
-            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('_audit_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
             ('test_item_identifier', self.gf('django.db.models.fields.CharField')(max_length=35)),
             ('test_item_two', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testdspitemthree', to=orm['testing.TestDspItemTwo'])),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('_audit_timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('_audit_change_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36)),
+            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
         ))
         db.send_create_signal('testing', ['TestDspItemThreeAudit'])
 
@@ -718,6 +933,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('test_item_identifier', self.gf('django.db.models.fields.CharField')(unique=True, max_length=35)),
             ('test_item_two', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestDspItemTwo'])),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
@@ -732,13 +948,15 @@ class Migration(SchemaMigration):
             ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
-            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('_audit_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
             ('test_item_identifier', self.gf('django.db.models.fields.CharField')(max_length=35)),
             ('test_item_three', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testdspitemm2m', to=orm['testing.TestDspItemThree'])),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('_audit_timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('_audit_change_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36)),
+            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
         ))
         db.send_create_signal('testing', ['TestDspItemM2MAudit'])
 
@@ -751,6 +969,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('test_item_identifier', self.gf('django.db.models.fields.CharField')(unique=True, max_length=35)),
             ('test_item_three', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestDspItemThree'])),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
@@ -758,12 +977,13 @@ class Migration(SchemaMigration):
         db.send_create_signal('testing', ['TestDspItemM2M'])
 
         # Adding M2M table for field m2m on 'TestDspItemM2M'
-        db.create_table(u'testing_testdspitemm2m_m2m', (
+        m2m_table_name = db.shorten_name(u'testing_testdspitemm2m_m2m')
+        db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('testdspitemm2m', models.ForeignKey(orm['testing.testdspitemm2m'], null=False)),
             ('testdsplist', models.ForeignKey(orm['testing.testdsplist'], null=False))
         ))
-        db.create_unique(u'testing_testdspitemm2m_m2m', ['testdspitemm2m_id', 'testdsplist_id'])
+        db.create_unique(m2m_table_name, ['testdspitemm2m_id', 'testdsplist_id'])
 
         # Adding model 'TestDspItemBypassAudit'
         db.create_table(u'testing_testdspitembypass_audit', (
@@ -773,7 +993,8 @@ class Migration(SchemaMigration):
             ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
-            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('_audit_subject_identifier', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
             ('test_item_identifier', self.gf('django.db.models.fields.CharField')(max_length=35)),
             ('test_container', self.gf('django.db.models.fields.related.ForeignKey')(related_name='_audit_testdspitembypass', to=orm['testing.TestDspContainer'])),
             ('f1', self.gf('django.db.models.fields.CharField')(max_length=35)),
@@ -781,9 +1002,10 @@ class Migration(SchemaMigration):
             ('f3', self.gf('django.db.models.fields.CharField')(max_length=35)),
             ('f4', self.gf('django.db.models.fields.CharField')(max_length=35)),
             ('comment', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
             ('_audit_timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('_audit_change_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36)),
+            ('_audit_id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
         ))
         db.send_create_signal('testing', ['TestDspItemBypassAudit'])
 
@@ -796,6 +1018,7 @@ class Migration(SchemaMigration):
             ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
             ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
             ('test_item_identifier', self.gf('django.db.models.fields.CharField')(unique=True, max_length=35)),
             ('test_container', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestDspContainer'])),
             ('f1', self.gf('django.db.models.fields.CharField')(max_length=35)),
@@ -807,12 +1030,88 @@ class Migration(SchemaMigration):
         db.send_create_signal('testing', ['TestDspItemBypass'])
 
         # Adding M2M table for field test_m2m on 'TestDspItemBypass'
-        db.create_table(u'testing_testdspitembypass_test_m2m', (
+        m2m_table_name = db.shorten_name(u'testing_testdspitembypass_test_m2m')
+        db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('testdspitembypass', models.ForeignKey(orm['testing.testdspitembypass'], null=False)),
             ('testm2m', models.ForeignKey(orm['testing.testm2m'], null=False))
         ))
-        db.create_unique(u'testing_testdspitembypass_test_m2m', ['testdspitembypass_id', 'testm2m_id'])
+        db.create_unique(m2m_table_name, ['testdspitembypass_id', 'testm2m_id'])
+
+        # Adding model 'ExportTest'
+        db.create_table(u'testing_exporttest', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('f_char', self.gf('django.db.models.fields.CharField')(default='character', max_length=64)),
+            ('f_choice', self.gf('django.db.models.fields.CharField')(default='Yes', max_length=64)),
+            ('f_integer', self.gf('django.db.models.fields.IntegerField')(default=123)),
+            ('f_date', self.gf('django.db.models.fields.DateField')(default=datetime.datetime(2014, 11, 17, 0, 0))),
+            ('f_datetime', self.gf('django.db.models.fields.DateField')(default=datetime.datetime(2014, 11, 17, 0, 0))),
+            ('f_text', self.gf('django.db.models.fields.TextField')(default='Space, the final frontier. These are the voyages of the starship enterprise')),
+        ))
+        db.send_create_signal('testing', ['ExportTest'])
+
+        # Adding model 'TestProfile'
+        db.create_table(u'testing_testprofile', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50)),
+            ('aliquot_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestAliquotType'])),
+        ))
+        db.send_create_signal('testing', ['TestProfile'])
+
+        # Adding model 'TestProfileItem'
+        db.create_table(u'testing_testprofileitem', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('volume', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=10, decimal_places=1)),
+            ('count', self.gf('django.db.models.fields.IntegerField')()),
+            ('profile', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestProfile'])),
+            ('aliquot_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['testing.TestAliquotType'])),
+        ))
+        db.send_create_signal('testing', ['TestProfileItem'])
+
+        # Adding model 'TestReceive'
+        db.create_table(u'testing_testreceive', (
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('user_created', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('user_modified', self.gf('django.db.models.fields.CharField')(default='', max_length=250, db_index=True)),
+            ('hostname_created', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('hostname_modified', self.gf('django.db.models.fields.CharField')(default='mac.local', max_length=50, db_index=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=36, primary_key=True)),
+            ('revision', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
+            ('receive_identifier', self.gf('django.db.models.fields.CharField')(max_length=25, unique=True, null=True, db_index=True)),
+            ('requisition_identifier', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=25, null=True, blank=True)),
+            ('drawn_datetime', self.gf('django.db.models.fields.DateTimeField')(db_index=True)),
+            ('receive_datetime', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2014, 11, 17, 0, 0), db_index=True)),
+            ('visit', self.gf('django.db.models.fields.CharField')(max_length=25)),
+            ('clinician_initials', self.gf('django.db.models.fields.CharField')(max_length=3)),
+            ('receive_condition', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
+            ('import_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True)),
+            ('registered_subject', self.gf('django.db.models.fields.related.ForeignKey')(related_name='test_receive', null=True, to=orm['registration.RegisteredSubject'])),
+            ('requisition_model_name', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
+            ('subject_type', self.gf('django.db.models.fields.CharField')(max_length=25, null=True)),
+        ))
+        db.send_create_signal('testing', ['TestReceive'])
 
 
     def backwards(self, orm):
@@ -852,6 +1151,15 @@ class Migration(SchemaMigration):
         # Deleting model 'TestScheduledModel'
         db.delete_table(u'testing_testscheduledmodel')
 
+        # Deleting model 'TestScheduledModel1'
+        db.delete_table(u'testing_testscheduledmodel1')
+
+        # Deleting model 'TestScheduledModel2'
+        db.delete_table(u'testing_testscheduledmodel2')
+
+        # Deleting model 'TestScheduledModel3'
+        db.delete_table(u'testing_testscheduledmodel3')
+
         # Deleting model 'TestForeignKey'
         db.delete_table(u'testing_testforeignkey')
 
@@ -862,13 +1170,34 @@ class Migration(SchemaMigration):
         db.delete_table(u'testing_testsubjectuuidmodel')
 
         # Removing M2M table for field test_m2m on 'TestSubjectUuidModel'
-        db.delete_table('testing_testsubjectuuidmodel_test_m2m')
+        db.delete_table(db.shorten_name(u'testing_testsubjectuuidmodel_test_m2m'))
 
         # Deleting model 'TestOffStudy'
         db.delete_table(u'testing_testoffstudy')
 
         # Deleting model 'TestModel'
         db.delete_table(u'testing_testmodel')
+
+        # Deleting model 'TestModel1'
+        db.delete_table(u'testing_testmodel1')
+
+        # Deleting model 'TestModel2'
+        db.delete_table(u'testing_testmodel2')
+
+        # Deleting model 'TestModel3'
+        db.delete_table(u'testing_testmodel3')
+
+        # Deleting model 'TestAliquotType'
+        db.delete_table(u'testing_testaliquottype')
+
+        # Deleting model 'TestPanel'
+        db.delete_table(u'testing_testpanel')
+
+        # Removing M2M table for field test_code on 'TestPanel'
+        db.delete_table(db.shorten_name(u'testing_testpanel_test_code'))
+
+        # Removing M2M table for field aliquot_type on 'TestPanel'
+        db.delete_table(db.shorten_name(u'testing_testpanel_aliquot_type'))
 
         # Deleting model 'TestRequisitionAudit'
         db.delete_table(u'testing_testrequisition_audit')
@@ -877,7 +1206,7 @@ class Migration(SchemaMigration):
         db.delete_table(u'testing_testrequisition')
 
         # Removing M2M table for field test_code on 'TestRequisition'
-        db.delete_table('testing_testrequisition_test_code')
+        db.delete_table(db.shorten_name(u'testing_testrequisition_test_code'))
 
         # Deleting model 'TestSubjectResultModel'
         db.delete_table(u'testing_testsubjectresultmodel')
@@ -907,7 +1236,7 @@ class Migration(SchemaMigration):
         db.delete_table(u'testing_testdspitem')
 
         # Removing M2M table for field test_m2m on 'TestDspItem'
-        db.delete_table('testing_testdspitem_test_m2m')
+        db.delete_table(db.shorten_name(u'testing_testdspitem_test_m2m'))
 
         # Deleting model 'TestDspItemTwoAudit'
         db.delete_table(u'testing_testdspitemtwo_audit')
@@ -928,7 +1257,7 @@ class Migration(SchemaMigration):
         db.delete_table(u'testing_testdspitemm2m')
 
         # Removing M2M table for field m2m on 'TestDspItemM2M'
-        db.delete_table('testing_testdspitemm2m_m2m')
+        db.delete_table(db.shorten_name(u'testing_testdspitemm2m_m2m'))
 
         # Deleting model 'TestDspItemBypassAudit'
         db.delete_table(u'testing_testdspitembypass_audit')
@@ -937,7 +1266,19 @@ class Migration(SchemaMigration):
         db.delete_table(u'testing_testdspitembypass')
 
         # Removing M2M table for field test_m2m on 'TestDspItemBypass'
-        db.delete_table('testing_testdspitembypass_test_m2m')
+        db.delete_table(db.shorten_name(u'testing_testdspitembypass_test_m2m'))
+
+        # Deleting model 'ExportTest'
+        db.delete_table(u'testing_exporttest')
+
+        # Deleting model 'TestProfile'
+        db.delete_table(u'testing_testprofile')
+
+        # Deleting model 'TestProfileItem'
+        db.delete_table(u'testing_testprofileitem')
+
+        # Deleting model 'TestReceive'
+        db.delete_table(u'testing_testreceive')
 
 
     models = {
@@ -960,6 +1301,7 @@ class Migration(SchemaMigration):
             'is_confirmed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['registration.RegisteredSubject']"}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']", 'null': 'True'}),
             'timepoint_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -978,7 +1320,7 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'module_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
@@ -989,6 +1331,7 @@ class Migration(SchemaMigration):
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'site_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '4'}),
             'site_name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '35'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1000,35 +1343,6 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'lab_clinic_api.aliquottype': {
-            'Meta': {'ordering': "['name']", 'object_name': 'AliquotType'},
-            'alpha_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'numeric_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '2'}),
-            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
-            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
-        },
-        'lab_clinic_api.panel': {
-            'Meta': {'object_name': 'Panel'},
-            'aliquot_type': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['lab_clinic_api.AliquotType']", 'symmetrical': 'False'}),
-            'comment': ('django.db.models.fields.CharField', [], {'max_length': '250', 'blank': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'edc_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
-            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'}),
-            'panel_type': ('django.db.models.fields.CharField', [], {'default': "'TEST'", 'max_length': '15'}),
-            'test_code': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['lab_clinic_api.TestCode']", 'null': 'True', 'blank': 'True'}),
-            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
-            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
         'lab_clinic_api.testcode': {
             'Meta': {'ordering': "['edc_name']", 'object_name': 'TestCode'},
@@ -1074,7 +1388,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'identity': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True', 'blank': 'True'}),
             'identity_type': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
-            'initials': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'initials': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
             'is_dob_estimated': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
             'may_store_samples': ('django.db.models.fields.CharField', [], {'default': "'?'", 'max_length': '3'}),
@@ -1084,6 +1398,7 @@ class Migration(SchemaMigration):
             'registration_identifier': ('django.db.models.fields.CharField', [], {'max_length': '36', 'null': 'True', 'blank': 'True'}),
             'registration_status': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
             'relative_identifier': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'salt': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'screening_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'sid': ('django.db.models.fields.CharField', [], {'max_length': '15', 'null': 'True', 'blank': 'True'}),
@@ -1119,7 +1434,8 @@ class Migration(SchemaMigration):
         'testing.encryptedtestmodelaudit': {
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'EncryptedTestModelAudit', 'db_table': "u'testing_encryptedtestmodel_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-            '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            '_audit_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
             'char1': ('django.db.models.fields.CharField', [], {'max_length': '78L'}),
             'char2': ('django.db.models.fields.CharField', [], {'max_length': '78L'}),
@@ -1139,6 +1455,36 @@ class Migration(SchemaMigration):
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
+        'testing.exporttest': {
+            'Meta': {'object_name': 'ExportTest'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'f_char': ('django.db.models.fields.CharField', [], {'default': "'character'", 'max_length': '64'}),
+            'f_choice': ('django.db.models.fields.CharField', [], {'default': "'Yes'", 'max_length': '64'}),
+            'f_date': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 11, 17, 0, 0)'}),
+            'f_datetime': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 11, 17, 0, 0)'}),
+            'f_integer': ('django.db.models.fields.IntegerField', [], {'default': '123'}),
+            'f_text': ('django.db.models.fields.TextField', [], {'default': "'Space, the final frontier. These are the voyages of the starship enterprise'"}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'testing.testaliquottype': {
+            'Meta': {'object_name': 'TestAliquotType'},
+            'alpha_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'numeric_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '2'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
         'testing.testbaseoffstudy': {
             'Meta': {'object_name': 'TestBaseOffStudy'},
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
@@ -1152,6 +1498,7 @@ class Migration(SchemaMigration):
             'reason': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'reason_other': ('django.db.models.fields.CharField', [], {'max_length': '35', 'blank': 'True'}),
             'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['registration.RegisteredSubject']", 'unique': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
@@ -1159,29 +1506,31 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'TestBaseOffStudyAudit', 'db_table': "u'testing_testbaseoffstudy_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'has_scheduled_data': ('django.db.models.fields.CharField', [], {'default': "'Yes'", 'max_length': '10'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'offstudy_date': ('django.db.models.fields.DateField', [], {}),
             'reason': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'reason_other': ('django.db.models.fields.CharField', [], {'max_length': '35', 'blank': 'True'}),
             'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testbaseoffstudy'", 'to': "orm['registration.RegisteredSubject']"}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
         'testing.testconsent': {
             'Meta': {'object_name': 'TestConsent'},
-            'assessment_score': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
+            'assessment_score': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'confirm_identity': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'consent_copy': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
+            'consent_copy': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
             'consent_datetime': ('django.db.models.fields.DateTimeField', [], {}),
-            'consent_reviewed': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
+            'consent_reviewed': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
             'consent_version_on_entry': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'consent_version_recent': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -1194,7 +1543,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'identity': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'identity_type': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
-            'initials': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'initials': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
             'is_dob_estimated': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
             'is_incarcerated': ('django.db.models.fields.CharField', [], {'default': "'-'", 'max_length': '3'}),
             'is_literate': ('django.db.models.fields.CharField', [], {'default': "'-'", 'max_length': '3'}),
@@ -1205,8 +1554,9 @@ class Migration(SchemaMigration):
             'may_store_samples': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['registration.RegisteredSubject']", 'unique': 'True', 'null': 'True'}),
-            'study_questions': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
-            'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']"}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'study_questions': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
+            'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']", 'null': 'True'}),
             'subject_identifier': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '50', 'blank': 'True'}),
             'subject_identifier_as_pk': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'db_index': 'True'}),
             'subject_type': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
@@ -1227,17 +1577,15 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['registration.RegisteredSubject']"}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
         'testing.testconsentnors': {
             'Meta': {'object_name': 'TestConsentNoRs'},
-            'assessment_score': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'confirm_identity': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'consent_copy': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
             'consent_datetime': ('django.db.models.fields.DateTimeField', [], {}),
-            'consent_reviewed': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
             'consent_version_on_entry': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'consent_version_recent': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -1250,7 +1598,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'identity': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'identity_type': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
-            'initials': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'initials': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
             'is_dob_estimated': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
             'is_incarcerated': ('django.db.models.fields.CharField', [], {'default': "'-'", 'max_length': '3'}),
             'is_literate': ('django.db.models.fields.CharField', [], {'default': "'-'", 'max_length': '3'}),
@@ -1260,8 +1608,8 @@ class Migration(SchemaMigration):
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
             'may_store_samples': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'study_questions': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
-            'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']"}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']", 'null': 'True'}),
             'subject_identifier': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '50', 'blank': 'True'}),
             'subject_identifier_as_pk': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'db_index': 'True'}),
             'subject_type': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
@@ -1272,12 +1620,12 @@ class Migration(SchemaMigration):
         },
         'testing.testconsentwithmixin': {
             'Meta': {'object_name': 'TestConsentWithMixin'},
-            'assessment_score': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
+            'assessment_score': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'confirm_identity': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'consent_copy': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
+            'consent_copy': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
             'consent_datetime': ('django.db.models.fields.DateTimeField', [], {}),
-            'consent_reviewed': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
+            'consent_reviewed': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
             'consent_version_on_entry': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'consent_version_recent': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -1290,7 +1638,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'identity': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'identity_type': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
-            'initials': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'initials': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True'}),
             'is_dob_estimated': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
             'is_incarcerated': ('django.db.models.fields.CharField', [], {'default': "'-'", 'max_length': '3'}),
             'is_literate': ('django.db.models.fields.CharField', [], {'default': "'-'", 'max_length': '3'}),
@@ -1301,8 +1649,9 @@ class Migration(SchemaMigration):
             'may_store_samples': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['registration.RegisteredSubject']", 'unique': 'True', 'null': 'True'}),
-            'study_questions': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True', 'blank': 'True'}),
-            'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']"}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'study_questions': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
+            'study_site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']", 'null': 'True'}),
             'subject_identifier': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '50', 'blank': 'True'}),
             'subject_identifier_as_pk': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'db_index': 'True'}),
             'subject_type': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
@@ -1319,6 +1668,7 @@ class Migration(SchemaMigration):
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_container_identifier': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '35'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
@@ -1327,13 +1677,15 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'TestDspContainerAudit', 'db_table': "u'testing_testdspcontainer_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_container_identifier': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
@@ -1346,6 +1698,7 @@ class Migration(SchemaMigration):
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_container': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestDspContainer']"}),
             'test_item_identifier': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '35'}),
             'test_m2m': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['testing.TestM2m']", 'symmetrical': 'False'}),
@@ -1356,13 +1709,15 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'TestDspItemAudit', 'db_table': "u'testing_testdspitem_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_container': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testdspitem'", 'to': "orm['testing.TestDspContainer']"}),
             'test_item_identifier': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1380,6 +1735,7 @@ class Migration(SchemaMigration):
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_container': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestDspContainer']"}),
             'test_item_identifier': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '35'}),
             'test_m2m': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['testing.TestM2m']", 'symmetrical': 'False'}),
@@ -1390,6 +1746,7 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'TestDspItemBypassAudit', 'db_table': "u'testing_testdspitembypass_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
@@ -1399,8 +1756,9 @@ class Migration(SchemaMigration):
             'f4': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_container': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testdspitembypass'", 'to': "orm['testing.TestDspContainer']"}),
             'test_item_identifier': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1415,6 +1773,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'm2m': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['testing.TestDspList']", 'symmetrical': 'False'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_item_identifier': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '35'}),
             'test_item_three': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestDspItemThree']"}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1424,13 +1783,15 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'TestDspItemM2MAudit', 'db_table': "u'testing_testdspitemm2m_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_item_identifier': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
             'test_item_three': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testdspitemm2m'", 'to': "orm['testing.TestDspItemThree']"}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1444,6 +1805,7 @@ class Migration(SchemaMigration):
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_item_identifier': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '35'}),
             'test_item_two': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestDspItemTwo']"}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1453,13 +1815,15 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'TestDspItemThreeAudit', 'db_table': "u'testing_testdspitemthree_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_item_identifier': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
             'test_item_two': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testdspitemthree'", 'to': "orm['testing.TestDspItemTwo']"}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1473,6 +1837,7 @@ class Migration(SchemaMigration):
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_item': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestDspItem']"}),
             'test_item_identifier': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '35'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1482,13 +1847,15 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'TestDspItemTwoAudit', 'db_table': "u'testing_testdspitemtwo_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_item': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testdspitemtwo'", 'to': "orm['testing.TestDspItem']"}),
             'test_item_identifier': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1551,6 +1918,55 @@ class Migration(SchemaMigration):
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'testing.testmodel1': {
+            'Meta': {'object_name': 'TestModel1'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'f1': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'f2': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'f3': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f4': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f5': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'testing.testmodel2': {
+            'Meta': {'object_name': 'TestModel2'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'f1': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'f2': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'f3': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f4': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f5': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'testing.testmodel3': {
+            'Meta': {'object_name': 'TestModel3'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'f1': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'f2': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'f3': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f4': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f5': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
@@ -1567,8 +1983,74 @@ class Migration(SchemaMigration):
             'reason': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'reason_other': ('django.db.models.fields.CharField', [], {'max_length': '35', 'blank': 'True'}),
             'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['registration.RegisteredSubject']", 'unique': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'testing.testpanel': {
+            'Meta': {'object_name': 'TestPanel'},
+            'aliquot_type': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['testing.TestAliquotType']", 'symmetrical': 'False'}),
+            'comment': ('django.db.models.fields.CharField', [], {'max_length': '250', 'blank': 'True'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'}),
+            'panel_type': ('django.db.models.fields.CharField', [], {'default': "'TEST'", 'max_length': '15'}),
+            'test_code': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'++'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['lab_clinic_api.TestCode']"}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'testing.testprofile': {
+            'Meta': {'object_name': 'TestProfile'},
+            'aliquot_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestAliquotType']"}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'testing.testprofileitem': {
+            'Meta': {'object_name': 'TestProfileItem'},
+            'aliquot_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestAliquotType']"}),
+            'count': ('django.db.models.fields.IntegerField', [], {}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'profile': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestProfile']"}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'volume': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '1'})
+        },
+        'testing.testreceive': {
+            'Meta': {'object_name': 'TestReceive'},
+            'clinician_initials': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'drawn_datetime': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'import_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'receive_condition': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
+            'receive_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 11, 17, 0, 0)', 'db_index': 'True'}),
+            'receive_identifier': ('django.db.models.fields.CharField', [], {'max_length': '25', 'unique': 'True', 'null': 'True', 'db_index': 'True'}),
+            'registered_subject': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'test_receive'", 'null': 'True', 'to': "orm['registration.RegisteredSubject']"}),
+            'requisition_identifier': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '25', 'null': 'True', 'blank': 'True'}),
+            'requisition_model_name': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'subject_type': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'visit': ('django.db.models.fields.CharField', [], {'max_length': '25'})
         },
         'testing.testregistration': {
             'Meta': {'object_name': 'TestRegistration'},
@@ -1579,17 +2061,18 @@ class Migration(SchemaMigration):
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['registration.RegisteredSubject']", 'unique': 'True'}),
             'registration_datetime': ('django.db.models.fields.DateTimeField', [], {}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
         'testing.testrequisition': {
             'Meta': {'object_name': 'TestRequisition'},
-            'aliquot_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['lab_clinic_api.AliquotType']"}),
+            'aliquot_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestAliquotType']"}),
             'clinician_initials': ('django.db.models.fields.CharField', [], {'default': "'--'", 'max_length': '3', 'null': 'True', 'blank': 'True'}),
             'comments': ('django.db.models.fields.TextField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'drawn_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'estimated_volume': ('django.db.models.fields.DecimalField', [], {'default': '5.0', 'max_digits': '7', 'decimal_places': '1'}),
+            'estimated_volume': ('django.db.models.fields.DecimalField', [], {'default': '5.0', 'max_digits': '7', 'decimal_places': '2'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
@@ -1603,14 +2086,16 @@ class Migration(SchemaMigration):
             'item_count_total': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'item_type': ('django.db.models.fields.CharField', [], {'default': "'tube'", 'max_length': '25'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'panel': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['lab_clinic_api.Panel']"}),
+            'panel': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestPanel']"}),
             'priority': ('django.db.models.fields.CharField', [], {'default': "'normal'", 'max_length': '25'}),
             'protocol': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
             'reason_not_drawn': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
             'requisition_datetime': ('django.db.models.fields.DateTimeField', [], {}),
-            'requisition_identifier': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '25'}),
-            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']"}),
-            'specimen_identifier': ('django.db.models.fields.CharField', [], {'max_length': '25', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
+            'requisition_identifier': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bhp_variables.StudySite']", 'null': 'True'}),
+            'specimen_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
+            'subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
             'test_code': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['lab_clinic_api.TestCode']", 'null': 'True', 'blank': 'True'}),
             'test_visit': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestVisit']"}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1620,16 +2105,17 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['-_audit_timestamp']", 'object_name': 'TestRequisitionAudit', 'db_table': "u'testing_testrequisition_audit'"},
             '_audit_change_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             '_audit_id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            '_audit_subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
             '_audit_timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
-            'aliquot_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testrequisition'", 'to': "orm['lab_clinic_api.AliquotType']"}),
+            'aliquot_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testrequisition'", 'to': "orm['testing.TestAliquotType']"}),
             'clinician_initials': ('django.db.models.fields.CharField', [], {'default': "'--'", 'max_length': '3', 'null': 'True', 'blank': 'True'}),
             'comments': ('django.db.models.fields.TextField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'drawn_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'estimated_volume': ('django.db.models.fields.DecimalField', [], {'default': '5.0', 'max_digits': '7', 'decimal_places': '1'}),
+            'estimated_volume': ('django.db.models.fields.DecimalField', [], {'default': '5.0', 'max_digits': '7', 'decimal_places': '2'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36'}),
             'is_drawn': ('django.db.models.fields.CharField', [], {'default': "'Yes'", 'max_length': '3'}),
             'is_labelled': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_labelled_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
@@ -1640,14 +2126,16 @@ class Migration(SchemaMigration):
             'item_count_total': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'item_type': ('django.db.models.fields.CharField', [], {'default': "'tube'", 'max_length': '25'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'panel': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testrequisition'", 'to': "orm['lab_clinic_api.Panel']"}),
+            'panel': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testrequisition'", 'to': "orm['testing.TestPanel']"}),
             'priority': ('django.db.models.fields.CharField', [], {'default': "'normal'", 'max_length': '25'}),
             'protocol': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
             'reason_not_drawn': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
             'requisition_datetime': ('django.db.models.fields.DateTimeField', [], {}),
-            'requisition_identifier': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
-            'site': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testrequisition'", 'to': "orm['bhp_variables.StudySite']"}),
-            'specimen_identifier': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True', 'blank': 'True'}),
+            'requisition_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'site': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testrequisition'", 'null': 'True', 'to': "orm['bhp_variables.StudySite']"}),
+            'specimen_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
             'test_visit': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'_audit_testrequisition'", 'to': "orm['testing.TestVisit']"}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
@@ -1655,10 +2143,83 @@ class Migration(SchemaMigration):
         'testing.testscheduledmodel': {
             'Meta': {'object_name': 'TestScheduledModel'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'export_change_type': ('django.db.models.fields.CharField', [], {'default': "'I'", 'max_length': '1'}),
+            'export_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'exported': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'exported_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'f1': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f2': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f3': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f4': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'report_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 11, 17, 0, 0)'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'test_visit': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['testing.TestVisit']", 'unique': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'testing.testscheduledmodel1': {
+            'Meta': {'object_name': 'TestScheduledModel1'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'export_change_type': ('django.db.models.fields.CharField', [], {'default': "'I'", 'max_length': '1'}),
+            'export_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'exported': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'exported_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'f1': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f2': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f3': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f4': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'report_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 11, 17, 0, 0)'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'test_visit': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['testing.TestVisit']", 'unique': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'testing.testscheduledmodel2': {
+            'Meta': {'object_name': 'TestScheduledModel2'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'export_change_type': ('django.db.models.fields.CharField', [], {'default': "'I'", 'max_length': '1'}),
+            'export_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'exported': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'exported_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'f1': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f2': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f3': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f4': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'report_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 11, 17, 0, 0)'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
+            'test_visit': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['testing.TestVisit']", 'unique': 'True'}),
+            'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
+            'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
+        },
+        'testing.testscheduledmodel3': {
+            'Meta': {'object_name': 'TestScheduledModel3'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'export_change_type': ('django.db.models.fields.CharField', [], {'default': "'I'", 'max_length': '1'}),
+            'export_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
+            'exported': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'exported_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'f1': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f2': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f3': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'f4': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
+            'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'report_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 11, 17, 0, 0)'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_visit': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['testing.TestVisit']", 'unique': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
@@ -1671,7 +2232,7 @@ class Migration(SchemaMigration):
             'contact_physical_address': ('django.db.models.fields.CharField', [], {'max_length': '500', 'null': 'True', 'blank': 'True'}),
             'contact_rel': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'date_signed': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2013, 9, 30, 0, 0)'}),
+            'date_signed': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 11, 17, 0, 0)'}),
             'home_visit_permission': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
@@ -1680,10 +2241,12 @@ class Migration(SchemaMigration):
             'may_call_work': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'may_contact_someone': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'may_follow_up': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
+            'may_sms_follow_up': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'physical_address': ('django.db.models.fields.CharField', [], {'max_length': '500', 'null': 'True', 'blank': 'True'}),
             'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['registration.RegisteredSubject']", 'unique': 'True', 'null': 'True'}),
-            'report_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 9, 30, 0, 0)'}),
+            'report_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 11, 17, 0, 0)'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'subject_cell': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True', 'blank': 'True'}),
             'subject_cell_alt': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True', 'blank': 'True'}),
             'subject_phone': ('django.db.models.fields.CharField', [], {'max_length': '78L', 'null': 'True', 'blank': 'True'}),
@@ -1704,6 +2267,7 @@ class Migration(SchemaMigration):
             'report_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'db_index': 'True'}),
             'result': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'result_datetime': ('django.db.models.fields.DateTimeField', [], {}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '25', 'db_index': 'True'}),
             'test_visit': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestVisit']", 'null': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1718,6 +2282,7 @@ class Migration(SchemaMigration):
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'registered_subject': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['registration.RegisteredSubject']", 'unique': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'test_foreign_key': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['testing.TestForeignKey']"}),
             'test_m2m': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['testing.TestM2m']", 'symmetrical': 'False'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
@@ -1737,6 +2302,7 @@ class Migration(SchemaMigration):
             'reason': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'reason_missed': ('django.db.models.fields.CharField', [], {'max_length': '35', 'null': 'True', 'blank': 'True'}),
             'report_datetime': ('django.db.models.fields.DateTimeField', [], {}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
@@ -1755,6 +2321,7 @@ class Migration(SchemaMigration):
             'reason': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'reason_missed': ('django.db.models.fields.CharField', [], {'max_length': '35', 'null': 'True', 'blank': 'True'}),
             'report_datetime': ('django.db.models.fields.DateTimeField', [], {}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
@@ -1773,6 +2340,7 @@ class Migration(SchemaMigration):
             'reason': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'reason_missed': ('django.db.models.fields.CharField', [], {'max_length': '35', 'null': 'True', 'blank': 'True'}),
             'report_datetime': ('django.db.models.fields.DateTimeField', [], {}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
@@ -1791,19 +2359,23 @@ class Migration(SchemaMigration):
             'reason': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'reason_missed': ('django.db.models.fields.CharField', [], {'max_length': '35', 'null': 'True', 'blank': 'True'}),
             'report_datetime': ('django.db.models.fields.DateTimeField', [], {}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'subject_identifier': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
         'visit_schedule.membershipform': {
             'Meta': {'object_name': 'MembershipForm', 'db_table': "'bhp_visit_membershipform'"},
-            'category': ('django.db.models.fields.CharField', [], {'default': "'subject'", 'max_length': '25', 'null': 'True'}),
+            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
+            'category': ('django.db.models.fields.CharField', [], {'default': "'subject'", 'max_length': '35', 'unique': 'True', 'null': 'True'}),
             'content_type_map': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'+'", 'unique': 'True', 'to': "orm['bhp_content_type_map.ContentTypeMap']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'hostname_created': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'hostname_modified': ('django.db.models.fields.CharField', [], {'default': "'mac.local'", 'max_length': '50', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
+            'model_name': ('django.db.models.fields.CharField', [], {'max_length': '25', 'null': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
@@ -1819,6 +2391,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.CharField', [], {'max_length': '36', 'primary_key': 'True'}),
             'membership_form': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['visit_schedule.MembershipForm']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'user_created': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'}),
             'user_modified': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '250', 'db_index': 'True'})
         },
@@ -1836,6 +2409,7 @@ class Migration(SchemaMigration):
             'lower_window': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'lower_window_unit': ('django.db.models.fields.CharField', [], {'default': "'D'", 'max_length': '10'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'revision': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
             'schedule_group': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['visit_schedule.ScheduleGroup']", 'null': 'True', 'blank': 'True'}),
             'time_point': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '35', 'db_index': 'True'}),
