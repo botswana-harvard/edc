@@ -7,8 +7,6 @@ from edc.device.sync.models import BaseSyncUuidModel
 class BasePackingList(BaseSyncUuidModel):
 
     list_datetime = models.DateTimeField(
-        verbose_name='Packed on',
-        default=datetime.today(),
         )
 
     list_comment = models.CharField(
