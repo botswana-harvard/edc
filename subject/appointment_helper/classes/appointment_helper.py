@@ -182,7 +182,8 @@ class AppointmentHelper(object):
         specific setting or the global setting."""
         default_appt_type = None
         try:
-            default_appt_type = SubjectConfiguration.objects.get(subject_identifier=registered_subject.subject_identifier).default_appt_type
+            default_appt_type = SubjectConfiguration.objects.get(
+                subject_identifier=registered_subject.subject_identifier).default_appt_type
         except SubjectConfiguration.DoesNotExist:
             try:
                 default_appt_type = GlobalConfiguration.objects.get_attr_value('default_appt_type')
