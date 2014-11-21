@@ -219,7 +219,10 @@ class BaseModelAdmin (admin.ModelAdmin):
             kwargs = {}
             [kwargs.update({key: value}) for key, value in request.GET.iteritems() if key != 'next']
             try:
-                url = reverse(next_url_name, kwargs=kwargs)
+                if '_changelist' in next_url_name or '_add' in next_url_name:
+                    url = reverse(next_url_name)
+                else:
+                    url = reverse(next_url_name, kwargs=kwargs)
             except NoReverseMatch:
                 try:
                     # try reversing to the url from just section_name
