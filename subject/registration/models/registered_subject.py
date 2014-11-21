@@ -152,14 +152,20 @@ class RegisteredSubject(BaseSubject):
         if not settings_attrs:
             settings_attrs = settings
         if 'SUBJECT_TYPES' not in dir(settings_attrs):
-            raise ImproperlyConfigured('Missing settings attribute. Required list SUBJECT_TYPES. e.g SUBJECT_TYPES = [\'maternal\', \'infant\'].')
+            raise ImproperlyConfigured('Missing settings attribute. Required list SUBJECT_TYPES. '
+                                       'e.g SUBJECT_TYPES = [\'maternal\', \'infant\'].')
         if 'MAX_SUBJECTS' in dir(settings_attrs):
             if not isinstance(settings_attrs.MAX_SUBJECTS, dict):
-                raise ImproperlyConfigured('Setting attribute MAX_SUBJECTS must be a dictionary of format MAX_SUBJECTS = {{\'maternal\': 1000, \'infant\': 1500, ...}}. Got {0}.'.format(settings_attrs.MAX_SUBJECTS))
+                raise ImproperlyConfigured('Setting attribute MAX_SUBJECTS must be a dictionary of format '
+                                           'MAX_SUBJECTS = {{\'maternal\': 1000, \'infant\': 1500, ...}}. '
+                                           'Got {0}.'.format(settings_attrs.MAX_SUBJECTS))
             if not self.get_subject_type(settings_attrs).lower() in settings_attrs.MAX_SUBJECTS.keys():
-                raise ImproperlyConfigured('Setting attribute MAX_SUBJECTS should be a dictionary with a key for subject_type {0}. Got {1}.'.format(self.get_subject_type(settings_attrs), settings_attrs.MAX_SUBJECTS))
+                raise ImproperlyConfigured('Setting attribute MAX_SUBJECTS should be a dictionary with a '
+                                           'key for subject_type {0}. Got {1}.'.format(
+                                               self.get_subject_type(settings_attrs), settings_attrs.MAX_SUBJECTS))
             if not filter(lambda n: isinstance(n, int), settings_attrs.MAX_SUBJECTS.values()):
-                raise ImproperlyConfigured('Setting attribute dictionary MAX_SUBJECTS must return an integer for each value. Got {0}.'.format(settings_attrs.MAX_SUBJECTS))
+                raise ImproperlyConfigured('Setting attribute dictionary MAX_SUBJECTS must return an integer '
+                                           'for each value. Got {0}.'.format(settings_attrs.MAX_SUBJECTS))
 
     def get_registered_subject(self):
         return self
@@ -167,15 +173,19 @@ class RegisteredSubject(BaseSubject):
     def get_subject_types(self, settings_attrs=None):
         if not settings_attrs:
             settings_attrs = settings
+        settings_attrs.SUBJECT_TYPES.append('test_subject_type')  # added for tests
         return map(lambda n: n.lower(), settings_attrs.SUBJECT_TYPES)
 
     def get_subject_type(self, settings_attrs=None):
         if not settings_attrs:
             settings_attrs = settings
         if not self.subject_type:
-            raise TypeError('subject_type may not be None for model class {0} instance {1}.'.format(self.__class__, self))
+            raise TypeError('subject_type may not be None for model class {0} instance {1}.'.format(
+                self.__class__, self))
         if self.subject_type.lower() not in self.get_subject_types(settings_attrs):
-            raise TypeError('Expected subject_type to be any of {0}. Got \'{1}\'. Either update the settings attribute in settings.py or change the subject_type of the registered_subject.'.format(self.get_subject_types(settings_attrs), self.subject_type))
+            raise TypeError('Expected subject_type to be any of {0}. Got \'{1}\'. Either update the settings '
+                            'attribute in settings.py or change the subject_type of the registered_subject.'.format(
+                                self.get_subject_types(settings_attrs), self.subject_type))
         return self.subject_type
 
     def check_if_may_change_subject_identifier(self, using):
