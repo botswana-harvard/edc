@@ -10,3 +10,5 @@ OPTIONAL = True
 NOT_APPLICABLE = 'N/A'
 CLOSED = 'closed'
 OPEN = 'open'
+YES = 'Yes'
+NO = 'No'
