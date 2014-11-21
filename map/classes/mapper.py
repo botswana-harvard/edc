@@ -102,11 +102,11 @@ class Mapper(object):
     def get_map_area(self):
         return self._get_attr('map_area')
 
-    def set_map_code(self, attr=None):
-        self._set_attr('map_code', attr)
+    #def set_map_code(self, attr=None):
+    #    self._set_attr('map_code', attr)
 
-    def get_map_code(self):
-        return self._get_attr('map_code')
+    #def get_map_code(self):
+    #    return self._get_attr('map_code')
 
     def set_radius(self, attr=None):
         self._set_attr('radius', attr)
