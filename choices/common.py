@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 
-from edc.constants import NOT_APPLICABLE, YES, NO
+from edc.constants import NOT_APPLICABLE, YES, NO, ALIVE, DEAD, UNKNOWN
 
 # choices
 BLANK_CHOICE_DASH = [('', '---------')]
@@ -19,14 +19,14 @@ ACU_EST_NEG = (
 )
 
 ALIVE_DEAD = (
-    ('alive', 'Alive'),
-    ('dead', 'Dead'),
+    (ALIVE, 'Alive'),
+    (DEAD, 'Dead'),
 )
 
 ALIVE_DEAD_UNKNOWN = (
-    ('alive', 'Alive'),
-    ('dead', 'Dead'),
-    ('unknown', 'Unknown'),
+    (ALIVE, 'Alive'),
+    (DEAD, 'Dead'),
+    (UNKNOWN, 'Unknown'),
 )
 
 ART_STATUS = (
