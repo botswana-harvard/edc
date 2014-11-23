@@ -1,19 +1,17 @@
-from .classes import BaseSectionView, site_sections
+# from .classes import BaseSectionView, site_sections
 
 
-class SectionAppointmentView(BaseSectionView):
-    section_name = 'appointments'
-    section_display_name = 'Appointments'
-    section_display_index = 110
-    # section_template =
+# class SectionAppointmentView(BaseSectionView):
+#     section_name = 'appointments'
+#     section_display_name = 'Appointments'
+#     section_display_index = 110
+# 
+# site_sections.register(SectionAppointmentView)
 
-site_sections.register(SectionAppointmentView)
 
-
-class SectionAdministrationView(BaseSectionView):
-    section_name = 'administration'
-    section_display_name = 'Administration'
-    section_display_index = 140
-    # section_template = 'section_administration.html'
-
-site_sections.register(SectionAdministrationView)
+# class SectionAdministrationView(BaseSectionView):
+#     section_name = 'administration'
+#     section_display_name = 'Administration'
+#     section_display_index = 140
+# 
+# site_sections.register(SectionAdministrationView)
