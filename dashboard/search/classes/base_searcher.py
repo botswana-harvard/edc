@@ -1,12 +1,14 @@
-from django import forms
+from datetime import date, time, datetime, timedelta
+from decimal import Decimal
 
 from django.conf.urls import patterns, url
+from django.db import models
+from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import get_model
 
 from edc.core.crypto_fields.fields import BaseEncryptedField
 
-from ..exceptions import SearchModelError
+from ..exceptions import SearchError
 from ..forms import SearchForm
 
 
@@ -14,138 +16,150 @@ class BaseSearcher(object):
 
     """ Base search class. """
 
-    APP_LABEL = 0
-    MODEL_NAME = 1
+    name = None
     search_model = None
     search_form = None
+    search_form_field_name = None
     template = None
-    search_model_attrname = None
+    order_by = ['-modified', '-created']
 
     def __init__(self):
-        self._name = None
-        self._search_term = None
-        self._search_model_cls = None
-        self._search_form_data = None
-        self._context = {}
-        self._order_by = None
-        self._search_result_template = None
-        self.form_is_valid = False
-        self.registration_model = {}
-        self._search_form = None
-        self.search_label = None
-        self.search_model_name = None
-        self.set_name()
-        self.set_search_form()
+        self._search_value = None
+        self._search_form_field_name = None
+        self.search_result_include_template = self.template or '{0}_include.html'.format(
+            self.search_model._meta.object_name.lower())
+        self.search_form = self.search_form or SearchForm
+        self.search_form_data = {}  # set in the view, only access through a form
+        self.search_form_field_name = self.search_form_field_name or 'search_term'
 
     def contribute_to_context(self, context):
-        context.update({'search_form': self.get_search_form(self.get_search_form_data())})
+        context.update({'search_form': self.search_form(self.search_form_data)})
         return context
 
-    def _get_search_result(self, request, **kwargs):
-        return self.get_search_result(request, **kwargs)
+    @property
+    def search_value(self):
+        """Returns the search value."""
+        return self._search_value
 
-    def get_search_result(self, request, **kwargs):
-        """ Returns a queryset or other iterable of search result.
+    @search_value.setter
+    def search_value(self, value):
+        """Sets the value after striping.
 
-        Users must override this to define custom search logic. """
-        raise ImproperlyConfigured('Method get_search_result must be overridden to return a search result based on criteria from the request object.')
-        return None
+        The search value is assigned in the view from the form."""
+        self._search_value = value.strip()
 
-    def set_name(self):
-        self._name = self.name
-        if not self._name:
-            raise AttributeError('Attribute name may not be None for {0}.'.format(self))
+    @property
+    def search_form_field_name(self):
+        return self._search_form_field_name
 
-    def get_name(self):
-        return self._name
+    @search_form_field_name.setter
+    def search_form_field_name(self, field_name):
+        """Sets the search field after confirming the field exists on the search Form Class."""
+        try:
+            [field.name for field in SearchForm().visible_fields()].index(field_name)
+            self._search_form_field_name = field_name
+        except ValueError:
+            raise ImproperlyConfigured('Search form field \'{}\' is not a visible field of search_form \'{}\''.format(
+                field_name, self.search_form))
 
-    def set_search_form(self):
-        self._search_form = self.search_form or SearchForm
-        if not issubclass(self._search_form, forms.Form):
-            raise AttributeError('Expected subclass of forms.Form for attribute \'search_form\'. Got {0}'.format(self._search_form))
+    @property
+    def search_result(self):
+        try:
+            return self.search_model.objects.filter(self.qset).order_by(*self.order_by)
+        except TypeError:
+            return []
 
-    def get_search_form(self, data=None):
-        return self._search_form(data)
+    @property
+    def qset(self):
+        """Builds and returns a qset, Q(), based on a single search value against any text or integer fields.
 
-    def set_search_form_data(self, form_data=None):
-        self._search_form_data = {}
-        if self.get_search_form(form_data).is_valid():
-            self._search_form_data = form_data
+        If the field is an Encrypted field, the search value is hashed using the models fields
+        field_cryptor.
 
-    def get_search_form_data(self):
-        return self._search_form_data
+        If the form is not valid, nothing is returned."""
+        qset = None
+        form = self.search_form(self.search_form_data)
+        if form.is_valid():
+            search_value = form.data.get(self.search_form_field_name)
+            qset = Q()
+            for field in self.search_model._meta.fields:
+                if isinstance(field, BaseEncryptedField):
+                    qset.add(Q(**{'{0}__exact'.format(field.name): search_value}), Q.OR)
+                elif isinstance(field, (models.CharField, models.TextField)):
+                    qset.add(Q(**{'{0}__icontains'.format(field.name): search_value}), Q.OR)
+                elif isinstance(field, (models.IntegerField, models.FloatField, models.DecimalField)):
+                    try:
+                        search_value = int(search_value)
+                    except ValueError:
+                        try:
+                            search_value = float(search_value)
+                        except ValueError:
+                            search_value = Decimal(search_value)
+                    finally:
+                        qset.add(Q(**{'{0}'.format(field.name): search_value}), Q.OR)
+                elif isinstance(field, (models.DateTimeField, models.DateField)):
+                    pass
+                elif isinstance(field, (models.ForeignKey, models.OneToOneField, models.ManyToManyField,
+                                        models.ImageField, models.NullBooleanField, models.BooleanField)):
+                    pass
+                else:
+                    raise SearchError('model contains a field type not handled. '
+                                      'Got {0} from model {1}.'.format(field, self.search_model_cls))
+        return qset
 
-    def set_search_term(self, value):
-        if not value:
-            raise TypeError('Search term may not be None')
-        self._search_term = str(value).strip()
-
-    def get_search_term(self):
-        return self._search_term
-
-    def set_order_by(self, *args):
-        self._order_by = args
-
-    def get_order_by(self):
-        return self._order_by
-
-    def set_search_result_include_template(self, template=None):
-        if template:
-            self._search_result_template = template
-        elif self.template:  # try for class attribute first
-            self._search_result_template = self.template
-        else:
-            self._search_result_template = '{0}_include.html'.format(self.get_search_model_cls()._meta.object_name.lower())
-
-    def get_search_result_include_template(self):
-        if not self._search_result_template:
-            self.set_search_result_include_template()
-        return self._search_result_template
-
-    def _set_search_model_cls(self, value=None):
-        if self.search_model:
-            if isinstance(self.search_model, tuple):
-                self._search_model_cls = get_model(self.search_model[0], self.search_model[1])
-            else:
-                self._search_model_cls = self.search_model
-        if not self._search_model_cls:
-            raise SearchModelError('Attribute \'search_model_cls\' cannot be None')
-
-    def get_search_model_cls(self):
-        if not self._search_model_cls:
-            self._set_search_model_cls()
-        return self._search_model_cls
-
-    def get_url_patterns(self, view, section_name=None):
+    def url_patterns(self, view, section_name=None):
         """Returns a url pattern which includes the section prefix of the url pattern.
 
         This is called by the section class."""
         # TODO: can section be removed from this??
         if section_name:
             return patterns('',
-                url(r'^(?P<section_name>{section_name})/(?P<search_name>{search_name})/(?P<search_term>[\d\w\ \-\<\>]+)/$'.format(section_name=section_name, search_name=self.get_name()),
+                url(
+                    (r'^(?P<section_name>{section_name})/(?P<search_name>{search_name})/'
+                     '(?P<search_term>[\d\w\ \-\<\>]+)/$'.format(section_name=section_name, search_name=self.name)),
                     view,
-                    name="section_search_{name}_url".format(name=self.get_name())),
-                url(r'^(?P<section_name>{section_name})/(?P<search_name>{search_name})/$'.format(section_name=section_name, search_name=self.get_name()),
+                    name="section_search_{name}_url".format(name=self.name)),
+                url(
+                    r'^(?P<section_name>{section_name})/(?P<search_name>{search_name})/$'.format(
+                        section_name=section_name, search_name=self.name),
                     view,
-                    name="section_search_{name}_url".format(name=self.get_name())))
+                    name="section_search_{name}_url".format(name=self.name)))
         return patterns('',
-            url(r'^(?P<search_name>{search_name})/(?P<search_term>{search_term})/$'.format(search_name=self.get_name(), search_term=self.get_search_term()),
+            url(
+                r'^(?P<search_name>{search_name})/(?P<search_term>{search_term})/$'.format(
+                    search_name=self.name, search_term=self.search_form_field_name),
                 view,
-                name="search_{name}_url".format(name=self.get_name())),
-            url(r'^(?P<search_name>{search_name})/$'.format(search_name=self.get_name()),
+                name="search_{name}_url".format(name=self.name)),
+            url(r'^(?P<search_name>{search_name})/$'.format(search_name=self.name),
                 view,
-                name="search_{name}_url".format(name=self.get_name())))
+                name="search_{name}_url".format(name=self.name)))
 
-    def hash_for_encrypted_fields(self, search_term, model_instance):
-        """ Using the model's field objects and the search term, create a dictionary of
-        {field_name, search term} where search term is hashed if this is an encrypted field """
-        terms = {}
-        for field in model_instance._meta.fields:
-            if isinstance(field, BaseEncryptedField):
-                # change the search term to a hash using the hasher on the field
-                terms[field.attname] = field.field_cryptor.get_hash_with_prefix(search_term)
-            else:
-                # use the original search term
-                terms[field.attname] = search_term
-        return terms
+    def hash_value(self, field, value):
+        """ Returns a hash if this is an encrypted field """
+        try:
+            value = field.field_cryptor.get_hash_with_prefix(value)
+        except AttributeError:
+            pass
+        return value
+
+    @property
+    def special_keyword_queryset(self):
+        if self.search_value.lower() == '?':
+            queryset = self.search_model.objects.all().order_by('-modified')[0:15]
+        elif self.search_value.lower().startswith('?last'):
+            limit = self.search_value.lower().split('?last')[1] or 15
+            queryset = self.search_model.objects.all().order_by('-modified')[0:limit]
+        elif self.search_value.lower().startswith('?first'):
+            limit = self.search_value.lower().split('?first')[1] or 15
+            queryset = self.search_model.objects.all().order_by('modified')[0:limit]
+        elif self.search_value.lower() == '?today':
+            queryset = self.search_model.objects.filter(modified__gte=datetime.combine(date.today(), time.min)).order_by('modified')
+        elif self.search_value.lower() == '?yesterday':
+            queryset = self.search_model.objects.filter(
+                modified__gte=datetime.combine(date.today() - timedelta(days=1), time.min)).order_by('modified')
+        elif self.search_value.lower() == '?lastweek':
+            queryset = self.search_model.objects.filter(
+                modified__gte=datetime.combine(date.today() - timedelta(days=7), time.min)).order_by('modified')
+        else:
+            queryset = None
+        return queryset
