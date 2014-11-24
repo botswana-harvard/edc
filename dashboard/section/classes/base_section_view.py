@@ -99,19 +99,20 @@ class BaseSectionView(object):
                 page = int(request.GET.get('page', '1'))
             except ValueError:
                 page = 1
-            self.searcher = self.search.get(kwargs.get('search_name', 'word'))()
-            self.searcher.search_form_data = request.POST
-            if self.searcher.search_form(request.POST).is_valid():
-                self.context.update({
-                    'search_result': self._paginate(self.searcher.search_result, page),
-                    'search_result_include_file': self.searcher.search_result_include_template,
-                    })
-            else:
-                if self.show_most_recent:
+            if self.search:
+                self.searcher = self.search.get(kwargs.get('search_name', 'word'))()
+                self.searcher.search_form_data = request.POST
+                if self.searcher.search_form(request.POST).is_valid():
                     self.context.update({
-                        'search_result': self._paginate(MostRecentQuery(self.searcher.search_model).query(), page),
+                        'search_result': self._paginate(self.searcher.search_result, page),
                         'search_result_include_file': self.searcher.search_result_include_template,
                         })
+                else:
+                    if self.show_most_recent:
+                        self.context.update({
+                            'search_result': self._paginate(MostRecentQuery(self.searcher.search_model).query(), page),
+                            'search_result_include_file': self.searcher.search_result_include_template,
+                            })
             self.context.update({
                 'app_name': settings.APP_NAME,
                 'installed_apps': settings.INSTALLED_APPS,
@@ -130,7 +131,8 @@ class BaseSectionView(object):
             except AttributeError:
                 pass
             self._contribute_to_context_wrapper(self.context, request, **kwargs)
-            self.searcher.contribute_to_context(self.context)
+            if self.search:
+                self.searcher.contribute_to_context(self.context)
             return self.view(request, *args, **kwargs)
         return view(request, *args, **kwargs)
 
