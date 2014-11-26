@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.db.models import OneToOneField, ForeignKey, get_model
 from django.db.models.query import QuerySet
@@ -236,3 +238,12 @@ class BaseModelForm(forms.ModelForm):
 
         """
         pass
+
+    @property
+    def number_from_label(self):
+        """Returns the question number from the label, or None."""
+        try:
+            number = re.match('^\\d+\\.', self.fields['hiv_test_date'].label).string.split('.')
+        except AttributeError:
+            number = ['']
+        return number[0]
