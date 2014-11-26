@@ -8,6 +8,7 @@ from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.consent.classes import ConsentHelper
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc.subject.entry.models import Entry
 
 from .logic import Logic
 
@@ -19,6 +20,8 @@ class BaseRule(object):
 
     ..see_also: comment on :module:`ScheduledDataRule`"""
 
+#     entry_class = None
+#     meta_data_model = None
     operators = ['equals', 'eq', 'gt', 'gte', 'lt', 'lte', 'ne', '!=', '==', 'in', 'not in']
     action_list = ['new', 'not_required', 'none']
 
@@ -42,10 +45,8 @@ class BaseRule(object):
         self.target_model_names = []
         self.visit_attr_name = None
 
-        if 'logic' in kwargs:
-            self.logic = kwargs.get('logic')
-        if 'target_model' in kwargs:
-            self.target_model_list = kwargs.get('target_model')
+        self.logic = kwargs.get('logic')
+        self.target_model_list = kwargs.get('target_model')
 
     def __repr__(self):
         return self.name or self.source_model or self.__class__.__name__
@@ -54,23 +55,60 @@ class BaseRule(object):
         return '{0.name}()'.format(self)
 
     def run(self, visit_instance):
-        """ Evaluate the rule for each model class in the target model list."""
-        for target_model in self.target_model_list:
-            self.target_model = target_model
-            self.visit_instance = visit_instance
+        """ Evaluate the rule for each model class in the target model list.
+
+        If target model is None (not in the visit schedule) do nothing."""
+        self.visit_instance = visit_instance
+        for self.target_model in self.target_model_list:
             self.registered_subject = self.visit_instance.appointment.registered_subject
             self.visit_attr_name = convert_from_camel(self.visit_instance._meta.object_name)  # not necessarily
             self._source_instance = None
             self._target_instance = None
             change_type = self.evaluate()
             if change_type:
-                self.target_model.entry_meta_data_manager.visit_instance = self.visit_instance
                 try:
-                    self.target_model.entry_meta_data_manager.instance = self.target_model.objects.get(
-                        **self.target_model.entry_meta_data_manager.query_options)
-                except self.target_model.DoesNotExist:
-                    self.target_model.entry_meta_data_manager.instance = None
-                self.target_model.entry_meta_data_manager.update_meta_data_from_rule(change_type)
+                    self.target_model.entry_meta_data_manager.visit_instance = self.visit_instance
+                    try:
+                        self.target_model.entry_meta_data_manager.instance = self.target_model.objects.get(
+                            **self.target_model.entry_meta_data_manager.query_options)
+                    except self.target_model.DoesNotExist:
+                        self.target_model.entry_meta_data_manager.instance = None
+                    self.target_model.entry_meta_data_manager.update_meta_data_from_rule(change_type)
+                except AttributeError as err:
+                    if 'entry_meta_data_manager' in str(err):
+                        pass  # target model not set
+                    else:
+                        raise
+
+    @property
+    def target_model(self):
+        return self._target_model
+
+    @target_model.setter
+    def target_model(self, model_cls):
+        """Sets the target models to a model class from the target_model_list or None.
+
+        Target models are the models for whose meta data is affected by the rule.
+
+        Target models always have an attribute pointing to the visit instance.
+
+        Target models must be listed in the visit definition for the
+        current visit_instance, e.g. Entry of visit_instance.appointment.visit_definition.
+        If it is not listed in the visit_definition, target_model returns None."""
+
+        self._target_model = None
+        try:
+            model_cls = get_model(self.app_label, model_cls)
+        except AttributeError:
+            pass  # type object '<model_cls>' has no attribute 'lower'
+        try:
+            self.entry_class.entry_model.objects.get(
+                visit_definition=self.visit_instance.appointment.visit_definition,
+                app_label=model_cls._meta.app_label,
+                model_name=model_cls._meta.object_name.lower())
+            self._target_model = model_cls
+        except self.entry_class.entry_model.DoesNotExist:
+            pass
 
     def evaluate(self):
         """ Evaluates the predicate and returns an action.
@@ -327,23 +365,6 @@ class BaseRule(object):
                         comparative_value=self.predicate_comparative_value)
                     n += 1
         return self._predicate
-
-    @property
-    def target_model(self):
-        return self._target_model
-
-    @target_model.setter
-    def target_model(self, target_model):
-        """Sets a list of target models.
-
-        Target models are the models for whose meta data is affected by the rule.
-
-        Target models always have an attribute pointing to the visit instance."""
-        self._target_model = target_model
-        if isinstance(self._target_model, basestring):
-            self._target_model = get_model(self.app_label, self._target_model)
-        if not self._target_model:
-            raise AttributeError('Target model may not be None.')
 
     @property
     def visit_instance(self):
