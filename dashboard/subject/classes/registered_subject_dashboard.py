@@ -389,14 +389,14 @@ class RegisteredSubjectDashboard(Dashboard):
         May come from url or from the overridden :func:`set_membership_form_category`
 
         Must be a valid membership form category."""
-        self._membership_form_category=[]
+        self._membership_form_category = []
         self._membership_form_category.append(category)
         self._membership_form_category = flatten(self._membership_form_category)
 #         self._membership_form_category = category
         for c in self._membership_form_category:
             if c not in self.membership_form_categories:
                 raise ImproperlyConfigured('Invalid membership_form category. Attribute \'_membership_form_category\'=\'{0}\' not found in '
-                                       'MembershipForms. Must be one of {1}. See {2}.'.format(c, self.membership_form_categories, self))
+                                           'MembershipForms. Must be one of {1}. See {2}.'.format(c, self.membership_form_categories, self))
 
     @property
     def membership_form_categories(self):
