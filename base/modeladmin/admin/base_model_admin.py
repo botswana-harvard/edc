@@ -216,11 +216,15 @@ class BaseModelAdmin (admin.ModelAdmin):
             custom_http_response_redirect = HttpResponseRedirect(url)
             request.session['filtered'] = None
         else:
+            change_list_q = ''
             kwargs = {}
             [kwargs.update({key: value}) for key, value in request.GET.iteritems() if key != 'next']
             try:
-                if '_changelist' in next_url_name or '_add' in next_url_name:
+                if '_add' in next_url_name:
                     url = reverse(next_url_name)
+                elif '_changelist' in next_url_name:
+                    url = reverse(next_url_name)
+                    change_list_q = '?q={}'.format(kwargs.get('q')) if kwargs.get('q') else ''  # add back filter
                 else:
                     url = reverse(next_url_name, kwargs=kwargs)
             except NoReverseMatch:
@@ -229,7 +233,7 @@ class BaseModelAdmin (admin.ModelAdmin):
                     url = reverse(next_url_name, kwargs={'section_name': kwargs.get('section_name')})
                 except NoReverseMatch:
                     raise NoReverseMatch('response_change failed to reverse url \'{0}\' with kwargs {1}. Is this a dashboard url?'.format(next_url_name, kwargs))
-            custom_http_response_redirect = HttpResponseRedirect(url)
+            custom_http_response_redirect = HttpResponseRedirect('{}{}'.format(url, change_list_q))
             request.session['filtered'] = None
         return custom_http_response_redirect
 
