@@ -224,7 +224,7 @@ class BaseModelAdmin (admin.ModelAdmin):
                     url = reverse(next_url_name)
                 elif '_changelist' in next_url_name:
                     url = reverse(next_url_name)
-                    if kwargs.get('q'):
+                    if kwargs.get('q', None) and kwargs.get('q') != 'None':
                         change_list_q = '?q={}'.format(kwargs.get('q'))
                 else:
                     url = reverse(next_url_name, kwargs=kwargs)
