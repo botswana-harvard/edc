@@ -21,15 +21,14 @@ class ActionItemAdmin(BaseAdmin):
         self.search_fields.insert(0, 'registered_subject__subject_identifier')
         self.list_display.insert(1, 'dashboard')
         self.list_filter.append('action_group')
-        # save_model expects bhp_data_manager specific user groups
 
     def save_model(self, request, obj, form, change):
-        # check for bhp_data_manager user groups
-        #group = data_manager.prepare()
+        # check for data_manager user groups
+        # group = data_manager.prepare()
         data_manager.check_groups()
         user = request.user
         if not user.is_superuser:
-            #A user should be able to assign an action item to any other user group
+            # A user should be able to assign an action item to any other user group
             user_groups = [group.name for group in Group.objects.all()]
 #             user_groups = [group.name for group in Group.objects.filter(user__username=request.user)]
             if not user_groups:
