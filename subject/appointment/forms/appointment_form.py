@@ -20,7 +20,7 @@ class AppointmentForm(BaseModelForm):
 
         cleaned_data = self.cleaned_data
         if self.instance:
-            TimePointStatus = get_model('bhp_data_manager', 'TimePointStatus')
+            TimePointStatus = get_model('data_manager', 'TimePointStatus')
             TimePointStatus.check_time_point_status(appointment=self.instance, exception_cls=forms.ValidationError)
         if not cleaned_data.get("appt_datetime"):
             raise forms.ValidationError('Please provide the appointment date and time.')
