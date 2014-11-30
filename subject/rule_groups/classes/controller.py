@@ -81,7 +81,8 @@ class Controller(object):
         for rule_group in self.get_registry(app_label):
             for rule in rule_group.rules:
                 if rule.source_model == source_model:
-                    rules.append(rule)
+                    if rule.runif:
+                        rules.append(rule)
         return rules
 
     def get_rules_for_registered_subject(self, app_label):
