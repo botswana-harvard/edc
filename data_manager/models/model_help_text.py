@@ -33,6 +33,6 @@ class ModelHelpText(BaseModel):
     url.allow_tags = True
 
     class Meta:
-        app_label = "bhp_data_manager"
+        app_label = "data_manager"
         db_table = 'bhp_data_manager_timepointstatus'
 
