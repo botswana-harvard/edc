@@ -129,5 +129,6 @@ class TimePointStatus(BaseSyncUuidModel):
 
     class Meta:
         app_label = "bhp_data_manager"
+        db_table = 'bhp_data_manager_timepointstatus'
         verbose_name = "Time Point Completion"
         verbose_name_plural = "Time Point Completion"
