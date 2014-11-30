@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from edc.device.sync.models import BaseSyncUuidModel
-from edc.subject.appointment.choices import APPT_STATUS
+from edc.subject.appointment.choices import APPT_STATUS, APPT_TYPE
 from edc.subject.appointment.constants import NEW
 
 
@@ -14,7 +14,7 @@ class SubjectConfiguration(BaseSyncUuidModel):
     default_appt_type = models.CharField(
         max_length=10,
         default='clinic',
-        choices=(('clinic', 'In clinic'), ('telephone', 'By telephone')),
+        choices=APPT_TYPE,
         help_text=''
         )
 
@@ -32,9 +32,12 @@ class SubjectConfiguration(BaseSyncUuidModel):
         Appointment = models.get_model('appointment', 'Appointment')
 
         """Updates \'NEW\' appointments for this subject_identifier to reflect this appt_status."""
-        if 'new' not in [x[0] for x in APPT_STATUS]:
-            raise ImproperlyConfigured('SubjectConfiguration save() expects APPT_STATUS choices tuple to have a \'new\' option. Not found. Got {0}'.format(APPT_STATUS))
-        for appointment in Appointment.objects.filter(registered_subject__subject_identifier=self.subject_identifier, appt_status__iexact=NEW):
+        if NEW not in [x[0] for x in APPT_STATUS]:
+            raise ImproperlyConfigured(
+                'SubjectConfiguration save() expects APPT_STATUS choices tuple '
+                'to have a \'{0}\' option. Not found. Got {1}'.format(NEW, APPT_STATUS))
+        for appointment in Appointment.objects.filter(
+                registered_subject__subject_identifier=self.subject_identifier, appt_status__iexact=NEW):
             appointment.appt_type = self.default_appt_type
             appointment.raw_save()
 
