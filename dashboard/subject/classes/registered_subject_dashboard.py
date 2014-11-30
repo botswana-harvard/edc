@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
 from edc.apps.app_configuration.models.global_configuration import GlobalConfiguration
 from edc.constants import NEW, NOT_REQUIRED
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.core.bhp_data_manager.models import ActionItem
+from edc.data_manager.models import ActionItem
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.dashboard.base.classes import Dashboard
 from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
@@ -24,11 +24,9 @@ from edc.subject.registration.models import RegisteredSubject
 from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.subject_summary.models import Link
 from edc.subject.visit_schedule.classes import MembershipFormHelper
-from edc.subject.visit_schedule.exceptions import MembershipFormError
 from edc.subject.visit_schedule.models import MembershipForm
 from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.core.bhp_data_manager.models import TimePointStatus
-from edc.utils.collections import flatten
+from edc.data_manager.models import TimePointStatus
 
 from .scheduled_entry_context import ScheduledEntryContext
 from .requisition_context import RequisitionContext
@@ -89,6 +87,12 @@ class RegisteredSubjectDashboard(Dashboard):
             visit_instance=self.appointment_continuation_count,
             visit_messages=self.visit_messages,
             visit_model=self.visit_model,
+            visit_model_admin_url_changelist='admin:{}_{}_changelist'.format(
+                self.visit_model._meta.app_label, self.visit_model._meta.object_name.lower()),
+            visit_model_admin_url_change='admin:{}_{}_change'.format(
+                self.visit_model._meta.app_label, self.visit_model._meta.object_name.lower()),
+            visit_model_admin_url_add='admin:{}_{}_add'.format(
+                self.visit_model._meta.app_label, self.visit_model._meta.object_name.lower()),
             visit_model_instance=self.visit_model_instance,
             time_point_status=self.time_point_status,
             )
@@ -106,6 +110,7 @@ class RegisteredSubjectDashboard(Dashboard):
         self.context.update(self.lab_results_data())
         return self.context
 
+    @property
     def show(self):
         return self.context.get('show', 'appointments')
 
@@ -124,7 +129,9 @@ class RegisteredSubjectDashboard(Dashboard):
         for model in value.itervalues():
             if model:
                 if 'get_registered_subject' not in dir(model):
-                    raise ImproperlyConfigured('RegisteredSubjectDashboard dashboard_model {0} must have method registered_subject. See {1}.'.format(model, self))
+                    raise ImproperlyConfigured(
+                        'RegisteredSubjectDashboard dashboard_model {0} must '
+                        'have method registered_subject. See {1}.'.format(model, self))
 
     def add_visit_message(self, message):
         self.visit_messages.append(message)
@@ -138,7 +145,8 @@ class RegisteredSubjectDashboard(Dashboard):
         """Returns to the value returned by the site_lab_tracker for this registered subject."""
         self._subject_hiv_status = None
         if self.registered_subject:
-            self._subject_hiv_status = site_lab_tracker.get_current_value('HIV', self.registered_subject.subject_identifier, self.registered_subject.subject_type)[0]
+            self._subject_hiv_status = site_lab_tracker.get_current_value(
+                'HIV', self.registered_subject.subject_identifier, self.registered_subject.subject_type)[0]
         return self._subject_hiv_status
 
     @property
@@ -147,7 +155,8 @@ class RegisteredSubjectDashboard(Dashboard):
         self._subject_hiv_history = None
         if self.registered_subject:
             # TODO: this gets hit on every dashboard refresh and is very SLOW
-            self._subject_hiv_history = site_lab_tracker.get_history_as_string('HIV', self.registered_subject.subject_identifier, self.registered_subject.subject_type)
+            self._subject_hiv_history = site_lab_tracker.get_history_as_string(
+                'HIV', self.registered_subject.subject_identifier, self.registered_subject.subject_type)
         return self._subject_hiv_history
 
     @property
@@ -189,9 +198,14 @@ class RegisteredSubjectDashboard(Dashboard):
                 if self.appointment.visit_instance == '0':
                     self._appointment_zero = self.appointment
                 else:
-                    if Appointment.objects.filter(registered_subject=self.appointment.registered_subject, visit_definition=self.appointment.visit_definition, visit_instance=0) > 1:
+                    if Appointment.objects.filter(
+                            registered_subject=self.appointment.registered_subject,
+                            visit_definition=self.appointment.visit_definition, visit_instance=0) > 1:
                         self.delete_duplicate_appointments(inst=self)
-                    self._appointment_zero = Appointment.objects.get(registered_subject=self.appointment.registered_subject, visit_definition=self.appointment.visit_definition, visit_instance=0)
+                    self._appointment_zero = Appointment.objects.get(
+                        registered_subject=self.appointment.registered_subject,
+                        visit_definition=self.appointment.visit_definition,
+                        visit_instance=0)
         return self._appointment_zero
 
     @property
@@ -206,7 +220,9 @@ class RegisteredSubjectDashboard(Dashboard):
         """Deletes all but one duplicate appointments as long as they are not related to a visit model."""
         if not visit_model:
             visit_model = inst.visit_model
-        appointments = Appointment.objects.values('registered_subject__pk', 'visit_definition', 'visit_instance').all().annotate(num=Count('pk')).order_by()
+        appointments = Appointment.objects.values(
+            'registered_subject__pk', 'visit_definition', 'visit_instance').all().annotate(
+                num=Count('pk')).order_by()
         dups = [a for a in appointments if a.get('num') > 1]
         for dup in dups:
             num = dup['num']
@@ -257,18 +273,22 @@ class RegisteredSubjectDashboard(Dashboard):
     def visit_model(self, visit_model):
         self._visit_model = visit_model
         if not self._visit_model:
-            raise TypeError('Attribute _visit_model may not be None. Override the method to return a visit mode class or specify at init.')
+            raise TypeError('Attribute _visit_model may not be None. Override the method '
+                            'to return a visit mode class or specify at init.')
         if not issubclass(self._visit_model, BaseVisitTracking):
-            raise TypeError('Expected visit model class to be a subclass of BaseVisitTracking. Got {0}. See {1}.'.format(self._visit_model, self))
+            raise TypeError('Expected visit model class to be a subclass of '
+                            'BaseVisitTracking. Got {0}. See {1}.'.format(self._visit_model, self))
 
     @property
     def visit_model_attrname(self):
-        """Returns what is assumed to be the field name for the visit model in appointment based on the visit model object name."""
+        """Returns what is assumed to be the field name for the visit model in
+        appointment based on the visit model object name."""
         return convert_from_camel(self.visit_model._meta.object_name)
 
     @property
     def visit_model_rel_attrname(self):
-        """Returns what is assumed to be the field name for the visit model in appointment based on the visit model object name."""
+        """Returns what is assumed to be the field name for the visit model in
+        appointment based on the visit model object name."""
         return self.visit_model._meta.object_name.lower()
 
     @property
@@ -298,7 +318,8 @@ class RegisteredSubjectDashboard(Dashboard):
             if not self._requisition_model:
                 raise TypeError('Attribute _requisition model cannot be None. See {0}'.format(self))
             if not issubclass(self._requisition_model, BaseBaseRequisition):
-                raise TypeError('Expected a subclass of BaseBaseRequisition. Got {0}. See {1}.'.format(self._requisition_model, self))
+                raise TypeError('Expected a subclass of BaseBaseRequisition. '
+                                'Got {0}. See {1}.'.format(self._requisition_model, self))
 
     @property
     def packing_list_model(self):
@@ -308,13 +329,18 @@ class RegisteredSubjectDashboard(Dashboard):
     def packing_list_model(self):
         self._packing_list_model = self.packing_list_model
         if not self._packing_list_model:
-            raise TypeError('Attribute \'_packing_list_model\' may not be None. Override the getter. See {0}'.format(self))
+            raise TypeError(
+                'Attribute \'_packing_list_model\' may not be None. '
+                'Override the getter. See {0}'.format(self))
         if not issubclass(self._packing_list_model, BasePackingList):
-            raise TypeError('Expected a subclass of BasePackingList. Got {0}. See {1}.'.format(self._packing_list_model, self))
+            raise TypeError(
+                'Expected a subclass of BasePackingList. Got {0}. See {1}.'.format(
+                    self._packing_list_model, self))
 
     @property
     def subject_membership_models(self):
-        """Sets to a dictionary of membership "models" that are keyed model instances and unkeyed model classes.
+        """Sets to a dictionary of membership "models" that are
+        keyed model instances and unkeyed model classes.
 
         Membership forms can also be proxy models ... see mochudi_subject.models."""
         helper = MembershipFormHelper()
@@ -343,44 +369,6 @@ class RegisteredSubjectDashboard(Dashboard):
             unkeyed.extend(member_model.get('unkeyed'))
         return unkeyed
 
-#     @property
-#     def membership_form_category(self):
-#         return self._membership_form_category
-# 
-#     @membership_form_category.setter
-#     def membership_form_category(self, category):
-#         """Sets the membership_form_category for this registered subject dashboard needed to filter the QuerySet of Membership forms to display on the dashboard.
-# 
-#         May come from url or from the overridden :func:`set_membership_form_category`
-# 
-#         Must be a valid membership form category."""
-#         self._membership_form_category = []
-#         self._membership_form_category.append(category)
-#         self._membership_form_category = flatten(self._membership_form_category)
-# #         self._membership_form_category = category
-#         for c in self._membership_form_category:
-#             if c not in self.membership_form_categories:
-#                 raise ImproperlyConfigured('Invalid membership_form category. Attribute \'_membership_form_category\'=\'{0}\' not found in '
-#                                            'MembershipForms. Must be one of {1}. See {2}.'.format(c, self.membership_form_categories, self))
-
-#     @property
-#     def membership_form_categories(self):
-#         """Sets and returns a list of valid membership form categories using the MembershipForm model.
-#  
-#         .. note:: the list of categories is based on those that appear in the MembershipForm category field.
-#                   The MembershipForm field \'category\' may be a string of category names delimited by a comma."""
-#         self._membership_form_categories = []
-#         categories = MembershipForm.objects.values('category').order_by('category').distinct()
-#         # turn into a list, split and strip
-#         for c in categories:
-#             self._membership_form_categories.extend([x.strip() for x in c['category'].split(',')])
-#         self._membership_form_categories = list(set(self._membership_form_categories))
-#         if not self._membership_form_categories:
-#             raise MembershipFormError(
-#                 'Attribute _categories may not be None. Have any membership '
-#                 'forms been defined?. See module \'edc.subject.visit_schedule\'. See {0}'.format(self))
-#         return self._membership_form_categories
-
     @property
     def subject_type(self):
         return self.registered_subject.subject_type
@@ -397,7 +385,8 @@ class RegisteredSubjectDashboard(Dashboard):
         self._subject_configuration = None
         if self.subject_identifier:
             if SubjectConfiguration.objects.filter(subject_identifier=self.subject_identifier):
-                self._subject_configuration = SubjectConfiguration.objects.get(subject_identifier=self.subject_identifier)
+                self._subject_configuration = SubjectConfiguration.objects.get(
+                    subject_identifier=self.subject_identifier)
         return self._subject_configuration
 
     @property
@@ -420,7 +409,8 @@ class RegisteredSubjectDashboard(Dashboard):
         self.context.update(summary_links=summary_links)
 
     def render_labs(self):
-        """Renders labs for the template side bar if the requisition model is set, by default will not update.
+        """Renders labs for the template side bar if the
+        requisition model is set, by default will not update.
 
         .. seealso:: :class:`lab_clinic_api.classes.EdcLabResults`"""
 
@@ -430,7 +420,8 @@ class RegisteredSubjectDashboard(Dashboard):
         return ''
 
     def lab_results_data(self):
-        """Achieves almost the same end result with the render_labs method above but depends on template inclusion"""
+        """Achieves almost the same end result with the render_labs
+        method above but depends on template inclusion"""
         return EdcLabResults().context_data(self.subject_identifier, False) if self._requisition_model else {}
 
     @property
@@ -439,7 +430,8 @@ class RegisteredSubjectDashboard(Dashboard):
 
     @locator_model.setter
     def locator_model(self, model):
-        """Sets the locator model class which must be a subclass of edc.subject.locator.BaseLocator."""
+        """Sets the locator model class which must be a
+        subclass of edc.subject.locator.BaseLocator."""
         self._locator_model = model
         if self._locator_model:
             if not issubclass(self._locator_model, BaseLocator):
@@ -451,19 +443,23 @@ class RegisteredSubjectDashboard(Dashboard):
         self._locator_inst = None
         if self.locator_model:
             if self.locator_model.objects.filter(registered_subject=self.locator_registered_subject):
-                self._locator_inst = self.locator_model.objects.get(registered_subject=self.locator_registered_subject)
+                self._locator_inst = self.locator_model.objects.get(
+                    registered_subject=self.locator_registered_subject)
         return self._locator_inst
 
     @property
     def locator_registered_subject(self):
-        """Users may override to return a registered_subject other than the current or None -- used to filter the locator model.
+        """Users may override to return a registered_subject other than
+        the current or None -- used to filter the locator model.
 
-        For example, current subject is an infant, need mother\'s registered subject instance to filter Locator model."""
+        For example, current subject is an infant, need mother\'s
+        registered subject instance to filter Locator model."""
         return self.registered_subject
 
     @property
     def locator_visit_model(self):
-        """Users may override to return a visit_model other than the current or None -- used to filter the locator model."""
+        """Users may override to return a visit_model other than the
+        current or None -- used to filter the locator model."""
         return self.visit_model
 
     @property
@@ -472,7 +468,8 @@ class RegisteredSubjectDashboard(Dashboard):
 
     @property
     def locator_scheduled_visit_code(self):
-        """ Returns visit where the locator is scheduled, TODO: maybe search visit definition for this?."""
+        """ Returns visit where the locator is scheduled,
+        TODO: maybe search visit definition for this?."""
         return None
 
     @property
@@ -504,10 +501,15 @@ class RegisteredSubjectDashboard(Dashboard):
             locator_change_url = None
             if not self.locator_inst:
                 context.update({'locator': None})
-                locator_add_url = reverse('admin:' + self.locator_model._meta.app_label + '_' + self.locator_model._meta.module_name + '_add')
+                locator_add_url = reverse(
+                    'admin:{}_{}_add'.format(
+                        self.locator_model._meta.app_label, self.locator_model._meta.module_name))
             if self.locator_inst:
                 context.update({'locator': self.locator_inst})
-                locator_change_url = reverse('admin:' + self.locator_model._meta.app_label + '_' + self.locator_model._meta.module_name + '_change', args=(self.locator_inst.pk, ))
+                locator_change_url = reverse(
+                    'admin:{}_{}_change'.format(
+                        self.locator_model._meta.app_label,
+                        self.locator_model._meta.module_name), args=(self.locator_inst.pk, ))
                 for field in self.locator_inst._meta.fields:
                     if isinstance(field, (TextField)):
                         value = getattr(self.locator_inst, field.name)
@@ -541,13 +543,19 @@ class RegisteredSubjectDashboard(Dashboard):
                 locator_visit_code = self.locator_scheduled_visit_code
                 visit_model_instance = None
                 if self.locator_model.objects.filter(registered_subject=self.locator_registered_subject):
-                    visit_model_instance = self.locator_model.objects.get(registered_subject=self.locator_registered_subject).maternal_visit
-                elif self.locator_visit_model.objects.filter(appointment__registered_subject=self.locator_registered_subject, appointment__visit_definition__code=locator_visit_code, appointment__visit_instance=0):
-                    visit_model_instance = self.locator_visit_model.objects.get(appointment__registered_subject=self.locator_registered_subject, appointment__visit_definition__code=locator_visit_code, appointment__visit_instance=0)
+                    visit_model_instance = self.locator_model.objects.get(
+                        registered_subject=self.locator_registered_subject).maternal_visit
+                elif self.locator_visit_model.objects.filter(
+                        appointment__registered_subject=self.locator_registered_subject,
+                        appointment__visit_definition__code=locator_visit_code, appointment__visit_instance=0):
+                    visit_model_instance = self.locator_visit_model.objects.get(
+                        appointment__registered_subject=self.locator_registered_subject,
+                        appointment__visit_definition__code=locator_visit_code, appointment__visit_instance=0)
                 else:
                     pass
             if visit_model_instance:
-                context.update({'visit_attr': convert_from_camel(visit_model_instance._meta.object_name), 'visit_model_instance': visit_model_instance})
+                context.update({'visit_attr': convert_from_camel(visit_model_instance._meta.object_name),
+                                'visit_model_instance': visit_model_instance})
         return context
 
     def render_action_item(self, action_item_cls=None, template=None, **kwargs):
@@ -555,10 +563,13 @@ class RegisteredSubjectDashboard(Dashboard):
         source_registered_subject = kwargs.get('registered_subject', self.registered_subject)
         action_item_cls = action_item_cls or ActionItem
         if isinstance(action_item_cls, models.Model):
-            raise TypeError('Expected first parameter to be a Action Item model class. Got an instance. Please correct in local dashboard view.')
+            raise TypeError(
+                'Expected first parameter to be a Action Item model class. '
+                'Got an instance. Please correct in local dashboard view.')
         if not template:
             template = 'action_item_include.html'
-        action_items = action_item_cls.objects.filter(registered_subject=source_registered_subject, display_on_dashboard=True, status='Open')
+        action_items = action_item_cls.objects.filter(
+            registered_subject=source_registered_subject, display_on_dashboard=True, status='Open')
         action_item_instances = []
         if action_items:
             for action_item in action_items:
@@ -569,7 +580,9 @@ class RegisteredSubjectDashboard(Dashboard):
                             setattr(action_item, field.name, '<BR>'.join(wrap(value, 25)))
                 action_item_instances.append(action_item)
         if action_item_instances:
-            self.context.update(action_item_message='Action items exist for this subject. Please review and resolve if possible.')
+            self.context.update(
+                action_item_message=('Action items exist for this subject. '
+                                     'Please review and resolve if possible.'))
         else:
             self.context.update(action_item_message=None)
         rendered_action_items = render_to_string(template, {
@@ -583,12 +596,15 @@ class RegisteredSubjectDashboard(Dashboard):
         return rendered_action_items
 
     def render_scheduled_forms(self):
-        """Renders the Scheduled Entry Forms section of the dashboard using the context class ScheduledEntryContext."""
+        """Renders the Scheduled Entry Forms section of the dashboard
+        using the context class ScheduledEntryContext."""
         template = 'scheduled_entries.html'
         scheduled_entries = []
-        scheduled_entry_helper = ScheduledEntryMetaDataHelper(self.appointment_zero, self.visit_model_instance, self.visit_model_attrname)
+        scheduled_entry_helper = ScheduledEntryMetaDataHelper(
+            self.appointment_zero, self.visit_model_instance, self.visit_model_attrname)
         for meta_data_instance in scheduled_entry_helper.get_entries_for('clinic'):
-            scheduled_entry_context = ScheduledEntryContext(meta_data_instance, self.appointment, self.visit_model)
+            scheduled_entry_context = ScheduledEntryContext(
+                meta_data_instance, self.appointment, self.visit_model)
             scheduled_entries.append(scheduled_entry_context.context)
         rendered_scheduled_forms = render_to_string(template, {
             'scheduled_entries': scheduled_entries,
@@ -605,7 +621,8 @@ class RegisteredSubjectDashboard(Dashboard):
         return rendered_scheduled_forms
 
     def render_requisitions(self):
-        """Renders the Scheduled Requisitions section of the dashboard using the context class RequisitionContext."""
+        """Renders the Scheduled Requisitions section of the dashboard
+        using the context class RequisitionContext."""
         template = 'scheduled_requisitions.html'
         scheduled_requisitions = []
         not_required_requisitions = []
@@ -613,13 +630,17 @@ class RegisteredSubjectDashboard(Dashboard):
         show_not_required_requisitions = GlobalConfiguration.objects.get_attr_value('show_not_required_requisitions')
         allow_additional_requisitions = GlobalConfiguration.objects.get_attr_value('allow_additional_requisitions')
         show_drop_down_requisitions = GlobalConfiguration.objects.get_attr_value('show_drop_down_requisitions')
-        requisition_helper = RequisitionMetaDataHelper(self.appointment, self.visit_model_instance, self.visit_model_attrname)
+        requisition_helper = RequisitionMetaDataHelper(
+            self.appointment, self.visit_model_instance, self.visit_model_attrname)
         for scheduled_requisition in requisition_helper.get_entries_for('clinic'):
-            requisition_context = RequisitionContext(scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
-            if not show_not_required_requisitions and not requisition_context.required and not requisition_context.additional:
+            requisition_context = RequisitionContext(
+                scheduled_requisition, self.appointment, self.visit_model, self.requisition_model)
+            if (not show_not_required_requisitions and
+                    not requisition_context.required and not requisition_context.additional):
                 not_required_requisitions.append(requisition_context.context)
-            elif allow_additional_requisitions and not requisition_context.required and requisition_context.additional:
-                additional_requisitions.append(requisition_context.context)  # TODO: is there a difference between added and additional?
+            elif (allow_additional_requisitions and not
+                    requisition_context.required and requisition_context.additional):
+                additional_requisitions.append(requisition_context.context)
             else:
                 scheduled_requisitions.append(requisition_context.context)
         render_requisitions = render_to_string(template, {
