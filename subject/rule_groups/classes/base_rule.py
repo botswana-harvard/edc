@@ -64,21 +64,27 @@ class BaseRule(object):
             self.visit_attr_name = convert_from_camel(self.visit_instance._meta.object_name)  # not necessarily
             self._source_instance = None
             self._target_instance = None
-            change_type = self.evaluate()
-            if change_type:
-                try:
-                    self.target_model.entry_meta_data_manager.visit_instance = self.visit_instance
+            if self.runif:
+                change_type = self.evaluate()
+                if change_type:
                     try:
-                        self.target_model.entry_meta_data_manager.instance = self.target_model.objects.get(
-                            **self.target_model.entry_meta_data_manager.query_options)
-                    except self.target_model.DoesNotExist:
-                        self.target_model.entry_meta_data_manager.instance = None
-                    self.target_model.entry_meta_data_manager.update_meta_data_from_rule(change_type)
-                except AttributeError as err:
-                    if 'entry_meta_data_manager' in str(err):
-                        pass  # target model not set
-                    else:
-                        raise
+                        self.target_model.entry_meta_data_manager.visit_instance = self.visit_instance
+                        try:
+                            self.target_model.entry_meta_data_manager.instance = self.target_model.objects.get(
+                                **self.target_model.entry_meta_data_manager.query_options)
+                        except self.target_model.DoesNotExist:
+                            self.target_model.entry_meta_data_manager.instance = None
+                        self.target_model.entry_meta_data_manager.update_meta_data_from_rule(change_type)
+                    except AttributeError as err:
+                        if 'entry_meta_data_manager' in str(err):
+                            pass  # target model not set
+                        else:
+                            raise
+
+    @property
+    def runif(self):
+        """May be overridden to run only on a condition."""
+        return True
 
     @property
     def target_model(self):
