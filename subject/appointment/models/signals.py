@@ -57,7 +57,7 @@ def appointment_post_save(sender, instance, raw, created, using, **kwargs):
     """Creates the TimePointStatus instance if it does not already exist."""
     if not raw:
         if isinstance(instance, Appointment):
-            TimePointStatus = get_model('bhp_data_manager', 'TimePointStatus')
+            TimePointStatus = get_model('data_manager', 'TimePointStatus')
             try:
                 TimePointStatus.objects.get(appointment=instance)
             except TimePointStatus.DoesNotExist:

@@ -41,7 +41,7 @@ class BaseConsentedUuidModel(BaseSyncUuidModel):
     def save(self, *args, **kwargs):
         using = kwargs.get('using')
         if self.id:
-            TimePointStatus = get_model('bhp_data_manager', 'TimePointStatus')
+            TimePointStatus = get_model('data_manager', 'TimePointStatus')
             try:
                 TimePointStatus.check_time_point_status(self.get_visit().appointment, using=using)
             except AttributeError:

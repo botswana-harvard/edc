@@ -2,7 +2,7 @@ from django import forms
 
 from edc.base.form.forms import BaseModelForm
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.core.bhp_data_manager.models import TimePointStatus
+from edc.data_manager.models import TimePointStatus
 
 from ..models import AttachedModel
 
