@@ -1,5 +1,3 @@
-import re
-
 from textwrap import wrap
 
 from django.core.exceptions import ImproperlyConfigured
@@ -38,47 +36,40 @@ from .requisition_context import RequisitionContext
 
 class RegisteredSubjectDashboard(Dashboard):
 
-    view = None
     dashboard_url_name = 'subject_dashboard_url'
+    urlpatterns = [Dashboard.urlpatterns[0][:-1] + '(?P<show>{show})/$'] + Dashboard.urlpatterns
+    urlpattern_options = dict(
+        Dashboard.urlpattern_options,
+        dashboard_model='household_member|visit|appointment|registered_subject',
+        dashboard_type='subject',
+        show='appointments|forms')
 
-    def __init__(self, dashboard_type, dashboard_id, dashboard_model, dashboard_type_list=None, dashboard_models=None,
-                 membership_form_category=None, visit_model=None, registered_subject=None, show=None, **kwargs):
-
+    def __init__(self, **kwargs):
+        super(RegisteredSubjectDashboard, self).__init__(**kwargs)
         self._appointment = None
         self._appointment_zero = None
-        self._appointment_code = None
         self._appointment_continuation_count = None
         self._registered_subject = None
-        dashboard_models = dashboard_models or {}
-        dashboard_models.update({'appointment': Appointment})
-        if visit_model:  # usually None, except in testing, usually proved by the subclass. needed now regardless since passing method for one of the dashboard models below
-            self.visit_model = visit_model
-        dashboard_models.update({'visit': self.visit_model})
-
-        super(RegisteredSubjectDashboard, self).__init__(dashboard_type, dashboard_id, dashboard_model, dashboard_type_list, dashboard_models)
-
+        self.appointment_code = None
         self.appointment_row_template = 'appointment_row.html'
+        self.membership_form_category = []
         self.visit_messages = []
         self.exclude_others_if_keyed_model_name = ''
         self.is_dispatched, self.dispatch_producer = False, None
         self.has_requisition_model = True
+        self.dashboard_models['appointment'] = Appointment
+        self.dashboard_models['registered_subject'] = RegisteredSubject
+#         self.set_has_requisition_model = kwargs.get('has_requisition_model')
+#         if kwargs.get('requisition_model'):
+#             self.requisition_model = kwargs.get('requisition_model')
 
-        self.registered_subject = registered_subject
-        self.membership_form_category = membership_form_category
-        self.show = show
-        self.set_has_requisition_model = kwargs.get('has_requisition_model')
-        if visit_model:
-            self.visit_model = visit_model
-        if kwargs.get('requisition_model'):
-            self.requisition_model = kwargs.get('requisition_model')
-
-    def add_to_context(self):
-        self.context.add(
+    def get_context_data(self, **kwargs):
+        self.context = super(RegisteredSubjectDashboard, self).get_context_data(**kwargs)
+        self.context.update(
             IN_PROGRESS=IN_PROGRESS,
             NEW=NEW,
             NOT_REQUIRED=NOT_REQUIRED,
             appointment=self.appointment,
-            appointment_meta=Appointment._meta,
             appointment_row_template=self.appointment_row_template,
             appointment_visit_attr=self.visit_model._meta.object_name.lower(),
             appointments=self.appointments,
@@ -87,9 +78,7 @@ class RegisteredSubjectDashboard(Dashboard):
             keyed_membership_forms=self.keyed_subject_membership_models,
             membership_forms=self.subject_membership_models,
             registered_subject=self.registered_subject,
-            show=self.show,
             subject_configuration=self.subject_configuration,
-            subject_configuration_meta=SubjectConfiguration._meta,
             subject_dashboard_url=self.dashboard_url_name,
             subject_hiv_history=self.subject_hiv_history,
             subject_hiv_status=self.render_subject_hiv_status(),
@@ -101,30 +90,24 @@ class RegisteredSubjectDashboard(Dashboard):
             visit_messages=self.visit_messages,
             visit_model=self.visit_model,
             visit_model_instance=self.visit_model_instance,
-            visit_model_meta=self.visit_model._meta,
             time_point_status=self.time_point_status,
-            time_point_status_meta=TimePointStatus._meta,
             )
         if self.show == 'forms':
-            self.context.add(
+            self.context.update(
                 requisition_model=self.requisition_model,
                 rendered_scheduled_forms=self.render_scheduled_forms(),
                 )
             if self.requisition_model:
-                self.context.add(requisition_model_meta=self.requisition_model._meta)
-                self.context.add(rendered_scheduled_requisitions=self.render_requisitions())
+                self.context.update(requisition_model_meta=self.requisition_model._meta)
+                self.context.update(rendered_scheduled_requisitions=self.render_requisitions())
             self.render_summary_links()
-        self.context.add(rendered_action_items=self.render_action_item())
-        self.context.add(rendered_locator=self.render_locator())
-        self.context.add(self.lab_results_data())
+        self.context.update(rendered_action_items=self.render_action_item())
+        self.context.update(rendered_locator=self.render_locator())
+        self.context.update(self.lab_results_data())
+        return self.context
 
-    @classmethod
-    def add_to_urlpattern_string(cls):
-        return '(?P<show>{show})/'
-
-    @classmethod
-    def add_to_urlpattern_string_kwargs(cls):
-        return {'show': 'appointments|forms'}
+    def show(self):
+        return self.context.get('show', 'appointments')
 
     @property
     def home_url(self):
@@ -168,35 +151,19 @@ class RegisteredSubjectDashboard(Dashboard):
         return self._subject_hiv_history
 
     @property
-    def view(self):
-        return 'subject_dashbaord'  # TODO: default this for now, but should be removed
-
-    @property
     def registered_subject(self):
+        if not self._registered_subject:
+            try:
+                self._registered_subject = RegisteredSubject.objects.get(pk=self.dashboard_id)
+            except RegisteredSubject.DoesNotExist:
+                try:
+                    self._registered_subject = self.dashboard_model_instance.registered_subject
+                except AttributeError:
+                    try:
+                        self._registered_subject = self.dashboard_model_instance.appointment.registered_subject
+                    except AttributeError:
+                        pass
         return self._registered_subject
-
-    @registered_subject.setter
-    def registered_subject(self, pk=None):
-        self._registered_subject = None
-        self.set_registered_subject(pk)
-        re_pk = re.compile('[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}')
-        if not self._registered_subject:
-            if not self._registered_subject and self.dashboard_model == RegisteredSubject:
-                self._registered_subject = RegisteredSubject.objects.filter(pk=self.dashboard_id).order_by('-created')[0]
-            elif not self._registered_subject and 'get_registered_subject' in dir(self.dashboard_model):
-                self._registered_subject = self.dashboard_model_instance.registered_subject
-            elif not self._registered_subject and re_pk.match(str(pk)):
-                self._registered_subject = RegisteredSubject.objects.get(pk=pk)
-            elif not self._registered_subject and self.appointment:
-                # can i get it from an appointment? TODO: is this even possible?
-                self._registered_subject = self.appointment.registered_subject
-            elif self._registered_subject:
-                if not isinstance(self._registered_subject, RegisteredSubject):
-                    raise TypeError('Expected instance of RegisteredSubject. See {0}'.format(self))
-            else:
-                pass
-        if not self._registered_subject:
-            raise TypeError('Attribute \'_registered_subject\' may not be None. Perhaps add method registered_subject to the model {0}. See {1}'.format(self.dashboard_model, self))
 
     @property
     def appointment(self):
@@ -208,8 +175,11 @@ class RegisteredSubjectDashboard(Dashboard):
             else:
                 self._appointment = None
             self._appointment_zero = None
-            self._appointment_code = None
             self._appointment_continuation_count = None
+            try:
+                self.appointment_code = self._appointment.visit_definition.code
+            except AttributeError:
+                self.appointment_code = None
         return self._appointment
 
     @property
@@ -223,13 +193,6 @@ class RegisteredSubjectDashboard(Dashboard):
                         self.delete_duplicate_appointments(inst=self)
                     self._appointment_zero = Appointment.objects.get(registered_subject=self.appointment.registered_subject, visit_definition=self.appointment.visit_definition, visit_instance=0)
         return self._appointment_zero
-
-    @property
-    def appointment_code(self):
-        if not self._appointment_code:
-            if self.appointment:
-                self._appointment_code = self._appointment.visit_definition.code
-        return self._appointment_code
 
     @property
     def appointment_continuation_count(self):
@@ -261,7 +224,8 @@ class RegisteredSubjectDashboard(Dashboard):
 
     @property
     def appointments(self):
-        """Returns all appointments for this registered_subject or just one (if given a appointment_code and appointment_continuation_count).
+        """Returns all appointments for this registered_subject or just one
+        if given a appointment_code and appointment_continuation_count.
 
         Could show
             one
@@ -278,11 +242,11 @@ class RegisteredSubjectDashboard(Dashboard):
             # schedule_group__membership_form
             codes = []
             for category in self.membership_form_category:
-                codes.append(MembershipForm.objects.codes_for_category(membership_form_category=category))
-                codes = flatten(codes)
+                codes.extend(MembershipForm.objects.codes_for_category(membership_form_category=category))
                 self._appointments = Appointment.objects.filter(
-                        registered_subject=self.registered_subject,
-                        visit_definition__code__in=codes).order_by('visit_definition__code', 'visit_instance', 'appt_datetime')
+                    registered_subject=self.registered_subject,
+                    visit_definition__code__in=codes).order_by(
+                    'visit_definition__code', 'visit_instance', 'appt_datetime')
         return self._appointments
 
     @property
@@ -328,7 +292,7 @@ class RegisteredSubjectDashboard(Dashboard):
         return self._requisition_model
 
     @requisition_model.setter
-    def set_requisition_model(self, requisition_model):
+    def requisition_model(self, requisition_model):
         self._requisition_model = requisition_model
         if self.has_requisition_model:
             if not self._requisition_model:
@@ -356,63 +320,66 @@ class RegisteredSubjectDashboard(Dashboard):
         helper = MembershipFormHelper()
         self._subject_membership_models = []
         for category in self.membership_form_category:
-            self._subject_membership_models.append(helper.get_membership_models_for(
-                self.registered_subject,
-                category,
-                extra_grouping_key=self.exclude_others_if_keyed_model_name))
+            self._subject_membership_models.append(
+                helper.get_membership_models_for(
+                    self.registered_subject,
+                    category,
+                    extra_grouping_key=self.exclude_others_if_keyed_model_name
+                    )
+                )
         return self._subject_membership_models
 
     @property
     def keyed_subject_membership_models(self):
         keyed = []
         for member_model in self.subject_membership_models:
-            keyed.append(member_model.get('keyed'))
-        keyed = flatten(keyed)
+            keyed.extend(member_model.get('keyed'))
         return keyed
 
     @property
     def unkeyed_subject_membership_models(self):
         unkeyed = []
         for member_model in self.subject_membership_models:
-            unkeyed.append(member_model.get('unkeyed'))
-        unkeyed = flatten(unkeyed)
+            unkeyed.extend(member_model.get('unkeyed'))
         return unkeyed
 
-    @property
-    def membership_form_category(self):
-        return self._membership_form_category
+#     @property
+#     def membership_form_category(self):
+#         return self._membership_form_category
+# 
+#     @membership_form_category.setter
+#     def membership_form_category(self, category):
+#         """Sets the membership_form_category for this registered subject dashboard needed to filter the QuerySet of Membership forms to display on the dashboard.
+# 
+#         May come from url or from the overridden :func:`set_membership_form_category`
+# 
+#         Must be a valid membership form category."""
+#         self._membership_form_category = []
+#         self._membership_form_category.append(category)
+#         self._membership_form_category = flatten(self._membership_form_category)
+# #         self._membership_form_category = category
+#         for c in self._membership_form_category:
+#             if c not in self.membership_form_categories:
+#                 raise ImproperlyConfigured('Invalid membership_form category. Attribute \'_membership_form_category\'=\'{0}\' not found in '
+#                                            'MembershipForms. Must be one of {1}. See {2}.'.format(c, self.membership_form_categories, self))
 
-    @membership_form_category.setter
-    def membership_form_category(self, category):
-        """Sets the membership_form_category for this registered subject dashboard needed to filter the QuerySet of Membership forms to display on the dashboard.
-
-        May come from url or from the overridden :func:`set_membership_form_category`
-
-        Must be a valid membership form category."""
-        self._membership_form_category = []
-        self._membership_form_category.append(category)
-        self._membership_form_category = flatten(self._membership_form_category)
-#         self._membership_form_category = category
-        for c in self._membership_form_category:
-            if c not in self.membership_form_categories:
-                raise ImproperlyConfigured('Invalid membership_form category. Attribute \'_membership_form_category\'=\'{0}\' not found in '
-                                           'MembershipForms. Must be one of {1}. See {2}.'.format(c, self.membership_form_categories, self))
-
-    @property
-    def membership_form_categories(self):
-        """Sets to a list of valid categories.
-
-        .. note:: the list of categories is based on those that appear in the MembershipForm category field.
-                  The MembershipForm field \'category\' may be a string of category names delimited by a comma."""
-        self._membership_form_categories = []
-        categories = MembershipForm.objects.values('category').order_by('category').distinct()
-        # turn into a list, split and strip
-        for c in categories:
-            self._membership_form_categories.extend([x.strip() for x in c['category'].split(',')])
-        self._membership_form_categories = list(set(self._membership_form_categories))
-        if not self._membership_form_categories:
-            raise MembershipFormError('Attribute _categories may not be None. Have any membership forms been defined?. See module \'edc.subject.visit_schedule\'. See {0}'.format(self))
-        return self._membership_form_categories
+#     @property
+#     def membership_form_categories(self):
+#         """Sets and returns a list of valid membership form categories using the MembershipForm model.
+#  
+#         .. note:: the list of categories is based on those that appear in the MembershipForm category field.
+#                   The MembershipForm field \'category\' may be a string of category names delimited by a comma."""
+#         self._membership_form_categories = []
+#         categories = MembershipForm.objects.values('category').order_by('category').distinct()
+#         # turn into a list, split and strip
+#         for c in categories:
+#             self._membership_form_categories.extend([x.strip() for x in c['category'].split(',')])
+#         self._membership_form_categories = list(set(self._membership_form_categories))
+#         if not self._membership_form_categories:
+#             raise MembershipFormError(
+#                 'Attribute _categories may not be None. Have any membership '
+#                 'forms been defined?. See module \'edc.subject.visit_schedule\'. See {0}'.format(self))
+#         return self._membership_form_categories
 
     @property
     def subject_type(self):
@@ -443,22 +410,14 @@ class RegisteredSubjectDashboard(Dashboard):
                 pass
         return self._time_point_status
 
-    @property
-    def show(self):
-        return self._show
-
-    @show.setter
-    def show(self, value):
-        self._show = value or 'appointments'
-
     def render_summary_links(self, template_filename=None):
         """Renders the side bar template for subject summaries."""
         if not template_filename:
             template_filename = 'summary_side_bar.html'
         summary_links = render_to_string(template_filename, {
-                'links': Link.objects.filter(dashboard_type=self.dashboard_type),
-                'subject_identifier': self.subject_identifier})
-        self.context.add(summary_links=summary_links)
+            'links': Link.objects.filter(dashboard_type=self.dashboard_type),
+            'subject_identifier': self.subject_identifier})
+        self.context.update(summary_links=summary_links)
 
     def render_labs(self):
         """Renders labs for the template side bar if the requisition model is set, by default will not update.
@@ -597,7 +556,6 @@ class RegisteredSubjectDashboard(Dashboard):
         action_item_cls = action_item_cls or ActionItem
         if isinstance(action_item_cls, models.Model):
             raise TypeError('Expected first parameter to be a Action Item model class. Got an instance. Please correct in local dashboard view.')
-        #action_item_add_url = reverse('admin:' + action_item_cls._meta.app_label + '_' + action_item_cls._meta.module_name + '_add')
         if not template:
             template = 'action_item_include.html'
         action_items = action_item_cls.objects.filter(registered_subject=source_registered_subject, display_on_dashboard=True, status='Open')
@@ -611,9 +569,9 @@ class RegisteredSubjectDashboard(Dashboard):
                             setattr(action_item, field.name, '<BR>'.join(wrap(value, 25)))
                 action_item_instances.append(action_item)
         if action_item_instances:
-            self.context.add(action_item_message='Action items exist for this subject. Please review and resolve if possible.')
+            self.context.update(action_item_message='Action items exist for this subject. Please review and resolve if possible.')
         else:
-            self.context.add(action_item_message=None)
+            self.context.update(action_item_message=None)
         rendered_action_items = render_to_string(template, {
             'action_items': action_item_instances,
             'registered_subject': self.registered_subject,
@@ -666,7 +624,6 @@ class RegisteredSubjectDashboard(Dashboard):
                 scheduled_requisitions.append(requisition_context.context)
         render_requisitions = render_to_string(template, {
             'scheduled_requisitions': scheduled_requisitions,
-#             'not_required_requisitions': not_required_requisitions,
             'additional_requisitions': additional_requisitions,
             'drop_down_list_requisitions': self.drop_down_list_requisitions(scheduled_requisitions),
             'show_drop_down_requisitions': show_drop_down_requisitions,
