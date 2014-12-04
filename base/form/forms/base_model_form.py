@@ -11,6 +11,8 @@ from ..classes import LogicCheck
 
 class BaseModelForm(forms.ModelForm):
 
+    optional_attrs = {}
+
     def __init__(self, *args, **kwargs):
         super(BaseModelForm, self).__init__(*args, **kwargs)
         self.logic = LogicCheck(self._meta.model)
