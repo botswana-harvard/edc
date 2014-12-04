@@ -241,8 +241,8 @@ class BaseModelAdmin (admin.ModelAdmin):
     def get_form_prep(self, request, obj=None, **kwargs):
         pass
 
-    def get_form_post(self, request, obj=None, **kwargs):
-        pass
+    def get_form_post(self, form, request, obj=None, **kwargs):
+        return form
 
     def get_form(self, request, obj=None, **kwargs):
         """Overrides to check if supplemental fields have been defined in the admin class.
@@ -253,8 +253,8 @@ class BaseModelAdmin (admin.ModelAdmin):
         """
         self.get_form_prep(request, obj, **kwargs)
         form = super(BaseModelAdmin, self).get_form(request, obj, **kwargs)
+        form = self.get_form_post(form, request, obj, **kwargs)
         form = self.auto_number(form)
-        self.get_form_post(request, obj, **kwargs)
         return form
 
     def update_modified_stamp(self, request, obj, change):
