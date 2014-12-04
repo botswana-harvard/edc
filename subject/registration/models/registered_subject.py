@@ -9,7 +9,7 @@ from edc.base.model.fields import IdentityTypeField
 from edc.choices.common import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
 from edc.core.bhp_variables.models import StudySite
 from edc.core.crypto_fields.fields import EncryptedIdentityField, SaltField
-from edc.core.crypto_fields.utils import mask_encrypted
+from edc.core.crypto_fields.utils.mask_encrypted import mask_encrypted
 from edc.subject.subject.models import BaseSubject
 
 
@@ -117,13 +117,39 @@ class RegisteredSubject(BaseSubject):
         blank=True,
     )
 
+    additional_key = models.CharField(
+        max_length=36,
+        verbose_name='-',
+        editable=False,
+        default=None,
+        null=True,
+        help_text=('A uuid (or some other text value) to be added to bypass the '
+                   'unique constraint of just firstname, initials, and dob.'
+                   'The default constraint proves limiting since the source model usually has some other'
+                   'attribute in additional to first_name, initials and dob which '
+                   'is not captured in this model'),
+        )
+
     salt = SaltField()
 
     history = AuditTrail()
 
     def save(self, *args, **kwargs):
         self.check_max_subjects()
+        if self.identity:
+            self.additional_key = None
         super(RegisteredSubject, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        if self.sid:
+            return "{0} {1} ({2} {3})".format(self.mask_unset_subject_identifier(),
+                                              self.subject_type,
+                                              mask_encrypted(self.first_name),
+                                              self.sid)
+        else:
+            return "{0} {1} ({2})".format(self.mask_unset_subject_identifier(),
+                                          self.subject_type,
+                                          mask_encrypted(self.first_name))
 
     def check_max_subjects(self, exception_cls=None, settings_attrs=None, count=None):
         """Checks the number of subjects against the settings attribute MAX_SUBJECTS.
@@ -143,7 +169,9 @@ class RegisteredSubject(BaseSubject):
                 if not count:
                     count = self.__class__.objects.filter(subject_type=self.get_subject_type(settings_attrs)).count()
                 if count + 1 > max_subjects:
-                    raise exception_cls('Maximum number of subjects has been reached for subject_type {0}. Got {1}/{2}.'.format(self.get_subject_type(settings_attrs), count, max_subjects))
+                    raise exception_cls(
+                        ('Maximum number of subjects has been reached for subject_type {0}. '
+                         'Got {1}/{2}.').format(self.get_subject_type(settings_attrs), count, max_subjects))
 
     def verify_settings_attr(self, settings_attrs=None):
         """Verify that attribute SUBJECT_TYPES exists, at least.
@@ -208,30 +236,23 @@ class RegisteredSubject(BaseSubject):
         # requery myself
         obj = self.__class__.objects.using(using).get(pk=self.pk)
         # dont allow values in these fields to change if dispatched
-        may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['study_site_id', 'registration_status', 'modified'] and not k.startswith('_')]
+        may_not_change_these_fields = [
+            (k, v) for k, v in obj.__dict__.iteritems()
+            if k not in ['study_site_id', 'registration_status', 'modified'] and not k.startswith('_')
+            ]
         for k, v in may_not_change_these_fields:
             if getattr(self, k) != v:
                 return False
         return True
 
-    def __unicode__(self):
-        if self.sid:
-            return "{0} {1} ({2} {3})".format(self.mask_unset_subject_identifier(),
-                                              self.subject_type,
-                                              mask_encrypted(self.first_name),
-                                              self.sid)
-        else:
-            return "{0} {1} ({2})".format(self.mask_unset_subject_identifier(),
-                                          self.subject_type,
-                                          mask_encrypted(self.first_name))
-
     def dashboard(self):
         ret = None
         if self.subject_identifier:
-            url = reverse('subject_dashboard_url', kwargs={'dashboard_type': self.subject_type.lower(),
-                                                           'dashboard_id': self.pk,
-                                                           'dashboard_model': 'registered_subject',
-                                                           'show': 'appointments'})
+            url = reverse('subject_dashboard_url', kwargs={
+                'dashboard_type': self.subject_type.lower(),
+                'dashboard_id': self.pk,
+                'dashboard_model': 'registered_subject',
+                'show': 'appointments'})
             ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True
@@ -241,4 +262,4 @@ class RegisteredSubject(BaseSubject):
         db_table = 'bhp_registration_registeredsubject'
         verbose_name = 'Registered Subject'
         ordering = ['subject_identifier']
-        unique_together = ('first_name', 'dob', 'initials')
+        unique_together = ('first_name', 'dob', 'initials', 'additional_key')
