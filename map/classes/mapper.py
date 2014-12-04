@@ -1,5 +1,3 @@
-# from vtown import geo                   # pip install geo-utils or download at https://pypi.python.org/pypi/geo-utils
-# from vtown.geo.polygon import Polygon   # pip install geo-utils or download at https://pypi.python.org/pypi/geo-utils
 import math
 
 from datetime import date, timedelta
@@ -7,12 +5,10 @@ from geopy import Point
 from geopy import distance
 
 from django.conf import settings
-from django.utils.encoding import smart_str
 
 from edc.base.model.models import BaseUuidModel
 
 from ..exceptions import MapperError
-from django.core.exceptions import ImproperlyConfigured
 
 
 class Mapper(object):
