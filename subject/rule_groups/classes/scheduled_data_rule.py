@@ -1,3 +1,5 @@
+from django.db.models import get_model
+
 from .base_rule import BaseRule
 
 

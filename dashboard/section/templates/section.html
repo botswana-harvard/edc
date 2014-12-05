@@ -24,7 +24,6 @@
 
     {% block search_tile%}
         {% if search_form %}
-            {{ search_form.errors }}
             <div id="search_tile">
             <form class="search_form" action="{% url 'section_search_word_url' section_name 'word' %}" method="post">
                 {% csrf_token %}
@@ -34,7 +33,6 @@
                 {% endfor %}
                 {# Include the visible fields #}
                 {% for field in search_form.visible_fields %}
-                    {{ field.errors }}
                     {{ field.label_tag }} {{ field }}
                 {% endfor %}<input type="submit" value="Search">
             </form>

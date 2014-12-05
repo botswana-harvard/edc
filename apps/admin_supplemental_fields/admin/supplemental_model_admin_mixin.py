@@ -62,10 +62,6 @@ class SupplementalModelAdminMixin(object):
         super(SupplementalModelAdminMixin, self).get_form_prep(request, obj, **kwargs)
         self.get_form_before_form_factory(request, obj, **kwargs)
 
-    def get_form_post(self, request, obj=None, **kwargs):
-        super(SupplementalModelAdminMixin, self).get_form_post(request, obj, **kwargs)
-#         self.fields = self._get_original_model_admin_fields()
-
     def get_form_before_form_factory(self, request, obj=None, **kwargs):
         """Checks if the ModelAdmin has supplemental fields and adds or updates the decision to form._meta.exclude.
 

@@ -39,48 +39,37 @@ class BaseRequisitionModelAdmin(BaseVisitTrackingModelAdmin):
             }
         self.list_display = [
             'requisition_identifier',
-            'specimen_identifier',
+            # 'specimen_identifier',
             'subject',
             'visit',
             "requisition_datetime",
             "panel",
             'hostname_created',
             'is_receive',
-            "aliquot",
-            'is_labelled',
-            'is_packed',
-            'is_lis',
-            'is_receive_datetime',
-            'is_labelled_datetime', ]
+            'aliquot',
+            # 'is_labelled',
+            # 'is_packed',
+            # 'is_lis',
+            # 'is_receive_datetime',
+            # 'is_labelled_datetime',
+            ]
         self.list_filter = [
             "priority",
-            'is_receive',
-            'is_labelled',
+            # 'is_receive',
+            # 'is_labelled',
             'is_packed',
-            'is_lis',
+            # 'is_lis',
             'panel',
             "requisition_datetime",
-            'is_receive_datetime',
-            'is_labelled_datetime',
+            # 'is_receive_datetime',
+            # 'is_labelled_datetime',
             'user_created',
             'hostname_created',
             'user_modified',
-             ]
+            ]
         self.search_fields = [
             '{0}__appointment__registered_subject__subject_identifier'.format(self.visit_fieldname,),
             'specimen_identifier',
             'requisition_identifier',
             'panel__name']
         self.filter_horizontal = ["test_code", ]
-
-#     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-#         panel_pk = request.GET.get('panel', 0)
-#         if db_field.name == 'panel':
-#             kwargs["queryset"] = Panel.objects.filter(pk=panel_pk)
-#         if db_field.name == 'aliquot_type':
-#             if Panel.objects.filter(pk=panel_pk):
-#                 if Panel.objects.get(pk=panel_pk).aliquot_type.all():
-#                     kwargs["queryset"] = Panel.objects.get(pk=panel_pk).aliquot_type.all()
-#         return super(BaseRequisitionModelAdmin, self).formfield_for_foreignkey(db_field,
-#                                                                                request,
-#                                                                                **kwargs)
