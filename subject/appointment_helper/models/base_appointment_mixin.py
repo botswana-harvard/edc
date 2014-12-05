@@ -35,5 +35,14 @@ class BaseAppointmentMixin(object):
             registered_subject = self.registered_subject
         else:
             registered_subject = RegisteredSubject.objects.get(subject_identifier=self.subject_identifier)
-        AppointmentHelper().create_all(registered_subject, self.__class__.__name__.lower(), using=using, source='BaseAppointmentMixin')
+        try:
+            visit_definitions = self.get_visit_definitions_from_instance()
+        except AttributeError:
+            visit_definitions = None
+        AppointmentHelper().create_all(
+            registered_subject,
+            self.__class__.__name__.lower(),
+            using=using,
+            source='BaseAppointmentMixin',
+            visit_definitions=visit_definitions)
         self.post_prepare_appointments(using)
