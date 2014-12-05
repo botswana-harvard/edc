@@ -118,9 +118,9 @@ class Controller(object):
         if community_check:
             if not device.is_server:
                 mapper_class = self.registry.get(current_community)
-                correct_identifiers = mapper_class().get_item_model_cls().objects.filter(
+                correct_identifiers = mapper_class.item_model.objects.filter(
                     plot_identifier__startswith=mapper_class.map_code).count()
-                all_identifiers = mapper_class().get_item_model_cls().objects.all().count()
+                all_identifiers = mapper_class.item_model.objects.all().count()
                 if correct_identifiers != all_identifiers:
                     raise MapperError('Settings attribute CURRENT_COMMUNITY does not match the plot identifiers. '
                                       'Got {1}/{2} plot identifiers starting with {3}'.format(

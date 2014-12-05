@@ -234,22 +234,6 @@ class Mapper(object):
             self.set_other_icons()
         return self._other_icons
 
-    def set_item_model_cls(self, cls=None):
-        """Need comment"""
-        if cls:
-            if not issubclass(cls, BaseUuidModel):
-                raise MapperError('Item model class must be a subclass of BaseUuidModel')
-            self._item_model_cls = cls
-        else:
-            try:
-                if not self.item_model_cls:
-                    raise MapperError('Attribute \'item_model_cls\' may not be None (see _item_model_cls) .')
-                self._item_model_cls = self.item_model_cls
-            except:
-                pass
-        if not self._item_model_cls:
-            raise MapperError('Attribute \'model\' may not be None (see _item_model_cls) .')
-
     def get_item_model_cls(self):
         if not self._item_model_cls:
             self.set_item_model_cls()
