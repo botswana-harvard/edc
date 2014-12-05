@@ -14,6 +14,9 @@ class Device(object):
     SERVER_DEVICE_ID_LIST = settings.SERVER_DEVICE_ID_LIST
     MIDDLEMAN_DEVICE_ID_LIST = settings.MIDDLEMAN_DEVICE_ID_LIST
 
+    def __str__(self):
+        return self.device_id
+
     @property
     def device_id(self):
         try:

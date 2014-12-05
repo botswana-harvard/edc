@@ -1,5 +1,3 @@
-# from vtown import geo                   # pip install geo-utils or download at https://pypi.python.org/pypi/geo-utils
-# from vtown.geo.polygon import Polygon   # pip install geo-utils or download at https://pypi.python.org/pypi/geo-utils
 import math
 
 from datetime import date, timedelta
@@ -7,19 +5,21 @@ from geopy import Point
 from geopy import distance
 
 from django.conf import settings
-from django.utils.encoding import smart_str
 
 from edc.base.model.models import BaseUuidModel
 
 from ..exceptions import MapperError
-from django.core.exceptions import ImproperlyConfigured
 
 
 class Mapper(object):
 
+    map_area = None
+    map_code = None
+    radius = None
+    gps_center_lat = None
+    gps_center_lon = None
+
     def __init__(self, *args, **kwargs):
-        self._map_area = None
-        self._radius = None
         self._item_model_cls = None
         self._item_label = None
         self._regions = None
@@ -39,7 +39,6 @@ class Mapper(object):
         self._identifier_label = None
         self._other_identifier_field_attr = None  # e.g. cso_number
         self._other_identifier_label = None
-        self._gps_center_lat = None
         self._gps_center_lon = None
         self._target_gps_lon_field_attr = None
         self._target_gps_lat_field_attr = None
@@ -47,10 +46,6 @@ class Mapper(object):
         self._map_code = None
 
         # item_model_cls
-        if 'map_area' in kwargs:
-            self.set_map_area(kwargs.get('map_area'))
-        # if 'radius' in kwargs:
-        #    self.set_radius(kwargs.get('radius'))
         if 'item_model' in kwargs:
             self.set_item_model_cls(kwargs.get('item_model'))
         if 'regions' in kwargs:
@@ -96,24 +91,6 @@ class Mapper(object):
             if not getattr(self, '_{0}'.format(attrname)):
                 raise MapperError('Attribute \'{0}\' may not be None.'.format(attrname))
 
-    def set_map_area(self, attr=None):
-        self._set_attr('map_area', attr)
-
-    def get_map_area(self):
-        return self._get_attr('map_area')
-
-    def set_map_code(self, attr=None):
-        self._set_attr('map_code', attr)
-
-    def get_map_code(self):
-        return self._get_attr('map_code')
-
-    def set_radius(self, attr=None):
-        self._set_attr('radius', attr)
-
-    def get_radius(self):
-        return self._get_attr('radius')
-
     def set_map_field_attr_18(self, attr=None):
         self._set_attr('map_field_attr_18', attr)
 
@@ -131,18 +108,6 @@ class Mapper(object):
 
     def get_map_field_attr_16(self):
         return self._get_attr('map_field_attr_16')
-
-    def set_gps_center_lat(self, attr=None):
-        self._set_attr('gps_center_lat', attr)
-
-    def get_gps_center_lat(self):
-        return self._get_attr('gps_center_lat')
-
-    def set_gps_center_lon(self, attr=None):
-        self._set_attr('gps_center_lon', attr)
-
-    def get_gps_center_lon(self):
-        return self._get_attr('gps_center_lon')
 
     def set_identifier_field_attr(self, attr=None):
         self._set_attr('identifier_field_attr', attr)
@@ -268,22 +233,6 @@ class Mapper(object):
         if not self._other_icons:
             self.set_other_icons()
         return self._other_icons
-
-    def set_item_model_cls(self, cls=None):
-        """Need comment"""
-        if cls:
-            if not issubclass(cls, BaseUuidModel):
-                raise MapperError('Item model class must be a subclass of BaseUuidModel')
-            self._item_model_cls = cls
-        else:
-            try:
-                if not self.item_model_cls:
-                    raise MapperError('Attribute \'item_model_cls\' may not be None (see _item_model_cls) .')
-                self._item_model_cls = self.item_model_cls
-            except:
-                pass
-        if not self._item_model_cls:
-            raise MapperError('Attribute \'model\' may not be None (see _item_model_cls) .')
 
     def get_item_model_cls(self):
         if not self._item_model_cls:
@@ -465,9 +414,9 @@ class Mapper(object):
         The community_radius, community_center_lat and
         community_center_lon are from the Mapper class of each community.
         """
-        center_lat = center_lat or self.get_gps_center_lat()
-        center_lon = center_lon or self.get_gps_center_lon()
-        radius = radius or self.get_radius()
+        center_lat = center_lat or self.gps_center_lat
+        center_lon = center_lon or self.gps_center_lon
+        radius = radius or self.radius
         pt1 = Point(float(lat), float(lon))
         pt2 = Point(float(center_lat), float(center_lon))
         dist = distance.distance(pt1, pt2).km
@@ -530,11 +479,16 @@ class Mapper(object):
         area and raises an exception if not.
 
         Wrapper for :func:`gps_validator`"""
-        radius = self.get_radius()
-        dist = self.gps_distance_between_points(lat, lon)
-        if dist > radius:
-            raise exception_cls('The location (GPS {0} {1}) does not fall within this community. '
-                                'Got {2}m'.format(lat, lon, dist * 1000))
+        verify_gps_location = True
+        try:
+            verify_gps_location = settings.VERIFY_GPS_LOCATION
+        except AttributeError:
+            pass
+        if verify_gps_location:
+            dist = self.gps_distance_between_points(lat, lon)
+            if dist > self.radius:
+                raise exception_cls('The location (GPS {0} {1}) does not fall within area of \'{2}\'.'
+                                    'Got {3}m'.format(lat, lon, self.map_area, dist * 1000))
         return True
 
     def verify_gps_to_target(self, lat, lon, center_lat, center_lon, radius, exception_cls):
@@ -542,14 +496,16 @@ class Mapper(object):
         target lat/lon and raises an exception if not.
 
         Wrapper for :func:`gps_validator`"""
+        radius = radius or self.radius
+        verify_gps_to_target = True  # default
         try:
-            if settings.VERIFY_GPS:
-                dist = self.gps_distance_between_points(lat, lon, center_lat, center_lon, radius)
-                if dist > radius:
-                    raise exception_cls('GPS {0} {1} is more than {2} meters from the target location {3}/{4}. '
-                                        'Got {5}m.'.format(lat, lon, radius * 1000, center_lat,
-                                                           center_lon, dist * 1000))
+            verify_gps_to_target = settings.VERIFY_GPS
         except AttributeError:
-            raise ImproperlyConfigured(
-                'Missing settings attribute VERIFY_GPS. Add VERIFY_GPS = True/False to settings.py')
+            pass
+        if verify_gps_to_target:
+            dist = self.gps_distance_between_points(lat, lon, center_lat, center_lon, radius)
+            if dist > radius:
+                raise exception_cls('GPS {0} {1} is more than {2} meters from the target location {3}/{4}. '
+                                    'Got {5}m.'.format(lat, lon, radius * 1000, center_lat,
+                                                       center_lon, dist * 1000))
         return True

@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 
-from edc.constants import NOT_APPLICABLE
+from edc.constants import NOT_APPLICABLE, YES, NO, ALIVE, DEAD, UNKNOWN
 
 # choices
 BLANK_CHOICE_DASH = [('', '---------')]
@@ -19,14 +19,14 @@ ACU_EST_NEG = (
 )
 
 ALIVE_DEAD = (
-    ('alive', 'Alive'),
-    ('dead', 'Dead'),
+    (ALIVE, 'Alive'),
+    (DEAD, 'Dead'),
 )
 
 ALIVE_DEAD_UNKNOWN = (
-    ('alive', 'Alive'),
-    ('dead', 'Dead'),
-    ('unknown', 'Unknown'),
+    (ALIVE, 'Alive'),
+    (DEAD, 'Dead'),
+    (UNKNOWN, 'Unknown'),
 )
 
 ART_STATUS = (
@@ -266,113 +266,113 @@ WILL_DECL = (
 )
 
 YES_NO = (
-    ('Yes', _('Yes')),
-    ('No', _('No')),
+    (YES, _(YES)),
+    (NO, _(NO)),
 )
 
 YES_NO_DECLINED = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Declined', 'Yes, but subject declined copy'),
 )
 
 YES_NO_OPTIONAL = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Optional', 'Optional'),
 )
 
 YES_NO_REFUSED = (
-    ('Yes', _('Yes')),
-    ('No', _('No')),
+    (YES, _(YES)),
+    (NO, _(NO)),
     ('REF', _('Refused to answer')),
 )
 
 YES_NO_DWTA = (
-    ('Yes', _('Yes')),
-    ('No', _('No')),
+    (YES, _(YES)),
+    (NO, _(NO)),
     ('DWTA', _('Don\'t want to answer')),
 )
 
 YES_NO_NA_SPECIFY = (
-    ('Yes', 'Yes, (Specify below)'),
-    ('No', 'No'),
+    (YES, 'Yes, (Specify below)'),
+    (NO, NO),
     (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_NA = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_NOT_EVALUATED = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Not_evaluated', 'Not evaluated'),
 )
 
 YES_NO_NOT_EVALUATED_NA = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Not_evaluated', 'Not evaluated'),
     (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_NOT_DONE = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Not_done', 'Not Done'),
 )
 
 YES_NO_DOESNT_WORK = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('DontWork', 'Doesn\'t work'),
 )
 
 YES_NO_UNKNOWN = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Unknown', 'Unknown'),
 )
 
 YES_NO_UNKNOWN_NA = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Unknown', 'Unknown'),
     (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_UNSURE = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Not Sure', 'Not Sure'),
 )
 
 YES_NO_UNSURE_NA = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Not Sure', 'Not Sure'),
     (NOT_APPLICABLE, 'Not Applicable'),
 )
 
 YES_NO_DONT_KNOW = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Dont_know', 'Do not Know'),
 )
 
 YES_NO_DONT_KNOW_NA = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Dont_know', 'Do not Know'),
     (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_DOESNT_WORK = (
-    ('Yes', 'Yes'),
-    ('No', 'No'),
+    (YES, YES),
+    (NO, NO),
     ('Doesnt_work', 'Doesnt Work'),
 )
 

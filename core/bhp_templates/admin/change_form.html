@@ -67,7 +67,7 @@
 
 {% comment %}
 {% block after_field_sets %}
-<small>{{ app_label }}/{{ opts.module_name }}: revision {{ opts|get_revision|default:'unknown?' }}</small>
+<small>{{ app_label }}/{{ opts.module_name }}: revision {{ revision_tag|default:'unknown?' }}</small>
 {% endblock %}
 {% endcomment %}
 

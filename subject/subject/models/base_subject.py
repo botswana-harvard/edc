@@ -39,6 +39,22 @@ class BaseSubject (BaseSyncUuidModel):
         db_index=True,
         )
 
+    subject_identifier_aka = models.CharField(
+        verbose_name="Subject Identifier a.k.a",
+        max_length=50,
+        null=True,
+        editable=False,
+        help_text='track a previously allocated identifier.'
+        )
+
+    dm_comment = models.CharField(
+        verbose_name="Data Management comment",
+        max_length=150,
+        null=True,
+        editable=False,
+        help_text='see also edc.data manager.'
+        )
+
     # may not be available when instance created (e.g. infants prior to birth report)
     first_name = EncryptedFirstnameField(
         null=True,

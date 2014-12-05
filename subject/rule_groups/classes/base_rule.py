@@ -8,6 +8,7 @@ from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.consent.classes import ConsentHelper
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc.subject.entry.models import Entry
 
 from .logic import Logic
 
@@ -19,6 +20,8 @@ class BaseRule(object):
 
     ..see_also: comment on :module:`ScheduledDataRule`"""
 
+#     entry_class = None
+#     meta_data_model = None
     operators = ['equals', 'eq', 'gt', 'gte', 'lt', 'lte', 'ne', '!=', '==', 'in', 'not in']
     action_list = ['new', 'not_required', 'none']
 
@@ -42,31 +45,76 @@ class BaseRule(object):
         self.target_model_names = []
         self.visit_attr_name = None
 
-        if 'logic' in kwargs:
-            self.logic = kwargs.get('logic')
-        if 'target_model' in kwargs:
-            self.target_model_list = kwargs.get('target_model')
+        self.logic = kwargs.get('logic')
+        self.target_model_list = kwargs.get('target_model')
 
     def __repr__(self):
         return self.name or self.source_model or self.__class__.__name__
 
+    def __str__(self):
+        return '{0.name}()'.format(self)
+
     def run(self, visit_instance):
-        """ Evaluate the rule for each model class in the target model list."""
-        for target_model in self.target_model_list:
-            self.target_model = target_model
-            self.visit_instance = visit_instance
+        """ Evaluate the rule for each model class in the target model list.
+
+        If target model is None (not in the visit schedule) do nothing."""
+        self.visit_instance = visit_instance
+        for self.target_model in self.target_model_list:
             self.registered_subject = self.visit_instance.appointment.registered_subject
             self.visit_attr_name = convert_from_camel(self.visit_instance._meta.object_name)  # not necessarily
             self._source_instance = None
             self._target_instance = None
-            change_type = self.evaluate()
-            if change_type:
-                self.target_model.entry_meta_data_manager.visit_instance = self.visit_instance
-                try:
-                    self.target_model.entry_meta_data_manager.instance = self.target_model.objects.get(**self.target_model.entry_meta_data_manager.query_options)
-                except self.target_model.DoesNotExist:
-                    self.target_model.entry_meta_data_manager.instance = None
-                self.target_model.entry_meta_data_manager.update_meta_data_from_rule(change_type)
+            if self.runif:
+                change_type = self.evaluate()
+                if change_type:
+                    try:
+                        self.target_model.entry_meta_data_manager.visit_instance = self.visit_instance
+                        try:
+                            self.target_model.entry_meta_data_manager.instance = self.target_model.objects.get(
+                                **self.target_model.entry_meta_data_manager.query_options)
+                        except self.target_model.DoesNotExist:
+                            self.target_model.entry_meta_data_manager.instance = None
+                        self.target_model.entry_meta_data_manager.update_meta_data_from_rule(change_type)
+                    except AttributeError as err:
+                        if 'entry_meta_data_manager' in str(err):
+                            pass  # target model not set
+                        else:
+                            raise
+
+    @property
+    def runif(self):
+        """May be overridden to run only on a condition."""
+        return True
+
+    @property
+    def target_model(self):
+        return self._target_model
+
+    @target_model.setter
+    def target_model(self, model_cls):
+        """Sets the target models to a model class from the target_model_list or None.
+
+        Target models are the models for whose meta data is affected by the rule.
+
+        Target models always have an attribute pointing to the visit instance.
+
+        Target models must be listed in the visit definition for the
+        current visit_instance, e.g. Entry of visit_instance.appointment.visit_definition.
+        If it is not listed in the visit_definition, target_model returns None."""
+
+        self._target_model = None
+        try:
+            model_cls = get_model(self.app_label, model_cls)
+        except AttributeError:
+            pass  # type object '<model_cls>' has no attribute 'lower'
+        try:
+            self.entry_class.entry_model.objects.get(
+                visit_definition=self.visit_instance.appointment.visit_definition,
+                app_label=model_cls._meta.app_label,
+                model_name=model_cls._meta.object_name.lower())
+            self._target_model = model_cls
+        except self.entry_class.entry_model.DoesNotExist:
+            pass
 
     def evaluate(self):
         """ Evaluates the predicate and returns an action.
@@ -148,11 +196,11 @@ class BaseRule(object):
             else:
                 operator = '!='
         if word.lower() == 'in' or word.lower() == 'not in':
-#             if not isinstance(b, (list, tuple)):
-#                 raise TypeError('Invalid combination. Rule predicate expects [in, not in] when comparing to a list or tuple.')
             operator = word.lower()
         if not operator:
-            raise TypeError('Unrecognized operator in rule predicate. Valid options are equals, eq, gt, gte, lt, lte, ne, in, not in. Options are not case sensitive')
+            raise TypeError(
+                ('Unrecognized operator in rule predicate. Valid options are equals, eq, gt, gte, lt, lte, ne, '
+                 'in, not in. Options are not case sensitive'))
         if a is None and word in ('equals', 'eq', 'ne', 'gt', 'gte', 'lt', 'lte'):
             try:
                 # set a to 0 if b is an integer
@@ -161,7 +209,9 @@ class BaseRule(object):
             except:
                 pass
         if (a is None or b is None) and word not in ('equals', 'eq', 'ne'):
-            raise TypeError('Invalid predicate operator in rule for value None. Must be (equals, ea or ne). Got \'{0}\'.'.format(word))
+            raise TypeError(
+                ('Invalid predicate operator in rule for value None. Must be (equals, ea or ne). '
+                 'Got \'{0}\'.').format(word))
         return operator
 
     @property
@@ -225,6 +275,13 @@ class BaseRule(object):
         if not isinstance(self._unresolved_predicate, tuple):
             raise TypeError('First \'logic\' item must be a tuple of (field, operator, value). Got %s' % (self._unresolved_predicate,))
 
+    def describe(self):
+        if hasattr(self.logic.predicate, '__call__'):
+            predicate = self.logic.predicate.__doc__ or "missing docstring for {}".format(self.logic.predicate)
+        else:
+            predicate = self.logic.predicate
+        return predicate
+
     @property
     def predicate(self):
         """Converts the predicate to something like "value==value" that can be evaluated with eval().
@@ -246,26 +303,35 @@ class BaseRule(object):
                 n = 0
                 for item in self.unresolved_predicate:
                     if n == 0 and not len(item) == 3:
-                        raise ValueError('The logic tuple (or the first tuple of tuples) must must have three items. See {0}'.format(self))
+                        raise ValueError('The logic tuple (or the first tuple of tuples) must must have three '
+                                         'items. See {0}'.format(self))
                     if n > 0 and not len(item) == 4:
-                        raise ValueError('Additional tuples in the logic tuple must have a boolean operator as the fourth item. See {0}'.format(self))
+                        raise ValueError('Additional tuples in the logic tuple must have a boolean operator '
+                                         'as the fourth item. See {0}'.format(self))
                     self.predicate_field_value = item[0]
                     self.predicate_comparative_value = item[2]
                     # logical_operator if more than one tuple in the logic tuple
                     if len(item) == 4:
                         logical_operator = item[3]
                         if logical_operator not in ['and', 'or', 'and not', 'or not']:
-                            raise ValueError('Invalid logical operator in logic tuple for rule {0}. Got {1}.'
-                                       'Valid options are {2}'.format(self, logical_operator, ', '.join(['and', 'or', 'and not', 'or not'])))
+                            raise ValueError(
+                                'Invalid logical operator in logic tuple for rule {0}. Got {1}.'
+                                'Valid options are {2}'.format(self, logical_operator,
+                                                               ', '.join(['and', 'or', 'and not', 'or not'])))
                     else:
                         logical_operator = ''
                     if isinstance(self.predicate_comparative_value, list):
-                        self.predicate_comparative_value = ';'.join([x.lower() for x in self.predicate_comparative_value])
+                        self.predicate_comparative_value = ';'.join(
+                            [x.lower() for x in self.predicate_comparative_value])
                     if self.predicate_comparative_value == 'None':
                         self.predicate_comparative_value = None
-                    # check type of field value and comparative value, must be the same or <Some>Type to NoneType
+                    # check type of field value and comparative value,
+                    # must be the same or <Some>Type to NoneType
                     # if a or b are string or None
-                    if (isinstance(self.predicate_field_value, (unicode, basestring)) or self.predicate_field_value is None) and (isinstance(self.predicate_comparative_value, (unicode, basestring)) or self.predicate_comparative_value is None):
+                    if ((isinstance(self.predicate_field_value, (unicode, basestring)) or
+                            self.predicate_field_value is None) and (
+                                isinstance(self.predicate_comparative_value, (unicode, basestring)) or
+                                self.predicate_comparative_value is None)):
                         predicate_template = ' {logical_operator} (\'{field_value}\' {operator} \'{comparative_value}\')'
                         self._predicate = self._predicate.replace('\'None\'', 'None')
                     # if a or b are number or None
@@ -276,43 +342,35 @@ class BaseRule(object):
                         if isinstance(self.predicate_comparative_value, datetime):
                             # convert b to date to match type of a
                             self.predicate_comparative_value = date(date.year, date.month, date.day)
-                        predicate_template = ' {logical_operator} (datetime.strptime({field_value},\'%Y-%m-%d\') {operator} datetime.strptime({comparative_value},\'%Y-%m-%d\'))'
+                        predicate_template = (' {logical_operator} (datetime.strptime({field_value},\'%Y-%m-%d\') '
+                                              '{operator} datetime.strptime({comparative_value},\'%Y-%m-%d\'))')
                     # if a is a datetime and b is a date, datetime
                     elif isinstance(self.predicate_field_value, (datetime)) and isinstance(self.predicate_comparative_value, (date, datetime)):
                         if isinstance(self.predicate_comparative_value, date):
                             # convert a to date if b is a date
                             self.predicate_field_value = date(date.year, date.month, date.day)
-                        predicate_template = ' {logical_operator} (datetime.strptime({field_value},\'%Y-%m-%d %H:%M\') {operator} datetime.strptime({comparative_value},\'%Y-%m-%d %H:%M\'))'
+                        predicate_template = (
+                            ' {logical_operator} (datetime.strptime({field_value},\'%Y-%m-%d %H:%M\''
+                            ') {operator} datetime.strptime({comparative_value},\'%Y-%m-%d %H:%M\'))')
                     else:
-                        if isinstance(self.predicate_field_value, (date, datetime)) and self.predicate_comparative_value is None:
-                            raise TypeError('In a rule predicate, may not compare a date or datetime to None. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
+                        if (isinstance(self.predicate_field_value, (date, datetime)) and
+                                self.predicate_comparative_value is None):
+                            raise TypeError('In a rule predicate, may not compare a date or datetime '
+                                            'to None. Got \'{0}\' and \'{1}\''.format(
+                                                self.predicate_field_value, self.predicate_comparative_value))
                         else:
                             pass
-                            #raise TypeError('Rule predicate values must be of the same data type and be either strings, dates or numbers. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
+                            # raise TypeError('Rule predicate values must be of the same data type and be either strings, dates or numbers. Got \'{0}\' and \'{1}\''.format(self.predicate_field_value, self.predicate_comparative_value))
                     self._predicate += predicate_template.format(
-                           logical_operator=logical_operator,
-                           field_value=self.predicate_field_value,
-                           operator=self.get_operator_from_word(item[1], self.predicate_field_value, self.predicate_comparative_value),
-                           comparative_value=self.predicate_comparative_value)
+                        logical_operator=logical_operator,
+                        field_value=self.predicate_field_value,
+                        operator=self.get_operator_from_word(
+                            item[1],
+                            self.predicate_field_value,
+                            self.predicate_comparative_value),
+                        comparative_value=self.predicate_comparative_value)
                     n += 1
         return self._predicate
-
-    @property
-    def target_model(self):
-        return self._target_model
-
-    @target_model.setter
-    def target_model(self, target_model):
-        """Sets a list of target models.
-
-        Target models are the models for whose meta data is affected by the rule.
-
-        Target models always have an attribute pointing to the visit instance."""
-        self._target_model = target_model
-        if isinstance(self._target_model, basestring):
-            self._target_model = get_model(self.app_label, self._target_model)
-        if not self._target_model:
-            raise AttributeError('Target model may not be None.')
 
     @property
     def visit_instance(self):

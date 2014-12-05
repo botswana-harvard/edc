@@ -216,18 +216,33 @@ class BaseModelAdmin (admin.ModelAdmin):
             custom_http_response_redirect = HttpResponseRedirect(url)
             request.session['filtered'] = None
         else:
+            change_list_q = ''
             kwargs = {}
             [kwargs.update({key: value}) for key, value in request.GET.iteritems() if key != 'next']
-            url = reverse(next_url_name, kwargs=kwargs)
-            custom_http_response_redirect = HttpResponseRedirect(url)
+            try:
+                if '_add' in next_url_name:
+                    url = reverse(next_url_name)
+                elif '_changelist' in next_url_name:
+                    url = reverse(next_url_name)
+                    if kwargs.get('q', None) and kwargs.get('q') != 'None':
+                        change_list_q = '?q={}'.format(kwargs.get('q'))
+                else:
+                    url = reverse(next_url_name, kwargs=kwargs)
+            except NoReverseMatch:
+                try:
+                    # try reversing to the url from just section_name
+                    url = reverse(next_url_name, kwargs={'section_name': kwargs.get('section_name')})
+                except NoReverseMatch:
+                    raise NoReverseMatch('response_change failed to reverse url \'{0}\' with kwargs {1}. Is this a dashboard url?'.format(next_url_name, kwargs))
+            custom_http_response_redirect = HttpResponseRedirect('{}{}'.format(url, change_list_q))
             request.session['filtered'] = None
         return custom_http_response_redirect
 
     def get_form_prep(self, request, obj=None, **kwargs):
         pass
 
-    def get_form_post(self, request, obj=None, **kwargs):
-        pass
+    def get_form_post(self, form, request, obj=None, **kwargs):
+        return form
 
     def get_form(self, request, obj=None, **kwargs):
         """Overrides to check if supplemental fields have been defined in the admin class.
@@ -238,8 +253,8 @@ class BaseModelAdmin (admin.ModelAdmin):
         """
         self.get_form_prep(request, obj, **kwargs)
         form = super(BaseModelAdmin, self).get_form(request, obj, **kwargs)
+        form = self.get_form_post(form, request, obj, **kwargs)
         form = self.auto_number(form)
-        self.get_form_post(request, obj, **kwargs)
         return form
 
     def update_modified_stamp(self, request, obj, change):
@@ -295,7 +310,11 @@ class BaseModelAdmin (admin.ModelAdmin):
                 kwargs = self.convert_get_to_kwargs(request, obj)
                 url = reverse(next_url_name, kwargs=kwargs)
             except NoReverseMatch:
-                raise NoReverseMatch('response_add failed to reverse url \'{0}\' with kwargs {1}. Is this a dashboard url?'.format(next_url_name, kwargs))
+                try:
+                    # try reversing to the url from just section_name
+                    url = reverse(next_url_name, kwargs={'section_name': kwargs.get('section_name')})
+                except NoReverseMatch:
+                    raise NoReverseMatch('response_add failed to reverse url \'{0}\' with kwargs {1}. Is this a dashboard url?'.format(next_url_name, kwargs))
             except:
                 raise
         return url

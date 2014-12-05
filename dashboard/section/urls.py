@@ -1,12 +1,9 @@
-from django.conf import settings
+from .classes import site_sections, SectionIndexView
 
-from .classes import section_index_view, site_sections
-
-APP_NAME = settings.APP_NAME
-
-section_index_view.setup()
+section_index_view = SectionIndexView()
+section_index_view.prepare()
 urlpatterns = []
-for section_inst in site_sections.all().itervalues():
-    section_inst.set_section_list(section_index_view.get_section_list())
-    urlpatterns += section_inst.urlpatterns()
+for section in site_sections.all().itervalues():
+    section.section_list = section_index_view.section_list
+    urlpatterns += section.urlpatterns()
 urlpatterns += section_index_view.urlpatterns()

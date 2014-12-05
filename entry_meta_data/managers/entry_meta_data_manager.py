@@ -31,8 +31,10 @@ class EntryMetaDataManager(BaseMetaDataManager):
                     visit_definition=self.appointment_zero.visit_definition
                     )
             except self.entry_model.DoesNotExist:
-                raise ImproperlyConfigured('Entry matching query does not exist. Model {0}.Check your'
-                                           ' visit schedule configuration or rule groups.'.format(self.model))
+                raise ImproperlyConfigured('Entry matching query does not exist in visit {0}. Model {1}.Check your'
+                                           ' visit schedule configuration or rule groups.'.format(
+                                               self.appointment_zero.visit_definition, self.model)
+                                           )
             return self.meta_data_model.objects.create(
                 appointment=self.appointment_zero,
                 registered_subject=self.appointment_zero.registered_subject,
