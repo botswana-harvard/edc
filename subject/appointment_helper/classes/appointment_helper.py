@@ -14,7 +14,9 @@ from .appointment_date_helper import AppointmentDateHelper
 
 class AppointmentHelper(object):
 
-    def create_all(self, registered_subject, model_name, using=None, base_appt_datetime=None, dashboard_type=None, source=None):
+    def create_all(self, registered_subject, model_name, using=None,
+                   base_appt_datetime=None, dashboard_type=None, source=None,
+                   visit_definitions=None):
         """Creates appointments for a registered subject based on a list of visit definitions if given model_name is a member of a schedule group.
 
             Args:
@@ -47,7 +49,7 @@ class AppointmentHelper(object):
             else:
                 # not found, which is supposed to be impossible -- this is called in post_save signal.
                 raise ImproperlyConfigured("Cannot get the membership_form_model instance. Expected to find an instance of model {0} belonging to schedule group {1}.".format(membership_form_model, schedule_group))
-            visit_definitions = VisitDefinition.objects.filter(schedule_group=schedule_group)
+            visit_definitions = visit_definitions or VisitDefinition.objects.filter(schedule_group=schedule_group)
             appointment_date_helper = AppointmentDateHelper()
             Appointment = get_model('appointment', 'appointment')
             if not visit_definitions:

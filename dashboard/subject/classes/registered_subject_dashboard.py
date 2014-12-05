@@ -48,7 +48,6 @@ class RegisteredSubjectDashboard(Dashboard):
         self._appointment_zero = None
         self._appointment_continuation_count = None
         self._registered_subject = None
-        self.appointment_code = None
         self.appointment_row_template = 'appointment_row.html'
         self.membership_form_category = []
         self.visit_messages = []
@@ -57,9 +56,6 @@ class RegisteredSubjectDashboard(Dashboard):
         self.has_requisition_model = True
         self.dashboard_models['appointment'] = Appointment
         self.dashboard_models['registered_subject'] = RegisteredSubject
-#         self.set_has_requisition_model = kwargs.get('has_requisition_model')
-#         if kwargs.get('requisition_model'):
-#             self.requisition_model = kwargs.get('requisition_model')
 
     def get_context_data(self, **kwargs):
         self.context = super(RegisteredSubjectDashboard, self).get_context_data(**kwargs)
@@ -83,7 +79,7 @@ class RegisteredSubjectDashboard(Dashboard):
             subject_identifier=self.subject_identifier,
             unkeyed_membership_forms=self.unkeyed_subject_membership_models,
             visit_attr=convert_from_camel(self.visit_model._meta.object_name),
-            visit_code=self.appointment_code,
+            visit_code=self.visit_code,
             visit_instance=self.appointment_continuation_count,
             visit_messages=self.visit_messages,
             visit_model=self.visit_model,
@@ -99,11 +95,11 @@ class RegisteredSubjectDashboard(Dashboard):
         if self.show == 'forms':
             self.context.update(
                 requisition_model=self.requisition_model,
-                rendered_scheduled_forms=self.render_scheduled_forms(),
+                rendered_scheduled_forms=self.rendered_scheduled_forms,
                 )
             if self.requisition_model:
                 self.context.update(requisition_model_meta=self.requisition_model._meta)
-                self.context.update(rendered_scheduled_requisitions=self.render_requisitions())
+                self.context.update(rendered_scheduled_requisitions=self.rendered_requisitions)
             self.render_summary_links()
         self.context.update(rendered_action_items=self.render_action_item())
         self.context.update(rendered_locator=self.render_locator())
@@ -135,6 +131,13 @@ class RegisteredSubjectDashboard(Dashboard):
 
     def add_visit_message(self, message):
         self.visit_messages.append(message)
+
+    @property
+    def visit_code(self):
+        try:
+            return self.appointment.visit_definition.code
+        except AttributeError:
+            return None
 
     @property
     def consent(self):
@@ -185,10 +188,6 @@ class RegisteredSubjectDashboard(Dashboard):
                 self._appointment = None
             self._appointment_zero = None
             self._appointment_continuation_count = None
-            try:
-                self.appointment_code = self._appointment.visit_definition.code
-            except AttributeError:
-                self.appointment_code = None
         return self._appointment
 
     @property
@@ -595,7 +594,8 @@ class RegisteredSubjectDashboard(Dashboard):
             'action_item_meta': action_item_cls._meta})
         return rendered_action_items
 
-    def render_scheduled_forms(self):
+    @property
+    def rendered_scheduled_forms(self):
         """Renders the Scheduled Entry Forms section of the dashboard
         using the context class ScheduledEntryContext."""
         template = 'scheduled_entries.html'
@@ -620,7 +620,8 @@ class RegisteredSubjectDashboard(Dashboard):
             'show': self.show})
         return rendered_scheduled_forms
 
-    def render_requisitions(self):
+    @property
+    def rendered_requisitions(self):
         """Renders the Scheduled Requisitions section of the dashboard
         using the context class RequisitionContext."""
         template = 'scheduled_requisitions.html'
@@ -643,7 +644,7 @@ class RegisteredSubjectDashboard(Dashboard):
                 additional_requisitions.append(requisition_context.context)
             else:
                 scheduled_requisitions.append(requisition_context.context)
-        render_requisitions = render_to_string(template, {
+        rendered_requisitions = render_to_string(template, {
             'scheduled_requisitions': scheduled_requisitions,
             'additional_requisitions': additional_requisitions,
             'drop_down_list_requisitions': self.drop_down_list_requisitions(scheduled_requisitions),
@@ -657,7 +658,7 @@ class RegisteredSubjectDashboard(Dashboard):
             'dashboard_id': self.dashboard_id,
             'subject_dashboard_url': self.dashboard_url_name,
             'show': self.show})
-        return render_requisitions
+        return rendered_requisitions
 
     def drop_down_list_requisitions(self, scheduled_requisitions):
         drop_down_list_requisitions = []
