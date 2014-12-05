@@ -9,7 +9,7 @@ from edc.base.model.fields import IdentityTypeField
 from edc.choices.common import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
 from edc.core.bhp_variables.models import StudySite
 from edc.core.crypto_fields.fields import EncryptedIdentityField, SaltField
-from edc.core.crypto_fields.utils import mask_encrypted
+from edc.core.crypto_fields.utils.mask_encrypted import mask_encrypted
 from edc.subject.subject.models import BaseSubject
 
 
@@ -117,13 +117,39 @@ class RegisteredSubject(BaseSubject):
         blank=True,
     )
 
+    additional_key = models.CharField(
+        max_length=36,
+        verbose_name='-',
+        editable=False,
+        default=None,
+        null=True,
+        help_text=('A uuid (or some other text value) to be added to bypass the '
+                   'unique constraint of just firstname, initials, and dob.'
+                   'The default constraint proves limiting since the source model usually has some other'
+                   'attribute in additional to first_name, initials and dob which '
+                   'is not captured in this model'),
+        )
+
     salt = SaltField()
 
     history = AuditTrail()
 
     def save(self, *args, **kwargs):
         self.check_max_subjects()
+        if self.identity:
+            self.additional_key = None
         super(RegisteredSubject, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        if self.sid:
+            return "{0} {1} ({2} {3})".format(self.mask_unset_subject_identifier(),
+                                              self.subject_type,
+                                              mask_encrypted(self.first_name),
+                                              self.sid)
+        else:
+            return "{0} {1} ({2})".format(self.mask_unset_subject_identifier(),
+                                          self.subject_type,
+                                          mask_encrypted(self.first_name))
 
     def check_max_subjects(self, exception_cls=None, settings_attrs=None, count=None):
         """Checks the number of subjects against the settings attribute MAX_SUBJECTS.
@@ -143,7 +169,9 @@ class RegisteredSubject(BaseSubject):
                 if not count:
                     count = self.__class__.objects.filter(subject_type=self.get_subject_type(settings_attrs)).count()
                 if count + 1 > max_subjects:
-                    raise exception_cls('Maximum number of subjects has been reached for subject_type {0}. Got {1}/{2}.'.format(self.get_subject_type(settings_attrs), count, max_subjects))
+                    raise exception_cls(
+                        ('Maximum number of subjects has been reached for subject_type {0}. '
+                         'Got {1}/{2}.').format(self.get_subject_type(settings_attrs), count, max_subjects))
 
     def verify_settings_attr(self, settings_attrs=None):
         """Verify that attribute SUBJECT_TYPES exists, at least.
@@ -152,14 +180,20 @@ class RegisteredSubject(BaseSubject):
         if not settings_attrs:
             settings_attrs = settings
         if 'SUBJECT_TYPES' not in dir(settings_attrs):
-            raise ImproperlyConfigured('Missing settings attribute. Required list SUBJECT_TYPES. e.g SUBJECT_TYPES = [\'maternal\', \'infant\'].')
+            raise ImproperlyConfigured('Missing settings attribute. Required list SUBJECT_TYPES. '
+                                       'e.g SUBJECT_TYPES = [\'maternal\', \'infant\'].')
         if 'MAX_SUBJECTS' in dir(settings_attrs):
             if not isinstance(settings_attrs.MAX_SUBJECTS, dict):
-                raise ImproperlyConfigured('Setting attribute MAX_SUBJECTS must be a dictionary of format MAX_SUBJECTS = {{\'maternal\': 1000, \'infant\': 1500, ...}}. Got {0}.'.format(settings_attrs.MAX_SUBJECTS))
+                raise ImproperlyConfigured('Setting attribute MAX_SUBJECTS must be a dictionary of format '
+                                           'MAX_SUBJECTS = {{\'maternal\': 1000, \'infant\': 1500, ...}}. '
+                                           'Got {0}.'.format(settings_attrs.MAX_SUBJECTS))
             if not self.get_subject_type(settings_attrs).lower() in settings_attrs.MAX_SUBJECTS.keys():
-                raise ImproperlyConfigured('Setting attribute MAX_SUBJECTS should be a dictionary with a key for subject_type {0}. Got {1}.'.format(self.get_subject_type(settings_attrs), settings_attrs.MAX_SUBJECTS))
+                raise ImproperlyConfigured('Setting attribute MAX_SUBJECTS should be a dictionary with a '
+                                           'key for subject_type {0}. Got {1}.'.format(
+                                               self.get_subject_type(settings_attrs), settings_attrs.MAX_SUBJECTS))
             if not filter(lambda n: isinstance(n, int), settings_attrs.MAX_SUBJECTS.values()):
-                raise ImproperlyConfigured('Setting attribute dictionary MAX_SUBJECTS must return an integer for each value. Got {0}.'.format(settings_attrs.MAX_SUBJECTS))
+                raise ImproperlyConfigured('Setting attribute dictionary MAX_SUBJECTS must return an integer '
+                                           'for each value. Got {0}.'.format(settings_attrs.MAX_SUBJECTS))
 
     def get_registered_subject(self):
         return self
@@ -167,15 +201,19 @@ class RegisteredSubject(BaseSubject):
     def get_subject_types(self, settings_attrs=None):
         if not settings_attrs:
             settings_attrs = settings
+        settings_attrs.SUBJECT_TYPES.append('test_subject_type')  # added for tests
         return map(lambda n: n.lower(), settings_attrs.SUBJECT_TYPES)
 
     def get_subject_type(self, settings_attrs=None):
         if not settings_attrs:
             settings_attrs = settings
         if not self.subject_type:
-            raise TypeError('subject_type may not be None for model class {0} instance {1}.'.format(self.__class__, self))
+            raise TypeError('subject_type may not be None for model class {0} instance {1}.'.format(
+                self.__class__, self))
         if self.subject_type.lower() not in self.get_subject_types(settings_attrs):
-            raise TypeError('Expected subject_type to be any of {0}. Got \'{1}\'. Either update the settings attribute in settings.py or change the subject_type of the registered_subject.'.format(self.get_subject_types(settings_attrs), self.subject_type))
+            raise TypeError('Expected subject_type to be any of {0}. Got \'{1}\'. Either update the settings '
+                            'attribute in settings.py or change the subject_type of the registered_subject.'.format(
+                                self.get_subject_types(settings_attrs), self.subject_type))
         return self.subject_type
 
     def check_if_may_change_subject_identifier(self, using):
@@ -198,30 +236,23 @@ class RegisteredSubject(BaseSubject):
         # requery myself
         obj = self.__class__.objects.using(using).get(pk=self.pk)
         # dont allow values in these fields to change if dispatched
-        may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in ['study_site_id', 'registration_status', 'modified'] and not k.startswith('_')]
+        may_not_change_these_fields = [
+            (k, v) for k, v in obj.__dict__.iteritems()
+            if k not in ['study_site_id', 'registration_status', 'modified'] and not k.startswith('_')
+            ]
         for k, v in may_not_change_these_fields:
             if getattr(self, k) != v:
                 return False
         return True
 
-    def __unicode__(self):
-        if self.sid:
-            return "{0} {1} ({2} {3})".format(self.mask_unset_subject_identifier(),
-                                              self.subject_type,
-                                              mask_encrypted(self.first_name),
-                                              self.sid)
-        else:
-            return "{0} {1} ({2})".format(self.mask_unset_subject_identifier(),
-                                          self.subject_type,
-                                          mask_encrypted(self.first_name))
-
     def dashboard(self):
         ret = None
         if self.subject_identifier:
-            url = reverse('subject_dashboard_url', kwargs={'dashboard_type': self.subject_type.lower(),
-                                                           'dashboard_id': self.pk,
-                                                           'dashboard_model': 'registered_subject',
-                                                           'show': 'appointments'})
+            url = reverse('subject_dashboard_url', kwargs={
+                'dashboard_type': self.subject_type.lower(),
+                'dashboard_id': self.pk,
+                'dashboard_model': 'registered_subject',
+                'show': 'appointments'})
             ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         return ret
     dashboard.allow_tags = True
@@ -231,4 +262,4 @@ class RegisteredSubject(BaseSubject):
         db_table = 'bhp_registration_registeredsubject'
         verbose_name = 'Registered Subject'
         ordering = ['subject_identifier']
-        unique_together = ('first_name', 'dob', 'initials')
+        unique_together = ('first_name', 'dob', 'initials', 'additional_key')
