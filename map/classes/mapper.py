@@ -235,9 +235,9 @@ class Mapper(object):
         return self._other_icons
 
     def get_item_model_cls(self):
-        if not self._item_model_cls:
-            self.set_item_model_cls()
-        return self._item_model_cls
+        if not self.item_model:
+            self.setitem_model
+        return self.item_model
 
     def set_regions(self, tpl=None):
         """Need comment"""
