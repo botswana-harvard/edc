@@ -101,8 +101,8 @@ class BaseSectionView(object):
                 page = 1
             if self.search:
                 self.searcher = self.search.get(kwargs.get('search_name', 'word'))()
-                self.searcher.search_form_data = request.POST
-                if self.searcher.search_form(request.POST).is_valid():
+                self.searcher.search_form_data = request.POST or {'search_term': kwargs.get('search_term')}
+                if self.searcher.search_form(self.searcher.search_form_data).is_valid():
                     self.context.update({
                         'search_result': self._paginate(self.searcher.search_result, page),
                         'search_result_include_file': self.searcher.search_result_include_template,
