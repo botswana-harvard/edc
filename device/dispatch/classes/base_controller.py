@@ -319,7 +319,7 @@ class BaseController(BaseProducer):
             model_cls = model_or_app_model_tuple
         self.model_to_json(model_cls, additional_base_model_class, fk_to_skip=fk_to_skip)
 
-    def update_model_crpts(self, mld_cls_instances):
+    def update_model_crypts(self, mld_cls_instances):
         """Grabs all crypt objects of models being dispatched. """
         crypt_objs_instances = []
         if not isinstance(mld_cls_instances, (list, QuerySet)):
@@ -366,7 +366,7 @@ class BaseController(BaseProducer):
 
         """
         # Get all Crypts for this list of instances
-        crypts_dispatched = self.update_model_crpts(model_instance)
+        crypts_dispatched = self.update_model_crypts(model_instance)
         # convert to list if not iterable
         if not isinstance(model_instance, (list, QuerySet)):
             model_instance = [model_instance]
@@ -390,13 +390,13 @@ class BaseController(BaseProducer):
                 # add foreign key instances to the list of model instances to serialize
                 self.get_fk_dependencies(model_instances, fk_to_skip)
                 break
-            model_instances = self.fk_instances + model_instances
+            #model_instances = self.fk_instances + model_instances
             if model_instances:
                 # serialize all
                 json_obj = serializers.serialize('json', model_instances,
                                                  ensure_ascii=False, use_natural_keys=True, indent=2)
                 # deserialize all
-                deserialized_objects = list(serializers.deserialize("json", json_obj, use_natural_keys=True))
+                deserialized_objects = list(serializers.deserialize("json", json_obj, use_natural_keys=True, using=self.get_using_destination()))
                 saved = []
                 tries = 0
                 while True:
@@ -405,7 +405,7 @@ class BaseController(BaseProducer):
                         try:
                             if deserialized_object not in saved:
                                 # save deserialized_object to destination
-                                deserialized_object.object.save(using=self.get_using_destination())
+                                deserialized_object.save(using=self.get_using_destination())
                                 self.serialize_m2m(deserialized_object)
                                 saved.append(deserialized_object)
                                 self.add_to_session_container(instance, 'serialized')
