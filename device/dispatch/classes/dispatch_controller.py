@@ -249,9 +249,12 @@ class DispatchController(BaseDispatchController):
         visit_field_attname = None
         requisition_models = self.get_requisition_models(app_label)
         for requisition_cls in requisition_models:
-            if not visit_field_attname or multiple_visit_field_attname:
-                visit_field_attname = VisitModelHelper.get_field_name(requisition_cls)
-            requisitions = requisition_cls.objects.filter(**{'{0}__appointment__registered_subject'.format(visit_field_attname): registered_subject})
+#             if not visit_field_attname or multiple_visit_field_attname:
+#                 visit_field_attname = VisitModelHelper.get_field_name(requisition_cls)
+            if requisition_cls == get_model('bcpp_lab', 'ClinicRequisition'):
+                requisitions = requisition_cls.objects.filter(**{'{0}__appointment__registered_subject'.format('clinic_visit'): registered_subject})
+            elif requisition_cls == get_model('bcpp_lab', 'SubjectRequisition'):
+                requisitions = requisition_cls.objects.filter(**{'{0}__appointment__registered_subject'.format('subject_visit'): registered_subject})
             if requisitions:
                 self.dispatch_user_items_as_json(requisitions, user_container)
 
@@ -307,18 +310,10 @@ class DispatchController(BaseDispatchController):
                 for qs in queryset:
                     # Calls dispatch_prep, dispatch_prep is overidden in bcpp_dispatch_controller
                     self.dispatch()
-#                 self.dispatch_crypt()
 #                 self.dispatch_registered_subjects()
         return any_dispatched, any_transactions
-
-#     def dispatch_crypt(self):
-#         logger.info("Updating the Crypt table...")
-#         self.update_model(('crypto_fields', 'crypt'))
 
     def dispatch_registered_subjects(self):
         logger.info("Updating the Registered Subjects table...")
         self.update_model(('registration', 'RegisteredSubject'))
 
-#     def send_cypts(self, crypts_to_send, **kwargs):
-#         logger.info('  dispatching {0} crypts to {1}.'.format(crypts_to_send.count(), self.get_using_destination()))
-#         self._to_json(crypts_to_send, kwargs.get('additional_class', None))
