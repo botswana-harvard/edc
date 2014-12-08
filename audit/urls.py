@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
  
 from .views import audit_trail_view
-from edc.audit.views.audit_trail_view import AuditTrailView
+# from edc.audit.views.audit_trail_view import AuditTrailView
  
  
 urlpatterns = patterns('',
@@ -29,10 +29,10 @@ urlpatterns = patterns('',
 #     audit_trail_view,
 #     name="audit_trail_url"
 #     ),
-    url(r'^(?P<model_name>\w+)/$',
-        AuditTrailView.as_view(),
-        name="audit_trail_url"
-        ),
+#     url(r'^(?P<model_name>\w+)/$',
+#         AuditTrailView.as_view(),
+#         name="audit_trail_url"
+#         ),
 #     url(r'^',
 #         AuditTrailView.as_view(),
 #         name="audit_trail_url"

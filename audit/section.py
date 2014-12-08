@@ -14,5 +14,5 @@
 #             'model_name': kwargs.get('model_name')
 #             })
 #         return context
-# 
+#
 # site_sections.register(SectionAuditView)
