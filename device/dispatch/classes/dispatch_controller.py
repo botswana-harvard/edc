@@ -205,20 +205,37 @@ class DispatchController(BaseDispatchController):
                 if history_models:
                     self._to_json(history_models)
 
-    def dispatch_appointments(self, registered_subject, user_container, start_datetime, end_datetime, fk_to_skip=None):
+    def dispatch_appointments(self, appointmnet_instance, registered_subject, user_container, start_datetime, end_datetime, fk_to_skip=None):
         """Dispatches all appointments for this registered subject.
 
         ..seealso:: module :mod:`bhp_appointment`
         """
         Appointments = get_model('appointment', 'Appointment')
         # appointments = Appointments.objects.filter(registered_subject=registered_subject)
-        appointments = Appointments.objects.filter(registered_subject=registered_subject,
+        appointments = Appointments.objects.filter(visit_instance=appointmnet_instance,
+                                                   registered_subject=registered_subject,
                                                    appt_datetime__range=(start_datetime,
                                                                          end_datetime))
         if appointments:
             self.dispatch_user_items_as_json(appointments, user_container, fk_to_skip=fk_to_skip)
 
-    def dispatch_scheduled_instances(self, app_label, registered_subject, user_container, start_datetime, end_datetime, fk_to_skip=None, **kwargs):
+    def dispatch_subject_visits(self, appointmnet_instance, registered_subject, user_container, visit_app, visit_model, start_datetime, end_datetime, fk_to_skip=None):
+        """Dispatches all subject visits for this registered subject.
+
+        ..seealso:: module :mod:`bhp_appointment`
+        """
+        if (visit_model and visit_app):
+            SubjectVisit = get_model(visit_app, visit_model)
+            Appointments = get_model('appointment', 'Appointment')
+            appointments = Appointments.objects.filter(visit_instance=appointmnet_instance,
+                                                   registered_subject=registered_subject,
+                                                   appt_datetime__range=(start_datetime,
+                                                                         end_datetime))
+            subject_visits = SubjectVisit.objects.filter(appointment__in=appointments)
+            if subject_visits:
+                self.dispatch_user_items_as_json(subject_visits, user_container, fk_to_skip=fk_to_skip)
+
+    def dispatch_scheduled_instances(self, app_label, appointmnet_instance, registered_subject, user_container, visit_app, visit_model, start_datetime, end_datetime, fk_to_skip=None, **kwargs):
         """Sends scheduled instances to the producer for the given an instance of registered_subject.
 
         Keywords:
@@ -231,7 +248,9 @@ class DispatchController(BaseDispatchController):
         """
 
         # TODO: this and dispatch_requisitions() are duplications of the same function.
-        self.dispatch_appointments(registered_subject, user_container, start_datetime, end_datetime, fk_to_skip=fk_to_skip)
+        self.dispatch_appointments(appointmnet_instance, registered_subject, user_container, start_datetime, end_datetime, fk_to_skip=fk_to_skip)
+        #
+        self.dispatch_subject_visits(appointmnet_instance, registered_subject, user_container, visit_app, visit_model, start_datetime, end_datetime, fk_to_skip=fk_to_skip)
         # Get all the models with reference to SubjectVisit
         scheduled_models = self.get_scheduled_models(app_label)
         # get the visit model class for this app
