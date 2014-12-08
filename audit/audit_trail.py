@@ -43,13 +43,14 @@ class BaseAuditModelAdmin(admin.ModelAdmin):
                     'hostname_modified')
     list_filter = ('_audit_change_type', '_audit_timestamp', 'created', 'modified', 'user_created',
                    'user_modified', 'hostname_created', 'hostname_modified')
+    # search_fields = ('_audit_subject_identifier', '_audit_id')
 
 
 class AuditTrail(object):
     def __init__(self, show_in_admin=False, save_change_type=True, audit_deletes=True,
                  track_fields=None):
         self.opts = {}
-        self.opts['show_in_admin'] = show_in_admin
+        self.opts['show_in_admin'] = True # show_in_admin
         self.opts['save_change_type'] = save_change_type
         self.opts['audit_deletes'] = audit_deletes
         if track_fields:
