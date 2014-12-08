@@ -59,7 +59,7 @@ class AppointmentHelper(object):
                     "find an instance of model {0} belonging to schedule group {1}.".format(
                         membership_form_model, schedule_group))
             visit_definitions = visit_definitions or VisitDefinition.objects.filter(
-                schedule_group=schedule_group)
+                schedule_group=schedule_group).order_by('time_point')
             appointment_date_helper = AppointmentDateHelper()
             Appointment = get_model('appointment', 'appointment')
             if not visit_definitions:
