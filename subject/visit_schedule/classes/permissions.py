@@ -29,25 +29,40 @@ class Permissions(object):
         for content_type in self.get_content_types():
             if 'add' in self.get_permission_profile():
                 if not self.get_group().permissions.filter(content_type=content_type, codename__icontains='add' + '_'):
+                    permisons = Permission.objects.filter(content_type=content_type, codename__icontains='add' + '_')
                     try:
-                        self.get_group().permissions.add(Permission.objects.get(content_type=content_type, codename__icontains='add' + '_'))
+                        for permision in permisons:
+                            if permision:
+                                self.get_group().permissions.add(permision)
                     except Permission.DoesNotExist:
                         raise TypeError('Permissions do not exist. Run syncdb')
-                    self.message(Permission.objects.get(content_type=content_type, codename__icontains='add' + '_'))
+                    for permision in permisons:
+                        if permision:
+                            self.message(permision)
             if 'change' in self.get_permission_profile():
                 if not self.get_group().permissions.filter(content_type=content_type, codename__icontains='change' + '_'):
+                    permisons = Permission.objects.filter(content_type=content_type, codename__icontains='change' + '_')
                     try:
-                        self.get_group().permissions.add(Permission.objects.get(content_type=content_type, codename__icontains='change' + '_'))
+                        for permision in permisons:
+                            if permision:
+                                self.get_group().permissions.add(permision)
                     except Permission.DoesNotExist:
                         raise TypeError('Permissions do not exist. Run syncdb')
-                    self.message(Permission.objects.get(content_type=content_type, codename__icontains='change' + '_'))
+                    for permision in permisons:
+                        if permision:
+                            self.message(permision)
             if 'delete' in self.get_permission_profile():
                 if not self.get_group().permissions.filter(content_type=content_type, codename__icontains='delete' + '_'):
+                    permisons = Permission.objects.filter(content_type=content_type, codename__icontains='delete' + '_')
                     try:
-                        self.get_group().permissions.add(Permission.objects.get(content_type=content_type, codename__icontains='delete' + '_'))
+                        for permision in permisons:
+                            if permision:
+                                self.get_group().permissions.add(permision)
                     except Permission.DoesNotExist:
                         raise TypeError('Permissions do not exist. Run syncdb')
-                    self.message(Permission.objects.get(content_type=content_type, codename__icontains='delete' + '_'))
+                    for permision in permisons:
+                        if permision:
+                            self.message(permision)
 
     def replace(self):
         """Replaces permissions to the group by deleting all for this group then calling update."""
