@@ -9,7 +9,6 @@ from django.utils import translation
 from django.views.generic import TemplateView
 
 from edc.dashboard.section.classes import site_sections
-from edc.subject.registration.models import RegisteredSubject
 
 
 class Dashboard(TemplateView):
