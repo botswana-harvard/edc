@@ -319,9 +319,10 @@ class BaseController(BaseProducer):
             model_cls = model_or_app_model_tuple
         self.model_to_json(model_cls, additional_base_model_class, fk_to_skip=fk_to_skip)
 
-    def update_model_crpts(self, mld_cls_instances):
+    def update_model_crypts(self, mld_cls_instances):
         """Grabs all crypt objects of models being dispatched. """
         crypt_objs_instances = []
+        crypt_objs_instance = []
         if not isinstance(mld_cls_instances, (list, QuerySet)):
             mld_cls_instances = [mld_cls_instances]
         for mld_cls_instance in mld_cls_instances:  # eg plot
@@ -334,19 +335,43 @@ class BaseController(BaseProducer):
                 if issubclass(f.__class__, BaseEncryptedField):
                     crypt = FieldCryptor('rsa', 'local')
                     hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
-                    if hash_value:
+                    #if hash_value:
+                    if Crypt.objects.filter(hash=hash_value).exists():
                         crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
-                        if crypt_objs_instance:
-                            # Successfully pulled a crypt record using hash generated from RSA instance.
-                            crypt_objs_instances.append(crypt_objs_instance[0])
+                    else:
+                        crypt = FieldCryptor('rsa', 'restricted')
+                        hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
+                        if Crypt.objects.filter(hash=hash_value).exists():
+                            crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
                         else:
-                            # RSA hash dis not work, now we try AES generated hash
                             crypt = FieldCryptor('aes', 'local')
                             hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
-                            if hash_value:
+                            if Crypt.objects.filter(hash=hash_value).exists():
                                 crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
-                                if crypt_objs_instance:
-                                        crypt_objs_instances.append(crypt_objs_instance[0])
+                            else:
+                                if hash_value:
+                                    raise TypeError('Could not get a secret for field={}, of model={}, using hash={}'.format(str(f), str(model_cls), hash))
+                                else:
+                                    pass
+                    if len(crypt_objs_instance) > 0:
+                        crypt_objs_instances.append(crypt_objs_instance[0])
+#                     if crypt_objs_instance:hash
+#                         # Successfully pulled a crypt record using hash generated from RSA instance.
+#                         crypt_objs_instances.append(crypt_objs_instance[0])
+#                     elif not crypt_objs_instance:
+#                         crypt = FieldCryptor('rsa', 'restricted')
+#                         hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
+#                         #if hash_value:
+#                         crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
+#                         crypt_objs_instances.append(crypt_objs_instance[0])
+#                     else:
+#                         # RSA hash dis not work, now we try AES generated hash
+#                         crypt = FieldCryptor('aes', 'local')
+#                         hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
+#                         if hash_value:
+#                             crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
+#                             if crypt_objs_instance:
+#                                     crypt_objs_instances.append(crypt_objs_instance[0])
         crypt_objs_instances_unique = {}
         for crypt in crypt_objs_instances:
             crypt_objs_instances_unique[crypt.hash] = crypt
@@ -366,7 +391,7 @@ class BaseController(BaseProducer):
 
         """
         # Get all Crypts for this list of instances
-        crypts_dispatched = self.update_model_crpts(model_instance)
+        crypts_dispatched = self.update_model_crypts(model_instance)
         # convert to list if not iterable
         if not isinstance(model_instance, (list, QuerySet)):
             model_instance = [model_instance]
@@ -396,23 +421,33 @@ class BaseController(BaseProducer):
                 json_obj = serializers.serialize('json', model_instances,
                                                  ensure_ascii=False, use_natural_keys=True, indent=2)
                 # deserialize all
-                deserialized_objects = list(serializers.deserialize("json", json_obj, use_natural_keys=True))
+                deserialized_objects = []
+                try:
+                    deserialized_objects = serializers.deserialize("json", json_obj, use_natural_keys=True, using=self.get_using_destination())
+                except DeserializationError as e:
+                    if 'Appointment matching query does not exist' in str(e):
+                        pass
+                    else:
+                        raise
+                #deserialized_objects = list(deserialized_objects)
                 saved = []
                 tries = 0
                 while True:
                     tries += 1
+                    deserialized_count = 0
                     for deserialized_object in deserialized_objects:
+                        deserialized_count = deserialized_count + 1
                         try:
                             if deserialized_object not in saved:
                                 # save deserialized_object to destination
-                                deserialized_object.object.save(using=self.get_using_destination())
+                                deserialized_object.save(using=self.get_using_destination())
                                 self.serialize_m2m(deserialized_object)
                                 saved.append(deserialized_object)
                                 self.add_to_session_container(instance, 'serialized')
                                 self.update_session_container_class_counter(instance)
                         except IntegrityError as integrity_error:
-                            raise IntegrityError('{}. Got {}.'.format(deserialized_object, str(integrity_error)))
-                            if integrity_error.args[1].find('Duplicate entry') != -1 and integrity_error.args[1].find('hash') != -1:
+                            #raise IntegrityError('{}. Got {}.'.format(deserialized_object, str(integrity_error)))
+                            if integrity_error.args[1].find('Duplicate entry'):
                                 saved.append(deserialized_object)
                             #  TODO: change the handling of the exception to something like this:
                             #         as is raises IndexError: tuple index out of range
@@ -425,7 +460,7 @@ class BaseController(BaseProducer):
 #                                 # only include this if you are OK passing ALL integrity errors
 #                                 saved.append(deserialized_object)
                             continue
-                    if len(saved) == len(deserialized_objects):
+                    if len(saved) == deserialized_count:
                         break
                     if tries > 20:
                         raise DeserializationError('Unable to deserialize object. Tries exceeded '
