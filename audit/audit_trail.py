@@ -50,7 +50,7 @@ class AuditTrail(object):
     def __init__(self, show_in_admin=False, save_change_type=True, audit_deletes=True,
                  track_fields=None):
         self.opts = {}
-        self.opts['show_in_admin'] = True # show_in_admin
+        self.opts['show_in_admin'] = False # show_in_admin
         self.opts['save_change_type'] = save_change_type
         self.opts['audit_deletes'] = audit_deletes
         if track_fields:
