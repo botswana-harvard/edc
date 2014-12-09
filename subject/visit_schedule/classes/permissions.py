@@ -29,6 +29,7 @@ class Permissions(object):
         for content_type in self.get_content_types():
             if 'add' in self.get_permission_profile():
                 if not self.get_group().permissions.filter(content_type=content_type, codename__icontains='add' + '_'):
+                    # To avoid duplicates
                     permisons = Permission.objects.filter(content_type=content_type, codename__icontains='add' + '_')
                     try:
                         for permision in permisons:
