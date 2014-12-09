@@ -106,6 +106,7 @@ class VisitScheduleConfiguration(object):
 
     def build(self):
         """Builds and / or updates the visit schedule models."""
+        entry_item = None
         Entry = get_model('entry', 'entry')
         RequisitionPanel = get_model('entry', 'requisitionpanel')
         LabEntry = get_model('entry', 'labentry')
