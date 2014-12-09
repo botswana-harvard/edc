@@ -31,14 +31,14 @@ def map_index(request, **kwargs):
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,
-                    'item_label': mapper.get_item_label(),
-                    'region_field_attr': mapper.get_region_field_attr(),
-                    'region_label': mapper.get_region_label(),
-                    'section_field_attr': mapper.get_section_field_attr(),
-                    'section_label': mapper.get_section_label(),
-                    'regions': mapper.get_regions(),
-                    'sections': mapper.get_sections(),
-                    'icons': mapper.get_icons(),
+                    'item_label': mapper.item_label,
+                    'region_field_attr': mapper.region_field_attr,
+                    'region_label': mapper.region_label,
+                    'section_field_attr': mapper.section_field_attr,
+                    'section_label': mapper.section_label,
+                    'regions': mapper.regions,
+                    'sections': mapper.sections,
+                    'icons': mapper.icons,
                     'session_icon': icon,
                     'cart_size': cart_size,
                     'identifiers': identifiers
