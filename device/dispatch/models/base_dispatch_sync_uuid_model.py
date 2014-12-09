@@ -223,7 +223,8 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
 
     def _bypass_for_edit(self, using=None, update_fields=None):
         using = using or 'default'
-        if not self.bypass_for_edit_dispatched_as_item(using, update_fields):
+        #We only want to check this if trying to edit locally, NOT when dispatching.
+        if using in ['default', None] and not self.bypass_for_edit_dispatched_as_item(using, update_fields):
             if not self.id:
                 raise AlreadyDispatchedItem('Model {0}-{1}, although dispatched, may only be '
                                             'conditionally edited. New instances are not '

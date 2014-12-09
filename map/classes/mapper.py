@@ -13,11 +13,55 @@ from ..exceptions import MapperError
 
 class Mapper(object):
 
+    map_code = None
+    mape_area = None
+
+    item_model = None
+    item_model_cls = None
+    item_label = None
+
+    region_field_attr = None
+    region_label = None
+    section_field_attr = None
+    section_label = None
+    map_area_field_attr = None
+
+    # different map fields, the numbers are the zoom levels
+    map_field_attr_18 = None
+    map_field_attr_17 = None
+    map_field_attr_16 = None
+
+    target_gps_lat_field_attr = None
+    target_gps_lon_field_attr = None
+    icons = None
+    other_icons = None
+
+    identifier_field_attr = None
+    identifier_field_label = None
+    other_identifier_field_attr = None
+    other_identifier_field_label = None
+
+    item_target_field = None
+    item_selected_field = None
+
+    gps_degrees_s_field_attr = None
+    gps_degrees_e_field_attr = None
+    gps_minutes_s_field_attr = None
+    gps_minutes_e_field_attr = None
+
     map_area = None
     map_code = None
-    radius = None
+    regions = None
+    sections = None
+
+    landmarks = None
+
+    intervention = None
+
     gps_center_lat = None
     gps_center_lon = None
+    radius = None
+    location_boundary = None
 
     def __init__(self, *args, **kwargs):
         self._item_model_cls = None
@@ -45,23 +89,23 @@ class Mapper(object):
         self._map_area_field_attr = None
         self._map_code = None
 
-        # item_model_cls
-        if 'item_model' in kwargs:
-            self.set_item_model_cls(kwargs.get('item_model'))
-        if 'regions' in kwargs:
-            self.set_regions(kwargs('regions'))
-        if 'sections' in kwargs:
-            self.set_regions(kwargs('sections'))
-        if 'icons' in kwargs:
-            self.set_icons(kwargs('icons'))
-        if 'other_icons' in kwargs:
-            self.set_other_icons(kwargs('other_icons'))
-        if 'landmarks' in kwargs:
-            self.set_landmarks(kwargs('landmarks'))
-        if 'item_label' in kwargs:
-            self.set_item_label(kwargs('item_label'))
-        if 'map_code' in kwargs:
-            self.set_map_code(kwargs('map_code'))
+#         # item_model_cls
+#         if 'item_model' in kwargs:
+#             self.set_item_model_cls(kwargs.get('item_model'))
+#         if 'regions' in kwargs:
+#             self.set_regions(kwargs('regions'))
+#         if 'sections' in kwargs:
+#             self.set_regions(kwargs('sections'))
+#         if 'icons' in kwargs:
+#             self.set_icons(kwargs('icons'))
+#         if 'other_icons' in kwargs:
+#             self.set_other_icons(kwargs('other_icons'))
+#         if 'landmarks' in kwargs:
+#             self.set_landmarks(kwargs('landmarks'))
+#         if 'item_label' in kwargs:
+#             self.set_item_label(kwargs('item_label'))
+#         if 'map_code' in kwargs:
+#             self.set_map_code(kwargs('map_code'))
 
     def __repr__(self):
         return 'Mapper({0.map_code!r}:{0.map_area!r})'.format(self)
@@ -235,9 +279,9 @@ class Mapper(object):
         return self._other_icons
 
     def get_item_model_cls(self):
-        if not self._item_model_cls:
-            self.set_item_model_cls()
-        return self._item_model_cls
+        if not self.item_model:
+            self.setitem_model
+        return self.item_model
 
     def set_regions(self, tpl=None):
         """Need comment"""
