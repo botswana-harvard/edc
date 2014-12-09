@@ -13,6 +13,7 @@ from ..exceptions import MapperError
 
 class Mapper(object):
 
+    #  Remove setters and gets and use class variables
     map_code = None
     mape_area = None
 
