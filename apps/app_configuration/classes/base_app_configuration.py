@@ -99,7 +99,7 @@ class BaseAppConfiguration(object):
                     destination.tel = item.tel
                     destination.email = item.email
                     destination.save(update_fields=['name', 'address', 'tel', 'email'])
-                except Destination.DoesNotExist:
+                except IndexError:
                     Destination.objects.create(code=item.code,
                                                name=item.name,
                                                address=item.address,
