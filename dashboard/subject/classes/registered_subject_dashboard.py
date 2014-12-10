@@ -249,7 +249,7 @@ class RegisteredSubjectDashboard(Dashboard):
             only those for a given membership form
             only those for a visit definition grouping
             """
-        appointments = None
+        appointments = []
         if self.show == 'forms':
             appointments = [self.appointment]
         else:
