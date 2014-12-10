@@ -26,7 +26,10 @@ class BaseConsentHistoryManager(models.Manager):
                     inst.save(using=using)
 
         .. seealso:: :func:`get_consent_history_model` on the consent."""
-        raise ImproperlyConfigured('Expected this method to be overridden by user {0}. Got args=(instance={1}, created={2}, using={3}).'.format(self.__class__, consent_inst, created, using))
+        raise ImproperlyConfigured('Expected this method to be overridden by user {0}. '
+                                   'Got args=(instance={1}, created={2}, using={3}).'.format(
+                                       self.__class__, consent_inst, created, using))
 
     def delete_consent_history(self, app_label, model_name, pk, using):
-        super(BaseConsentHistoryManager, self).filter(consent_app_label=app_label, consent_model_name=model_name, consent_pk=pk).delete()
+        super(BaseConsentHistoryManager, self).filter(
+            consent_app_label=app_label, consent_model_name=model_name, consent_pk=pk).delete()
