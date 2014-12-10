@@ -123,7 +123,7 @@ class Controller(object):
                 all_identifiers = mapper_class.item_model.objects.all().count()
                 if correct_identifiers != all_identifiers:
                     raise MapperError('Settings attribute CURRENT_COMMUNITY does not match the plot identifiers. '
-                                      'Got {1}/{2} plot identifiers starting with {3}'.format(
+                                      'Got {0}/{1} plot identifiers starting with {2}'.format(
                                           correct_identifiers,
                                           all_identifiers,
                                           current_community,)
