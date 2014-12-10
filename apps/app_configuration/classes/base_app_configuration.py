@@ -93,13 +93,13 @@ class BaseAppConfiguration(object):
             # update / create destination (shipping destination)
             for item in setup_items.get('destination'):
                 try:
-                    destination = Destination.objects.get(code=item.code)
+                    destination = Destination.objects.filter(code=item.code)[0]
                     destination.name = item.name
                     destination.address = item.address
                     destination.tel = item.tel
                     destination.email = item.email
                     destination.save(update_fields=['name', 'address', 'tel', 'email'])
-                except Destination.DoesNotExist:
+                except IndexError:
                     Destination.objects.create(code=item.code,
                                                name=item.name,
                                                address=item.address,

@@ -26,6 +26,8 @@ nullhandler = logger.addHandler(NullHandler())
 
 class BaseModelAdmin (admin.ModelAdmin):
 
+    list_per_page = 15
+
     instructions = ['Please complete the questions below.']
     required_instructions = ('Required questions are in bold. '
                              'When all required data has been entered click SAVE to return to the dashboard '
