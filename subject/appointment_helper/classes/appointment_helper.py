@@ -75,20 +75,11 @@ class AppointmentHelper(object):
                 else:
                     appt_datetime = appointment_date_helper.get_relative_datetime(
                         base_appt_datetime, visit_definition)
-                # get or create an appointment for this visit definition
-                defaults = {
-                    'appt_datetime': appt_datetime,
-                    'timepoint_datetime': appt_datetime,
-                    'dashboard_type': dashboard_type,
-                    'appt_type': default_appt_type}
-                appointment, created = Appointment.objects.using(using).get_or_create(
-                    registered_subject=registered_subject,
-                    visit_definition=visit_definition,
-                    visit_instance='0',
-                    defaults=defaults)
-                if verbose and created:
-                    print '    created {}'.format(appointment)
-                if not created:
+                try:
+                    appointment = Appointment.objects.using(using).get(
+                        registered_subject=registered_subject,
+                        visit_definition=visit_definition,
+                        visit_instance='0')
                     td = appointment.best_appt_datetime - appt_datetime
                     if td.days == 0 and abs(td.seconds) > 59:
                         # the calculated appointment date does not match
@@ -100,6 +91,17 @@ class AppointmentHelper(object):
                         appointment.save(using)
                         if verbose:
                             print '    updated {}'.format(appointment)
+                except Appointment.DoesNotExist:
+                    appointment = Appointment.objects.using(using).create(
+                        registered_subject=registered_subject,
+                        visit_definition=visit_definition,
+                        visit_instance='0',
+                        appt_datetime=appt_datetime,
+                        timepoint_datetime=appt_datetime,
+                        dashboard_type=dashboard_type,
+                        appt_type=default_appt_type)
+                    if verbose:
+                        print '    created {}'.format(appointment)
                 appointments.append(appointment)
         return appointments
 
