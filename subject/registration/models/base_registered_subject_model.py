@@ -32,6 +32,7 @@ class BaseRegisteredSubjectModel (BaseAppointmentHelperModel):
 
     def natural_key(self):
         return self.registered_subject.natural_key()
+    natural_key.dependencies = ['registration.registeredsubject']
 
     def get_subject_identifier(self):
         """Returns the subject_identifier."""
