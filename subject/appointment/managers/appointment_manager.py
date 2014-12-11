@@ -1,5 +1,3 @@
-import socket
-
 from django.db import models
 
 
@@ -9,12 +7,6 @@ class AppointmentManager(models.Manager):
         VisitDefinition = models.get_model('visit_schedule', 'VisitDefinition')
         registered_subject = RegisteredSubject.objects.get_by_natural_key(subject_identifier_as_pk)
         visit_definition = VisitDefinition.objects.get_by_natural_key(visit_definition_code)
-        print socket.gethostname()
-        appoint = self.get(
-            registered_subject=registered_subject,
-            visit_definition=visit_definition,
-            visit_instance=visit_instance)
-        cool = "me"
         return self.get(
             registered_subject=registered_subject,
             visit_definition=visit_definition,
