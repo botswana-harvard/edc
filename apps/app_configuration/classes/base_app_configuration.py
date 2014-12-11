@@ -20,6 +20,7 @@ from lis.labeling.models import LabelPrinter, ZplTemplate, Client
 from .defaults import default_global_configuration
 
 from ..models import GlobalConfiguration
+from django.db.utils import IntegrityError
 
 
 class BaseAppConfiguration(object):
@@ -170,9 +171,13 @@ class BaseAppConfiguration(object):
                 # This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
                 study_specific.save()
         try:
-            StudySite.objects.get(site_code=self.study_site_setup.get('site_code'))
+            StudySite.objects.get(site_name=self.study_site_setup.get('site_name'))
         except StudySite.DoesNotExist:
-            StudySite.objects.create(**self.study_site_setup)
+            try:
+                StudySite.objects.create(**self.study_site_setup)
+            except IntegrityError:
+                StudySite.objects.get(site_code=self.study_site_setup.get('site_code')).delete()
+                StudySite.objects.create(**self.study_site_setup)
 
     def update_or_create_labeling(self):
         """Updates configuration in the :mod:`labeling` module."""
