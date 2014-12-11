@@ -1,6 +1,5 @@
 from datetime import date, time, datetime, timedelta
 from decimal import Decimal
-from django.conf import settings
 
 from django.conf.urls import patterns, url
 from django.db import models
@@ -146,16 +145,7 @@ class BaseSearcher(object):
     @property
     def special_keyword_queryset(self):
         if self.search_value.lower() == '?':
-            try:
-                filtered_default = settings.FILTERED_DEFAULT_SEARCH
-                key_value = self.filtered_default_values()
-            except AttributeError:
-                filtered_default = False 
-
-            if filtered_default:
-                queryset = self.search_model.objects.filter(**key_value).order_by('-modified')[0:15]
-            else:
-                queryset = self.search_model.objects.all().order_by('-modified')[0:15]
+            queryset = self.search_model.objects.all().order_by('-modified')[0:15]
         elif self.search_value.lower().startswith('?last'):
             limit = self.search_value.lower().split('?last')[1] or 15
             queryset = self.search_model.objects.all().order_by('-modified')[0:limit]
