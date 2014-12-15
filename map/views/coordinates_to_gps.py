@@ -23,7 +23,6 @@ def coordinates_to_gps(request, **kwargs):
             raise MapperError('You are in the server, You can\'t dispatch the whole server data to a GPS receiver.')
         else:
             #TODO: if path does not exist fail gracefully
-
             if os.path.exists(settings.GPS_DEVICE):
                 if os.path.exists(settings.GPS_FILE_NAME):
                     os.remove(settings.GPS_FILE_NAME)
