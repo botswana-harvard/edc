@@ -191,7 +191,8 @@ class VisitScheduleConfiguration(object):
                     finally:
                         visit_definition_instance.schedule_group.add(schedule_group)
                     for entry_item in visit_definition.get('entries'):
-                        content_type_map = ContentTypeMap.objects.get(app_label=entry_item.app_label, module_name=entry_item.model_name.lower())
+                        content_type_map = ContentTypeMap.objects.get(
+                            app_label=entry_item.app_label, module_name=entry_item.model_name.lower())
                         try:
                             entry = Entry.objects.get(
                                 app_label=entry_item.app_label,
@@ -249,11 +250,11 @@ class VisitScheduleConfiguration(object):
                             lab_entry.delete()
             except ContentTypeMap.DoesNotExist:
                 self.sync_content_type_map()
-                if not get_model(entry_item.app_label, entry_item.model_name.lower()):
-                    raise ImproperlyConfigured('Model referenced in visit schedule does not exist. Got {}.{}'.format(entry_item.app_label, entry_item.model_name.lower()))
-                try:
-                    ContentTypeMap.objects.get(app_label=entry_item.app_label, module_name=entry_item.model_name.lower())
-                except ContentTypeMap.DoesNotExist:
-                    raise ImproperlyConfigured('Model referenced in visit schedule \'{}\' is not in content type. Is the APP installed? Got {}.{}'.format(self.name, entry_item.app_label, entry_item.model_name.lower()))
+#                 if not get_model(entry_item.app_label, entry_item.model_name.lower()):
+#                     raise ImproperlyConfigured('Model referenced in visit schedule does not exist. Got {}.{}'.format(entry_item.app_label, entry_item.model_name.lower()))
+#                 try:
+#                     ContentTypeMap.objects.get(app_label=entry_item.app_label, module_name=entry_item.model_name.lower())
+#                 except ContentTypeMap.DoesNotExist:
+#                     raise ImproperlyConfigured('Model referenced in visit schedule \'{}\' is not in content type. Is the APP installed? Got {}.{}'.format(self.name, entry_item.app_label, entry_item.model_name.lower()))
                 continue
             break
