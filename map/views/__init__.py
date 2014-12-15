@@ -23,4 +23,3 @@ from .kmz_file_upload import kmz_file_upload
 from .create_kmz_items import create_kmz_items
 from .clear_sub_section import clear_sub_section
 from .clear_sub_section_index import clear_sub_section_index
-from .blob_attach import blog_attach
