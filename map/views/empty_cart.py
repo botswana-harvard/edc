@@ -20,12 +20,12 @@ def empty_cart(request, message, **kwargs):
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,
-                    'regions': mapper.get_regions(),
-                    'sections': mapper.get_sections(),
-                    'icons': mapper.get_icons(),
+                    'regions': mapper.regions,
+                    'sections': mapper.sections,
+                    'icons': mapper.icons,
                     'message': message,
-                    'item_label': mapper.get_item_model_cls()._meta.object_name,
-                    'region_label': mapper.get_region_label(),
+                    'item_label': mapper.item_model._meta.object_name,
+                    'region_label': mapper.region_label,
                 },
                 context_instance=RequestContext(request)
             )
