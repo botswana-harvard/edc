@@ -1,7 +1,9 @@
 from datetime import datetime
 
 from django.contrib import messages
+from django.contrib.messages.api import MessageFailure
 
+from edc.lab.lab_profile.exceptions import SpecimenError
 from edc.lab.lab_profile.classes import site_lab_profiles
 
 from lis.exim.lab_export.classes import ExportDmis
@@ -11,17 +13,22 @@ from lis.labeling.exceptions import LabelPrinterError
 def flag_as_received(modeladmin, request, queryset, **kwargs):
     """ Flags specimen(s) as received and generates a globally specimen identifier and updates lab_clinic_api."""
     for qs in queryset:
-        if qs.is_drawn.lower() == 'yes':
-            qs.is_receive = True
-            qs.is_receive_datetime = datetime.today()
-            qs.save(update_fields=['is_receive', 'is_receive_datetime'])
+        try:
+            receive = None
             lab_profile = site_lab_profiles.get(qs._meta.object_name)
-            lab_profile().receive(qs)
-        else:
-            msg = 'Unable to receive, specimen not drawn. Got requisition \'{0}\'.'.format(qs.requisition_identifier)
-            messages.add_message(request, messages.ERROR, msg)
+            receive = lab_profile().receive(qs)
+            msg = 'Received {} as {}'.format(
+                qs.requisition_identifier, receive.receive_identifier)
+            try:
+                messages.add_message(request, messages.SUCCESS, msg)
+            except MessageFailure:  # except to get past testing with request=None
+                print msg
+        except SpecimenError as e:
+            try:
+                messages.add_message(request, messages.ERROR, str(e))
+            except MessageFailure:  # except to get past testing with request=None
+                print msg
             break
-
 flag_as_received.short_description = "RECEIVE against requisition"
 
 
