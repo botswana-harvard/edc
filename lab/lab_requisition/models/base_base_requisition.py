@@ -12,9 +12,11 @@ except ImportError:
 
 from edc.base.model.fields import InitialsField
 from edc.choices.common import YES_NO
+from edc.constants import YES
 from edc.core.bhp_string.classes import StringHelper
 from edc.core.bhp_variables.models import StudySite
 from edc.device.device.classes import Device
+from edc.lab.lab_profile.classes import site_lab_profiles
 
 from ..choices import PRIORITY, REASON_NOT_DRAWN, ITEM_TYPE
 from ..classes import RequisitionLabel
@@ -35,7 +37,6 @@ class BaseBaseRequisition (BaseUuidModel):
         verbose_name='Requisition Date'
         )
 
-    # TODO: remove this field. See aliquots instead.
     specimen_identifier = models.CharField(
         verbose_name='Specimen Id',
         max_length=50,
@@ -72,7 +73,7 @@ class BaseBaseRequisition (BaseUuidModel):
         verbose_name='Was a specimen drawn?',
         max_length=3,
         choices=YES_NO,
-        default='Yes',
+        default=YES,
         help_text='If No, provide a reason below'
         )
 
@@ -184,19 +185,10 @@ class BaseBaseRequisition (BaseUuidModel):
         return (self.requisition_identifier, )
 
     def save(self, *args, **kwargs):
-        # update_fields = kwargs.get('update_fields')
         if self.is_drawn.lower() == 'yes' and not self.value_is_requisition_identifier():
             self.requisition_identifier = self.prepare_requisition_identifier()
         if self.is_drawn.lower() == 'no' and not self.value_is_uuid():
             self.requisition_identifier = str(uuid.uuid4())
-#         removed: SEE ALIQUOTS (requisition is not a specimen)
-#         if self.is_receive and not self.specimen_identifier:
-#             self.specimen_identifier = '{0}{1}{2}'.format(
-#                 settings.PROJECT_IDENTIFIER_PREFIX,
-#                 self.get_site_code(),
-#                 self.requisition_identifier)
-#             # if update_fields was specified, add specimen_identifier to the list
-#             update_fields = update_fields.append('specimen_identifier') if update_fields else update_fields
         return super(BaseBaseRequisition, self).save(*args, **kwargs)
 
     def value_is_requisition_identifier(self):
