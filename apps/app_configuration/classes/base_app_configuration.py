@@ -92,7 +92,7 @@ class BaseAppConfiguration(object):
             profile_model = site_lab_profiles.group_models.get('profile')
             profile_item_model = site_lab_profiles.group_models.get('profile_item')
             # update / create destination (shipping destination)
-            for item in setup_items.get('destination'):
+            for item in setup_items.get('destination', []):
                 try:
                     destination = Destination.objects.filter(code=item.code)[0]
                     destination.name = item.name
