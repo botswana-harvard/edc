@@ -6,3 +6,7 @@ class AlreadyRegistered(Exception):
 
 class NotRegistered(Exception):
     pass
+
+
+class SpecimenError(Exception):
+    pass
