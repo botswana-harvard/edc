@@ -29,7 +29,7 @@ class BasePackingList(BaseSyncUuidModel):
         null=True,
         )
 
-    destination = models.OneToOneField(Destination,
+    destination = models.ForeignKey(Destination,
         verbose_name='Ship Specimens To',
         null=True)
 
