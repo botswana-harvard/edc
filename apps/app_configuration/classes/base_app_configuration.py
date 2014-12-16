@@ -1,6 +1,8 @@
 import json
 
 from django.db.models import get_model
+from django.db.utils import IntegrityError
+from django.core.exceptions import MultipleObjectsReturned
 
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
@@ -20,7 +22,6 @@ from lis.labeling.models import LabelPrinter, ZplTemplate, Client
 from .defaults import default_global_configuration
 
 from ..models import GlobalConfiguration
-from django.db.utils import IntegrityError
 
 
 class BaseAppConfiguration(object):
@@ -94,18 +95,27 @@ class BaseAppConfiguration(object):
             # update / create destination (shipping destination)
             for item in setup_items.get('destination', []):
                 try:
-                    destination = Destination.objects.filter(code=item.code)[0]
+                    destination = Destination.objects.get(code=item.code)
                     destination.name = item.name
                     destination.address = item.address
                     destination.tel = item.tel
                     destination.email = item.email
                     destination.save(update_fields=['name', 'address', 'tel', 'email'])
-                except IndexError:
-                    Destination.objects.create(code=item.code,
-                                               name=item.name,
-                                               address=item.address,
-                                               tel=item.tel,
-                                               email=item.email)
+                except Destination.DoesNotExist:
+                    Destination.objects.create(
+                        code=item.code,
+                        name=item.name,
+                        address=item.address,
+                        tel=item.tel,
+                        email=item.email)
+                except MultipleObjectsReturned:
+                    Destination.objects.filter(code=item.code).delete()
+                    Destination.objects.create(
+                        code=item.code,
+                        name=item.name,
+                        address=item.address,
+                        tel=item.tel,
+                        email=item.email)
             # update / create aliquot_types
             for item in setup_items.get('aliquot_type'):
                 try:
