@@ -23,7 +23,6 @@ def coordinates_to_gps(request, **kwargs):
             raise MapperError('You are in the server, You can\'t dispatch the whole server data to a GPS receiver.')
         else:
             #TODO: if path does not exist fail gracefully
-            
             if os.path.exists(settings.GPS_DEVICE):
                 if os.path.exists(settings.GPS_FILE_NAME):
                     os.remove(settings.GPS_FILE_NAME)
@@ -35,13 +34,13 @@ def coordinates_to_gps(request, **kwargs):
                 f.close()
                 wf = open(settings.GPS_FILE_NAME, 'a')
                 wf.write(line)
-                items = mapper.get_item_model_cls().objects.all()
+                items = mapper.item_model.objects.all()
                 for item in items:
-                    identifier_name = str(getattr(item, mapper.get_identifier_field_attr()))
+                    identifier_name = str(getattr(item, mapper.identifier_field_attr))
                     lat = item.gps_target_lat
                     lon = item.gps_target_lon
                     ele = 0.0
-                    city_village = mapper.get_map_area()
+                    city_village = mapper.map_area
                     str_from_edc = '<wpt lat="' + str(lat) + '" lon="' + str(lon) + '"><ele>' + str(ele) + '</ele>' + '<name>' + str(identifier_name) + '</name><extensions><gpxx:WaypointExtension><gpxx:Address><gpxx:City>' + str(city_village) + '</gpxx:City><gpxx:State>South Eastern</gpxx:State></gpxx:Address></gpxx:WaypointExtension></extensions>' + '</wpt>'
                     wf.write(str_from_edc)
                 wf.write(lines)
