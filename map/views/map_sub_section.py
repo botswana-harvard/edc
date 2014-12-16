@@ -25,16 +25,16 @@ def map_sub_sections(request, **kwargs):
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,
-                    'regions': mapper.get_regions(),
-                    'sections': mapper.get_sections(),
-                    'icons': mapper.get_icons(),
-                    'item_region_field': mapper.get_region_field_attr(),
-                    'region_label': mapper.get_region_label(),
-                    'section_label': mapper.get_section_label(),
+                    'regions': mapper.regions,
+                    'sections': mapper.sections,
+                    'icons': mapper.icons,
+                    'item_region_field': mapper.region_field_attr,
+                    'region_label': mapper.region_label,
+                    'section_label': mapper.section_label,
                     'session_icon': icon,
                     'cart_size': cart_size,
                     'identifiers': identifiers,
-                    'section_field_attr': mapper.get_section_field_attr(),
+                    'section_field_attr': mapper.section_field_attr,
                     'show_map': 1,
                     'has_items': True,
                     'option': 'plot'
