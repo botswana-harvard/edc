@@ -18,6 +18,7 @@ class Destination(BaseSyncUuidModel):
     name = models.CharField(
         verbose_name='Name',
         max_length=50,
+        unique=True,
         )
     address = models.TextField(
         verbose_name='Address',
@@ -35,10 +36,14 @@ class Destination(BaseSyncUuidModel):
     history = AuditTrail()
 
     def __unicode__(self):
-        return self.code
+        return self.name
 
     def natural_key(self):
         return (self.code, )
 
+    def is_serialized(self):
+        return False
+
     class Meta:
         app_label = 'lab_packing'
+        unique_together = (('code', 'name'), )
