@@ -15,7 +15,7 @@ def save_section(request, **kwargs):
         raise MapperError('Mapper class \'{0}\' does is not registered.'.format(mapper_name))
     else:
         mapper = site_mappers.get_registry(mapper_name)()
-        selected_region = request.GET.get(mapper.get_region_field_attr())
+        selected_region = request.GET.get(mapper.region_field_attr)
         message = ""
         is_error = False
         item_identifiers = None
@@ -26,11 +26,11 @@ def save_section(request, **kwargs):
             item_identifiers = item_identifiers.split(",")
         items = []
         if item_identifiers:
-            items = mapper.get_item_model_cls().objects.filter(**{'{0}__in'.format(mapper.identifier_field_attr): item_identifiers})
+            items = mapper.item_model.objects.filter(**{'{0}__in'.format(mapper.identifier_field_attr): item_identifiers})
             for item in items:
                 setattr(item, mapper.region_field_attr, selected_region)
                 item.save()
-            items = mapper.get_item_model_cls().objects.filter(**{mapper.region_field_attr: selected_region, '{0}__isnull'.format(mapper.section_field_attr): True})
+            items = mapper.item_model.objects.filter(**{mapper.region_field_attr: selected_region, '{0}__isnull'.format(mapper.section_field_attr): True})
         for item in items:
             lon = item.gps_target_lon
             lat = item.gps_target_lat

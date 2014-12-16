@@ -33,7 +33,7 @@ def upload_item_map(request, **kwargs):
         mapper = site_mappers.get_registry(mapper_name)()
         filename = handle_uploaded_file(request.FILES['file'], identifier)
         if filename:
-            items = mapper.get_item_model_cls().objects.filter(**{mapper.identifier_field_attr: identifier, mapper.item_selected_field: 1})
+            items = mapper.item_model.objects.filter(**{mapper.identifier_field_attr: identifier, mapper.item_selected_field: 1})
             for item in items:
                 item.uploaded_map = filename
                 item.save()
