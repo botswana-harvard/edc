@@ -15,11 +15,11 @@ def clear_sub_section(request, **kwargs):
         raise MapperError('Mapper class \'{0}\' does is not registered.'.format(mapper_name))
     else:
         mapper = site_mappers.get_registry(mapper_name)()
-        selected_region = request.POST.get(mapper.get_region_field_attr())
-        selected_section = request.POST.get(mapper.get_section_field_attr())
-        items = mapper.get_item_model_cls().objects.filter(**{mapper.region_field_attr: selected_region, mapper.section_field_attr: selected_section})
+        selected_region = request.POST.get(mapper.region_field_attr)
+        selected_section = request.POST.get(mapper.section_field_attr)
+        items = mapper.item_model.objects.filter(**{mapper.region_field_attr: selected_region, mapper.section_field_attr: selected_section})
         if selected_section == 'All':
-            items = mapper.get_item_model_cls().objects.filter(**{mapper.region_field_attr: selected_region})
+            items = mapper.item_model.objects.filter(**{mapper.region_field_attr: selected_region})
         if items:
             for item in items:
                 setattr(item, mapper.section_field_attr, None)
@@ -33,10 +33,10 @@ def clear_sub_section(request, **kwargs):
         return render_to_response(
                 'map_section.html', {
                     'mapper_name': mapper_name,
-                    'regions': mapper.get_regions(),
-                    'region_label': mapper.get_region_label(),
-                    'icons': mapper.get_icons(),
-                    'sections': mapper.get_sections(),
+                    'regions': mapper.regions,
+                    'region_label': mapper.region_label,
+                    'icons': mapper.icons,
+                    'sections': mapper.sections,
                     'session_icon': icon,
                     'cart_size': cart_size,
                     'identifiers': identifiers,
