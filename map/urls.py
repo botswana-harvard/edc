@@ -44,7 +44,7 @@ urlpatterns = patterns('',
     url(r'^gps_point_update/(?P<mapper_name>\w+)/', db_update_index, name='map_gps_point_update_url'),
     url(r'dispatch_to_gps_index/(?P<mapper_name>\w+)/', dispatch_to_gps_index, name='dispatch_to_gps_index_url'),
     url(r'coordinates_to_gps/(?P<mapper_name>\w+)/', coordinates_to_gps, name='coordinates_to_gps_url'),
-    url(r'^blog/atttach/(?P<mapper_name>\w+)/(?P<identifier>[a-zA-Z0-9_-]+)/(?P<map>[0-3]+)',),
+    url(r'^blog/atttach/(?P<mapper_name>\w+)/(?P<identifier>[a-zA-Z0-9_-]+)/(?P<map>[0-3]+)'),
 )
 
 for mapper_name in site_mappers.get_registry().iterkeys():
