@@ -4,7 +4,7 @@ from .views import (item_map, add_to_cart, update_cart, checkout_cart, save_cart
                     plot_item_points, set_section, set_sub_section, save_section, save_sub_section,
                     clear_section, clear_sub_section, clear_sub_section_index, clear_all_sections,
                     upload_item_map, map_section, map_sub_sections, db_update, db_update_index,
-                    dispatch_to_gps_index, coordinates_to_gps, blog_attach, map_index)
+                    dispatch_to_gps_index, coordinates_to_gps, map_index)
 
 urlpatterns = patterns('',
     url(r'^item_map/(?P<mapper_name>\w+)/(?P<identifier>[a-zA-Z0-9_-]+)/(?P<lon>[a-z0-9\.\-\:]+)/(?P<lat>[a-z0-9\.\-\:]+)/(?P<saved>saved)/',
