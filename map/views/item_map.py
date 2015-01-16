@@ -28,14 +28,13 @@ def item_map(request, **kwargs):
         if not latitude:
             raise MapperError('Attribute latitude may not be None. Got {0}'.format(kwargs))
         identifier = kwargs.get('identifier', None)
-        item = mapper.get_item_model_cls().objects.get(**{mapper.get_identifier_field_attr(): identifier})
+        item = mapper.get_item_model_cls().objects.get(**{mapper.identifier_field_attr: identifier})
         item_map = getattr(item, mapper.map_field_attr_18) 
         folder = settings.MEDIA_URL
         landmark_list = []
         landmarks = mapper.get_landmarks()
         letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
                     "O", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-        
         for place, lon, lat in landmarks:
             landmark_list.append([place, lon, lat])
         lat = getattr(item, mapper.target_gps_lat_field_attr)
