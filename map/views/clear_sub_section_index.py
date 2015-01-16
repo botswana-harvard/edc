@@ -16,13 +16,13 @@ def clear_sub_section_index(request, **kwargs):
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,
-                    'item_label': mapper.get_item_label(),
-                    'section_label': mapper.get_section_label(),
-                    'region_label': '{0}s'.format(mapper.get_region_label()),
-                    'regions': mapper.get_regions(),
-                    'sections': mapper.get_sections(),
-                    'region_field_attr': mapper.get_region_field_attr(),
-                    'section_field_attr': mapper.get_section_field_attr(),
+                    'item_label': mapper.item_label,
+                    'section_label': mapper.section_label,
+                    'region_label': '{0}s'.format(mapper.region_label),
+                    'regions': mapper.regions,
+                    'sections': mapper.sections,
+                    'region_field_attr': mapper.region_field_attr,
+                    'section_field_attr': mapper.section_field_attr,
                  },
                 context_instance=RequestContext(request)
             )

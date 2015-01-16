@@ -4,7 +4,7 @@ from .views import (item_map, add_to_cart, update_cart, checkout_cart, save_cart
                     plot_item_points, set_section, set_sub_section, save_section, save_sub_section,
                     clear_section, clear_sub_section, clear_sub_section_index, clear_all_sections,
                     upload_item_map, map_section, map_sub_sections, db_update, db_update_index,
-                    dispatch_to_gps_index, coordinates_to_gps, blog_attach, map_index)
+                    dispatch_to_gps_index, coordinates_to_gps, map_index)
 
 urlpatterns = patterns('',
     url(r'^item_map/(?P<mapper_name>\w+)/(?P<identifier>[a-zA-Z0-9_-]+)/(?P<lon>[a-z0-9\.\-\:]+)/(?P<lat>[a-z0-9\.\-\:]+)/(?P<saved>saved)/',
@@ -44,8 +44,6 @@ urlpatterns = patterns('',
     url(r'^gps_point_update/(?P<mapper_name>\w+)/', db_update_index, name='map_gps_point_update_url'),
     url(r'dispatch_to_gps_index/(?P<mapper_name>\w+)/', dispatch_to_gps_index, name='dispatch_to_gps_index_url'),
     url(r'coordinates_to_gps/(?P<mapper_name>\w+)/', coordinates_to_gps, name='coordinates_to_gps_url'),
-    url(r'^blog/atttach/(?P<mapper_name>\w+)/(?P<identifier>[a-zA-Z0-9_-]+)/(?P<map>[0-3]+)',
-        blog_attach, name='blob_attach_url'),
 )
 
 for mapper_name in site_mappers.get_registry().iterkeys():
