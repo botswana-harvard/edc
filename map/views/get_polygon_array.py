@@ -29,7 +29,7 @@ def get_polygon_array(request, **kwargs):
                 template, {
                     'mapper_name': mapper_name,
                     'point_tuple': point_tuple,
-                    'map_area': mapper.get_map_area()
+                    'map_area': mapper.map_area
                     },
                 context_instance=RequestContext(request)
             )
