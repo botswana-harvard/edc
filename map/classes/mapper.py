@@ -6,8 +6,6 @@ from geopy import distance
 
 from django.conf import settings
 
-from edc.base.model.models import BaseUuidModel
-
 from ..exceptions import MapperError
 
 
@@ -90,24 +88,6 @@ class Mapper(object):
         self._map_area_field_attr = None
         self._map_code = None
 
-#         # item_model_cls
-#         if 'item_model' in kwargs:
-#             self.set_item_model_cls(kwargs.get('item_model'))
-#         if 'regions' in kwargs:
-#             self.set_regions(kwargs('regions'))
-#         if 'sections' in kwargs:
-#             self.set_regions(kwargs('sections'))
-#         if 'icons' in kwargs:
-#             self.set_icons(kwargs('icons'))
-#         if 'other_icons' in kwargs:
-#             self.set_other_icons(kwargs('other_icons'))
-#         if 'landmarks' in kwargs:
-#             self.set_landmarks(kwargs('landmarks'))
-#         if 'item_label' in kwargs:
-#             self.set_item_label(kwargs('item_label'))
-#         if 'map_code' in kwargs:
-#             self.set_map_code(kwargs('map_code'))
-
     def __repr__(self):
         return 'Mapper({0.map_code!r}:{0.map_area!r})'.format(self)
 
@@ -135,237 +115,6 @@ class Mapper(object):
         if not allow_none:
             if not getattr(self, '_{0}'.format(attrname)):
                 raise MapperError('Attribute \'{0}\' may not be None.'.format(attrname))
-
-    def set_map_field_attr_18(self, attr=None):
-        self._set_attr('map_field_attr_18', attr)
-
-    def set_map_field_attr_17(self, attr=None):
-        self._set_attr('map_field_attr_17', attr)
-
-    def set_map_field_attr_16(self, attr=None):
-        self._set_attr('map_field_attr_16', attr)
-
-    def get_map_field_attr_18(self):
-        return self._get_attr('map_field_attr_18')
-
-    def get_map_field_attr_17(self):
-        return self._get_attr('map_field_attr_17')
-
-    def get_map_field_attr_16(self):
-        return self._get_attr('map_field_attr_16')
-
-    def set_identifier_field_attr(self, attr=None):
-        self._set_attr('identifier_field_attr', attr)
-
-    def get_identifier_field_attr(self):
-        return self._get_attr('identifier_field_attr')
-
-    def set_target_gps_lon_field_attr(self, attr=None):
-        self._set_attr('target_gps_lon_field_attr', attr)
-
-    def get_target_gps_lon_field_attr(self):
-        return self._get_attr('target_gps_lon_field_attr')
-
-    def set_target_gps_lat_field_attr(self, attr=None):
-        self._set_attr('target_gps_lat_field_attr', attr)
-
-    def get_target_gps_lat_field_attr(self):
-        return self._get_attr('target_gps_lat_field_attr')
-
-    def set_other_identifier_field_attr(self, attr=None):
-        self._set_attr('other_identifier_field_attr', attr)
-
-    def get_other_identifier_field_attr(self):
-        return self._get_attr('other_identifier_field_attr')
-
-    def set_identifier_label(self, attr=None):
-        self._set_attr('identifier_label', attr)
-
-    def get_identifier_label(self):
-        return self._get_attr('identifier_label')
-
-    def set_other_identifier_label(self, attr=None):
-        self._set_attr('other_identifier_label', attr)
-
-    def get_other_identifier_label(self):
-        return self._get_attr('other_identifier_label')
-
-    def set_region_field_attr(self, attr=None):
-        self._set_attr('region_field_attr', attr)
-
-    def get_item_selected_field(self):
-        return self._get_attr('item_selected_field')
-
-    def set_item_selected_field(self, attr=None):
-        self._set_attr('item_selected_field', attr)
-
-    def get_region_field_attr(self):
-        return self._get_attr('region_field_attr')
-
-    def set_region_label(self, attr=None):
-        self._set_attr('region_label', attr, allow_none=True)
-        if not self._region_label:
-            self._region_label = self.get_region_field_attr()
-
-    def get_region_label(self):
-        return self._get_attr('region_label')
-
-    def set_section_field_attr(self, attr=None):
-        self._set_attr('section_field_attr', attr)
-
-    def get_section_field_attr(self):
-        return self._get_attr('section_field_attr')
-
-    def set_section_label(self, attr=None):
-        self._set_attr('section_label', attr, allow_none=True)
-        if not self._section_label:
-            self._section_label = self.get_section_field_attr()
-
-    def get_section_label(self):
-        return self._get_attr('section_label')
-
-    def set_map_area_field_attr(self, attr=None):
-        self._set_attr('map_area_field_attr', attr, allow_none=True)
-        if not self._map_area_field_attr:
-            self._map_area_field_attr = self.get_map_area_field_attr()
-
-    def get_map_area_field_attr(self):
-        return self._get_attr('map_area_field_attr')
-
-    def set_item_label(self, attr=None):
-        """Need comment"""
-        self._set_attr('item_label', attr, allow_none=True)
-        if not self._item_label:
-            self._item_label = self.get_item_model_cls()._meta.object_name
-
-    def get_item_label(self):
-        return self._get_attr('item_label')
-
-    def set_icons(self, tpl=None):
-        """Need comment"""
-        if tpl:
-            if not issubclass(tpl, (tuple, list)):
-                raise MapperError('Icons must an instance of tuple or list')
-            self._icons = tpl
-        else:
-            try:
-                self._icons = self.icons
-            except:
-                pass
-        if not self._icons:
-            raise MapperError('Attribute \'icons\' may not be None (see _icons) .')
-
-    def get_icons(self):
-        if not self._icons:
-            self.set_icons()
-        return self._icons
-
-    def set_other_icons(self, tpl=None):
-        """Need comment"""
-        if tpl:
-            if not isinstance(tpl, (tuple, list)):
-                raise MapperError('Icons must an instance of tuple or list')
-            self._other_icons = tpl
-        else:
-            try:
-                self._other_icons = self.other_icons
-            except:
-                pass
-        if not self._other_icons:
-            raise MapperError('Attribute \'other_icons\' may not be None (see _other_icons) .')
-
-    def get_other_icons(self):
-        if not self._other_icons:
-            self.set_other_icons()
-        return self._other_icons
-
-    def get_item_model_cls(self):
-        if not self.item_model:
-            self.setitem_model
-        return self.item_model
-
-    def set_regions(self, tpl=None):
-        """Need comment"""
-        if tpl:
-            if not issubclass(tpl, (tuple, list)):
-                raise MapperError('Regions must be a list or choices tuple. Got {0}'.format(tpl))
-            self._regions = tpl
-        else:
-            try:
-                self._regions = self.regions
-            except:
-                pass
-        if not self._regions:
-            raise MapperError('Attribute \'regions\' may not be None (see _regions) .')
-        else:
-            self._regions = sorted([tpl[0] for tpl in list(self._regions)])
-
-    def get_regions(self):
-        if not self._regions:
-            self.set_regions()
-        return self._regions
-
-    def _get_as_choices(self, lst):
-        """Need comment"""
-        if not lst:
-            raise AttributeError('Attribute lst cannot be None')
-        if not isinstance(lst, list):
-            raise TypeError('Attribute lst should be of type \'list\'. Got {0}'.format(lst))
-        lst = []
-        for c in self.get_regions():
-            lst.append((c, c))
-        choices = tuple(lst)
-        return choices
-
-    def get_regions_as_choices(self):
-        return self._get_as_choices(self.get_regions())
-
-    def set_sections(self, choices_tpl=None):
-        """Need comment"""
-        if choices_tpl:
-            if not issubclass(choices_tpl, (tuple, list)):
-                raise MapperError('Regions must be a list or choices tuple. Got {0}'.format(choices_tpl))
-            self._sections = choices_tpl
-        else:
-            try:
-                self._sections = self.sections
-            except:
-                pass
-        if not self._sections:
-            raise MapperError('Attribute \'sections\' may not be None (see _sections) .')
-        else:
-            self._sections = sorted([choices_tpl[0] for choices_tpl in list(self._sections)])
-
-    def get_sections(self):
-        if not self._sections:
-            self.set_sections()
-        return self._sections
-
-    def get_sections_as_choices(self):
-        return self.get_sections()
-
-    def get_sections_as_tuple(self):
-        return self.get_sections()
-
-    def set_landmarks(self, tpl=None):
-        """Need comment"""
-        if tpl:
-            if not issubclass(tpl, (tuple, list)):
-                raise MapperError('landmarks must an instance of tuple or list')
-            self._landmarks = tpl
-        else:
-            try:
-                self._landmarks = self.landmarks
-            except:
-                pass
-        if not self._landmarks:
-            raise MapperError('Attribute \'_landmarks\' may not be None (see _landmarks) .')
-
-    def get_landmarks(self):
-        """Need comment"""
-        if not self._landmarks:
-            self.set_landmarks()
-        return self._landmarks
 
     def prepare_created_filter(self):
         """Need comment"""
@@ -411,22 +160,22 @@ class Mapper(object):
         payload = []
         icon_number = 0
         if selected_section == "All":
-            section_color_code_dict = self.make_dictionary(self.get_regions(), self.get_icons())
+            section_color_code_dict = self.make_dictionary(self.regions, self.icons)
         else:
-            section_color_code_dict = self.make_dictionary(self.get_sections(), self.get_other_icons())
+            section_color_code_dict = self.make_dictionary(self.sections, self.other_icons)
         letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
                    "O", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
         for item in items:
-            identifier_label = str(getattr(item, self.get_identifier_field_attr()))
+            identifier_label = str(getattr(item, self.identifier_field_attr))
             other_identifier_label = ""
 #             # does nothing
 #             if getattr(item, self.get_other_identifier_field_attr()):  # e.g. cso_number
-#                 other_identifier_field_label = str("  {0}: ".format(self.other_identifier_field_label) + 
+#                 other_identifier_field_label = str("  {0}: ".format(self.other_identifier_field_label) +
 #                                                    getattr(item, self.get_other_identifier_field_attr()))
             if item.is_dispatched_as_item():
                 icon = dipatched_icon
                 identifier_label = "{0} already dispatched".format(identifier_label)
-            elif getattr(item, self.get_identifier_field_attr()) in cart:  # e.g household_identifier
+            elif getattr(item, self.identifier_field_attr) in cart:  # e.g household_identifier
                 icon = cart_icon
                 identifier_label = "{0} in shopping cart waiting to be dispatched".format(identifier_label)
             else:
