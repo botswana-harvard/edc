@@ -39,7 +39,7 @@ def add_to_cart(request, **kwargs):
         else:
             message = "No items were selected"
             is_error = True
-        item_instances = mapper.get_item_model_cls().objects.filter(**{'{0}__in'.format(mapper.get_identifier_field_attr()): item_identifiers})
+        item_instances = mapper.item_model_cls.objects.filter(**{'{0}__in'.format(mapper.identifier_field_attr): item_identifiers})
         icon = request.session['icon']
         payload = mapper.prepare_map_points(item_instances,
             icon,
@@ -48,7 +48,7 @@ def add_to_cart(request, **kwargs):
             )
         return render_to_response(
                 template, {
-                    'identifier_field_attr': mapper.get_identifier_field_attr(),
+                    'identifier_field_attr': mapper.identifier_field_attr,
                     'mapper_name': mapper_name,
                     'payload': payload,
                     'identifiers': item_identifiers,
@@ -56,10 +56,10 @@ def add_to_cart(request, **kwargs):
                     'cart_size': cart_size,
                     'message': message,
                     'option': 'save',
-                    'icons': mapper.get_icons(),
+                    'icons': mapper.icons,
                     'is_error': is_error,
                     'show_map': 0,
-                    'item_label': mapper.get_item_label(),
+                    'item_label': mapper.item_label,
                 },
                 context_instance=RequestContext(request)
             )

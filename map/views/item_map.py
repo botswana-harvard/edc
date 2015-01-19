@@ -35,7 +35,6 @@ def item_map(request, **kwargs):
         landmarks = mapper.get_landmarks()
         letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
                     "O", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-        
         for place, lon, lat in landmarks:
             landmark_list.append([place, lon, lat])
         lat = getattr(item, mapper.target_gps_lat_field_attr)
