@@ -22,9 +22,9 @@ def save_cart(request, **kwargs):
         if 'identifiers' in request.session:
             if len(request.session['identifiers']) > 0:
                 identifiers = request.session['identifiers']
-                pks = mapper.get_item_model_cls().objects.filter(**{'{0}__in'.format(mapper.identifier_field_attr): identifiers}).values_list('pk')
+                pks = mapper.item_model.objects.filter(**{'{0}__in'.format(mapper.identifier_field_attr): identifiers}).values_list('pk')
                 selected = list(itertools.chain(*pks))
-                content_type = ContentType.objects.get_for_model(mapper.item_model_cls())
+                content_type = ContentType.objects.get_for_model(mapper.item_model)
                 return HttpResponseRedirect("/dispatch/bcpp/?ct={0}&items={1}".format(content_type.pk, ",".join(selected)))
                 try:
                     del request.session['identifiers']
