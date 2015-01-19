@@ -21,7 +21,7 @@ def db_update(request, **kwargs):
         longitude = request.POST.get('lon')
         gps_e = request.POST.get('gps_e')
         latitude = request.POST.get('lat')
-        items = mapper.get_item_model_cls().objects.filter(**{mapper.identifier_field_attr: identifier})
+        items = mapper.item_model.objects.filter(**{mapper.identifier_field_attr: identifier})
         lon = get_longitude(gps_s, longitude)
         lat = get_latitude(gps_e, latitude)
         for item in items:
