@@ -28,7 +28,7 @@ def set_sub_section(request, **kwargs):
         selected_sub_section = request.POST.get(mapper.section_field_attr)
         selected_region = request.POST.get(mapper.region_field_attr)
         request.session['icon'] = request.POST.get('marker_icon')
-        if mapper.item_model_cls.objects.filter(sub_section__isnull=True, section=selected_region).exists():
+        if mapper.item_model.objects.filter(sub_section__isnull=True, section=selected_region).exists():
             has_items = True
             items = mapper.item_model.objects.filter(sub_section__isnull=True, section=selected_region)
 

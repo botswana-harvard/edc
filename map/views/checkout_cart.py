@@ -26,7 +26,7 @@ def checkout_cart(request, **kwargs):
         icon = request.session.get('icon', None)
         option = request.GET.get('option', 'save')
         landmark_list = []
-        landmarks = mapper.get_landmarks()
+        landmarks = mapper.landmarks
         for place, lon, lat in landmarks:
             landmark_list.append([place, lon, lat])
         if option == 'preview':

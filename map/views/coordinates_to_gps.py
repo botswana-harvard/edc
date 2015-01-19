@@ -44,7 +44,7 @@ def coordinates_to_gps(request, **kwargs):
                     str_from_edc = '<wpt lat="' + str(lat) + '" lon="' + str(lon) + '"><ele>' + str(ele) + '</ele>' + '<name>' + str(identifier_name) + '</name><extensions><gpxx:WaypointExtension><gpxx:Address><gpxx:City>' + str(city_village) + '</gpxx:City><gpxx:State>South Eastern</gpxx:State></gpxx:Address></gpxx:WaypointExtension></extensions>' + '</wpt>'
                     wf.write(str_from_edc)
                 wf.write(lines)
-                wf.close()    
+                wf.close()
             else:
                 template = 'dispatch_to_gps_index.html'
                 message = 'Gps device not mounted'
