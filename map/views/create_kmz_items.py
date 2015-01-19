@@ -86,7 +86,7 @@ def create_kmz_items(request, **kwargs):
                 if len(points) == 5:
                     lat = float(points[2])
                     lon = float(points[1])
-                    h = mapper.get_item_model_cls()(**{mapper.target_gps_lat_field_attr: lat, mapper.target_gps_lon_field_attr: lon, mapper.map_area_field_attr: mapper_name})
+                    h = mapper.item_model(**{mapper.target_gps_lat_field_attr: lat, mapper.target_gps_lon_field_attr: lon, mapper.map_area_field_attr: mapper_name})
                     h.save()
                 else:
                     pass
