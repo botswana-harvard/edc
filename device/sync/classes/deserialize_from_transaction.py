@@ -33,6 +33,7 @@ class DeserializeFromTransaction(object):
         check_hostname = kwargs.get('check_hostname', True)
         is_success = False
         tr = FieldCryptor('aes', 'local').decrypt(incoming_transaction.tx)
+        msg = '    ERROR'
 
         for obj in serializers.deserialize("json", tr):
             # if you get an error deserializing a datetime, confirm dev version of json.py
@@ -65,10 +66,10 @@ class DeserializeFromTransaction(object):
                     except AttributeError:
                         pass
                     try:
-                        msg = '    OK - normal save on {0}'.format(using)
                         with transaction.atomic():
                             obj.save(using=using)
                             is_success = True
+                            msg = '    OK - normal save on {0}'.format(using)
 #                             obj.object._deserialize_post(incoming_transaction)
 #                             print msg
 #                             is_success = True
@@ -106,9 +107,10 @@ class DeserializeFromTransaction(object):
                                 try:
                                     obj.save(using=using)
                                     obj.object._deserialize_post(incoming_transaction)
-                                    print '   OK saved after integrity error on using={0}'.format(using)
+                                    msg = '   OK saved after integrity error on using={0}'.format(using)
                                     is_success = True
-                                except:
+                                except Exception as e:
+                                    print e
                                     incoming_transaction.is_ignored = True
                         elif 'Duplicate' in str(integrity_error):
                             # if the integrity error refers to a duplicate
