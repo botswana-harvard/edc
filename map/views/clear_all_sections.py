@@ -19,7 +19,7 @@ def clear_all_sections(request, **kwargs):
                     'item_label': mapper.item_label,
                     'section_label': mapper.section_label,
                     'region_label': '{0}s'.format(mapper.region_label),
-                    'regions': mapper.get_regions(),
+                    'regions': mapper.regions,
                     'region_field_attr': mapper.region_field_attr,
                  },
                 context_instance=RequestContext(request)

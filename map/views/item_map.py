@@ -28,7 +28,7 @@ def item_map(request, **kwargs):
         if not latitude:
             raise MapperError('Attribute latitude may not be None. Got {0}'.format(kwargs))
         identifier = kwargs.get('identifier', None)
-        item = mapper.get_item_model_cls().objects.get(**{mapper.get_identifier_field_attr(): identifier})
+        item = mapper.get_item_model_cls().objects.get(**{mapper.identifier_field_attr: identifier})
         item_map = getattr(item, mapper.map_field_attr_18) 
         folder = settings.MEDIA_URL
         landmark_list = []
