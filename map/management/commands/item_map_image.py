@@ -59,7 +59,7 @@ class Command(BaseCommand):
                         if key:
                             markers_str += 'markers=color:blue%7Clabel:' + key + '%7C' + str(value[2]) + ',' + str(value[3]) + '&'
                     url_str += markers_str
-                    url_str += 'markers=color:red%7C' + str(getattr(item, mapper.target_gps_lat_field_attr)) + ',' + str(getattr(item, mapper.target_gps_lon_field_attr)) + '&sensor=false'
+                    url_str += 'markers=color:red%7C' + str(getattr(item, mapper.target_gps_lat_field_attr)) + ',' + str(getattr(item, mapper.target_gps_lon_field_attr)) + "&key=AIzaSyC-N1j8zQ0g8ElLraVfOGcxaBUd2vBne2o" + '&sensor=false'
                     name = getattr(item, mapper.identifier_field_attr)
                     if zoom == 18:
                         file_name_18 = folder + '/' + name + '_18.jpg'
