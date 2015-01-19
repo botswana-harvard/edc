@@ -26,13 +26,8 @@ def map_section(request, **kwargs):
         return render_to_response(
                 template, {
                     'mapper_name': mapper_name,
-<<<<<<< HEAD
-                    'regions': mapper.get_regions(),
-                    'icons': mapper.get_icons(),
-=======
                     'regions': mapper.regions,
                     'icons': mapper.icons,
->>>>>>> hotfix/1.10.2
                     'item_region_field': mapper.region_field_attr,
                     'region_label': mapper.region_label,
                     'session_icon': icon,

@@ -43,11 +43,7 @@ def plot_item_points(request, **kwargs):
         else:
             if selected_sub_section == 'All':
                 items = mapper.item_model.objects.filter(
-<<<<<<< HEAD
-                Q(**{mapper.region_field_attr: selected_region, mapper.item_selected_field: selected_randomization}) | 
-=======
                 Q(**{mapper.region_field_attr: selected_region, mapper.item_selected_field: selected_randomization}) |
->>>>>>> hotfix/1.10.2
                 Q(**{'{0}__in'.format(mapper.identifier_field_attr): identifiers, mapper.item_selected_field: selected_randomization}))
             else:
                 items = mapper.item_model.objects.filter(
