@@ -5,6 +5,8 @@ from django.db import models
 from edc.audit.audit_trail import AuditTrail
 from edc.device.sync.models import BaseSyncUuidModel
 
+from ..managers import DestinationManager
+
 DestinationTuple = namedtuple('DestinationTuple', 'code name address tel email')
 
 
@@ -32,6 +34,8 @@ class Destination(BaseSyncUuidModel):
         verbose_name='Email',
         max_length=25,
         )
+
+    objects = DestinationManager()
 
     history = AuditTrail()
 
