@@ -56,10 +56,10 @@ def add_to_cart(request, **kwargs):
                     'cart_size': cart_size,
                     'message': message,
                     'option': 'save',
-                    'icons': mapper.get_icons(),
+                    'icons': mapper.icons,
                     'is_error': is_error,
                     'show_map': 0,
-                    'item_label': mapper.get_item_label(),
+                    'item_label': mapper.item_label,
                 },
                 context_instance=RequestContext(request)
             )
