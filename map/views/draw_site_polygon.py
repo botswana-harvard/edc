@@ -40,7 +40,7 @@ def draw_site_polygon(request, **kwargs):
                 #print icon_label
                 cso_icon_dict.append([icon_label, other_identifier_label])
         if selected_section == "All":
-            section_color_codes = mapper.make_dictionary(mapper.get_other_icons(), mapper.sections)
+            section_color_codes = mapper.make_dictionary(mapper.other_icons, mapper.sections)
         else:
             section_color_codes = mapper.make_dictionary(mapper.icons, mapper.sections)
         for key_color, sec_value in section_color_codes.iteritems():
@@ -67,7 +67,7 @@ def draw_site_polygon(request, **kwargs):
                 'gps_center_lon': mapper.gps_center_lon,
                 'selected_region': selected_region,
                 'selected_icon': request.session['icon'],
-                'icons': mapper.get_icons(),
+                'icons': mapper.icons,
                 'option': 'plot',
                 'show_map': 1,
                 'payload_empty': payload_empty,
