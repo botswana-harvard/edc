@@ -32,7 +32,7 @@ def set_section(request, **kwargs):
         cart_size = len(identifiers)
         selected_region = request.POST.get(mapper.region_field_attr)
         request.session['icon'] = request.POST.get('marker_icon')
-        if mapper.item_model.objects.filter(**{mapper.get_region_field_attr(): None}).exists():
+        if mapper.item_model.objects.filter(**{mapper.region_field_attr: None}).exists():
             has_items = True
             items = mapper.item_model.objects.filter(**{mapper.region_field_attr: None, mapper.item_selected_field: selected_randomization})
 

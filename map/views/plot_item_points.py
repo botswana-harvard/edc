@@ -43,7 +43,7 @@ def plot_item_points(request, **kwargs):
         else:
             if selected_sub_section == 'All':
                 items = mapper.item_model.objects.filter(
-                Q(**{mapper.region_field_attr: selected_region, mapper.item_selected_field: selected_randomization}) | 
+                Q(**{mapper.region_field_attr: selected_region, mapper.item_selected_field: selected_randomization}) |
                 Q(**{'{0}__in'.format(mapper.identifier_field_attr): identifiers, mapper.item_selected_field: selected_randomization}))
             else:
                 items = mapper.item_model.objects.filter(
@@ -79,7 +79,7 @@ def plot_item_points(request, **kwargs):
                 'mapper_item_label': mapper_item_label,
                 'selected_region': selected_region,
                 'selected_icon': request.session['icon'],
-                'icons': mapper.get_icons(),
+                'icons': mapper.icons,
                 'option': 'plot',
                 'gps_center_lat': mapper.gps_center_lat,
                 'gps_center_lon': mapper.gps_center_lon,
