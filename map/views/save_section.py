@@ -40,11 +40,11 @@ def save_section(request, **kwargs):
                     'payload': payload,
                     'mapper_name': mapper_name,
                     'identifiers': item_identifiers,
-                    'regions': mapper.get_regions(),
+                    'regions': mapper.regions,
                     'selected_region': selected_region,
                     'message': message,
                     'option': 'save',
-                    'icons': mapper.get_icons(),
+                    'icons': mapper.icons,
                     'is_error': is_error,
                     'show_map': 0
                 },
