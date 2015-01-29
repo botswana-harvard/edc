@@ -37,6 +37,14 @@ class Device(object):
         return self.device_id in map(str, map(int, self.SERVER_DEVICE_ID_LIST))
 
     @property
+    def is_central_server(self):
+        return self.device_id == '99'
+
+    @property
+    def is_community_server(self):
+        return self.device_id() in map(str, map(int, self.SERVER_DEVICE_ID_LIST)) and not self.device_id() == '99'
+
+    @property
     def is_middleman(self):
         """Returns True if the device_id is is in settings.MIDDLEMAN_DEVICE_ID_LIST."""
         if self.MIDDLEMAN_DEVICE_ID_LIST:
