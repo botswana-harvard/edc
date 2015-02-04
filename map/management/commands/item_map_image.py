@@ -65,17 +65,17 @@ class Command(BaseCommand):
                         file_name_18 = folder + '/' + name + '_18.jpg'
                         if not os.path.exists(file_name_18):
                             urlretrieve(url_str, file_name_18)
-                            sleep(5)
+                            sleep(2)
                     elif zoom == 17:
                         file_name_17 = folder + '/' + name + '_17.jpg'
                         if not os.path.exists(file_name_17):
                             urlretrieve(url_str, file_name_17)
-                            sleep(5)
+                            sleep(2)
                     else:
                         file_name_16 = folder + '/' + name + '.jpg'
                         if not os.path.exists(file_name_16):
                             urlretrieve(url_str, file_name_16)
-                            sleep(5)
+                            sleep(2)
                     print "The image at zoom level: " + str(zoom) + " of plot: " + str(name) + " is done"
                     zoom -= 1
                     zoom_level += 1
