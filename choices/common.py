@@ -11,6 +11,12 @@ ACU_EST = (
     ('Acute', 'Acute'),
     ('Established', 'Established'),
 )
+PIMA = (
+        ('Participant Declined', 'Participant Declined'),
+        ('Multiple PIMA malfunction', 'Multiple PIMA malfunction'),
+        ('Failed Blood Collection', 'Failed Blood Collection'),
+        ('OTHER', _('Other, specify:')),
+)
 
 ACU_EST_NEG = (
     ('Acute', 'Acute'),
