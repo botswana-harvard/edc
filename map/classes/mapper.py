@@ -201,7 +201,7 @@ class Mapper(object):
         """Check if a GPS point is within the boundaries of a community
 
         This method uses geopy.distance and geopy.Point libraries to
-        calculate the distance betweeen two points and return the
+        calculate the distance between two points and return the
         distance in units requested. The community radius is used to
         check is a point is within a radius of the community.
 
