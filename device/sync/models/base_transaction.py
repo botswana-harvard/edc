@@ -50,7 +50,7 @@ class BaseTransaction(BaseUuidModel):
         )
 
     consumer = models.CharField(
-        max_length=25,
+        max_length=150,
         null=True,
         blank=True,
         db_index=True,
