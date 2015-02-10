@@ -34,6 +34,9 @@ class BaseSyncUuidModel(BaseUuidModel):
                 '\'ALLOW_MODEL_SERIALIZATION = True\' to settings to enable '
                 'serialization of transactions (or = False to disable).')
 
+    def serialize_proxy(self):
+        return False
+
     def deserialize_prep(self, **kwargs):
         """Users may override to manipulate the incoming object before calling save()"""
         pass
