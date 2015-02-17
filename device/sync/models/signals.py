@@ -33,7 +33,7 @@ def serialize_m2m_on_save(sender, action, instance, using, **kwargs):
     """
     if action == 'post_add':
         if isinstance(instance, BaseSyncUuidModel):
-            if instance.is_serialized() and not instance.serialize_proxy():
+            if instance.is_serialized() and instance.serialize_proxy():
                 serialize_to_transaction = SerializeToTransaction()
                 # default raw to False, created to True
                 # TODO: serialize is skipped if raw is True, how should raw
