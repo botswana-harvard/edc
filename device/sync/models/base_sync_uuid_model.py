@@ -35,7 +35,10 @@ class BaseSyncUuidModel(BaseUuidModel):
                 'serialization of transactions (or = False to disable).')
 
     def serialize_proxy(self):
-        return False
+        if self._meta.proxy:
+            return False
+        else:
+            return True
 
     def deserialize_prep(self, **kwargs):
         """Users may override to manipulate the incoming object before calling save()"""
