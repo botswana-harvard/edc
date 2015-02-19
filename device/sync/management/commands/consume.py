@@ -47,8 +47,8 @@ class Command(BaseCommand):
                 raise CommandError('if using --consume<app_name> --producer <producer_name>, then only 2 arguments are expected')
             self.consume(lock_name, producer_name=producer_name)
         elif options.get('producer', None) and options.get('model', None):
-            producer_name = args[1]
-            model_name = args[2]
+            model_name = args[1]
+            producer_name = args[2]
             if len(args) != 3:
                 raise CommandError('if using --consume<app_name> --model <Model_name> --producer <producer_name> then only 2 arguments are expected')
             self.consume(lock_name, model_name=model_name, producer_name=producer_name)
