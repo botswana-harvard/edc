@@ -1,4 +1,4 @@
-from git import Repo, GitDB
+from git import Repo, GitDB, GitCommandError
 
 from django.conf import settings
 
@@ -8,7 +8,10 @@ class Revision(object):
     def __init__(self):
         self._revision = None
         self.repo = Repo(self.source_folder, odbt=GitDB)
-        self.tag = self.repo.git.describe(tags=True)
+        try:
+            self.tag = self.repo.git.describe(tags=True)
+        except GitCommandError:  # if no tags, raises exception
+            self.tag = ''
         self.branch = unicode(self.repo.active_branch)
         self.commit = unicode(self.repo.active_branch.commit)
         self.revision = '{0}:{1}'.format(self.branch, self.commit)
