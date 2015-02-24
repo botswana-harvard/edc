@@ -5,6 +5,7 @@ from ...models import UploadSkipDays
 
 class UploadSkipDaysFactory(BaseModelFactory):
     FACTORY_FOR = UploadSkipDays
-    
-    skip_date = date.today()   
+
+    skip_date = date.today()
+    skip_until_date = None
     identifier = factory.Sequence(lambda n: 'identifier{0}'.format(n))
