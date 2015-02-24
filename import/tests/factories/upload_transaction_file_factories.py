@@ -6,7 +6,7 @@ from ...models import UploadTransactionFile
 
 class UploadTransactionFileFactory(BaseModelFactory):
     FACTORY_FOR = UploadTransactionFile
-    
+
     file_name = factory.Sequence(lambda n: 'file_name{0}'.format(n))
     transaction_file = models.FileField(name=file_name) 
     identifier = factory.Sequence(lambda n: 'identifier{0}'.format(n))    

@@ -61,29 +61,31 @@ class UploadTransactionFile(BaseUuidModel):
             raise TypeError('File covering date of \'{0}\' for \'{1}\' is already uploaded.'.format(self.file_date, self.identifier))
         if not self.is_previous_day_file_uploaded() and not self.skip_previous_day() and not self.first_upload_or_skip_day():
             raise TypeError('Missing Upload file from the previous day for \'{0}\'. Previous day is not set as a SKIP date.'.format(self.identifier))
-        deserializer = DeserializeFromTransaction()
-        index = 0
-        self.transaction_file.open()
-        producer_list = []
-        for index, outgoing in enumerate(deserializer.deserialize_json_file(self.transaction_file)):
-            if not IncomingTransaction.objects.filter(pk=outgoing.get('pk')).exists():
-                if outgoing.get('fields'):
-                    self.consumed += 1
-                    IncomingTransaction.objects.create(
-                        pk=outgoing.get('pk'),
-                        tx_name=outgoing.get('fields').get('tx_name'),
-                        tx_pk=outgoing.get('fields').get('tx_pk'),
-                        tx=outgoing.get('fields').get('tx'),
-                        timestamp=outgoing.get('fields').get('timestamp'),
-                        producer=outgoing.get('fields').get('producer'),
-                        action=outgoing.get('fields').get('action'))
-                    if outgoing.get('fields').get('producer') not in producer_list:
-                        producer_list.append(outgoing.get('fields').get('producer'))
-            else:
-                self.not_consumed += 1
-        self.total = index
-        producer_list.sort()
-        self.producer = ','.join(producer_list)
+        if self.today_within_skip_untill():
+            raise TypeError('Cannot upload a file for this date \'{}\'. This date is covered by a skip until date for \'{}\'.'.format(self.file_date, self.identifier))
+#         deserializer = DeserializeFromTransaction()
+#         index = 0
+#         self.transaction_file.open()
+#         producer_list = []
+#         for index, outgoing in enumerate(deserializer.deserialize_json_file(self.transaction_file)):
+#             if not IncomingTransaction.objects.filter(pk=outgoing.get('pk')).exists():
+#                 if outgoing.get('fields'):
+#                     self.consumed += 1
+#                     IncomingTransaction.objects.create(
+#                         pk=outgoing.get('pk'),
+#                         tx_name=outgoing.get('fields').get('tx_name'),
+#                         tx_pk=outgoing.get('fields').get('tx_pk'),
+#                         tx=outgoing.get('fields').get('tx'),
+#                         timestamp=outgoing.get('fields').get('timestamp'),
+#                         producer=outgoing.get('fields').get('producer'),
+#                         action=outgoing.get('fields').get('action'))
+#                     if outgoing.get('fields').get('producer') not in producer_list:
+#                         producer_list.append(outgoing.get('fields').get('producer'))
+#             else:
+#                 self.not_consumed += 1
+#         self.total = index
+#         producer_list.sort()
+#         self.producer = ','.join(producer_list)
 
     def file_already_uploaded(self):
         if self.__class__.objects.filter(file_date=self.file_date, identifier__iexact=self.identifier).exists():
@@ -105,12 +107,19 @@ class UploadTransactionFile(BaseUuidModel):
 
     def skip_previous_day(self):
         yesterday = self.file_date - timedelta(1)
-        if UploadSkipDays.objects.filter(skip_date=yesterday, identifier__iexact=self.identifier).exists():
+        if (UploadSkipDays.objects.filter(skip_date=yesterday, identifier__iexact=self.identifier).exists()
+            or UploadSkipDays.objects.filter(skip_until_date=yesterday, identifier__iexact=self.identifier).exists()):
             return True
         return False
 
     def today_set_as_skip_day(self):
-        if UploadSkipDays.objects.filter(skip_date=self.file_date, identifier__iexact=self.identifier).exists():
+        if (UploadSkipDays.objects.filter(skip_date=self.file_date, identifier__iexact=self.identifier).exists() or
+            UploadSkipDays.objects.filter(skip_until_date__gt=self.file_date, identifier__iexact=self.identifier).exists()):
+            return True
+        return False
+
+    def today_within_skip_untill(self):
+        if UploadSkipDays.objects.filter(skip_until_date__gt=self.file_date, identifier__iexact=self.identifier).exists():
             return True
         return False
 
