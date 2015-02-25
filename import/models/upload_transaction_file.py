@@ -63,29 +63,29 @@ class UploadTransactionFile(BaseUuidModel):
             raise TypeError('Missing Upload file from the previous day for \'{0}\'. Previous day is not set as a SKIP date.'.format(self.identifier))
         if self.today_within_skip_untill():
             raise TypeError('Cannot upload a file for this date \'{}\'. This date is covered by a skip until date for \'{}\'.'.format(self.file_date, self.identifier))
-#         deserializer = DeserializeFromTransaction()
-#         index = 0
-#         self.transaction_file.open()
-#         producer_list = []
-#         for index, outgoing in enumerate(deserializer.deserialize_json_file(self.transaction_file)):
-#             if not IncomingTransaction.objects.filter(pk=outgoing.get('pk')).exists():
-#                 if outgoing.get('fields'):
-#                     self.consumed += 1
-#                     IncomingTransaction.objects.create(
-#                         pk=outgoing.get('pk'),
-#                         tx_name=outgoing.get('fields').get('tx_name'),
-#                         tx_pk=outgoing.get('fields').get('tx_pk'),
-#                         tx=outgoing.get('fields').get('tx'),
-#                         timestamp=outgoing.get('fields').get('timestamp'),
-#                         producer=outgoing.get('fields').get('producer'),
-#                         action=outgoing.get('fields').get('action'))
-#                     if outgoing.get('fields').get('producer') not in producer_list:
-#                         producer_list.append(outgoing.get('fields').get('producer'))
-#             else:
-#                 self.not_consumed += 1
-#         self.total = index
-#         producer_list.sort()
-#         self.producer = ','.join(producer_list)
+        deserializer = DeserializeFromTransaction()
+        index = 0
+        self.transaction_file.open()
+        producer_list = []
+        for index, outgoing in enumerate(deserializer.deserialize_json_file(self.transaction_file)):
+            if not IncomingTransaction.objects.filter(pk=outgoing.get('pk')).exists():
+                if outgoing.get('fields'):
+                    self.consumed += 1
+                    IncomingTransaction.objects.create(
+                        pk=outgoing.get('pk'),
+                        tx_name=outgoing.get('fields').get('tx_name'),
+                        tx_pk=outgoing.get('fields').get('tx_pk'),
+                        tx=outgoing.get('fields').get('tx'),
+                        timestamp=outgoing.get('fields').get('timestamp'),
+                        producer=outgoing.get('fields').get('producer'),
+                        action=outgoing.get('fields').get('action'))
+                    if outgoing.get('fields').get('producer') not in producer_list:
+                        producer_list.append(outgoing.get('fields').get('producer'))
+            else:
+                self.not_consumed += 1
+        self.total = index
+        producer_list.sort()
+        self.producer = ','.join(producer_list)
 
     def file_already_uploaded(self):
         if self.__class__.objects.filter(file_date=self.file_date, identifier__iexact=self.identifier).exists():
