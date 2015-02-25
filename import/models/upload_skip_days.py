@@ -12,8 +12,7 @@ class UploadSkipDays(BaseModel):
 
     skip_date = models.DateField(default=date.today())
 
-    skip_until_date = models.DateField(default=date.today(),
-                                       null=True,
+    skip_until_date = models.DateField(null=True,
                                        blank=True,
                                        help_text='System will assume all days are skip days until this date.')
 
