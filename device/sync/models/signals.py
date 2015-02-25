@@ -33,7 +33,7 @@ def serialize_m2m_on_save(sender, action, instance, using, **kwargs):
     """
     if action == 'post_add':
         if isinstance(instance, BaseSyncUuidModel):
-            if instance.is_serialized() and not instance._meta.proxy:
+            if instance.is_serialized() or instance._meta.proxy:
                 serialize_to_transaction = SerializeToTransaction()
                 # default raw to False, created to True
                 # TODO: serialize is skipped if raw is True, how should raw
@@ -52,7 +52,7 @@ def serialize_on_save(sender, instance, raw, created, using, **kwargs):
             # hostname = socket.gethostname()
             # if ((instance.hostname_created == hostname and not instance.hostname_modified) or
             #         (instance.hostname_modified == hostname)):
-            if instance.is_serialized() and not instance._meta.proxy:
+            if instance.is_serialized() or instance._meta.proxy:
                 serialize_to_transaction = SerializeToTransaction()
                 serialize_to_transaction.serialize(sender, instance, raw, created, using, **kwargs)
 
@@ -70,7 +70,7 @@ def serialize_on_post_delete(sender, instance, using, **kwargs):
     """Creates an serialized OutgoingTransaction when a model instance is deleted."""
     using = using or 'default'
     try:
-        if instance.is_serialized() and not instance._meta.proxy:
+        if instance.is_serialized() or instance._meta.proxy:
             OutgoingTransaction = get_model('sync', 'outgoingtransaction')
             json_obj = serializers.serialize("json", [instance, ], ensure_ascii=False,
                                                     use_natural_keys=True)
