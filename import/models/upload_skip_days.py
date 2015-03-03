@@ -5,7 +5,7 @@ from datetime import date, timedelta
 from django.db import models
 
 from edc.base.model.models import BaseModel
-from edc.utils.models import ShortenName
+from edc.utils.models import ShortenIdentifierName
 from edc.utils.choices import COMMUNITIES
 
 
@@ -22,8 +22,8 @@ class UploadSkipDays(BaseModel):
     objects = models.Manager()
 
     def save(self, *args, **kwargs):
-        if ShortenName.objects.filter(original_name__iexact=self.identifier).exists():
-            self.identifier = ShortenName.objects.get(original_name__iexact=self.identifier).shorter_name
+        if ShortenIdentifierName.objects.filter(original_name__iexact=self.identifier).exists():
+            self.identifier = ShortenIdentifierName.objects.get(original_name__iexact=self.identifier).shorter_name
         if self.today_upload_exists():
             raise TypeError('An upload file for \'{0}\' from \'{1}\' already exists. So cannot create it as a skip date'.format(self.skip_date, self.identifier))
         #A skip day is only valid if there was an upload the previous day or if the previous day was also a skip day, unless if this is the first skip day/upload record
