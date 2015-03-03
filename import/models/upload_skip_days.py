@@ -65,6 +65,13 @@ class UploadSkipDays(BaseModel):
             return True
         return False
 
+    @property
+    def identifier_wrapper(self):
+        if ShortenIdentifierName.objects.filter(shorter_name__iexact=self.identifier).exists():
+            return ShortenIdentifierName.objects.get(shorter_name__iexact=self.identifier).shorter_name
+        else:
+            return self.identifier
+
     def __unicode__(self):
         return unicode(self.skip_date)
 
