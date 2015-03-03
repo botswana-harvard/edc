@@ -13,3 +13,6 @@ class ShortenIdentifierName():
         max_length=50)
 
     objects = models.Manager()
+
+    class Meta:
+        app_label = 'utils'
