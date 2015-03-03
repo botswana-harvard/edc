@@ -1,0 +1,1 @@
+from .shorten_name import ShortenName
