@@ -5,10 +5,10 @@ from ..forms import SkipDaysForm
 
 
 class UploadSkipDaysAdmin(admin.ModelAdmin):
-    
+
     form = SkipDaysForm
     date_hierarchy = 'created'
-    list_display = ('skip_date', 'identifier', 'created', 'user_created', 'hostname_created')
+    list_display = ('skip_date', 'identifier_wrapper', 'created', 'user_created', 'hostname_created')
     list_filter = ('identifier', 'created', 'hostname_created')
 
 admin.site.register(UploadSkipDays, UploadSkipDaysAdmin)
