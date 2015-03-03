@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class ShortenName():
+class ShortenIdentifierName():
 
     original_name = models.CharField(
         verbose_name='Original name.',
