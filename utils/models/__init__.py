@@ -1,1 +1,1 @@
-from .shorten_name import ShortenName
+from .shorten_identifier_name import ShortenIdentifierName
