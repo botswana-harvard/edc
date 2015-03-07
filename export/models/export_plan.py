@@ -31,6 +31,9 @@ class ExportPlan(BaseSyncUuidModel):
 
     notification_plan_name = models.CharField(max_length=50, null=True)
 
+    def __unicode__(self):
+        return '{}.{}'.format(self.app_label, self.object_name)
+
     def is_serialized(self, serialize=True):
         return False
 
