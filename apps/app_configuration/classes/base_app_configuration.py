@@ -7,7 +7,8 @@ from django.core.exceptions import MultipleObjectsReturned
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
-from edc.export.models import ExportPlan
+from edc.export.helpers import ExportHelper
+from edc.notification.helpers import NotificationHelper
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_packing.models import Destination
@@ -37,6 +38,10 @@ class BaseAppConfiguration(object):
     notification_plan_setup = {}
     labeling_setup = {}
     holidays_setup = {}
+
+    def __init__(self):
+        self.confirm_site_code_in_settings = True
+        self.confirm_community_in_settings = True
 
     def prepare(self):
         """Updates content type maps then runs each configuration method with the corresponding class attribute.
@@ -170,7 +175,7 @@ class BaseAppConfiguration(object):
                     profile_item_model.objects.create(
                         profile=profile, aliquot_type=aliquot_type, volume=item.volume, count=item.count)
 
-    def update_or_create_study_variables(self):
+    def update_or_create_study_variables(self, site_code=None):
         """Updates configuration in the :mod:`bhp_variables` module."""
         if StudySpecific.objects.all().count() == 0:
             StudySpecific.objects.create(**self.study_variables_setup)
@@ -296,60 +301,12 @@ class BaseAppConfiguration(object):
 
     def update_export_plan_setup(self):
         if self.export_plan_setup:
-            for model_config, export_plan in self.export_plan_setup.iteritems():
-                app_label, model_name = model_config.split('.')
-                model = get_model(app_label, model_name)
-                try:
-                    export_plan_instance = ExportPlan.objects.get(app_label=model._meta.app_label, object_name=model._meta.object_name)
-                    export_plan_instance.fields = json.dumps(export_plan.get('fields'))
-                    export_plan_instance.extra_fields = json.dumps(export_plan.get('extra_fields'))
-                    export_plan_instance.exclude = json.dumps(export_plan.get('exclude'))
-                    export_plan_instance.header = export_plan.get('header')
-                    export_plan_instance.track_history = export_plan.get('track_history')
-                    export_plan_instance.show_all_fields = export_plan.get('show_all_fields')
-                    export_plan_instance.delimiter = export_plan.get('delimiter')
-                    export_plan_instance.encrypt = export_plan.get('encrypt')
-                    export_plan_instance.strip = export_plan.get('strip')
-                    export_plan_instance.target_path = export_plan.get('target_path')
-                    export_plan_instance.notification_plan_name = export_plan.get('notification_plan_name')
-                    export_plan_instance.save()
-                except ExportPlan.DoesNotExist:
-                    ExportPlan.objects.create(
-                        app_label=model._meta.app_label,
-                        object_name=model._meta.object_name,
-                        fields=json.dumps(export_plan.get('fields')),
-                        extra_fields=json.dumps(export_plan.get('extra_fields')),
-                        exclude=json.dumps(export_plan.get('exclude')),
-                        header=export_plan.get('header'),
-                        track_history=export_plan.get('track_history'),
-                        show_all_fields=export_plan.get('show_all_fields'),
-                        delimiter=export_plan.get('delimiter'),
-                        encrypt=export_plan.get('encrypt'),
-                        strip=export_plan.get('strip'),
-                        target_path=export_plan.get('target_path'),
-                        notification_plan_name=export_plan.get('notification_plan_name'),
-                    )
+            ExportHelper.update_plan(self.export_plan_setup)
 
     def update_notification_plan_setup(self):
         if self.notification_plan_setup:
-            for notification_plan_name, notification_plan in self.notification_plan_setup.iteritems():
-                try:
-                    notification_plan_instance = NotificationPlan.objects.get(name=notification_plan_name)
-                    notification_plan_instance.name = notification_plan.get('name')
-                    notification_plan_instance.friendly_name = notification_plan.get('friendly_name')
-                    notification_plan_instance.subject_format = notification_plan.get('subject_format')
-                    notification_plan_instance.body_format = notification_plan.get('body_format')
-                    notification_plan_instance.recipient_list = json.dumps(notification_plan.get('recipient_list'))
-                    notification_plan_instance.cc_list = json.dumps(notification_plan.get('cc_list'))
-                    notification_plan_instance.save()
-                except NotificationPlan.DoesNotExist:
-                    NotificationPlan.objects.create(
-                        name=notification_plan.get('name'),
-                        friendly_name=notification_plan.get('friendly_name'),
-                        subject_format=notification_plan.get('subject_format'),
-                        body_format=notification_plan.get('body_format'),
-                        cc_list=json.dumps(notification_plan.get('cc_list')),
-                        )
+            notification_helper = NotificationHelper()
+            notification_helper.update_plan(self.notification_plan_setup)
 
     def update_holidays_setup(self):
         """Updates holiday configurations in appointment__holiday module."""
