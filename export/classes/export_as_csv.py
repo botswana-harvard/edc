@@ -2,10 +2,10 @@ import csv
 
 from django.http import HttpResponse
 
-from .base_export import BaseExport
+from .base_export_model import BaseExportModel
 
 
-class ExportAsCsv(BaseExport):
+class ExportAsCsv(BaseExportModel):
 
     @property
     def file_obj(self):
