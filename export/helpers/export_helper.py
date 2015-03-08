@@ -12,9 +12,10 @@ from ..models import ExportPlan
 
 class ExportHelper(object):
 
-    def __init__(self, export_plan, exception_cls=None, notify=None):
+    def __init__(self, export_plan, exception_cls=None, notify=None, export_filename=None):
         self.reset()
         self.export_plan = export_plan
+        self.export_filename = export_filename
         self.exception_cls = exception_cls or TypeError
         self.notify = False if notify is False else True  # default is to queue_notification
         self.export_failure_msg = 'Error exporting transactions for {object!s} to file {filename}. Got {error!r}'
