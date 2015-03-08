@@ -1,3 +1,5 @@
+import os
+import csv
 import json
 import string
 
@@ -8,15 +10,13 @@ from django.db.models.constants import LOOKUP_SEP
 
 from edc.core.crypto_fields.fields import BaseEncryptedField
 
-from edc.notification.models import Notification
-
 from ..models import ExportHistory
 
 HEAD_FIELDS = ['export_uuid', 'export_datetime', 'export_change_type', 'subject_identifier', 'report_datetime']
 TAIL_FIELDS = ['hostname_created', 'hostname_modified', 'created', 'modified', 'user_created', 'user_modified', 'revision']
 
 
-class BaseExport(object):
+class BaseExportModel(object):
     def __init__(self, queryset, model=None, modeladmin=None, fields=None, exclude=None, extra_fields=None,
                  header=True, track_history=False, show_all_fields=True, delimiter=None, encrypt=True,
                  strip=False, notification_plan_name=None, export_datetime=None):
@@ -53,6 +53,35 @@ class BaseExport(object):
         self.header_row = self.field_names
         self.export_filename = '{0}_{1}.csv'.format(unicode(self.model._meta).replace('.', '_'), export_datetime.strftime('%Y%m%d%H%M%S') or datetime.now().strftime('%Y%m%d%H%M%S'))
         self.export_history = None
+
+    def write_to_file(self):
+        """Writes the export file and returns the file name."""
+        exported_pk_list = []
+        export_uuid_list = []
+        export_file_contents = []
+        with open(os.path.join(os.path.expanduser(self.target_path) or '', self.export_filename), 'w') as f:
+            writer = csv.writer(f, delimiter=self.delimiter)
+            if self.include_header_row:
+                self.header_row.insert(1, 'timestamp')
+                writer.writerow(self.header_row)
+                export_file_contents.append(self.header_row)
+            seen = set()
+            for self.row_instance in self.queryset:
+                self.row = self.fetch_row()
+                if self.remove_duplicates:
+                    if json.dumps(self.row) in seen:
+                        self.update_export_transaction(self.row_instance)
+                        continue  # skip duplicates
+                    seen.add(json.dumps(self.row))
+                self.row[1] = self.row_instance.export_transaction.timestamp
+                writer.writerow(self.row)
+                export_file_contents.append(self.row)
+                self.update_export_transaction(self.row_instance)
+                exported_pk_list.append(self.row_instance.pk)
+                export_uuid_list.append(self.row_instance.export_uuid)
+        if self.track_history:
+            self.update_export_history(exported_pk_list, export_uuid_list, export_file_contents)
+        return self.export_filename
 
     def fetch_row(self):
         """Returns a one row for the writer."""
