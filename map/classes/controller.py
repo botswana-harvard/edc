@@ -54,6 +54,18 @@ class Controller(object):
         self._registry = mappers
         self._registry_by_code = mappers_by_code
 
+    def sorted_by_pair(self):
+        pairs = []
+        mappers = OrderedDict()
+        for mapper in self._registry.itervalues():
+            pairs.append(mapper.pair)
+        pairs = list(set(pairs))
+        for pair in pairs:
+            for mapper in self._registry.itervalues():
+                if mapper.pair == pair:
+                    mappers[mapper.map_area] = mapper
+        return mappers
+
     def set_registry(self, mapper_cls):
         """Registers a given mapper class to the site registry."""
         if not issubclass(mapper_cls, Mapper):
