@@ -1,5 +1,7 @@
 import re
 
+from dateutil.relativedelta import relativedelta
+
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -211,6 +213,10 @@ class BaseConsent(BaseSubject):
         if self.last_name:
             options.update({'registration_status': 'consented'})
         return options
+
+    @property
+    def age(self):
+        return relativedelta(self.consent_datetime, self.dob).years
 
     def formatted_age_at_consent(self):
         return formatted_age(self.dob, self.consent_datetime)
