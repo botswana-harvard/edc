@@ -61,7 +61,11 @@ class UploadSkipDays(BaseModel):
         return False
 
     def today_within_skip_untill(self):
-        if self.__class__.objects.filter(skip_until_date__gt=self.skip_date, identifier__iexact=self.identifier).exists():
+        #If we are editing then we exclude self, because we might be just updating self.
+        if self.id and self.__class__.objects.filter(skip_until_date__gt=self.skip_date, identifier__iexact=self.identifier).exclude(id=self.id).exists():
+            return True
+        #If we are inserting then we compare will all in the DB.
+        if not self.id and self.__class__.objects.filter(skip_until_date__gt=self.skip_date, identifier__iexact=self.identifier).exists():
             return True
         return False
 
