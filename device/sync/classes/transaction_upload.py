@@ -1,5 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.db.models import get_model
 import socket
+from datetime import date
+#from dateutil import rrule, parser
+
+from edc.utils.models import ShortenIdentifierName
 
 
 class TransactionUpload(object):
@@ -33,5 +38,56 @@ class TransactionUpload(object):
             body += "\nSUCCESS:\t{0}, uploaded={1}, duplicates={2}, ".format(entry, uploaded.consumed, uploaded.not_consumed)
         for entry in error_list:
             body += "\nERROR:\t{0}".format(entry)
+        body += "\n======================================"
+        body += self.get_missing_files()
         print "sending email to {0}".format(recipient_list)
         return (subject, body, recipient_list)
+
+    def get_missing_files(self):
+        from ..models import Producer
+        message = ""
+        for producer in Producer.objects.filter(is_active=True):
+            producer_identifier = producer.name.split('.')[0]
+            if ShortenIdentifierName.objects.filter(original_name=producer_identifier).exists():
+                producer_identifier = ShortenIdentifierName.objects.filter(original_name=producer_identifier).shorter_name
+            UploadTransactionFile = get_model('import', 'UploadTransactionFile')
+            UploadSkipDays = get_model('import', 'UploadSkipDays')
+            latest_upload_file_date = UploadTransactionFile.objects.filter(identifier__iexact=producer_identifier).order_by('-file_date')
+            if latest_upload_file_date.exists():
+                latest_upload_file_date = latest_upload_file_date[0].file_date
+            else:
+                continue
+            latest_skip_date = UploadSkipDays.objects.filter(identifier__iexact=producer_identifier).order_by('-skip_date')
+            if latest_skip_date.exists() and latest_skip_date[0].skip_until_date:
+                latest_skip_date = latest_skip_date[0].skip_until_date
+            elif latest_skip_date.exists() and not latest_skip_date[0].skip_until_date:
+                latest_skip_date = latest_skip_date[0].skip_date
+            else:
+                continue
+            chosen = latest_upload_file_date if latest_upload_file_date > latest_skip_date else latest_skip_date
+            #dates = list(rrule.rrule(rrule.DAILY, dtstart=parser.parse(chosen), until=parser.parse(date.today())))
+            missing_dates = self.return_friendly_date(self.date_range_generator(chosen + timedelta(days=1), date.today()))
+            if not missing_dates:
+                continue
+            message += "\nMissing Files from {} for the following date(s) {}".format(producer.name.upper(),
+                                                                                     missing_dates)
+        return message
+
+    def return_friendly_date(self, date_list):
+        date_string = ""
+        for dt in date_list:
+            date_string += '{}, '.format(str(dt.strftime("%Y%m%d")))
+        return date_string
+
+    def date_range_generator(self, start_date, end_date):
+        date_list = []
+        current_date = start_date
+        flag = True
+        while flag:
+            if current_date <= end_date:
+                date_list.append(current_date)
+                current_date += timedelta(days=1)
+            else:
+                flag = False
+#         print 'START={}, END={}, DATE_LIST={}'.format(start_date,end_date,len(date_list))
+        return date_list
