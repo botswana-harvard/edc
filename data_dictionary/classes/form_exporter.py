@@ -1,22 +1,29 @@
 from collections import OrderedDict
 
 from django.contrib import admin
-from django.core.exceptions import FieldError, ImproperlyConfigured
+from django.core.exceptions import FieldError
 from django.db.models import get_app, get_models, get_model
 
 from edc.base.model.fields.helpers.revision import site_revision
 from edc.subject.visit_schedule.models import VisitDefinition
 from edc.subject.entry.models import Entry, LabEntry
 from edc.subject.rule_groups.classes import site_rule_groups
+from edc.subject.visit_schedule.classes import site_visit_schedules
+
+from ..exceptions import FormExporterError
 
 
 class FormExporter(object):
     """Exports a model into text format for review as a wiki page or PDF."""
     def __init__(self):
         self._model = None
+        self._fields = None
         self._model_admin = None
         self._model_fields = None
+        self._visit_definition = None
         admin.autodiscover()
+        site_visit_schedules.autodiscover()
+        site_visit_schedules.build_all()
         site_rule_groups.autodiscover()
 
     @property
@@ -27,11 +34,14 @@ class FormExporter(object):
     def model(self, model_cls):
         self._model_admin = None
         self._model_fields = None
+        self._fields = None
         self._model = model_cls
 
     @property
     def model_admin(self):
-        """Finds and returns the model_admin class for the given model."""
+        """Finds and returns the model_admin class for the given model class.
+
+        Is reset if model class changes."""
         if not self._model_admin:
             for model_admin in admin.sites.site._registry.itervalues():
                 if model_admin.model == self.model:
@@ -40,17 +50,28 @@ class FormExporter(object):
         return self._model_admin
 
     @property
+    def model_admin_fields(self):
+        """Finds and returns the fields tuple from the model_admin class for the given model."""
+        return self.model_admin.fields
+
+    @property
     def model_fields(self):
-        """Returns the field classes from the model listed in model_admin.fields tuple."""
+        """Returns the field classes from the model as a dictionary {name: class}."""
         if not self._model_fields:
+            self._model_fields = {field.name: field for field in self.model._meta.fields}
+        return self._model_fields
+
+    @property
+    def fields(self):
+        """Returns the field classes from the model if the field is listed in model_admin.fields tuple."""
+        if not self._fields:
             n = 0
-            self._model_fields = OrderedDict()
-            fields = {field.name: field for field in self.model._meta.fields}
+            self._fields = OrderedDict()
             try:
-                for field_name in self.model_admin.fields:
+                for field_name in self.model_admin_fields:
                     n += 1
                     try:
-                        field = fields[field_name]
+                        field = self.model_fields[field_name]
                     except KeyError:
                         try:
                             # m2m?
@@ -58,15 +79,15 @@ class FormExporter(object):
                         except AttributeError:
                             field = object()
                     field.number = n
-                    self._model_fields.update({field_name: field})
+                    self._fields.update({field_name: field})
             except TypeError:
                 pass
             except AttributeError:
                 pass
-        return self._model_fields
+        return self._fields
 
     def question(self, name):
-        question = self.model_fields.get(name)
+        question = self.fields.get(name)
         try:
             for choice in question.choices:
                 print choice[1]
@@ -87,7 +108,7 @@ class FormExporter(object):
                 template.append('<p><B>Instructions: </B>{}</p>'.format(''.join(self.model_admin.instructions)))
         except AttributeError:
             pass
-        for attr_name, field in self.model_fields.iteritems():
+        for attr_name, field in self.fields.iteritems():
             template.append('{bold}{}. {}{bold}'.format(
                 field.number, unicode(field.verbose_name), bold='\'\'\'' if not field.null else ''))
             choices = ''
@@ -130,8 +151,7 @@ class FormExporter(object):
         try:
             visit_definition = VisitDefinition.objects.get(code=code)
         except VisitDefinition.DoesNotExist:
-            raise ImproperlyConfigured('VisitDefinition matching query does not exist. Have the '
-                                       'configurations been loaded? See urls.py.')
+            raise FormExporterError('VisitDefinition matching query does not exist. Got {}.'.format(code))
         print '==={0.code}: {0.title}==='.format(visit_definition)
         for entry in Entry.objects.filter(visit_definition=visit_definition).order_by('entry_order'):
             self.model = entry.content_type_map.model_class()

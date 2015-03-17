@@ -92,6 +92,8 @@ class ExportObjectAsCsv(object):
                 value = value.strftime('%Y-%m-%d %H:%M')
             except AttributeError:
                 pass
+            except ValueError:
+                pass   # the datetime strftime() methods require year >= 1900
             if isinstance(value, (list, tuple)):
                 value = ';'.join(map(str, value))
             row.append(self.strip_value(value))

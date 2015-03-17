@@ -54,7 +54,7 @@ class Controller(object):
         self._registry = mappers
         self._registry_by_code = mappers_by_code
 
-    def sorted_by_pair(self):
+    def sort_by_pair(self):
         pairs = []
         mappers = OrderedDict()
         for mapper in self._registry.itervalues():
