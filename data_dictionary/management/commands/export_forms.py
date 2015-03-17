@@ -27,6 +27,11 @@ class Command(BaseCommand):
             default='',
             help='Export form text by app_label'),
         )
+#         make_option('--fields',
+#             action='store',
+#             dest='by_app',
+#             default='',
+#             help='specify name of modeladmin fields attribute of not "fields"'),
 
     def handle(self, *args, **options):
         admin.autodiscover()

@@ -16,6 +16,12 @@ class Revision(object):
         self.commit = unicode(self.repo.active_branch.commit)
         self.revision = '{0}:{1}'.format(self.branch, self.commit)
 
+    def __repr__(self):
+        return '{0}({1.tag!r})'.format(self.__class__.__name__, self)
+
+    def __str__(self):
+        return '{0.tag!s}'.format(self)
+
     @property
     def source_folder(self):
         if 'PROJECT_ROOT' not in dir(settings):
