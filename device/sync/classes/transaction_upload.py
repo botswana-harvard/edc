@@ -54,8 +54,8 @@ class TransactionUpload(object):
         message = ""
         for producer in Producer.objects.filter(is_active=True):
             producer_identifier = producer.name.split('.')[0]
-            if ShortenIdentifierName.objects.filter(original_name=producer_identifier).exists():
-                producer_identifier = ShortenIdentifierName.objects.get(original_name=producer_identifier).shorter_name
+            #if ShortenIdentifierName.objects.filter(original_name=producer_identifier).exists():
+            #    producer_identifier = ShortenIdentifierName.objects.get(original_name=producer_identifier).shorter_name
             UploadTransactionFile = get_model('import', 'UploadTransactionFile')
             UploadSkipDays = get_model('import', 'UploadSkipDays')
             latest_upload_file_date = UploadTransactionFile.objects.filter(identifier__iexact=producer_identifier).order_by('-file_date')
