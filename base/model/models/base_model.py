@@ -2,6 +2,8 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
+from edc.core.crypto_fields.fields import BaseEncryptedField
+
 from ..constants import BASE_MODEL_UPDATE_FIELDS
 from ..fields import HostnameCreationField, HostnameModificationField
 
@@ -57,6 +59,10 @@ class BaseModel(TimeStampedModel):
         else:
             url = reverse('admin:{app_label}_{object_name}_add'.format(app_label=self._meta.app_label, object_name=self._meta.object_name.lower()))
         return url
+
+    @classmethod
+    def encrypted_fields(self):
+        return [fld.name for fld in self._meta.fields if isinstance(fld, BaseEncryptedField)]
 
     class Meta:
         abstract = True
