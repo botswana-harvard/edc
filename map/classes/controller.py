@@ -66,6 +66,14 @@ class Controller(object):
                     mappers[mapper.map_area] = mapper
         return mappers
 
+    def get_by_pair(self, pair):
+        """Returns a dictionary of mappers by pair."""
+        mappers = {}
+        for mapper in self._registry.itervalues():
+            if mapper.pair == pair:
+                mappers.update({mapper.map_area: mapper})
+        return mappers
+
     def set_registry(self, mapper_cls):
         """Registers a given mapper class to the site registry."""
         if not issubclass(mapper_cls, Mapper):
