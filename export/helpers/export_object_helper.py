@@ -37,9 +37,14 @@ class ExportObjectHelper(ExportHelper):
         export_object_helper = ExportObjectHelper(members, export_plan)
     """
 
-    def __init__(self, export_plan, filename=None, exception_cls=None, notify=None):
+    def __init__(self, export_plan, filename=None, fields=None, delimiter=None, exception_cls=None, notify=None):
+        if not export_plan.fields:
+            export_plan.fields = fields
+        if not export_plan.delimiter:
+            export_plan.delimiter = delimiter
         super(ExportObjectHelper, self).__init__(export_plan, exception_cls=exception_cls, notify=notify)
         self.export_filename = filename
+        self.writer_cls = ExportObjectAsCsv
 
     def reset(self):
         """Resets instance attr."""
@@ -51,7 +56,7 @@ class ExportObjectHelper(ExportHelper):
     @property
     def writer(self):
         """Returns an instance of ExportJsonAsCsv for the list of transactions to export."""
-        return ExportObjectAsCsv(
+        return self.writer_cls(
             self.export_filename,
             fields=self.export_plan.fields,
             exclude=self.export_plan.exclude,

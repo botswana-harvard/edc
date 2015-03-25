@@ -12,7 +12,7 @@ from django.db.models.constants import LOOKUP_SEP
 
 from ..models import ExportHistory
 
-HEAD_FIELDS = ['export_uuid', 'export_datetime', 'export_change_type', 'subject_identifier', 'report_datetime']
+HEAD_FIELDS = ['export_uuid', 'export_datetime', 'export_change_type', 'unique_key', 'subject_identifier', 'report_datetime']
 TAIL_FIELDS = ['hostname_created', 'hostname_modified', 'created', 'modified', 'user_created', 'user_modified', 'revision']
 
 
@@ -20,7 +20,8 @@ class ExportObjectAsCsv(object):
 
     def __init__(self, export_filename, fields=None, exclude=None, extra_fields=None,
                  header=True, track_history=None, show_all_fields=True, delimiter=None, encrypt=True,
-                 strip=None, target_path=None, notification_plan_name=None, export_datetime=None):
+                 strip=None, target_path=None, notification_plan_name=None, export_datetime=None,
+                 dateformat=None):
 
         self._file_obj = None
         self.field_names = fields
@@ -28,6 +29,7 @@ class ExportObjectAsCsv(object):
         self.delimiter = str(delimiter) or ','
         self.header_row = []
         self.include_header_row = header
+        self.dateformat = dateformat or '%Y-%m-%d %H:%M'
         self.show_all_fields = show_all_fields
         self.strip = False if strip is False else True
         self.track_history = False if track_history is False else True
@@ -47,10 +49,6 @@ class ExportObjectAsCsv(object):
 
     def write_to_file(self, instances, write_header=True):
         """Writes the export file and returns the file name."""
-        # exported_pk_list = []
-        # export_uuid_list = []
-        # export_file_contents = []
-        # self.object_name = instances[0].__class__.__name__
         # search for unique key in file
         try:
             column = np.loadtxt(
@@ -59,41 +57,29 @@ class ExportObjectAsCsv(object):
             dups = [instance for instance in instances if instance.unique_key in column]
             for dup in dups:
                 instances.remove(dup)
-                print 'duplicate removed: {}'.format(dup.unique_key)
+                print 'Warning! Not writing record to csv. Duplicate record. Unique Key: {}'.format(dup.unique_key)
         except IOError:
             pass
         with open(os.path.join(os.path.expanduser(self.target_path) or '', self.export_filename), 'a') as f:
             writer = csv.writer(f, delimiter=self.delimiter)
             if write_header:
-                self.header_row.insert(1, 'unique_key')
                 writer.writerow(self.header_row)
-                # export_file_contents.append(self.header_row)
             for instance in instances:
                 row = self.fetch_row(instance)
-                try:
-                    row.insert(1, instance.unique_key)
-                except AttributeError:
-                    row.insert(1, '')
                 writer.writerow(row)
-                # export_file_contents.append(row)
-                # self.update_export_transaction(instance)
-                # exported_pk_list.append(instance.unique_key)
-                # export_uuid_list.append(instance.export_uuid)
-        # if self.track_history:
-        #    self.update_export_history(exported_pk_list, export_uuid_list, export_file_contents)
         return self.export_filename
 
     def fetch_row(self, obj):
-        """Returns a one row for the writer."""
+        """Returns one row for the writer by getting attrs in the instance."""
         row = []
         for field_name in self.field_names:
             value = getattr(obj, field_name)
             try:
-                value = value.strftime('%Y-%m-%d %H:%M')
+                value = value.strftime(self.dateformat)
             except AttributeError:
                 pass
-            except ValueError:
-                pass   # the datetime strftime() methods require year >= 1900
+            # except ValueError:
+            #    pass   # the datetime strftime() methods require year >= 1900
             if isinstance(value, (list, tuple)):
                 value = ';'.join(map(str, value))
             row.append(self.strip_value(value))
