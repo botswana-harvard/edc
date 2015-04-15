@@ -31,6 +31,12 @@ class Controller(object):
         self._registry_by_code = OrderedDict()
         self.autodiscovered = False
 
+    def __repr__(self):
+        return 'Controller({0.current_community})'.format(self)
+
+    def __str__(self):
+        return '{0.current_community}'.format(self)
+
     def __iter__(self):
         return self._registry.itervalues()
 
@@ -48,6 +54,26 @@ class Controller(object):
         self._registry = mappers
         self._registry_by_code = mappers_by_code
 
+    def sort_by_pair(self):
+        pairs = []
+        mappers = OrderedDict()
+        for mapper in self._registry.itervalues():
+            pairs.append(mapper.pair)
+        pairs = list(set(pairs))
+        for pair in pairs:
+            for mapper in self._registry.itervalues():
+                if mapper.pair == pair:
+                    mappers[mapper.map_area] = mapper
+        return mappers
+
+    def get_by_pair(self, pair):
+        """Returns a dictionary of mappers by pair."""
+        mappers = {}
+        for mapper in self._registry.itervalues():
+            if mapper.pair == pair:
+                mappers.update({mapper.map_area: mapper})
+        return mappers
+
     def set_registry(self, mapper_cls):
         """Registers a given mapper class to the site registry."""
         if not issubclass(mapper_cls, Mapper):
@@ -59,11 +85,15 @@ class Controller(object):
         self._registry_by_code[mapper_cls.map_code] = mapper_cls
 
     def get(self, name):
-        """Returns a key, value pair from the dictionary for the given key."""
+        """Returns a mapper class for the given mapper name (map_area)."""
         return self._registry.get(name)
 
+    def get_mapper(self, value):
+        """Returns a mapper class for the given mapper name (map_area) or code (map_code)."""
+        return self._registry.get(value) or self._registry_by_code.get(value)
+
     def get_by_code(self, code):
-        """Returns a key, value pair from the dictionary for the given key."""
+        """Returns a mapper class for the given mapper code (map_code)."""
         return self._registry_by_code.get(code)
 
     def get_registry(self, name=None):
@@ -90,15 +120,19 @@ class Controller(object):
 
     def get_current_mapper(self):
         """Returns the mapper class for the current community."""
-        return self.registry.get(self.valid_community_configuration)
+        return self.current_mapper
 
     @property
     def current_mapper(self):
         """Returns the mapper class for the current community."""
-        return self.registry.get(self.valid_community_configuration)
+        return self.registry.get(self.current_community)
 
     @property
-    def valid_community_configuration(self):
+    def current_community(self):
+        return self._current_community
+
+    @current_community.setter
+    def current_community(self, current_community):
         """Returns the current community after some validation.
 
         Uses the settings attribute CURRENT_COMMUNITY as the key.
@@ -107,7 +141,7 @@ class Controller(object):
         the value of CURRENT_COMMUNITY will be checked against
         plot information before returning the mapper."""
         try:
-            current_community = settings.CURRENT_COMMUNITY
+            self._current_community = current_community  # settings.CURRENT_COMMUNITY
         except AttributeError:
             raise MapperError('Missing settings attribute CURRENT_COMMUNITY. '
                               'Please update settings.py. e.g. CURRENT_COMMUNITY = \'otse\'.')
@@ -117,7 +151,7 @@ class Controller(object):
             community_check = True
         if community_check:
             if not device.is_server:
-                mapper_class = self.registry.get(current_community)
+                mapper_class = self.registry.get(self._current_community)
                 correct_identifiers = mapper_class.item_model.objects.filter(
                     plot_identifier__startswith=mapper_class.map_code).count()
                 all_identifiers = mapper_class.item_model.objects.all().count()
@@ -126,9 +160,8 @@ class Controller(object):
                                       'Got {0}/{1} plot identifiers starting with {2}'.format(
                                           correct_identifiers,
                                           all_identifiers,
-                                          current_community,)
+                                          self._current_community,)
                                       )
-        return current_community
 
     def get_mapper_as_tuple(self):
         """Returns a list of tuples from the registry dictionary in the format of choices used by models."""
@@ -153,4 +186,6 @@ class Controller(object):
             self.autodiscovered = True
             if not self.registry.get(settings.CURRENT_MAPPER):
                 raise ImproperlyConfigured('Settings attribute CURRENT_MAPPER does not refer to a valid mapper. Got {0}'.format(settings.CURRENT_MAPPER))
+            self.current_community = settings.CURRENT_COMMUNITY
+
 site_mappers = Controller()

@@ -16,9 +16,11 @@
                 <A name="{{section.0}}" href="{% url 'section_index_url' section.0 %}">{{section.1}}</A>
                 </li>
             {% endfor %}
+            {% comment %}
             	<li>
-                  <a href="/{{app_name}}/section/analytics/reports/">Analytics</a>
+                  <a href="section/analytics/reports/">Analytics</a>
                 </li>
+            {% endcomment %}
             </ul>&nbsp;
             </div>
         {% endif %}
