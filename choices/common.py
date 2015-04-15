@@ -98,6 +98,13 @@ DATE_ESTIMATED = (
     ('YMD', 'Yes, estimated Year, Month and Day'),
 )
 
+DEATH_RELATIONSIP_TO_STUDY = (
+    ('Definitely not related', 'Definitely not related'),
+    ('Probably not related', 'Probably not related'),
+    ('Possible related', 'Possible related'),
+    ('Probably related', 'Probably related'),
+    ('Definitely related', 'Definitely related')
+)
 
 DRUG_FORMULATION = (
     ('11', 'Tablet'),
