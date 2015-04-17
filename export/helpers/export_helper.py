@@ -39,7 +39,7 @@ class ExportHelper(object):
         self.exit_status = (1, 'Failed')
         self.export_datetime = datetime.today()
         try:
-            self.export_filename = self.writer.write_to_file()
+            #self.export_filename = self.writer.write_to_file()
             self.update_history()
         except Exception as e:
             self.exit_status = (1, self.export_failure_msg.format(
@@ -74,10 +74,13 @@ class ExportHelper(object):
     def update_history(self):
         """Updates the export history model for this export."""
         if self.writer:
-            self.writer.export_history.exit_status = self.exit_status[0]
-            self.writer.export_history.exit_message = self.exit_status[1]
-            self.writer.export_history.export_datetime = self.export_datetime
-            self.writer.export_history.save()
+            try:
+                self.writer.export_history.exit_status = self.exit_status[0]
+                self.writer.export_history.exit_message = self.exit_status[1]
+                self.writer.export_history.exported_datetime = self.export_datetime
+                self.writer.export_history.save()
+            except AttributeError:
+                pass
 
     def queue_notification(self):
         """Writes a notification instance to be sent on the next processing of notifications (by cron)."""
