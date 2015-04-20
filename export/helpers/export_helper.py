@@ -39,7 +39,7 @@ class ExportHelper(object):
         self.exit_status = (1, 'Failed')
         self.export_datetime = datetime.today()
         try:
-            #self.export_filename = self.writer.write_to_file()
+            self.export_filename = self.writer.write_to_file()
             self.update_history()
         except Exception as e:
             self.exit_status = (1, self.export_failure_msg.format(
