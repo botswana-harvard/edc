@@ -18,8 +18,8 @@ class ExportHelper(object):
         self.export_filename = export_filename
         self.exception_cls = exception_cls or TypeError
         self.notify = False if notify is False else True  # default is to queue_notification
-        self.export_failure_msg = 'Error exporting transactions for {object!s} to file {filename}. Got {error!r}'
-        self.export_success_msg = 'Successfully exported {count} transactions to file {filename} for {object!}.'
+        self.export_failure_msg = 'Error exporting transactions for {objects} to file {filename}. Got {error}'
+        self.export_success_msg = 'Successfully exported {count} transactions to file {filename} for {object}.'
 
     def __repr__(self):
         return '{0}({1.export_plan!r})'.format(self.__class__.__name__, self)
