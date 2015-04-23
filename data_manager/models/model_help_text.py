@@ -34,5 +34,5 @@ class ModelHelpText(BaseModel):
 
     class Meta:
         app_label = "data_manager"
-        db_table = 'bhp_data_manager_timepointstatus'
+        db_table = 'bhp_data_manager_modelhelptext'
 
