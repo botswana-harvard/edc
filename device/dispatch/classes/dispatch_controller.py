@@ -336,3 +336,6 @@ class DispatchController(BaseDispatchController):
         logger.info("Updating the Registered Subjects table...")
         self.update_model(('registration', 'RegisteredSubject'))
 
+    def dispatch_notebook_plot_list(self, container_list):
+        pass
+
