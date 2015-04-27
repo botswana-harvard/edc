@@ -39,6 +39,7 @@ class BaseDispatchController(BaseDispatch):
             user_container_identifier,
             **kwargs)
         self._dispatch_list = []
+        self.skip_container = kwargs.get('skip_container', False) or False
 
     def get_allowed_base_models(self):
         """Ensure all model classes of instances registered as dispatch items/dispatched as json are of this base class only.
@@ -200,5 +201,9 @@ class BaseDispatchController(BaseDispatch):
                         logger.info('  dispatched user item {0} {1} to {2}.'.format(user_item._meta.object_name, user_item, self.get_using_destination()))
 
     def _dispatch_as_json(self, model_instances, user_container=None, fk_to_skip=None, additional_base_model_class=None):
-        """Passes on to _to_json along with a callback to consume foreignkeys."""
-        self._to_json(model_instances, user_container=user_container, fk_to_skip=fk_to_skip, additional_base_model_class=additional_base_model_class)
+        """Passes on to _to_json along with a callback to consume foreignkeys.
+           Bypass container_dispatch_model if self.skip_container is set True, dispatch_container_model is set True"""
+        if (self.skip_container and user_container.is_dispatch_container_model() and model_instances == user_container):
+            logger.info('Skipped dispatch_container_model {0} {1} to {2}.'.format(user_container._meta.object_name, user_container, self.get_using_destination()))
+        else:
+            self._to_json(model_instances, user_container=user_container, fk_to_skip=fk_to_skip, additional_base_model_class=additional_base_model_class)

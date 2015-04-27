@@ -15,13 +15,13 @@
 <h3>Dispatch Data to Producer</h3>
 <p><A href="{% url producer_cls|get_meta|admin_urlname:'changelist' %}">Producers</A> | <A href="{% url 'sync_index_url' %}">Synchronize Devices with Server</A></p>
 
-<H4>Items selected for dispatch</H4>
+<H4>Items selected for dispatch {% if notebook_plot_list == 'allocated' %} <span style="font-style: italic;"> >>notebook plot list model.</span> {% else %} <span>.</span> {%endif%}</H4>
 
 <table>
 <tr><TD colspan=2>Dispatch by <A href="{{ user_container_admin_url }}">{{ user_container_model_name }}</A></TD></td></TR>
     {% for qs in queryset %}
         <tr>
-          <TD><A href="{{ dispatch_url }}{{ qs }}/">{{ qs }}</A></TD>
+          <TD>{% if notebook_plot_list == 'allocated' %}<span style="background:black; margin-right:2px;">|</span>{%endif%}<A href="{{ dispatch_url }}{{ qs }}/">{{ qs }}</A></TD>
           <td>{% if qs|is_dispatched_item %}<A href="{% url dispatchitemregister_cls|get_meta|admin_urlname:'changelist' %}?q={{ qs }}">already dispatched</A><font color="red">*</font>{% else %}ready to dispatch{% endif %}</td>
         </TR>
     {% endfor %}
@@ -36,9 +36,12 @@
         <label for="id_survey">Survey:</label> {{ form.survey }}
         <input type="submit" value="Dispatch" />
         <input type="hidden" name="ct" id="ct"  value="{{ ct }}">
+        <input type="hidden" name="ct1" id="ct1"  value="{{ ct1 }}">
+        <input type="hidden" name="plot_list" id="plot_list"  value="{{ notebook_plot_list }}">
         <input type="hidden" name="items" id="items" value="{{ items }}">
         {% csrf_token %}
     </div>
+    
 </form>
 
 {% if has_outgoing_transactions %}
