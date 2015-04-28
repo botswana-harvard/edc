@@ -38,6 +38,12 @@
                <BR>Cell: {{ locator.alt_contact_cell|encrypted }}
                <BR>Tel: {{ locator.alt_contact_tel|encrypted }}
            {% endif%}
+            {% if locator.local_clinic %}
+               <BR><b><i>Health Post or Clinic:</i></b> {{ locator.local_clinic }}
+            {% if locator.home_village %}
+               <BR><b><i>Home Village:</i></b> {{ locator.home_village }}
+           {% endif%}
+           {% endif%}
        {% endif%}
        <BR><i><small>Updated on {{ locator.modified|date:"SHORT_DATE_FORMAT" }}   
        by {{ locator.user_modified }}</small></i>         
