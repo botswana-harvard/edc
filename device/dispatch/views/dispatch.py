@@ -44,6 +44,9 @@ def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs)
     queryset = None
     notebook_plot_list_status = None
     if request.method == 'POST':
+        """
+        POST method is used for dispatching plots either for notebook_plot_list or the original way.
+        """
         form = dispatch_form_cls(request.POST)
         if form.is_valid():
             dispatch_url = ''
@@ -62,6 +65,7 @@ def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs)
             if producer:
                 try:
                     plot_list_status = request.POST.get('plot_list')
+                    # if plot_list_status is not_allocated, dispatch uses the original logic otherwise dispatches to notebook_plot_list.
                     if plot_list_status == 'not_allocated':
                         if not producer.settings_key:
                             raise DispatchAttributeError('Producer attribute settings_key may not be None.')
@@ -88,7 +92,7 @@ def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs)
                             dispatch_controller = dispatch_controller_cls(
                                 'default', producer.settings_key, notebook_plot_list, **kwargs)
                             msg = dispatch_controller.dispatch(survey=survey, plot_list_status=plot_list_status, notebook_plot_list=notebook_plot_list)
-                            notebook_plot_list_status = request.POST.get('plot_list')
+                            notebook_plot_list_status = request.POST.get('plot_list')  # set notebook_plot_list status from a dispatch form (dispatch.html)
                             #msg = 'Successfully dispatched {0} {1}'.format(user_container._meta.object_name, self.get_user_container_identifier())
                             messages.add_message(request, messages.SUCCESS, msg)
                         if dispatch_controller:
@@ -103,6 +107,9 @@ def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs)
                 except AlreadyDispatched as already_dispatched:
                     messages.add_message(request, messages.ERROR, str(already_dispatched))
     else:
+        """
+        For all dispatch actions selected from plots list view, they will use GET method.
+        """
         ct = request.GET.get('ct')
         items = request.GET.get('items')
         notebook_plot_list_status = request.GET.get('notebook_plot_list')
