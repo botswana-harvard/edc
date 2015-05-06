@@ -6,6 +6,7 @@ from django.db.models import Max, get_app, get_models
 
 from edc.base.model.fields import OtherCharField
 from edc.choices.common import YES_NO
+from edc.constants import YES, NO
 from edc.core.crypto_fields.utils import mask_encrypted
 from edc.subject.registration.models import BaseRegisteredSubjectModel
 from edc.subject.visit_tracking.models import BaseVisitTracking
@@ -22,7 +23,7 @@ class BaseOffStudy(BaseRegisteredSubjectModel):
 
     reason = models.CharField(
         verbose_name="Please code the primary reason participant taken off-study",
-        max_length=30)
+        max_length=115)
 
     reason_other = OtherCharField()
 
@@ -30,7 +31,7 @@ class BaseOffStudy(BaseRegisteredSubjectModel):
         max_length=10,
         verbose_name='Are scheduled data being submitted on the off-study date?',
         choices=YES_NO,
-        default='Yes',
+        default=YES,
         help_text='')
 
     comment = models.TextField(
@@ -45,7 +46,7 @@ class BaseOffStudy(BaseRegisteredSubjectModel):
         return (self.offstudy_date, ) + self.registered_subject.natural_key()
 
     def show_scheduled_entries_on_off_study_date(self):
-        if self.has_scheduled_data == 'No':
+        if self.has_scheduled_data == NO:
             return False
         return True
 
