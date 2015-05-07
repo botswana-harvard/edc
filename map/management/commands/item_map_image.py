@@ -79,12 +79,9 @@ class Command(BaseCommand):
                     print "The image at zoom level: " + str(zoom) + " of plot: " + str(name) + " is done"
                     zoom -= 1
                     zoom_level += 1
-                try:
                     item.uploaded_map_18 = name + '_18.jpg'
                     item.uploaded_map_17 = name + '_17.jpg'
                     item.uploaded_map_16 = name + '.jpg'
                     item.save()
-                except Exception as e:
-                    pass
                 count += 1
                 print str((count / float(len(items))) * 100) + ' percent done! only ' + str(len(items) - count) + ' more pictures to download'
