@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
@@ -147,8 +148,18 @@ class Appointment(BaseAppointment):
     def dashboard(self):
         """Returns a hyperink for the Admin page."""
         ret = None
+        if settings.APP_NAME == 'cancer':
+            if self.registered_subject:
+                if self.registered_subject.subject_identifier:
+                    url = reverse('subject_dashboard_url',
+                                  kwargs={'dashboard_type': self.registered_subject.subject_type.lower(),
+                                          'dashboard_model': 'appointment',
+                                          'dashboard_id': self.pk,
+                                          'show': 'appointments'})
+                    ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         if self.appt_status == APPT_STATUS[0][0]:
-            return 'NEW'
+            if settings.APP_NAME != 'cancer':
+                return 'NEW'
         else:
             if self.registered_subject:
                 if self.registered_subject.subject_identifier:
