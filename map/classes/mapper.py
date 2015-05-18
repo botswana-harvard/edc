@@ -152,8 +152,10 @@ class Mapper(object):
                 val = val + identifier + delim
         return val
 
-    def prepare_map_points(self, items, selected_icon, cart, cart_icon, dipatched_icon='red-circle.png',
-                           selected_section="All", selected_sub_section='ALL'):
+    def prepare_map_points(self, items, selected_icon, cart, cart_icon,
+                           dipatched_icon='red-circle.png',
+                           selected_section="All",
+                           selected_sub_section='ALL'):
         """Returns a list of item identifiers from the given queryset
         excluding those items that have been dispatched.
         """
