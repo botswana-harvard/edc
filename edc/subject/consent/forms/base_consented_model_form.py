@@ -50,6 +50,8 @@ class BaseConsentedModelForm(BaseModelForm):
         consent_helper_cls((self._meta.model, cleaned_data), forms.ValidationError).is_consented_for_subject_instance()
         # Validates fields under consent version control and other checks.
         consent_helper_cls((self._meta.model, cleaned_data), forms.ValidationError).validate_versioned_fields()
+        # validates that the report date for scheduled modules is after consent report_datetime
+        consent_helper_cls((self._meta.model, cleaned_data), forms.ValidationError).validate_report_datetime()
         # validate that the off study form has not been entered with an off
         # study date less that or equal to report_datetime
         consent_helper_cls((self._meta.model, cleaned_data), forms.ValidationError).is_off_study()
