@@ -236,3 +236,9 @@ class ConsentHelper(object):
                         if self._get_report_datetime() >= start_datetime:
                             self.clean_versioned_field(field_value, field, start_datetime, consent_version)
         return current_consent_version
+
+    def validate_report_datetime(self):
+        """ Validate scheduled modules's report_datetime is after consent datetime."""
+        subject_consent = self.is_consented_for_subject_instance()[0] if self.is_consented_for_subject_instance() else None
+        if self.get_subject_instance().report_datetime < subject_consent.consent_datetime:
+            raise self._get_exception_cls()('Scheduled models report_time: {0} cannot be earlier than subject consent report_date: {1}.'.format(self.get_subject_instance().report_datetime, subject_consent.consent_datetime))
