@@ -20,7 +20,7 @@ class BaseLocator(BaseConsentedUuidModel):
         validators=[
             datetime_not_before_study_start,
             datetime_not_future, ],
-        default=datetime.today(),
+        default=datetime.now,
         )
     date_signed = models.DateField(
         verbose_name="Date Locator Form signed ",
