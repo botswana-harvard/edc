@@ -18,6 +18,10 @@ PIMA = (
         ('OTHER', _('Other, specify:')),
 )
 
+PIMA_SETTING = (
+        ('mobile setting', 'Mobile Setting'),
+        ('household setting', 'Household Setting'),
+)
 ACU_EST_NEG = (
     ('Acute', 'Acute'),
     ('Established', 'Established'),
