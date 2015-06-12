@@ -18,7 +18,7 @@ PIMA = (
         ('OTHER', _('Other, specify:')),
 )
 
-PIMA_SETTING = (
+PIMA_SETTING_VL = (
         ('mobile setting', 'Mobile Setting'),
         ('household setting', 'Household Setting'),
 )
