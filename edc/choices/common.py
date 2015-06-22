@@ -287,6 +287,11 @@ YES_NO = (
     (NO, _(NO)),
 )
 
+BLOCK_CONTINUE = (
+    ('Block', 'Yes( Block from further participation)'),
+    ('Continue', 'No (Can continue and participate)')
+)
+
 YES_NO_DECLINED = (
     (YES, YES),
     (NO, NO),
