@@ -169,7 +169,7 @@ class DeserializeFromTransaction(object):
                                         print "        [a] Unexpected error:", sys.exc_info()[0]
                                         raise
                         else:
-                            print '    {0}'.format(error)
+                            print '    {0}'.format(integrity_error)
                             raise
                     except:
                         print connection.queries
