@@ -53,9 +53,9 @@ class FormExporter(object):
     def model_admin_fields(self):
         """Finds and returns the fields tuple from the model_admin class for the given model."""
         #return self.model_admin.fields
-        if self._visit_definition.code == 'T0' and 'baseline_fields' in dir(self.model_admin):
+        if self._visit_definition and self._visit_definition.code == 'T0' and 'baseline_fields' in dir(self.model_admin):
             return self.model_admin.baseline_fields
-        elif self._visit_definition.code in ['T1', 'T2'] and 'annual_fields' in dir(self.model_admin):
+        elif self._visit_definition and self._visit_definition.code in ['T1', 'T2'] and 'annual_fields' in dir(self.model_admin):
             return self.model_admin.annual_fields
         else:
             return self.model_admin.fields
