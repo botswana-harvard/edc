@@ -52,7 +52,13 @@ class FormExporter(object):
     @property
     def model_admin_fields(self):
         """Finds and returns the fields tuple from the model_admin class for the given model."""
-        return self.model_admin.fields
+        #return self.model_admin.fields
+        if self._visit_definition.code == 'T0' and 'baseline_fields' in dir(self.model_admin):
+            return self.model_admin.baseline_fields
+        elif self._visit_definition.code in ['T1', 'T2'] and 'annual_fields' in dir(self.model_admin):
+            return self.model_admin.annual_fields
+        else:
+            return self.model_admin.fields
 
     @property
     def model_fields(self):
@@ -149,14 +155,14 @@ class FormExporter(object):
     def export_by_visit(self, code):
         forms = []
         try:
-            visit_definition = VisitDefinition.objects.get(code=code)
+            self._visit_definition = VisitDefinition.objects.get(code=code)
         except VisitDefinition.DoesNotExist:
             raise FormExporterError('VisitDefinition matching query does not exist. Got {}.'.format(code))
-        print '==={0.code}: {0.title}==='.format(visit_definition)
-        for entry in Entry.objects.filter(visit_definition=visit_definition).order_by('entry_order'):
+        print '==={0.code}: {0.title}==='.format(self._visit_definition)
+        for entry in Entry.objects.filter(visit_definition=self._visit_definition).order_by('entry_order'):
             self.model = entry.content_type_map.model_class()
             forms.append(self.form)
-        for lab_entry in LabEntry.objects.filter(visit_definition=visit_definition).order_by('entry_order'):
+        for lab_entry in LabEntry.objects.filter(visit_definition=self._visit_definition).order_by('entry_order'):
             forms.append(self.requisition(lab_entry.requisition_panel.name))
         return forms
 
