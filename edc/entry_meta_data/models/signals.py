@@ -13,6 +13,7 @@ from .scheduled_entry_meta_data import ScheduledEntryMetaData
 def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_fields, **kwargs):
     if not raw:
         if isinstance(instance, BaseVisitTracking):
+            # These are visit models
             from ..helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
             scheduled_entry_helper = ScheduledEntryMetaDataHelper(instance.appointment, instance)
             scheduled_entry_helper.add_or_update_for_visit()
@@ -22,6 +23,7 @@ def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_f
             site_rule_groups.update_rules_for_source_model(RegisteredSubject, instance)
             site_rule_groups.update_rules_for_source_fk_model(RegisteredSubject, instance)
         else:
+            # These are subject models covered by a consent.
             try:
                 change_type = 'I'
                 if not created:

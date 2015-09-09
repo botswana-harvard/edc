@@ -9,3 +9,4 @@ south.log
 *.bz2
 .DS_Store
 pylint.rc
+__pycache__/*
