@@ -314,5 +314,4 @@ class Mapper(object):
                                         'Got {5}m.'.format(lat, lon, radius_bypass_instance.bypass_radius,
                                                            center_lat,
                                                            center_lon, dist * 1000))
-                    
         return True
