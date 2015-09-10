@@ -1,5 +1,6 @@
 from ..constants import BASE_UUID_MODEL_UPDATE_FIELDS
-from ..fields import UUIDAutoField, RevisionField
+from edc.base.model.fields.required.uuid_auto_field import UUIDAutoField
+from edc.base.model.fields.required.revision_field import RevisionField
 
 from .base_model import BaseModel
 

@@ -5,7 +5,8 @@ from django_extensions.db.models import TimeStampedModel
 from edc.core.crypto_fields.fields import BaseEncryptedField
 
 from ..constants import BASE_MODEL_UPDATE_FIELDS
-from ..fields import HostnameCreationField, HostnameModificationField
+from edc.base.model.fields.required.hostname_creation_field import HostnameCreationField
+from edc.base.model.fields.required.hostname_modification_field import HostnameModificationField
 
 
 class BaseModel(TimeStampedModel):
