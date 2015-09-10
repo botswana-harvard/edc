@@ -213,7 +213,8 @@ class VisitScheduleConfiguration(object):
                                 additional=entry_item.additional)
                     for entry in Entry.objects.filter(visit_definition=visit_definition_instance):
                         if (entry.app_label.lower(), entry.model_name.lower()) not in [(item.app_label.lower(), item.model_name.lower()) for item in visit_definition.get('entries')]:
-                            entry.delete()
+                            #entry.delete()
+                            pass
                     for requisition_item in visit_definition.get('requisitions'):
                         # requisition panel must exist, see app_configuration
                         try:

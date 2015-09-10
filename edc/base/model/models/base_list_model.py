@@ -2,7 +2,7 @@ from django.db import models
 
 from .base_model import BaseModel
 
-from ..fields import TransCharField
+from edc.base.model.fields.custom.custom_fields import TransCharField
 from ..managers import BaseListManager
 
 

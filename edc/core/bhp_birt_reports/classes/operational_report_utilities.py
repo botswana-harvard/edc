@@ -4,7 +4,7 @@ from datetime import date
 class OperationalReportUtilities():
 
     def date_format_utility(self, date_string, default):
-        if date_string == 'YYYY/MM/DD' or date_string == '':
+        if date_string == 'YYYY-MM-DD' or date_string == 'YYYY/MM/DD' or date_string == '':
             date_string = default
 
         if date_string.find('/') != -1:
