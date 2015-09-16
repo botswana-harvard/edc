@@ -11,8 +11,8 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='edc',
-    version='1.8',
-    author=u'Erik van Widenfelt, ...',
+    version='1.13.3',
+    author=u'Botswana-Harvard AIDS Institute',
     author_email='ew2789@gmail.com',
     packages=find_packages(),
     include_package_data=True,
@@ -23,7 +23,7 @@ setup(
     zip_safe=False,
     keywords='django edc clinical trial research',
     install_requires=[
-        'Django>=1.6.11',
+        'Django==1.6.11',
         'django-extensions>=1.5.5',
         'unipath>=1.1',
         'python-dateutil>=2.4.2',
