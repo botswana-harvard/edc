@@ -11,3 +11,5 @@ south.log
 pylint.rc
 __pycache__/*
 edc.egg-info/*
+user-*
+test-*

@@ -29,26 +29,30 @@ class Cryptor(BaseCryptor):
     DEC = 0
     try:
         KEY_PATH = settings.KEY_PATH
-    except KeyError:
+    except AttributeError:
         KEY_PATH = 'keys'
+    try:
+        KEY_PREFIX = settings.KEY_PREFIX
+    except AttributeError:
+        KEY_PREFIX = 'user'
     # valid algorithms, algorithm modes and the corresponding file
     # names where the keys are stored.
     # ..note:: The model :class:`UserProfile` expects this dictionary structure as well
     _VALID_MODES = {
         # algorithm : {mode: {key:path}}
-        'rsa': {'irreversible': {'public': os.path.join(KEY_PATH, 'user-rsa-irreversible-public.pem'),
-                                 'salt': os.path.join(KEY_PATH, 'user-rsa-irreversible-salt.key')},
-                'restricted': {'public': os.path.join(KEY_PATH, 'user-rsa-restricted-public.pem'),
-                               'private': os.path.join(KEY_PATH, 'user-rsa-restricted-private.pem'),
-                               'salt': os.path.join(KEY_PATH, 'user-rsa-restricted-salt.key')},
-                'local': {'public': os.path.join(KEY_PATH, 'user-rsa-local-public.pem'),
-                          'private': os.path.join(KEY_PATH, 'user-rsa-local-private.pem'),
-                          'salt': os.path.join(KEY_PATH, 'user-rsa-local-salt.key')},
-                'salter': {'public': os.path.join(KEY_PATH, 'user-rsa-salter-public.pem'),
-                           'private': os.path.join(KEY_PATH, 'user-rsa-salter-private.pem')},
+        'rsa': {'irreversible': {'public': os.path.join(KEY_PATH, '{}-rsa-irreversible-public.pem'.format(KEY_PREFIX)),
+                                 'salt': os.path.join(KEY_PATH, '{}-rsa-irreversible-salt.key'.format(KEY_PREFIX))},
+                'restricted': {'public': os.path.join(KEY_PATH, '{}-rsa-restricted-public.pem'.format(KEY_PREFIX)),
+                               'private': os.path.join(KEY_PATH, '{}-rsa-restricted-private.pem'.format(KEY_PREFIX)),
+                               'salt': os.path.join(KEY_PATH, '{}-rsa-restricted-salt.key'.format(KEY_PREFIX))},
+                'local': {'public': os.path.join(KEY_PATH, '{}-rsa-local-public.pem'.format(KEY_PREFIX)),
+                          'private': os.path.join(KEY_PATH, '{}-rsa-local-private.pem'.format(KEY_PREFIX)),
+                          'salt': os.path.join(KEY_PATH, '{}-rsa-local-salt.key'.format(KEY_PREFIX))},
+                'salter': {'public': os.path.join(KEY_PATH, '{}-rsa-salter-public.pem'.format(KEY_PREFIX)),
+                           'private': os.path.join(KEY_PATH, '{}-rsa-salter-private.pem'.format(KEY_PREFIX))},
                 },
-        'aes': {'local': {'key': os.path.join(KEY_PATH, 'user-aes-local.key'),
-                          'salt': os.path.join(KEY_PATH, 'user-aes-local.salt')},
+        'aes': {'local': {'key': os.path.join(KEY_PATH, '{}-aes-local.key'.format(KEY_PREFIX)),
+                          'salt': os.path.join(KEY_PATH, '{}-aes-local.salt'.format(KEY_PREFIX))},
                 },
     }
 
@@ -377,13 +381,13 @@ class Cryptor(BaseCryptor):
                             logger.warning(msg.format(algorithm=algorithm, mode=mode, key_name=key_name))
                         else:
                             break
-                    elif isinstance(self._get_preloaded_keypaths()[algorithm][mode][key_name], basestring):
-                        if self.KEY_PATH in self._get_preloaded_keypaths()[algorithm][mode][key_name]:
-                            preloaded = False
-                            if msg:
-                                logger.warning(msg.format(algorithm=algorithm, mode=mode, key_name=key_name))
-                            else:
-                                break
+#                     elif isinstance(self._get_preloaded_keypaths()[algorithm][mode][key_name], basestring):
+#                         if self.KEY_PATH in self._get_preloaded_keypaths()[algorithm][mode][key_name]:
+#                             preloaded = False
+#                             if msg:
+#                                 logger.warning(msg.format(algorithm=algorithm, mode=mode, key_name=key_name))
+#                             else:
+#                                 break
                     else:
                         pass
         return preloaded

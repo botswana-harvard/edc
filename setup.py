@@ -21,7 +21,7 @@ setup(
     description='edc',
     long_description=README,
     zip_safe=False,
-    keywords='django lis lims',
+    keywords='django edc clinical trial research',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
