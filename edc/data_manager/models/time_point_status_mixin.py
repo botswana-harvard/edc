@@ -3,9 +3,10 @@ from django.db import models
 from .time_point_status import TimePointStatus
 
 
-class TimepointStatusMixin(models.Model):
+class TimePointStatusMixin(models.Model):
 
     def save(self, *args, **kwargs):
+        # TimePointStatus = models.get_model('data_manager', 'TimePointStatus')
         using = kwargs.get('using')
         if self.id:
             try:
@@ -18,7 +19,7 @@ class TimepointStatusMixin(models.Model):
                 raise ValueError(
                     'Model cannot be saved. Subject is off study. Perhaps catch '
                     'this exception in forms clean() method.')
-        super(TimepointStatusMixin, self).save(*args, **kwargs)
+        super(TimePointStatusMixin, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True

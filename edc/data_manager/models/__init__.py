@@ -1,4 +1,4 @@
 from .action_item import ActionItem
 from .comment import Comment
 from .time_point_status import TimePointStatus
-from .time_point_status_mixin import TimepointStatusMixin
+from .time_point_status_mixin import TimePointStatusMixin
