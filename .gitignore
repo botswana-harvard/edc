@@ -10,3 +10,4 @@ south.log
 .DS_Store
 pylint.rc
 __pycache__/*
+edc.egg-info/*
