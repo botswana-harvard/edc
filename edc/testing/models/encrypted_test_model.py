@@ -1,4 +1,4 @@
-from edc.audit.audit_trail import AuditTrail
+from edc_audit.audit_trail import AuditTrail
 from edc.base.model.models import BaseModel
 from edc.core.crypto_fields.fields import EncryptedCharField, EncryptedTextField, EncryptedFirstnameField, EncryptedLastnameField
 

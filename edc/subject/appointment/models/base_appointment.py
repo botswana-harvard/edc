@@ -1,13 +1,24 @@
-from django.conf import settings
 from django.db import models
-if 'edc.device.dispatch' in settings.INSTALLED_APPS:
-    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
-else:
-    from edc.device.sync.models import BaseSyncUuidModel
+
+from edc.device.sync.models import BaseSyncUuidModel
+
 from ..choices import APPT_STATUS
 
+try:
+    from edc.device.dispatch.models import BaseDispatchSyncUuidModel
 
-class BaseAppointment (BaseSyncUuidModel):
+    class BaseBaseAppointment(BaseDispatchSyncUuidModel):
+        class Meta:
+            abstract = True
+
+except ImportError:
+
+    class BaseBaseAppointment(models.Model):
+        class Meta:
+            abstract = True
+
+
+class BaseAppointment (BaseBaseAppointment, BaseSyncUuidModel):
     """Base class for Appointments."""
     appt_datetime = models.DateTimeField(
         verbose_name=("Appointment date and time"),

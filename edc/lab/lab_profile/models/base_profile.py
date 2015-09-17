@@ -1,9 +1,7 @@
 from django.db import models
 
-from edc.base.model.models import BaseUuidModel
 
-
-class BaseProfile(BaseUuidModel):
+class BaseProfile(models.Model):
 
     name = models.CharField(
         verbose_name='Profile Name',

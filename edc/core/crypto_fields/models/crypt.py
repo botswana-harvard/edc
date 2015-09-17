@@ -1,8 +1,21 @@
 from django.db import models
-from edc.device.dispatch.models import BaseDispatchSyncUuidModel
+from edc.device.sync.models import BaseSyncUuidModel
+
+try:
+    from edc.device.dispatch.models import BaseDispatchSyncUuidModel
+
+    class BaseCrypt(BaseDispatchSyncUuidModel):
+        class Meta:
+            abstract = True
+
+except ImportError:
+
+    class BaseCrypt(models.Model):
+        class Meta:
+            abstract = True
 
 
-class Crypt (BaseDispatchSyncUuidModel):
+class Crypt(BaseCrypt, BaseSyncUuidModel):
 
     """ A secrets lookup model searchable by hash """
 

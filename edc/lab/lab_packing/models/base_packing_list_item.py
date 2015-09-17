@@ -1,12 +1,11 @@
 from django.db import models
 
-from edc.device.sync.models import BaseSyncUuidModel
 from edc.subject.registration.models import RegisteredSubject
 
 from .base_packing_list import BasePackingList
 
 
-class BasePackingListItem(BaseSyncUuidModel):
+class BasePackingListItem(models.Model):
 
     requisition = models.CharField(
         max_length=36,

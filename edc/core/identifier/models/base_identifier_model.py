@@ -1,12 +1,13 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from edc.device.sync.models import BaseSyncUuidModel
+
+from edc_base.model.models import BaseModel
+
 from ..managers import IdentifierManager
-from .base_sequence import BaseSequence
 
 
-class BaseIdentifierModel(BaseSyncUuidModel):
+class BaseIdentifierModel(BaseModel):
     """Store identifiers as allocated."""
 
     identifier = models.CharField(max_length=36, unique=True, editable=False)

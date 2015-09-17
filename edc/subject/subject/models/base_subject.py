@@ -1,6 +1,5 @@
 import re
 from django.db import models
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
@@ -11,13 +10,9 @@ from edc.core.crypto_fields.fields import (EncryptedFirstnameField, EncryptedLas
                                            EncryptedCharField)
 from edc.core.identifier.exceptions import IdentifierError
 from ..managers import BaseSubjectManager
-if 'edc.device.dispatch' in settings.INSTALLED_APPS:
-    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
-else:
-    from edc.device.sync.models import BaseSyncUuidModel
 
 
-class BaseSubject (BaseSyncUuidModel):
+class BaseSubject (models.Model):
     """Base for registered subject models.
 
     .. note:: the field subject_identifier_as_pk is in both

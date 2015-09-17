@@ -13,7 +13,7 @@ import os
 from unipath import Path
 
 BASE_DIR = Path(os.path.dirname(os.path.realpath(__file__)))
-
+GIT_DIR = BASE_DIR.ancestor(1)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -38,6 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'edc_base',
+    'edc_audit',
     'edc.core.crypto_fields',
 )
 

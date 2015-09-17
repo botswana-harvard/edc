@@ -4,16 +4,28 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext as _
 
-from edc.audit.audit_trail import AuditTrail
+from edc_audit.audit_trail import AuditTrail
 from edc.base.model.fields import IdentityTypeField
 from edc.choices.common import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
 from edc.core.bhp_variables.models import StudySite
 from edc.core.crypto_fields.fields import EncryptedIdentityField, SaltField
 from edc.core.crypto_fields.utils.mask_encrypted import mask_encrypted
 from edc.subject.subject.models import BaseSubject
+from edc.device.sync.models import BaseSyncUuidModel
+
+try:
+    from edc.device.dispatch.models import BaseDispatchSyncUuidModel
+
+    class BaseRegisteredSubject(BaseSubject, BaseDispatchSyncUuidModel):
+        class Meta:
+            abstract = True
+except ImportError:
+    class BaseRegisteredSubject(BaseSubject):
+        class Meta:
+            abstract = True
 
 
-class RegisteredSubject(BaseSubject):
+class RegisteredSubject(BaseRegisteredSubject, BaseSyncUuidModel):
 
     subject_identifier = models.CharField(
         verbose_name="Subject Identifier",
