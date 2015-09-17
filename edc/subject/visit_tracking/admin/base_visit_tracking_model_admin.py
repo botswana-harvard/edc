@@ -5,7 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 from edc.base.modeladmin.admin import BaseModelAdmin
 from edc.export.actions import export_as_csv_action
-from edc.subject.consent.models import BaseConsentedUuidModel
+from edc_consent.models import RequiresConsentMixin
 
 from ..classes import VisitModelHelper
 
@@ -76,7 +76,7 @@ class BaseVisitTrackingModelAdmin(BaseModelAdmin):
 
     def get_actions(self, request):
         actions = super(BaseVisitTrackingModelAdmin, self).get_actions(request)
-        if issubclass(self.model, BaseConsentedUuidModel):
+        if issubclass(self.model, RequiresConsentMixin):
             actions['export_as_csv_action'] = (  # This is a django SortedDict (function, name, short_description)
                 export_as_csv_action(
                     exclude=['id', self.visit_model_foreign_key],

@@ -6,4 +6,7 @@ from django.dispatch import receiver
 def prepare_appointments_on_post_save(sender, instance, raw, created, using, **kwargs):
     """"""
     if not raw:
-        instance.prepare_appointments(using)
+        try:
+            instance.prepare_appointments(using)
+        except AttributeError:
+            pass

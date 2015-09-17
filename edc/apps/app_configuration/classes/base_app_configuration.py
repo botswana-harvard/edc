@@ -1,20 +1,14 @@
-import json
-
-from django.db.models import get_model
 from django.db.utils import IntegrityError
 from django.core.exceptions import MultipleObjectsReturned
 
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.export.helpers import ExportHelper
 from edc.notification.helpers import NotificationHelper
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_packing.models import Destination
-from edc.notification.models import NotificationPlan
 from edc.subject.appointment.models import Holiday
-from edc.subject.consent.models import ConsentCatalogue
 from edc.subject.entry.models import RequisitionPanel
 from edc.utils import datatype_to_string
 
@@ -51,7 +45,6 @@ class BaseAppConfiguration(object):
         ContentTypeMapHelper().sync()
         self.update_global()
         self.update_or_create_study_variables()
-        self.update_or_create_consent_catalogue()
         self.update_or_create_lab_clinic_api()
         self.update_or_create_lab()
         self.update_or_create_labeling()
@@ -210,7 +203,7 @@ class BaseAppConfiguration(object):
                     cups_server_hostname=printer_setup.cups_server_hostname,
                     cups_server_ip=printer_setup.cups_server_ip,
                     default=printer_setup.default,
-                    )
+                )
         for client_setup in self.labeling_setup.get('client', []):
             try:
                 client = Client.objects.get(name=client_setup.hostname)
@@ -222,7 +215,7 @@ class BaseAppConfiguration(object):
                     name=client_setup.hostname,
                     label_printer=LabelPrinter.objects.get(cups_printer_name=client_setup.printer_name,
                                                            cups_server_hostname=client_setup.cups_hostname),
-                    )
+                )
         for zpl_template_setup in self.labeling_setup.get('zpl_template', []):
             try:
                 zpl_template = ZplTemplate.objects.get(name=zpl_template_setup.name)
@@ -234,33 +227,7 @@ class BaseAppConfiguration(object):
                     name=zpl_template_setup.name,
                     template=zpl_template_setup.template,
                     default=zpl_template_setup.default,
-                    )
-
-    def update_or_create_consent_catalogue(self):
-        """Updates configuration in the :mod:`consent` module."""
-
-        for catalogue_setup in self.consent_catalogue_list:
-            content_type_map = ContentTypeMap.objects.get(model=catalogue_setup.get('content_type_map'))
-            try:
-                consent_catalogue = ConsentCatalogue.objects.get(
-                    name=catalogue_setup.get('name'),
-                    version=catalogue_setup.get('version'))
-                consent_catalogue.content_type_map = content_type_map
-                consent_catalogue.consent_type = catalogue_setup.get('consent_type')
-                consent_catalogue.start_datetime = catalogue_setup.get('start_datetime')
-                consent_catalogue.end_datetime = catalogue_setup.get('end_datetime')
-                consent_catalogue.add_for_app = catalogue_setup.get('add_for_app')
-                consent_catalogue.save()
-            except ConsentCatalogue.DoesNotExist:
-                ConsentCatalogue.objects.create(
-                    name=catalogue_setup.get('name'),
-                    version=catalogue_setup.get('version'),
-                    content_type_map=content_type_map,
-                    consent_type=catalogue_setup.get('consent_type'),
-                    start_datetime=catalogue_setup.get('start_datetime'),
-                    end_datetime=catalogue_setup.get('end_datetime'),
-                    add_for_app=catalogue_setup.get('add_for_app'),
-                    )
+                )
 
     def update_global(self):
         """Creates or updates global configuration options in app_configuration.
