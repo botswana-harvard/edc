@@ -5,10 +5,8 @@ from datetime import date, datetime
 from django.db.models import get_model, IntegerField
 
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.subject.consent.classes import ConsentHelper
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.subject.entry.models import Entry
 
 from .logic import Logic
 
@@ -222,12 +220,8 @@ class BaseRule(object):
     def predicate_field_value(self, field_name):
         """ Returns a field value either by applying getattr to the source model or, if the field name matches one in RegisteredSubject, returns that value."""
         self._predicate_field_value = None
-        if field_name == 'consent_version':
-            self._predicate_field_value = ConsentHelper(self.visit_instance, suppress_exception=True).get_current_consent_version()
-            if not self._predicate_field_value:
-                self._predicate_field_value = 0
-        elif field_name == 'hiv_status':
-            self._predicate_field_value, is_default_value = site_lab_tracker.get_value(
+        if field_name == 'hiv_status':
+            self._predicate_field_value, _ = site_lab_tracker.get_value(
                 'HIV',
                 self.visit_instance.get_subject_identifier(),
                 self.visit_instance.get_subject_type(),

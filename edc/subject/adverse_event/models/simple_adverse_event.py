@@ -2,7 +2,6 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.validators import MaxValueValidator, MinValueValidator
 from edc.base.model.models import BaseListModel
-from edc.subject.consent.models import BaseConsentedUuidModel
 from edc.subject.registration.models import RegisteredSubject
 from ..choices import GRADING_SCALE
 
@@ -36,7 +35,7 @@ class Ae010AdverseStudyRel (BaseListModel):
         ordering = ['display_index']
 
 
-class SimpleAdverseEvent (BaseConsentedUuidModel):
+class SimpleAdverseEvent (models.Model):
 
     registered_subject = models.ForeignKey(RegisteredSubject)
 

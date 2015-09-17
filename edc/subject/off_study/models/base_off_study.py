@@ -8,14 +8,13 @@ from edc.base.model.fields import OtherCharField
 from edc.choices.common import YES_NO
 from edc.constants import YES, NO
 from edc.core.crypto_fields.utils import mask_encrypted
-from edc.subject.registration.models import BaseRegisteredSubjectModel
 from edc.subject.visit_tracking.models import BaseVisitTracking
 
 from ..exceptions import SubjectOffStudyDateError
 from ..managers import OffStudyManager
 
 
-class BaseOffStudy(BaseRegisteredSubjectModel):
+class BaseOffStudy(models.Model):
     """Base model for the Off Study model in an app."""
     offstudy_date = models.DateField(
         verbose_name="Off-study Date",

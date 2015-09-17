@@ -1,8 +1,7 @@
 from django.db import models
 from edc.base.model.fields import IdentityTypeField
 from edc.core.crypto_fields.fields import EncryptedIdentityField
-from edc.subject.consent.models import BaseConsent
-from edc.subject.consent.managers import BaseConsentManager
+from edc_consent.models import BaseConsent
 
 
 class TestConsentNoRs(BaseConsent):
@@ -13,7 +12,7 @@ class TestConsentNoRs(BaseConsent):
         unique=True,
         null=True,
         blank=True,
-        )
+    )
 
     identity_type = IdentityTypeField()
 
@@ -21,9 +20,7 @@ class TestConsentNoRs(BaseConsent):
         unique=True,
         null=True,
         blank=True,
-        )
-
-    objects = BaseConsentManager()
+    )
 
     def is_dispatchable_model(self):
         return False

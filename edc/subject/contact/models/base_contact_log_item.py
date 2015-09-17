@@ -1,10 +1,10 @@
 from django.db import models
-from edc.subject.consent.models import BaseConsentedUuidModel
+
 from edc.choices.common import YES_NO
 from edc.core.crypto_fields.fields import EncryptedTextField
 
 
-class BaseContactLogItem(BaseConsentedUuidModel):
+class BaseContactLogItem(models.Model):
 
     """Detail model for "inline" of a Contact Log."""
 
@@ -15,7 +15,7 @@ class BaseContactLogItem(BaseConsentedUuidModel):
         verbose_name='Did someone answer?',
         max_length=10,
         choices=YES_NO,
-        )
+    )
 
     information_provider = models.CharField(
         verbose_name="Who answered?",
@@ -23,13 +23,13 @@ class BaseContactLogItem(BaseConsentedUuidModel):
         help_text="",
         null=True,
         blank=True,
-        )
+    )
 
     comment = EncryptedTextField(
         max_length=100,
         blank=True,
         null=True,
-        )
+    )
 
     class Meta:
         abstract = True

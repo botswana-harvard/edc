@@ -42,7 +42,8 @@ class RegisteredSubject(BaseSubject):
         blank=True,
     )
 
-    study_site = models.ForeignKey(StudySite,
+    study_site = models.ForeignKey(
+        StudySite,
         verbose_name='Site',
         help_text="",
         null=True,
@@ -128,7 +129,7 @@ class RegisteredSubject(BaseSubject):
                    'The default constraint proves limiting since the source model usually has some other'
                    'attribute in additional to first_name, initials and dob which '
                    'is not captured in this model'),
-        )
+    )
 
     salt = SaltField()
 
@@ -238,8 +239,7 @@ class RegisteredSubject(BaseSubject):
         # dont allow values in these fields to change if dispatched
         may_not_change_these_fields = [
             (k, v) for k, v in obj.__dict__.iteritems()
-            if k not in ['study_site_id', 'registration_status', 'modified'] and not k.startswith('_')
-            ]
+            if k not in ['study_site_id', 'registration_status', 'modified'] and not k.startswith('_')]
         for k, v in may_not_change_these_fields:
             if getattr(self, k) != v:
                 return False

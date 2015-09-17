@@ -1,28 +1,24 @@
 import re
-from uuid import uuid4
 from django.db import models
 from django.conf import settings
-from django.db.models import get_model
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
-
-if 'edc.device.dispatch' in settings.INSTALLED_APPS:
-    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
-else:
-    from edc.device.sync.models import BaseSyncUuidModel
 
 from edc.choices.common import GENDER_UNDETERMINED
 from edc.base.model.validators import dob_not_future, MinConsentAge, MaxConsentAge
 from edc.base.model.fields import IsDateEstimatedField
 from edc.core.crypto_fields.fields import (EncryptedFirstnameField, EncryptedLastnameField,
                                            EncryptedCharField)
-from edc.subject.consent.exceptions import ConsentError
 from edc.core.identifier.exceptions import IdentifierError
 from ..managers import BaseSubjectManager
+if 'edc.device.dispatch' in settings.INSTALLED_APPS:
+    from edc.device.dispatch.models import BaseDispatchSyncUuidModel as BaseSyncUuidModel
+else:
+    from edc.device.sync.models import BaseSyncUuidModel
 
 
 class BaseSubject (BaseSyncUuidModel):
-    """Base for consent and registered subject models.
+    """Base for registered subject models.
 
     .. note:: the field subject_identifier_as_pk is in both
               models but the values are independent; that
@@ -247,27 +243,27 @@ class BaseSubject (BaseSyncUuidModel):
         """Users may override to add an additional strategy to detect duplicate identifiers."""
         pass
 
-    def insert_dummy_identifier(self):
-        """Inserts a random uuid as a dummy identifier for a new instance.
-
-        Model uses subject_identifier_as_pk as a natural key for
-        serialization/deserialization. Value must not change once set."""
-
-        # set to uuid if new and not specified
-        if not self.id:
-            subject_identifier_as_pk = str(uuid4())
-            self.subject_identifier_as_pk = subject_identifier_as_pk  # this will never change
-            if not self.subject_identifier:
-                # this will be changed when allocated a subject_identifier on consent
-                self.subject_identifier = subject_identifier_as_pk
-        # never allow subject_identifier as None
-        if not self.subject_identifier:
-            raise ConsentError('Subject Identifier may not be left blank.')
-        # never allow subject_identifier_as_pk as None
-        if not self.subject_identifier_as_pk:
-            raise ConsentError('Attribute subject_identifier_as_pk on model '
-                               '{0} may not be left blank. Expected to be set '
-                               'to a uuid already.'.format(self._meta.object_name))
+#     def insert_dummy_identifier(self):
+#         """Inserts a random uuid as a dummy identifier for a new instance.
+#
+#         Model uses subject_identifier_as_pk as a natural key for
+#         serialization/deserialization. Value must not change once set."""
+#
+#         # set to uuid if new and not specified
+#         if not self.id:
+#             subject_identifier_as_pk = str(uuid4())
+#             self.subject_identifier_as_pk = subject_identifier_as_pk  # this will never change
+#             if not self.subject_identifier:
+#                 # this will be changed when allocated a subject_identifier on consent
+#                 self.subject_identifier = subject_identifier_as_pk
+#         # never allow subject_identifier as None
+#         if not self.subject_identifier:
+#             raise ConsentError('Subject Identifier may not be left blank.')
+#         # never allow subject_identifier_as_pk as None
+#         if not self.subject_identifier_as_pk:
+#             raise ConsentError('Attribute subject_identifier_as_pk on model '
+#                                '{0} may not be left blank. Expected to be set '
+#                                'to a uuid already.'.format(self._meta.object_name))
 
     class Meta:
         abstract = True

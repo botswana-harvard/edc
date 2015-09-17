@@ -13,7 +13,6 @@ from .test_aliquot_type import TestAliquotType
 from .test_panel import TestPanel
 from .test_subject_result_model import TestSubjectResultModel
 from .test_subject_locator import TestSubjectLocator
-from .test_consent_history import TestConsentHistory
 from .test_foreign_key import TestForeignKey
 from .test_m2m import TestM2m
 from .encrypted_test_model import EncryptedTestModel
