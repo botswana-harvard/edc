@@ -1,7 +1,9 @@
+from edc_base.model.models.base_uuid_model import BaseUuidModel
+
 from .base_subject_identifier import BaseSubjectIdentifier
 
 
-class SubjectIdentifier(BaseSubjectIdentifier):
+class SubjectIdentifier(BaseUuidModel, BaseSubjectIdentifier):
 
     def __init__(self, identifier_format=None, app_name=None, model_name=None, site_code=None, padding=None, modulus=None, identifier_prefix=None, using=None):
         identifier_format = '{identifier_prefix}-{site_code}{device_id}{sequence}'
