@@ -51,7 +51,7 @@ class BaseAppConfiguration(object):
         ContentTypeMapHelper().sync()
         self.update_global()
         self.update_or_create_study_variables()
-        self.update_or_create_consent_catalogue()
+#         self.update_or_create_consent_catalogue()
         self.update_or_create_lab_clinic_api()
         self.update_or_create_lab()
         self.update_or_create_labeling()
