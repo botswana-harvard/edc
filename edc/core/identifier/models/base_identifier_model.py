@@ -7,7 +7,7 @@ from edc_base.model.models import BaseModel
 from ..managers import IdentifierManager
 
 
-class BaseIdentifierModel(BaseModel):
+class BaseIdentifierModel(models.Model):
     """Store identifiers as allocated."""
 
     identifier = models.CharField(max_length=36, unique=True, editable=False)

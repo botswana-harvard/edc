@@ -165,7 +165,7 @@ class BaseSubject (models.Model):
     def save(self, *args, **kwargs):
         using = kwargs.get('using')
         self.subject_type = self.get_subject_type()
-        self.insert_dummy_identifier()
+#         self.insert_dummy_identifier()
         self._check_if_duplicate_subject_identifier(using)
         self.check_if_may_change_subject_identifier(using)
         # if editing, confirm that identifier fields are not changed
@@ -240,10 +240,10 @@ class BaseSubject (models.Model):
 
 #     def insert_dummy_identifier(self):
 #         """Inserts a random uuid as a dummy identifier for a new instance.
-#
+# 
 #         Model uses subject_identifier_as_pk as a natural key for
 #         serialization/deserialization. Value must not change once set."""
-#
+# 
 #         # set to uuid if new and not specified
 #         if not self.id:
 #             subject_identifier_as_pk = str(uuid4())
