@@ -15,7 +15,7 @@ from django.db.models.query import QuerySet
 
 from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
 
-from edc.base.model.models import BaseListModel
+from edc_base.model.models import BaseListModel
 from edc.core.bhp_variables.models import StudySite
 from edc.core.crypto_fields.classes import FieldCryptor
 from edc.core.crypto_fields.fields import BaseEncryptedField
