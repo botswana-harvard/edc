@@ -1,16 +1,17 @@
-from datetime import datetime
 import re
 import uuid
+
+from datetime import datetime
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
-from edc.base.model.fields import InitialsField
 from edc.choices.common import YES_NO
 from edc.constants import YES
 from edc.core.bhp_string.classes import StringHelper
 from edc.core.bhp_variables.models import StudySite
 from edc.device.device.classes import Device
+from edc_base.model.fields import InitialsField
 
 from ..choices import PRIORITY, REASON_NOT_DRAWN, ITEM_TYPE
 from ..classes import RequisitionLabel

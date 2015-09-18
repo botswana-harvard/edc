@@ -5,10 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
 from edc.choices.common import GENDER_UNDETERMINED
-from edc.base.model.validators import dob_not_future, MinConsentAge, MaxConsentAge
 from edc.base.model.fields import IsDateEstimatedField
-from edc.core.crypto_fields.fields import (EncryptedFirstnameField, EncryptedLastnameField,
-                                           EncryptedCharField)
+from edc_base.encrypted_fields import (FirstnameField, LastnameField, EncryptedCharField)
 from edc.core.identifier.exceptions import IdentifierError
 
 
@@ -47,12 +45,12 @@ class Subject(models.Model):
     )
 
     # may not be available when instance created (e.g. infants prior to birth report)
-    first_name = EncryptedFirstnameField(
+    first_name = FirstnameField(
         null=True,
     )
 
     # may not be available when instance created (e.g. infants or household subject before consent)
-    last_name = EncryptedLastnameField(
+    last_name = LastnameField(
         verbose_name="Last name",
         null=True,
     )
@@ -67,10 +65,6 @@ class Subject(models.Model):
 
     dob = models.DateField(
         verbose_name=_("Date of birth"),
-        validators=[
-            dob_not_future,
-            MinConsentAge,
-            MaxConsentAge],
         null=True,
         blank=False,
         help_text=_("Format is YYYY-MM-DD"),

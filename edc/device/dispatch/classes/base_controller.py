@@ -17,7 +17,6 @@ from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
 
 from edc_base.model.models import BaseListModel
 from edc.core.bhp_variables.models import StudySite
-from edc.core.crypto_fields.classes import FieldCryptor
 from edc.core.crypto_fields.fields import BaseEncryptedField
 from edc.core.crypto_fields.models import Crypt
 from edc.device.sync.classes import BaseProducer
@@ -25,6 +24,7 @@ from edc.device.sync.exceptions import PendingTransactionError
 from edc.device.sync.helpers import TransactionHelper
 from edc.entry_meta_data.models import BaseEntryMetaData
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
+from edc_base.encrypted_fields import FieldCryptor
 
 from ..exceptions import ControllerBaseModelError
 
