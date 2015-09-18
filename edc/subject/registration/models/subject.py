@@ -12,7 +12,7 @@ from edc.core.crypto_fields.fields import (EncryptedFirstnameField, EncryptedLas
 from edc.core.identifier.exceptions import IdentifierError
 
 
-class BaseSubject (models.Model):
+class Subject(models.Model):
     """Base for registered subject models.
 
     .. note:: the field subject_identifier_as_pk is in both
@@ -28,7 +28,7 @@ class BaseSubject (models.Model):
         max_length=50,
         null=True,
         db_index=True,
-        )
+    )
 
     subject_identifier_aka = models.CharField(
         verbose_name="Subject Identifier a.k.a",
@@ -36,7 +36,7 @@ class BaseSubject (models.Model):
         null=True,
         editable=False,
         help_text='track a previously allocated identifier.'
-        )
+    )
 
     dm_comment = models.CharField(
         verbose_name="Data Management comment",
@@ -44,18 +44,18 @@ class BaseSubject (models.Model):
         null=True,
         editable=False,
         help_text='see also edc.data manager.'
-        )
+    )
 
     # may not be available when instance created (e.g. infants prior to birth report)
     first_name = EncryptedFirstnameField(
         null=True,
-        )
+    )
 
     # may not be available when instance created (e.g. infants or household subject before consent)
     last_name = EncryptedLastnameField(
         verbose_name="Last name",
         null=True,
-        )
+    )
 
     # may not be available when instance created (e.g. infants)
     initials = EncryptedCharField(
@@ -63,25 +63,24 @@ class BaseSubject (models.Model):
                                    message=('Ensure initials consist of letters '
                                             'only in upper case, no spaces.')), ],
         null=True,
-        )
+    )
 
     dob = models.DateField(
         verbose_name=_("Date of birth"),
         validators=[
             dob_not_future,
             MinConsentAge,
-            MaxConsentAge,
-            ],
+            MaxConsentAge],
         null=True,
         blank=False,
         help_text=_("Format is YYYY-MM-DD"),
-        )
+    )
 
     is_dob_estimated = IsDateEstimatedField(
         verbose_name=_("Is date of birth estimated?"),
         null=True,
         blank=False,
-        )
+    )
 
     gender = models.CharField(
         verbose_name="Gender",
@@ -89,12 +88,12 @@ class BaseSubject (models.Model):
         max_length=1,
         null=True,
         blank=False,
-        )
+    )
 
     subject_type = models.CharField(
         max_length=25,
         null=True,
-        )
+    )
 
     def get_subject_identifier(self):
         return self.subject_identifier
@@ -163,7 +162,7 @@ class BaseSubject (models.Model):
     def save(self, *args, **kwargs):
         using = kwargs.get('using')
         self.subject_type = self.get_subject_type()
-#         self.insert_dummy_identifier()
+        self.insert_dummy_identifier()
         self._check_if_duplicate_subject_identifier(using)
         self.check_if_may_change_subject_identifier(using)
         # if editing, confirm that identifier fields are not changed
@@ -178,7 +177,7 @@ class BaseSubject (models.Model):
                 # if user_provided_subject_identifier is None, set it to the same value as subject_identifier
                 if not getattr(self, self.get_user_provided_subject_identifier_attrname()):
                     setattr(self, self.get_user_provided_subject_identifier_attrname(), self.subject_identifier)
-        super(BaseSubject, self).save(*args, **kwargs)
+        super(Subject, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return "{0} {1}".format(self.mask_unset_subject_identifier(), self.subject_type)
@@ -238,10 +237,10 @@ class BaseSubject (models.Model):
 
 #     def insert_dummy_identifier(self):
 #         """Inserts a random uuid as a dummy identifier for a new instance.
-# 
+#
 #         Model uses subject_identifier_as_pk as a natural key for
 #         serialization/deserialization. Value must not change once set."""
-# 
+#
 #         # set to uuid if new and not specified
 #         if not self.id:
 #             subject_identifier_as_pk = str(uuid4())

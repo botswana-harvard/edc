@@ -1,7 +1,7 @@
 import itertools
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from edc.base.model.models import BaseModel
+from edc_base.model.models import BaseModel
 
 
 class MembershipFormHelper(object):

@@ -3,7 +3,6 @@ from django.db import models
 from lis.specimen.lab_aliquot.managers import AliquotManager
 from lis.specimen.lab_aliquot.models import BaseAliquot
 
-from .test_aliquot_condition import TestAliquotCondition
 from .test_aliquot_type import TestAliquotType
 from .test_receive import TestReceive
 from .test_visit import TestVisit
@@ -17,11 +16,6 @@ class TestAliquot(BaseAliquot):
     aliquot_type = models.ForeignKey(TestAliquotType,
         verbose_name="Aliquot Type",
         null=True)
-
-    aliquot_condition = models.ForeignKey(TestAliquotCondition,
-        verbose_name="Aliquot Condition",
-        null=True,
-        blank=True)
 
     objects = AliquotManager()
 

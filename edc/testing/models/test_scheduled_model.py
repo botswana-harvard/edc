@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db import models
 
 from edc.choices import YES_NO
-from edc.base.model.models import BaseUuidModel
+from edc_base.model.models import BaseUuidModel
 from edc.entry_meta_data.managers import EntryMetaDataManager
 from edc.export.managers import ExportHistoryManager
 from edc.export.models import ExportTrackingFieldsMixin

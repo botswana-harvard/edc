@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
-from edc.base.model.models import BaseModel
+from edc_base.model.models import BaseModel
 
 from ..exceptions import ContentTypeMapError
 from ..managers import ContentTypeMapManager

@@ -1,6 +1,6 @@
 from django.db import models
 from edc_audit.audit_trail import AuditTrail
-from edc.base.model.models import BaseUuidModel
+from edc_base.model.models import BaseUuidModel
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from ..managers import AttachedModelManager
 from .consent_catalogue import ConsentCatalogue

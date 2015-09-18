@@ -1,5 +1,5 @@
 from django.db import models
-from edc.base.model.models import BaseUuidModel
+from edc_base.model.models import BaseUuidModel
 from .test_visit import TestVisit
 
 

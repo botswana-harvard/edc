@@ -11,12 +11,10 @@ class SaltField (CharField):
     description = "Custom field for hostname created"
 
     def __init__(self, *args, **kwargs):
-        #base_crypter = BaseCrypter()
         kwargs.setdefault('editable', False)
         kwargs.setdefault('blank', False)
         kwargs.setdefault('max_length', 25)
         kwargs.setdefault('verbose_name', 'Salt')
-        #kwargs.setdefault('default', base_crypter.make_random_salt())
         CharField.__init__(self, *args, **kwargs)
 
     def get_internal_type(self):

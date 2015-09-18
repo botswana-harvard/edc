@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.core import serializers
 from django.db.models import get_model
 
-from edc.core.crypto_fields.classes import FieldCryptor
+from edc_base.encrypted_fields import FieldCryptor
 
 from ..classes import SerializeToTransaction, transaction_producer
 

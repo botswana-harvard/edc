@@ -1,14 +1,16 @@
 import platform
+
 from os import listdir
 from os.path import isfile, join
+
 from django.core.exceptions import ValidationError
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from ..models import IncomingTransaction
+
 from ..classes import DeserializeFromTransaction
-from ..models import Producer
+from ..models import Producer, IncomingTransaction
 
 
 @login_required

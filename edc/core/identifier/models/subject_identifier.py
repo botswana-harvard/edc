@@ -1,5 +1,8 @@
 from django.db import models
+<<<<<<< Updated upstream
 from edc.device.sync.models import BaseSyncUuidModel
+=======
+>>>>>>> Stashed changes
 
 from .base_identifier_model import BaseIdentifierModel
 

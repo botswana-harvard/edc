@@ -1,9 +1,9 @@
 import logging
 
-from django.db import models
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
+
 from edc_base.model.models.base_uuid_model import BaseUuidModel
 
 logger = logging.getLogger(__name__)

@@ -20,5 +20,4 @@ from .test_dispatch import TestDspItem, TestDspItemTwo, TestDspItemThree, TestDs
 from .export_test import ExportTest
 from .test_profile import TestProfile, TestProfileItem
 from .test_receive import TestReceive
-from .test_aliquot_condition import TestAliquotCondition
 from .test_aliquot import TestAliquot

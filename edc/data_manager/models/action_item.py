@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from edc.base.model.models import BaseModel
+from edc_base.model.models import BaseModel
 from edc.constants import CLOSED, OPEN
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.subject.registration.models import RegisteredSubject

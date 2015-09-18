@@ -4,8 +4,7 @@ from django.db.models import get_model
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from edc.core.crypto_fields.fields import EncryptedTextField
-from edc.core.crypto_fields.classes import FieldCryptor
+from edc_base.encrypted_fields import EncryptedTextField, FieldCryptor
 
 
 @login_required

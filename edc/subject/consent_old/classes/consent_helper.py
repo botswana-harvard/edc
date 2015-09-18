@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db.models import get_model
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
-from edc.base.model.models import BaseModel
+from edc_base.model.models import BaseModel
 from ..exceptions import ConsentError, ConsentDoesNotExist
 
 
