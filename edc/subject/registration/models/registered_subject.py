@@ -146,7 +146,7 @@ class RegisteredSubject(BaseRegisteredSubject, BaseSyncUuidModel):
                    'is not captured in this model'),
     )
 
-    salt = models.CharField(max_length=25, null=True, editable=False)
+    salt = models.CharField(max_length=25, null=True, editable=False, default='salt')
 
     history = AuditTrail()
 
