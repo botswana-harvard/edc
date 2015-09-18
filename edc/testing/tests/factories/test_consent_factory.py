@@ -4,12 +4,11 @@ from datetime import datetime
 
 from edc.choices.common import IDENTITY_TYPE
 from edc.core.bhp_variables.tests.factories import StudySiteFactory
-from edc.subject.subject.tests.factories import BaseSubjectFactory
 
 from ...models import TestConsent, TestConsentWithMixin
 
 
-class BaseConsentBasicsFactory(BaseSubjectFactory):
+class BaseConsentBasicsFactory(factory.DjangoModelFactory):
     class Meta:
         abstract = True
 

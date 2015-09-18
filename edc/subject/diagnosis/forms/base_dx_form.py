@@ -1,5 +1,5 @@
-from edc.base.form.forms import BaseModelForm
+from django import forms
 
 
-class BaseDxForm(BaseModelForm):
+class BaseDxForm(forms.ModelForm):
     pass

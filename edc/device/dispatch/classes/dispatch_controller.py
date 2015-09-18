@@ -2,12 +2,15 @@ import logging
 from django.db.models import get_model
 from django.core.exceptions import FieldError
 from django.db.models import get_models, get_app
-from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
-from edc.subject.visit_tracking.classes import VisitModelHelper
+
 from edc.subject.lab_tracker.models import HistoryModel
-from edc.base.model.models import BaseListModel
+from edc.subject.visit_tracking.classes import VisitModelHelper
+from edc_base.model.models import BaseListModel
+from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
+
 from ..classes import BaseDispatchController
 from ..exceptions import DispatchModelError, DispatchError, AlreadyDispatchedContainer
+
 from .controller_register import registered_controllers
 
 
@@ -227,10 +230,10 @@ class DispatchController(BaseDispatchController):
         if (visit_model and visit_app):
             SubjectVisit = get_model(visit_app, visit_model)
             Appointments = get_model('appointment', 'Appointment')
-            appointments = Appointments.objects.filter(visit_instance=appointmnet_instance,
-                                                   registered_subject=registered_subject,
-                                                   appt_datetime__range=(start_datetime,
-                                                                         end_datetime))
+            appointments = Appointments.objects.filter(
+                visit_instance=appointmnet_instance,
+                registered_subject=registered_subject,
+                appt_datetime__range=(start_datetime, end_datetime))
             subject_visits = SubjectVisit.objects.filter(appointment__in=appointments)
             if subject_visits:
                 self.dispatch_user_items_as_json(subject_visits, user_container, fk_to_skip=fk_to_skip)
@@ -265,11 +268,8 @@ class DispatchController(BaseDispatchController):
 
     def dispatch_requisitions(self, app_label, registered_subject, user_container, multiple_visit_field_attname=False):
         """Dispatches all lab requisitions for this subject."""
-        visit_field_attname = None
         requisition_models = self.get_requisition_models(app_label)
         for requisition_cls in requisition_models:
-#             if not visit_field_attname or multiple_visit_field_attname:
-#                 visit_field_attname = VisitModelHelper.get_field_name(requisition_cls)
             if requisition_cls == get_model('bcpp_lab', 'ClinicRequisition'):
                 requisitions = requisition_cls.objects.filter(**{'{0}__appointment__registered_subject'.format('clinic_visit'): registered_subject})
             elif requisition_cls == get_model('bcpp_lab', 'SubjectRequisition'):
@@ -338,4 +338,3 @@ class DispatchController(BaseDispatchController):
 
     def dispatch_notebook_plot_list(self, container_list):
         pass
-

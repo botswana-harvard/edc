@@ -2,6 +2,8 @@ from git import Repo, GitDB, GitCommandError
 
 from django.conf import settings
 
+from edc.base.
+
 
 class Revision(object):
 
