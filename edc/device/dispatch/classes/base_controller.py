@@ -15,6 +15,7 @@ from django.db.models.query import QuerySet
 
 from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
 
+from edc_base.model.models import BaseListModel
 from edc.core.bhp_variables.models import StudySite
 from edc.core.crypto_fields.fields import BaseEncryptedField
 from edc.core.crypto_fields.models import Crypt
@@ -24,7 +25,6 @@ from edc.device.sync.helpers import TransactionHelper
 from edc.entry_meta_data.models import BaseEntryMetaData
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc_base.encrypted_fields import FieldCryptor
-from edc_base.model.models import BaseListModel
 
 from ..exceptions import ControllerBaseModelError
 

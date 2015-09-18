@@ -4,6 +4,7 @@ from django.core.exceptions import FieldError
 from django.db.models import get_models, get_app
 
 from edc.subject.lab_tracker.models import HistoryModel
+
 from edc.subject.visit_tracking.classes import VisitModelHelper
 from edc_base.model.models import BaseListModel
 from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
