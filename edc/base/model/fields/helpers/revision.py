@@ -28,4 +28,4 @@ class Revision(object):
             raise AttributeError('Missing settings attribute: \'PROJECT_ROOT\' required by revision field class')
         return settings.PROJECT_ROOT
 
-site_revision = Revision()
+# site_revision = Revision()

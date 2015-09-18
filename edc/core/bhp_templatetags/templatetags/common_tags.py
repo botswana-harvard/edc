@@ -10,10 +10,10 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
+from django_revision import site_revision
 
 from edc.core.bhp_common.utils import formatted_age
 from edc.constants import CLOSED, OPEN
-from edc.base.model.fields.helpers.revision import site_revision
 
 
 register = template.Library()
