@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 from edc_base.model.models import BaseModel
-from edc.constants import CLOSED, OPEN
+from edc_constants.constants import CLOSED, OPEN
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.subject.registration.models import RegisteredSubject
 

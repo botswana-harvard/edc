@@ -6,7 +6,7 @@ from django.db.models import Max, get_app, get_models
 
 from edc.subject.registration.models.registered_subject import RegisteredSubject
 from edc.choices.common import YES_NO
-from edc.constants import YES, NO
+from edc_constants.constants import YES, NO
 from edc.core.crypto_fields.utils import mask_encrypted
 from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc_base.model.fields import OtherCharField

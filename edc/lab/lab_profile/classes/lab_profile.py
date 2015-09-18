@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.conf import settings
 
-from edc.constants import YES
+from edc_constants.constants import YES
 
 from ..exceptions import SpecimenError
 
@@ -62,7 +62,7 @@ class LabProfile(object):
                 self.aliquot_model.objects.get(receive=receive)
             except self.aliquot_model.DoesNotExist:
                 # create primary aliquot
-                aliquot = self.aliquot_model.objects.create(
+                self.aliquot_model.objects.create(
                     aliquot_identifier=self.aliquot_identifier(receive, requisition.aliquot_type, 1),
                     primary_aliquot=None,
                     source_aliquot=None,

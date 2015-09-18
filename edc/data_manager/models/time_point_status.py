@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 from edc.choices.common import YES_NO_NA
-from edc.constants import CLOSED, OPEN
+from edc_constants.constants import CLOSED, OPEN
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.device.sync.models import BaseSyncUuidModel
 from edc.subject.appointment.constants import IN_PROGRESS, NEW

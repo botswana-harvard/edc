@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from edc.constants import NOT_REQUIRED, NEW
+from edc_constants.constants import NOT_REQUIRED, NEW, YES, NO
 from edc.core.bhp_variables.models import StudySite
 from edc.entry_meta_data.models import ScheduledEntryMetaData
 from edc.lab.lab_profile.classes import site_lab_profiles
@@ -74,7 +74,7 @@ class RuleTests(TestCase):
         class TestRuleGroupSched(RuleGroup):
             test_rule = ScheduledDataRule(
                 logic=Logic(
-                    predicate=(('f1', 'equals', 'No')),
+                    predicate=(('f1', 'equals', NO)),
                     consequence='not_required',
                     alternative='new'),
                 target_model=['testscheduledmodel2'])
@@ -92,7 +92,7 @@ class RuleTests(TestCase):
         class TestRuleGroupConsent(RuleGroup):
             test_rule = ScheduledDataRule(
                 logic=Logic(
-                    predicate=(('may_store_samples', 'equals', 'No')),
+                    predicate=(('may_store_samples', 'equals', NO)),
                     consequence='not_required',
                     alternative='new'),
                 target_model=['testscheduledmodel3'])
@@ -141,7 +141,7 @@ class RuleTests(TestCase):
 
         self.visit_definition = VisitDefinition.objects.get(code='1000')
 
-        self.test_consent = TestConsentWithMixinFactory(gender='M', study_site=StudySite.objects.all()[0], may_store_samples='No')
+        self.test_consent = TestConsentWithMixinFactory(gender='M', study_site=StudySite.objects.all()[0], may_store_samples=NO)
 
         self.registered_subject = RegisteredSubject.objects.get(subject_identifier=self.test_consent.subject_identifier)
         self.appointment = Appointment.objects.get(registered_subject=self.registered_subject)
@@ -261,11 +261,11 @@ class RuleTests(TestCase):
     def test_rule_updates_meta_data_on_update_with_consent(self):
         """Assert updates meta data when the source model is updated."""
         rg = self.test_rule_group_consent_cls()
-        self.assertEquals(self.test_consent.may_store_samples, 'No')
+        self.assertEquals(self.test_consent.may_store_samples, NO)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 0)
         test_visit = self.test_visit_factory(appointment=self.appointment)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        self.test_consent.may_store_samples = 'Yes'
+        self.test_consent.may_store_samples = YES
         self.test_consent.save()
         pk = test_visit.pk
         test_visit = TestVisit.objects.get(pk=pk)
@@ -286,10 +286,10 @@ class RuleTests(TestCase):
         test_visit = self.test_visit_factory(appointment=self.appointment)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
         # set f1=No which is the rule for not required.
-        test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1='No')
+        test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1=NO)
         # meta data for target, testscheduledmodel2, should be updated as not required
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        test_scheduled_model1.f1 = 'Yes'
+        test_scheduled_model1.f1 = YES
         test_scheduled_model1.save()
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
 
@@ -300,9 +300,9 @@ class RuleTests(TestCase):
         test_visit = self.test_visit_factory(appointment=self.appointment)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1='No')
+        test_scheduled_model1 = TestScheduledModel1Factory(test_visit=test_visit, f1=NO)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NOT_REQUIRED, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
-        test_scheduled_model1.f1 = 'Yes'
+        test_scheduled_model1.f1 = YES
         test_scheduled_model1.save()
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=NEW, registered_subject=self.registered_subject, entry__model_name__in=rg.test_rule.target_model_names).count(), 1)
 

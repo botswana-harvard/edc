@@ -1,7 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
-from edc.constants import REQUIRED, NOT_REQUIRED, KEYED
+from edc_constants.constants import REQUIRED, NOT_REQUIRED, KEYED
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.appointment.models import Appointment
 
