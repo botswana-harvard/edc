@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'edc_base',
     'edc_audit',
+    'edc_constants',
     'edc.core.crypto_fields',
 )
 

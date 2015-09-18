@@ -7,7 +7,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
 from edc.choices.common import YES_NO
-from edc.constants import YES
+from edc_constants.constants import YES
 from edc.core.bhp_string.classes import StringHelper
 from edc.core.bhp_variables.models import StudySite
 from edc.device.device.classes import Device

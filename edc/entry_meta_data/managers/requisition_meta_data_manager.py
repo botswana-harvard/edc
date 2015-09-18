@@ -1,7 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 
 from edc.subject.entry.models import LabEntry
-from edc.constants import REQUIRED, NOT_REQUIRED, KEYED
 
 from ..models import RequisitionMetaData
 
@@ -56,7 +55,7 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                     model_name=self.model._meta.object_name.lower(),
                     visit_definition=self.visit_instance.appointment.visit_definition,
                     requisition_panel__name=self.target_requisition_panel,
-                    )
+                )
             except self.entry_model.DoesNotExist:
                 raise ImproperlyConfigured('LabEntry matching query does not exist. Model {0}.Check your'
                                            ' visit schedule configuration or rule groups.'.format(self.model))
@@ -70,7 +69,7 @@ class RequisitionMetaDataManager(BaseMetaDataManager):
                 due_datetime=lab_entry.visit_definition.get_upper_window_datetime(self.visit_instance.report_datetime),
                 lab_entry=lab_entry,
                 entry_status=entry_status,
-                )
+            )
         return None
 
     @property

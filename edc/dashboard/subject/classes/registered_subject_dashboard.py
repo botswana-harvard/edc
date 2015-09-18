@@ -7,7 +7,7 @@ from django.db.models import TextField, Count
 from django.template.loader import render_to_string
 
 from edc.apps.app_configuration.models.global_configuration import GlobalConfiguration
-from edc.constants import NEW, NOT_REQUIRED
+from edc_constants.constants import NEW, NOT_REQUIRED
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.data_manager.models import ActionItem
 from edc.core.crypto_fields.fields import EncryptedTextField
@@ -91,12 +91,12 @@ class RegisteredSubjectDashboard(Dashboard):
                 self.visit_model._meta.app_label, self.visit_model._meta.object_name.lower()),
             visit_model_instance=self.visit_model_instance,
             time_point_status=self.time_point_status,
-            )
+        )
         if self.show == 'forms':
             self.context.update(
                 requisition_model=self.requisition_model,
                 rendered_scheduled_forms=self.rendered_scheduled_forms,
-                )
+            )
             if self.requisition_model:
                 self.context.update(requisition_model_meta=self.requisition_model._meta)
                 self.context.update(rendered_scheduled_requisitions=self.rendered_requisitions)
@@ -350,8 +350,8 @@ class RegisteredSubjectDashboard(Dashboard):
                     self.registered_subject,
                     category,
                     extra_grouping_key=self.exclude_others_if_keyed_model_name
-                    )
                 )
+            )
         return self._subject_membership_models
 
     @property

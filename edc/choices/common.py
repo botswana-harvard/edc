@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 
-from edc.constants import NOT_APPLICABLE, YES, NO, ALIVE, DEAD, UNKNOWN
+from edc_constants.constants import NOT_APPLICABLE, YES, NO, ALIVE, DEAD, UNKNOWN
 
 # choices
 BLANK_CHOICE_DASH = [('', '---------')]
@@ -12,15 +12,15 @@ ACU_EST = (
     ('Established', 'Established'),
 )
 PIMA = (
-        ('Participant Declined', 'Participant Declined'),
-        ('Multiple PIMA malfunction', 'Multiple PIMA malfunction'),
-        ('Failed Blood Collection', 'Failed Blood Collection'),
-        ('OTHER', _('Other, specify:')),
+    ('Participant Declined', 'Participant Declined'),
+    ('Multiple PIMA malfunction', 'Multiple PIMA malfunction'),
+    ('Failed Blood Collection', 'Failed Blood Collection'),
+    ('OTHER', _('Other, specify:')),
 )
 
 PIMA_SETTING_VL = (
-        ('mobile setting', 'Mobile Setting'),
-        ('household setting', 'Household Setting'),
+    ('mobile setting', 'Mobile Setting'),
+    ('household setting', 'Household Setting'),
 )
 ACU_EST_NEG = (
     ('Acute', 'Acute'),
@@ -398,4 +398,3 @@ YES_NO_DOESNT_WORK = (
     (NO, NO),
     ('Doesnt_work', 'Doesnt Work'),
 )
-

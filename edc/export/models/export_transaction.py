@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from edc.constants import CLOSED
+from edc_constants.constants import CLOSED
 from edc.device.sync.models import BaseSyncUuidModel
 
 from .export_tracking_fields_mixin import ExportTrackingFieldsMixin
@@ -19,21 +19,21 @@ class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
 
     app_label = models.CharField(
         max_length=64,
-        )
+    )
 
     object_name = models.CharField(
         max_length=64,
-        )
+    )
 
     tx_pk = models.CharField(
         max_length=36,
-        )
+    )
 
     timestamp = models.CharField(
         max_length=50,
         null=True,
         db_index=True,
-        )
+    )
 
     status = models.CharField(
         max_length=15,
@@ -43,28 +43,28 @@ class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
             ('exported', 'Exported'),
             (CLOSED, 'Closed'),
             ('cancelled', 'Cancelled'),
-            ),
+        ),
         help_text='exported by export_transactions, closed by import_receipts'
-        )
+    )
 
     received = models.BooleanField(
         default=False,
         help_text='True if ACK received'
-        )
+    )
 
     received_datetime = models.DateTimeField(
         null=True,
         help_text='date ACK received'
-        )
+    )
 
     is_ignored = models.BooleanField(
         default=False,
         help_text='Ignore if update'
-        )
+    )
 
     is_error = models.BooleanField(
         default=False,
-        )
+    )
 
     objects = ExportTransactionManager()
 

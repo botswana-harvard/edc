@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 from django_revision import site_revision
 
 from edc.core.bhp_common.utils import formatted_age
-from edc.constants import CLOSED, OPEN
+from edc_constants.constants import CLOSED, OPEN
 
 
 register = template.Library()
