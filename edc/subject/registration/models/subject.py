@@ -1,5 +1,7 @@
 import re
 
+from uuid import uuid4
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
@@ -229,27 +231,27 @@ class Subject(models.Model):
         """Users may override to add an additional strategy to detect duplicate identifiers."""
         pass
 
-#     def insert_dummy_identifier(self):
-#         """Inserts a random uuid as a dummy identifier for a new instance.
-#
-#         Model uses subject_identifier_as_pk as a natural key for
-#         serialization/deserialization. Value must not change once set."""
-#
-#         # set to uuid if new and not specified
-#         if not self.id:
-#             subject_identifier_as_pk = str(uuid4())
-#             self.subject_identifier_as_pk = subject_identifier_as_pk  # this will never change
-#             if not self.subject_identifier:
-#                 # this will be changed when allocated a subject_identifier on consent
-#                 self.subject_identifier = subject_identifier_as_pk
-#         # never allow subject_identifier as None
-#         if not self.subject_identifier:
-#             raise ConsentError('Subject Identifier may not be left blank.')
-#         # never allow subject_identifier_as_pk as None
-#         if not self.subject_identifier_as_pk:
-#             raise ConsentError('Attribute subject_identifier_as_pk on model '
-#                                '{0} may not be left blank. Expected to be set '
-#                                'to a uuid already.'.format(self._meta.object_name))
+    def insert_dummy_identifier(self):
+        """Inserts a random uuid as a dummy identifier for a new instance.
+
+        Model uses subject_identifier_as_pk as a natural key for
+        serialization/deserialization. Value must not change once set."""
+
+        # set to uuid if new and not specified
+        if not self.id:
+            subject_identifier_as_pk = str(uuid4())
+            self.subject_identifier_as_pk = subject_identifier_as_pk  # this will never change
+            if not self.subject_identifier:
+                # this will be changed when allocated a subject_identifier on consent
+                self.subject_identifier = subject_identifier_as_pk
+        # never allow subject_identifier as None
+        if not self.subject_identifier:
+            raise ValueError('Subject Identifier may not be left blank.')
+        # never allow subject_identifier_as_pk as None
+        if not self.subject_identifier_as_pk:
+            raise ValueError(
+                'Attribute subject_identifier_as_pk on model {0} may not be left blank. Expected to be set '
+                'to a uuid already.'.format(self._meta.object_name))
 
     class Meta:
         abstract = True

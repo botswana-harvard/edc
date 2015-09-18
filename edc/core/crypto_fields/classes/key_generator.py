@@ -7,13 +7,17 @@ from .cryptor import Cryptor
 
 class KeyGenerator(object):
 
+    def __init__(self, key_path=None):
+
+        self.key_path = key_path or settings.KEY_PATH
+
     def create_new_keys(self):
         self._create_new_rsa_key_pairs()
         self._create_new_aes_keys()
         self._create_new_salts()
         self.test_keys()
         if self.load_success:
-            print 'New keys are stored in \'{0}\''.format(settings.KEY_PATH)
+            print 'New keys are stored in \'{0}\''.format(self.key_path)
 
     def test_keys(self):
         """ Tests keys """

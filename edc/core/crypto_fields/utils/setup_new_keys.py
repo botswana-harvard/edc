@@ -1,7 +1,3 @@
-__authors__ = [
-    '"Erik van Widenfelt" <ew2789@gmail.com>',
-]
-
 import os
 import sys
 from datetime import datetime
@@ -11,15 +7,16 @@ from django.conf import settings
 from ..classes import KeyGenerator
 
 
-def setup_new_keys():
+def setup_new_keys(key_path=None):
 
     """ Utility to generate all new keys for the project."""
     datestring = datetime.today().strftime('%Y%m%d%H%M%S%f')
-    key_generator = KeyGenerator()
+    key_path = key_path or settings.KEY_PATH
+    key_generator = KeyGenerator(key_path)
     paths = key_generator.get_key_paths()
     # backup existing keys
     try:
-        backup_path = os.path.join(settings.KEY_PATH, 'keys_backup_{0}'.format(datestring))
+        backup_path = os.path.join(key_path, 'keys_backup_{0}'.format(datestring))
         os.mkdir(backup_path)
         print backup_path
     except:
@@ -53,7 +50,7 @@ def setup_new_keys():
         del key_generator
         # now have an empty target folder so guaranteed to
         # not load old keys
-        key_generator = KeyGenerator()
+        key_generator = KeyGenerator(key_path)
         key_generator.create_new_keys()
         sys.stdout.flush()
 

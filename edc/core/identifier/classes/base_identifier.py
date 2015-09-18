@@ -22,7 +22,7 @@ class BaseIdentifier(object):
         self.modulus = None
         self.identifier_prefix = None
         self.site_code = None
-        if add_check_digit == None:
+        if add_check_digit is None:
             self.add_check_digit = True
         else:
             self.add_check_digit = add_check_digit

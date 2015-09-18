@@ -119,13 +119,15 @@ class Controller(object):
         return lst
 
     def get_current_mapper(self):
-        """Returns the mapper class for the current community."""
-        return self.current_mapper
+        """Returns the mapper instance for the current community."""
+        current_mapper = self.registry.get(self.current_community)
+        return current_mapper()
 
-    @property
-    def current_mapper(self):
-        """Returns the mapper class for the current community."""
-        return self.registry.get(self.current_community)
+#     @property
+#     def current_mapper(self):
+#         """Returns the mapper class for the current community."""
+#         current_mapper = self.registry.get(self.current_community)
+#         return current_mapper()
 
     @property
     def current_community(self):

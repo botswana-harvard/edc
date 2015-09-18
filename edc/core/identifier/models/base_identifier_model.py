@@ -2,7 +2,6 @@ from django.db import models
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from edc_base.model.models import BaseModel
 
 from ..managers import IdentifierManager
 
