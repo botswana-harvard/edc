@@ -1,5 +1,3 @@
-# from django.db.models.signals import post_delete
-# from django.dispatch import receiver
 from django.conf import settings
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.core.urlresolvers import reverse
@@ -146,6 +144,7 @@ class RegisteredSubject(BaseRegisteredSubject, BaseSyncUuidModel):
                    'is not captured in this model'),
     )
 
+    # not used: this field should be removed
     salt = models.CharField(max_length=25, null=True, editable=False, default='salt')
 
     history = AuditTrail()
