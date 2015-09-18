@@ -1,4 +1,4 @@
-from edc.base.modeladmin.admin import BaseModelAdmin
+from edc_base.modeladmin.admin import BaseModelAdmin
 from edc.export.actions import export_as_csv_action
 from edc.subject.appointment.models import Appointment
 
