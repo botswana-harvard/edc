@@ -37,7 +37,7 @@ class ResultAdmin(BaseModelAdmin):
         export_as_csv_action("CSV Export: adds subject_identifier, gender, dob",
             fields=[],
             delimiter=',',
-            exclude=['id', 'revision', 'hostname_created', 'hostname_modified', 'user_created','user_modified'],
+            exclude=['id', 'revision',],
             extra_fields=OrderedDict(
                 {'gender': 'order__aliquot__receive__registered_subject__gender',
                 'dob': 'order__aliquot__receive__registered_subject__dob'}),
