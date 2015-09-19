@@ -4,7 +4,6 @@ from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 from edc.subject.appointment.models import Appointment
-from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.testing.classes import TestVisitSchedule
@@ -24,10 +23,10 @@ class VisitTests(TestCase):
         content_type_map_helper.populate()
         content_type_map_helper.sync()
 
-        content_type_map = ContentTypeMap.objects.get(content_type__model='testconsentwithmixin')
-        consent_catalogue = ConsentCatalogueFactory(name='v1', content_type_map=content_type_map)
-        consent_catalogue.add_for_app = 'bhp_base_test'
-        consent_catalogue.save()
+#         content_type_map = ContentTypeMap.objects.get(content_type__model='testconsentwithmixin')
+#         consent_catalogue = ConsentCatalogueFactory(name='v1', content_type_map=content_type_map)
+#         consent_catalogue.add_for_app = 'bhp_base_test'
+#         consent_catalogue.save()
 
         self.test_visit_schedule = TestVisitSchedule()
         self.test_visit_schedule.build()
