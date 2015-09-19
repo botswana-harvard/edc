@@ -15,8 +15,7 @@ class SubjectConfiguration(BaseSyncUuidModel):
         max_length=10,
         default='clinic',
         choices=APPT_TYPE,
-        help_text=''
-        )
+        help_text='')
 
     def __unicode__(self):
         return self.subject_identifier
