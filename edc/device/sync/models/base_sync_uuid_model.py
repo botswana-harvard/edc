@@ -6,6 +6,8 @@ from django.db.models import get_model
 
 from edc_base.model.models.base_uuid_model import BaseUuidModel
 
+from ..classes import SerializeToTransaction
+
 logger = logging.getLogger(__name__)
 
 
@@ -19,6 +21,10 @@ class BaseSyncUuidModel(BaseUuidModel):
 
     """Base model for all UUID models and adds synchronization
     methods and signals. """
+
+    def serialize(self, sender, instance, raw, created, using, **kwargs):
+        """Returns a serializer function."""
+        return SerializeToTransaction().serialize(sender, instance, raw, created, using, **kwargs)
 
     def is_serialized(self, serialize=True):
         """Returns True only if ALLOW_MODEL_SERIALIZATION is explicitly
