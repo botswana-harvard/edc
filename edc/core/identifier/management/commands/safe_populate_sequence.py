@@ -18,7 +18,10 @@ class Command(BaseCommand):
         identifier_sequences = []
         for identifier in identifiers:
             tokens = identifier.identifier.split('-')
-            identifier_sequences.append(int(tokens[1][4:]))
+            try:
+                identifier_sequences.append(int(tokens[1][4:]))
+            except ValueError:
+                pass
         max = identifier_sequences[0]
         for num in identifier_sequences:
             if num > max:
