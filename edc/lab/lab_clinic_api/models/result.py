@@ -1,11 +1,15 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+
+from edc_base.model.models import BaseUuidModel
+
 from lis.specimen.lab_result.models import BaseResult
+
 from .order import Order
 from .review import Review
 
 
-class Result(BaseResult):
+class Result(BaseResult, BaseUuidModel):
     """Stores result information in a one-to-many relation with :class:`ResultItem`."""
     order = models.ForeignKey(Order)
     review = models.OneToOneField(Review, null=True)

@@ -1,6 +1,6 @@
 from datetime import date
 from django.db import models
-from edc.base.model.models import BaseModel
+from edc_base.model.models import BaseModel
 from edc.core.crypto_fields.fields import EncryptedTextField
 
 

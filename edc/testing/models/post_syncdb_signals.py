@@ -1,8 +1,8 @@
 from django.db.models.signals import post_syncdb
 
-import edc.testing.models
-
 from ..classes import TestAppConfiguration
+
+# from edc.testing import models
 
 
 def app_configuration_callback(sender, **kwargs):
@@ -11,4 +11,4 @@ def app_configuration_callback(sender, **kwargs):
     TestAppConfiguration()
     print 'app configuration loaded'
 
-post_syncdb.connect(app_configuration_callback, sender=edc.testing.models)
+# post_syncdb.connect(app_configuration_callback, sender=models)

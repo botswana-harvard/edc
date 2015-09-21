@@ -1,7 +1,8 @@
 from django.conf import settings
 
-from ..models import Producer
 from edc.device.sync.exceptions import ProducerError
+
+from ..models import Producer
 
 
 def load_producer_db_settings(producer_name=None, refresh=None):

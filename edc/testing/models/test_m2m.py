@@ -1,4 +1,4 @@
-from edc.base.model.models.base_list_model import BaseListModel
+from edc_base.model.models import BaseListModel
 
 
 class TestM2m(BaseListModel):

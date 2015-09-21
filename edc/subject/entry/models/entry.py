@@ -1,6 +1,6 @@
 from django.db import models
 
-from edc.constants import NOT_REQUIRED, REQUIRED
+from edc_constants.constants import NOT_REQUIRED, REQUIRED
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.subject.visit_schedule.models import BaseWindowPeriodItem, VisitDefinition
 
@@ -16,7 +16,8 @@ class Entry(BaseWindowPeriodItem):
     The model class it links to must have the EntryMetaDataManager defined, see exception in save. """
 
     visit_definition = models.ForeignKey(VisitDefinition)
-    content_type_map = models.ForeignKey(ContentTypeMap,
+    content_type_map = models.ForeignKey(
+        ContentTypeMap,
         related_name='+',
         verbose_name='entry form / model')
     entry_order = models.IntegerField()

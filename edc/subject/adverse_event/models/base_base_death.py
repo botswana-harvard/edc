@@ -1,14 +1,17 @@
 from datetime import datetime
+
 from django.db import models
-from edc.base.model.fields import OtherCharField
+
 from edc.choices.common import YES_NO
-from edc.base.model.validators import date_not_before_study_start, date_not_future
-from edc.subject.registration.models import BaseRegisteredSubjectModel
+from edc_base.model.fields import OtherCharField
+from edc_base.model.validators import date_not_before_study_start, date_not_future
+
 from ..managers import DeathManager
+
 from .death_list import DeathCauseInfo, DeathCauseCategory, DeathReasonHospitalized
 
 
-class BaseBaseDeath(BaseRegisteredSubjectModel):
+class BaseBaseDeath(models.Model):
 
     death_date = models.DateField(
         verbose_name="Date of Death:",

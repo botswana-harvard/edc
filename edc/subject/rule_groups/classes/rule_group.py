@@ -2,8 +2,7 @@ import inspect
 import copy
 
 from django.db.models import get_model
-
-from edc.base.model.models import BaseModel
+from django.db import models
 
 from .base_rule import BaseRule
 
@@ -68,7 +67,7 @@ class BaseRuleGroup(type):
                                                          'contains a model_name that does not exist. '
                                                          'app_label=\'{2}\', model_name=\'{3}\'.'.format(
                                                              name, rule_name, meta.app_label, model_name))
-                                if not issubclass(model_cls, BaseModel):
+                                if not issubclass(model_cls, models.Model):
                                     raise AttributeError('Invalid value in target model list. Must be '
                                                          'a model name class or tuple (app_label, '
                                                          'model_name). Got {0}'.format(model_cls))

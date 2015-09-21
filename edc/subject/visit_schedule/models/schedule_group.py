@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from edc.base.model.models import BaseUuidModel
+from edc_base.model.models import BaseUuidModel
 from ..models import MembershipForm
 from ..managers import ScheduleGroupManager
 

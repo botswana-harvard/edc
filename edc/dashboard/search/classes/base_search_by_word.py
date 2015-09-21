@@ -2,7 +2,7 @@ import string
 
 from django.db.models import Q
 
-from edc.subject.consent.models import BaseConsent
+from edc_consent.models import BaseConsent
 
 from .base_searcher import BaseSearcher
 
@@ -123,7 +123,7 @@ class BaseSearchByWord(BaseSearcher):
             Q(initials__icontains=self.search_value) |
             Q(user_created__icontains=self.search_value) |
             Q(user_modified__icontains=self.search_value)
-            )
+        )
         return qset
 
     @property

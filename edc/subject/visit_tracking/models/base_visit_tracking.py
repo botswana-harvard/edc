@@ -7,14 +7,13 @@ from edc.base.model.fields import OtherCharField
 from edc.base.model.validators import datetime_not_before_study_start, datetime_not_future, datetime_is_after_consent
 from edc.subject.appointment.constants import IN_PROGRESS, DONE, INCOMPLETE, NEW
 from edc.subject.appointment.models import Appointment
-from edc.subject.consent.models import BaseConsentedUuidModel
 
 from ..choices import VISIT_REASON
 from ..managers import BaseVisitTrackingManager
 from ..settings import VISIT_REASON_REQUIRED_CHOICES, VISIT_REASON_NO_FOLLOW_UP_CHOICES, VISIT_REASON_FOLLOW_UP_CHOICES
 
 
-class BaseVisitTracking (BaseConsentedUuidModel):
+class BaseVisitTracking (models.Model):
 
     """Base model for Appt/Visit Tracking (AF002).
 
@@ -31,23 +30,22 @@ class BaseVisitTracking (BaseConsentedUuidModel):
     """
     appointment = models.OneToOneField(
         Appointment,
-        )
+    )
 
     report_datetime = models.DateTimeField(
         verbose_name="Visit Date and Time",
         validators=[
             datetime_not_before_study_start,
             datetime_is_after_consent,
-            datetime_not_future,
-            ],
+            datetime_not_future],
         help_text='Date and time of this report'
-        )
+    )
 
     reason = models.CharField(
         verbose_name="What is the reason for this visit?",
         max_length=25,
         help_text="<Override the field class for this model field attribute in ModelForm>",
-        )
+    )
 
     """
         as each study will have variations on the 'reason' choices, allow this
@@ -69,7 +67,7 @@ class BaseVisitTracking (BaseConsentedUuidModel):
         max_length=35,
         blank=True,
         null=True,
-        )
+    )
 
     """
         ...same as above...Something like this:
@@ -84,10 +82,8 @@ class BaseVisitTracking (BaseConsentedUuidModel):
     info_source = models.CharField(
         verbose_name="What is the main source of this information?",
         max_length=25,
-        # this is commented out and handled in the ModelForm class
-        #choices=VISIT_INFO_SOURCE,
         help_text="",
-        )
+    )
 
     info_source_other = OtherCharField()
 
@@ -102,7 +98,7 @@ class BaseVisitTracking (BaseConsentedUuidModel):
         max_length=250,
         blank=True,
         null=True,
-        )
+    )
 
     subject_identifier = models.CharField(
         verbose_name='subject_identifier',
@@ -164,11 +160,9 @@ class BaseVisitTracking (BaseConsentedUuidModel):
         return VISIT_REASON
 
     def _check_visit_reason_keys(self):
-        #user_keys = [tpl[0] for tpl in self.get_visit_reason_choices()]
         user_keys = [k for k in self.get_visit_reason_no_follow_up_choices().iterkeys()] + [k for k in self.get_visit_reason_follow_up_choices().iterkeys()]
         default_keys = copy.deepcopy(VISIT_REASON_REQUIRED_CHOICES)
         if list(set(default_keys) - set(user_keys)):
-            #user_keys = [k for k in self.get_visit_reason_no_follow_up_choices().iterkeys()] + [k for k in self.get_visit_reason_follow_up_choices().iterkeys()]
             missing_keys = list(set(default_keys) - set(user_keys))
             if missing_keys:
                 raise ImproperlyConfigured(

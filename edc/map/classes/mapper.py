@@ -13,7 +13,7 @@ class Mapper(object):
 
     #  Remove setters and gets and use class variables
     map_code = None
-    mape_area = None
+    map_area = None
 
     item_model = None
     item_model_cls = None
@@ -48,8 +48,6 @@ class Mapper(object):
     gps_minutes_s_field_attr = None
     gps_minutes_e_field_attr = None
 
-    map_area = None
-    map_code = None
     regions = None
     sections = None
 

@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
 
-from edc.base.model.models import BaseUuidModel
+from edc_base.model.models import BaseUuidModel
 from edc.device.sync.classes import DeserializeFromTransaction
 from edc.device.sync.models import IncomingTransaction
 

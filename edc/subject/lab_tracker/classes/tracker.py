@@ -5,7 +5,7 @@ from datetime import datetime
 from django.db.models import ForeignKey, OneToOneField, get_model
 from django.core.exceptions import ImproperlyConfigured
 
-from edc.base.model.models import BaseModel
+from django.db import models
 
 from ..models import HistoryModel, DefaultValueLog
 
@@ -219,7 +219,7 @@ class LabTracker(object):
                 tracker = list(tracker)
                 tracker.extend([None for x in xrange(len(tracker), len(TrackerNamedTpl._fields))])
                 tracker = TrackerNamedTpl(*tracker)
-            if not issubclass(tracker.model_cls, BaseModel):
+            if not issubclass(tracker.model_cls, models.Model):
                 raise ImproperlyConfigured('tracker tuple element \'model_cls\' must be a Model class. Got {0}'.format(tracker.model_cls))
             if not isinstance(tracker.value_attr, basestring):
                 raise ImproperlyConfigured('tracker tuple element \'value_attr\' must be a string. Got {0}'.format(tracker.value_attr))

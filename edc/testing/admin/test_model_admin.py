@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from edc.apps.admin_supplemental_fields.classes import SupplementalFields
 from edc.base.modeladmin.admin import BaseModelAdmin
 
 from ..forms import TestModelForm
@@ -11,7 +10,6 @@ class TestModelAdmin(BaseModelAdmin):
 
     form = TestModelForm
     fields = ('f1', 'f2', 'f3', 'f4', 'f5')
-    supplimental_fields = SupplementalFields(('f3', 'f4'), p=0.1)
 
 admin.site.register(TestModel, TestModelAdmin)
 

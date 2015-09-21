@@ -1,18 +1,14 @@
 from django.db import models
 
+from edc_consent.models import BaseConsent
+from edc_consent.models.fields import ReviewFieldsMixin, IdentityFieldsMixin
 from edc.base.model.fields import IdentityTypeField
 from edc.core.crypto_fields.fields import EncryptedIdentityField
 from edc.subject.appointment_helper.models import BaseAppointmentMixin
-from edc.subject.consent.managers import BaseConsentManager
-from edc.subject.consent.mixins import ReviewAndScoredUnderstandingFieldsMixin
-from edc.subject.consent.mixins.bw import IdentityFieldsMixin
-from edc.subject.consent.models import BaseConsent
 from edc.subject.registration.models import RegisteredSubject
 
-from .test_consent_history import TestConsentHistory
 
-
-class BaseTestConsent(BaseConsent):
+class BaseTestConsent(ReviewFieldsMixin, IdentityFieldsMixin, BaseConsent):
     """ Standard consent model.
 
     .. seealso:: :class:`BaseConsent` in :mod:`bhp_botswana.classes` """
@@ -21,24 +17,7 @@ class BaseTestConsent(BaseConsent):
 
     user_provided_subject_identifier = models.CharField(max_length=35, null=True)
 
-    identity = EncryptedIdentityField(
-        unique=True,
-        null=True,
-        blank=True,
-        )
-
-    identity_type = IdentityTypeField()
-
-    confirm_identity = EncryptedIdentityField(
-        unique=True,
-        null=True,
-        blank=True,
-        )
-
-    objects = BaseConsentManager()
-
-    def get_consent_history_model(self):
-        return TestConsentHistory
+    objects = models.Manager()
 
     def is_dispatchable_model(self):
         return False
@@ -55,15 +34,6 @@ class BaseTestConsent(BaseConsent):
 
     class Meta:
         abstract = True
-
-# add Mixin fields to abstract class
-for field in IdentityFieldsMixin._meta.fields:
-    if field.name not in [fld.name for fld in BaseTestConsent._meta.fields]:
-        field.contribute_to_class(BaseTestConsent, field.name)
-
-for field in ReviewAndScoredUnderstandingFieldsMixin._meta.fields:
-    if field.name not in [fld.name for fld in BaseTestConsent._meta.fields]:
-        field.contribute_to_class(BaseTestConsent, field.name)
 
 
 class TestConsent(BaseTestConsent):

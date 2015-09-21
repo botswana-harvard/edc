@@ -1,4 +1,5 @@
 from django.db.models import get_models, get_model
+
 from edc.subject.appointment.models import Appointment
 from edc.subject.registration.models import RegisteredSubject
 
@@ -17,11 +18,6 @@ def resave_for_subject(subject_identifier, consent, visit, visit_key):
         )
     """
 
-    #subject_identifier = '062-5512-1'
-    #visit_key = 'maternal_visit'
-    #visit_model = MaternalVisit
-    #consent_model = MaternalConsent
-
     APP_LABEL = 0
     MODEL_NAME = 1
 
@@ -34,13 +30,13 @@ def resave_for_subject(subject_identifier, consent, visit, visit_key):
 
     field_contains = '%s__appointment__registered_subject__subject_identifier' % (visit_key,)
 
-    #registered_subject
+    # registered_subject
     registered_subjects = RegisteredSubject.objects.filter(subject_identifier=subject_identifier)
     for rs in registered_subjects:
         rs.save()
         print "saved %s" % (rs,)
 
-    #consent
+    # consent
     if consent_model:
         consents = consent_model.objects.filter(subject_identifier=subject_identifier)
         for consent in consents:

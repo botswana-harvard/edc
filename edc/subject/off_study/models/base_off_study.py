@@ -4,19 +4,21 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models import Max, get_app, get_models
 
-from edc.base.model.fields import OtherCharField
+from edc.subject.registration.models.registered_subject import RegisteredSubject
 from edc.choices.common import YES_NO
-from edc.constants import YES, NO
+from edc_constants.constants import YES, NO
 from edc.core.crypto_fields.utils import mask_encrypted
-from edc.subject.registration.models import BaseRegisteredSubjectModel
 from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc_base.model.fields import OtherCharField
 
 from ..exceptions import SubjectOffStudyDateError
 from ..managers import OffStudyManager
 
 
-class BaseOffStudy(BaseRegisteredSubjectModel):
+class BaseOffStudy(models.Model):
     """Base model for the Off Study model in an app."""
+    registered_subject = models.OneToOneField(RegisteredSubject)
+
     offstudy_date = models.DateField(
         verbose_name="Off-study Date",
         help_text="")

@@ -1,7 +1,7 @@
 import itertools
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
-from edc.base.model.models import BaseModel
+from edc_base.model.models import BaseModel
 
 
 class MembershipFormHelper(object):
@@ -26,8 +26,9 @@ class MembershipFormHelper(object):
         self._set_category(membership_form_category)
         for schedule_group in ScheduleGroup.objects.filter(membership_form__category__iexact=self._get_category()):
             self._set_model(schedule_group=schedule_group)
-            if self._get_model().objects.filter(registered_subject_id=registered_subject.pk):
-                self._add_keyed(schedule_group.grouping_key, self._get_model().objects.get(registered_subject=registered_subject))
+            if self._get_model().objects.filter(registered_subject_id=registered_subject.pk).exists():
+                for obj in self._get_model().objects.filter(registered_subject_id=registered_subject.pk):
+                    self._add_keyed(schedule_group.grouping_key, obj)
             else:
                 self._add_unkeyed(schedule_group.grouping_key, self._get_model())
         self._remove_unkeyed_by_grouping_key()
@@ -38,7 +39,7 @@ class MembershipFormHelper(object):
         self._keyed = {}
 
     def _get_keyed(self):
-        if self._keyed == None:
+        if self._keyed is None:
             self._set_keyed()
         return self._keyed
 

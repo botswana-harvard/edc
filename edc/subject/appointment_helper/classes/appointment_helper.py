@@ -1,4 +1,4 @@
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, MultipleObjectsReturned
 from django.db.models import get_model, Max
 
 from edc.subject.appointment.exceptions import AppointmentStatusError
@@ -42,22 +42,22 @@ class AppointmentHelper(object):
         if ScheduleGroup.objects.filter(membership_form__content_type_map__model=model_name):
             schedule_group = ScheduleGroup.objects.get(membership_form__content_type_map__model=model_name)
             membership_form_model = schedule_group.membership_form.content_type_map.model_class()
-            if verbose:
-                print membership_form_model
-            if membership_form_model.objects.filter(registered_subject=registered_subject).exists():
-                # found an existing membership form ...
-                # need base_appt_datetime. if not passed, such as when the visit_datetime is a
-                # next appt datetime, get from get_registration_datetime() on this model.
-                if not base_appt_datetime:
-                    # determine base_appt_datetime using this membership_form instance
-                    membership_form = membership_form_model.objects.get(registered_subject=registered_subject)
-                    base_appt_datetime = membership_form.get_registration_datetime()
-            else:
+            try:
+                membership_form = membership_form_model.objects.get(registered_subject=registered_subject)
+            except MultipleObjectsReturned:
+                # this happens if there are multiple versions of a the consent
+                # getting the latest may be wrong, ??
+                # get_by_lastest is expected to be defined
+                membership_form = membership_form_model.objects.filter(
+                    registered_subject=registered_subject).last()
+            except membership_form_model.DoesNotExist:
                 # not found, which is supposed to be impossible -- this is called in post_save signal.
                 raise AppointmentCreateError(
                     "Cannot get the membership_form_model instance. Expected to "
                     "find an instance of model {0} belonging to schedule group {1}.".format(
                         membership_form_model, schedule_group))
+            if not base_appt_datetime:
+                base_appt_datetime = membership_form.get_registration_datetime()
             visit_definitions = visit_definitions or VisitDefinition.objects.filter(
                 schedule_group=schedule_group).order_by('time_point')
             appointment_date_helper = AppointmentDateHelper()
@@ -138,8 +138,7 @@ class AppointmentHelper(object):
                 appt_datetime=next_appt_datetime):
             aggr = Appointment.objects.using(using).filter(
                 registeredsubject=appointment.registered_subject,
-                visit_definition=appointment.visit_definition
-                ).aggregate(Max('visit_instance'))
+                visit_definition=appointment.visit_definition).aggregate(Max('visit_instance'))
             if aggr:
                 appointment_date_helper = AppointmentDateHelper()
                 # check if there are rules to determine a better appt_datetime
@@ -196,12 +195,12 @@ class AppointmentHelper(object):
                     ScheduledEntryMetaData = get_model('entry_meta_data', 'ScheduledEntryMetaData')
                     RequisitionMetaData = get_model('entry_meta_data', 'RequisitionMetaData')
                     for appt in appointment.__class__.objects.filter(
-                            registered_subject=appointment.registered_subject, appt_status=IN_PROGRESS
-                            ).exclude(pk=appointment.pk):
-                        if ScheduledEntryMetaData.objects.filter(
-                                appointment=appointment, entry_status__iexact=NEW
-                                ).exists() or RequisitionMetaData.objects.filter(
-                                    appointment=appointment, entry_status__iexact=NEW).exists():
+                            registered_subject=appointment.registered_subject, appt_status=IN_PROGRESS).exclude(
+                                pk=appointment.pk):
+                        if (ScheduledEntryMetaData.objects.filter(
+                                appointment=appointment, entry_status__iexact=NEW).exists() or
+                                RequisitionMetaData.objects.filter(
+                                    appointment=appointment, entry_status__iexact=NEW).exists()):
                             # there are NEW forms
                             if appt.appt_status != INCOMPLETE:
                                 appt.appt_status = INCOMPLETE

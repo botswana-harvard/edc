@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from django.db import models
 
-from edc.audit.audit_trail import AuditTrail
+from edc_audit.audit_trail import AuditTrail
 from edc.device.sync.models import BaseSyncUuidModel
 
 from ..managers import DestinationManager

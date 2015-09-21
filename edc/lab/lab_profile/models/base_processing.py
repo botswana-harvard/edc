@@ -1,13 +1,9 @@
 from django.db import models
-try:
-    from edc.device.sync.models import BaseSyncUuidModel as BaseUuidModel
-except ImportError:
-    from edc.base.model.models import BaseUuidModel
 
 from ..classes import site_lab_profiles
 
 
-class BaseProcessing(BaseUuidModel):
+class BaseProcessing(models.Model):
 
     print_labels = models.BooleanField(
         verbose_name='Print aliquot labels now',

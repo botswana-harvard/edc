@@ -43,3 +43,6 @@ class OffStudyMixin(object):
         if self._get_off_study_cls():
             return self._get_off_study_cls().objects.filter(registered_subject__subject_identifier=self.get_subject_identifier(), offstudy_date__lt=report_date).exists()
         return False
+
+    class Meta:
+        abstract = True

@@ -1,12 +1,12 @@
 import logging
 
 from django.conf import settings
+from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 
 from edc.device.device.classes import Device
-from edc.device.sync.models import BaseSyncUuidModel
 
 from ..exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError
 
@@ -20,7 +20,7 @@ class NullHandler(logging.Handler):
 nullhandler = logger.addHandler(NullHandler())
 
 
-class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
+class BaseDispatchSyncUuidModel(models.Model):
     """Base model for all UUID models and adds dispatch methods and signals. """
 
     def __init__(self, *args, **kwargs):
@@ -162,7 +162,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
             [field.related.parent_model.DoesNotExist for field in self._meta.fields
              if isinstance(field, (ForeignKey, ManyToManyField, OneToOneField))] +
             [self.DoesNotExist])
-            )
+        )
 
     @property
     def user_container_instance(self):
@@ -223,7 +223,7 @@ class BaseDispatchSyncUuidModel(BaseSyncUuidModel):
 
     def _bypass_for_edit(self, using=None, update_fields=None):
         using = using or 'default'
-        #We only want to check this if trying to edit locally, NOT when dispatching.
+        # We only want to check this if trying to edit locally, NOT when dispatching.
         if using in ['default', None] and not self.bypass_for_edit_dispatched_as_item(using, update_fields):
             if not self.id:
                 raise AlreadyDispatchedItem('Model {0}-{1}, although dispatched, may only be '

@@ -1,8 +1,7 @@
 from django.db import models
-from edc.subject.subject.managers import BaseSubjectManager
 
 
-class RegisteredSubjectManager(BaseSubjectManager):
+class RegisteredSubjectManager(models.Manager):
 
     def get_by_natural_key(self, subject_identifier_as_pk):
         RegisteredSubject = models.get_model('registration', 'RegisteredSubject')

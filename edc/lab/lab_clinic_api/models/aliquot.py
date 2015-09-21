@@ -3,12 +3,14 @@ from django.core.exceptions import ValidationError
 
 from lis.specimen.lab_aliquot.models import BaseAliquot
 
+from edc_base.model.models import BaseUuidModel
+
 from .aliquot_condition import AliquotCondition
 from .aliquot_type import AliquotType
 from .receive import Receive
 
 
-class Aliquot(BaseAliquot):
+class Aliquot(BaseAliquot, BaseUuidModel):
     """Stores aliquot information and is the central model in the RAORR relational model."""
 
     receive = models.ForeignKey(Receive, editable=False)

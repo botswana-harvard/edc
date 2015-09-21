@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from edc.base.model.models import BaseUuidModel
+from edc_base.model.models import BaseUuidModel
 
 
 class BaseHistoryModel(BaseUuidModel):

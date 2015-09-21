@@ -12,7 +12,7 @@ from ..actions import refresh_order_status
 class OrderAdmin(BaseModelAdmin):
     date_hierarchy = 'order_datetime'
     list_display = ("order_identifier", "receive_identifier", "to_receive", "to_result", "subject_identifier",
-                    "panel", "order_datetime", 'status', 'created', 'modified', 'import_datetime')
+                    "panel", "order_datetime", 'status', 'import_datetime')
     search_fields = ('aliquot__receive__registered_subject__subject_identifier', "order_identifier",
                      "aliquot__receive__receive_identifier")
     list_filter = ('status', 'import_datetime', 'aliquot__aliquot_condition', 'panel__edc_name')
@@ -22,7 +22,7 @@ class OrderAdmin(BaseModelAdmin):
         export_as_csv_action("CSV Export: adds subject_identifier, gender, dob",
             fields=[],
             delimiter=',',
-            exclude=['id', 'revision', 'hostname_created', 'hostname_modified', 'user_created','user_modified'],
+            exclude=['id', 'revision',],
             extra_fields=OrderedDict(
                 {'gender': 'aliquot__receive__registered_subject__gender',
                 'dob': 'aliquot__receive__registered_subject__dob'}),

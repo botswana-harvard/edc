@@ -1,7 +1,6 @@
 from django.db.models import get_model
 
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.subject.entry.models import RequisitionPanel
 
 from .base_rule import BaseRule
 

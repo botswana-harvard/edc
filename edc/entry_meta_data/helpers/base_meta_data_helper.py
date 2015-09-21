@@ -1,6 +1,6 @@
 from datetime import date
 
-from edc.constants import REQUIRED
+from edc_constants.constants import REQUIRED
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.subject.visit_tracking.settings import VISIT_REASON_NO_FOLLOW_UP_CHOICES

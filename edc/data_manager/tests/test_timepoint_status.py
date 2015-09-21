@@ -1,11 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from edc.constants import CLOSED
+from edc_constants.constants import CLOSED, IN_PROGRESS, DONE, INCOMPLETE
 from edc.core.bhp_variables.models import StudySite
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.appointment.constants import IN_PROGRESS, DONE, INCOMPLETE, NEW, CANCELLED
+from edc.subject.appointment.constants import NEW  # watch out -- not the same as edc_constants
 from edc.subject.appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.testing.classes import TestAppConfiguration, TestVisitSchedule, TestLabProfile

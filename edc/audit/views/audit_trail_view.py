@@ -3,9 +3,9 @@ from django.db.models import get_model
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from edc.base.model.models import BaseModel
 from edc.core.model_selector.classes import ModelSelector
 from edc.dashboard.section.classes import section_index_view
+from edc_base.model.models import BaseModelfrom edc_base.model.models import BaseModel
 
 from ..forms import AuditTrailForm
 from ..models import AuditComment

@@ -46,3 +46,6 @@ class BaseAppointmentMixin(object):
             source='BaseAppointmentMixin',
             visit_definitions=visit_definitions)
         self.post_prepare_appointments(using)
+
+    class Meta:
+        abstract = True
