@@ -1,6 +1,7 @@
 Django==1.6.11
 edc-base
 edc-constants
+edc-audit
 GitPython==0.3.2.RC1
 M2Crypto==0.22.3
 MySQL-python==1.2.5
