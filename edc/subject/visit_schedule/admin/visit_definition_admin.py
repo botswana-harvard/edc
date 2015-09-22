@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from edc.base.modeladmin.admin import BaseModelAdmin
+from edc_base.modeladmin.admin import BaseModelAdmin
 from edc.subject.entry.admin import EntryInline, LabEntryInline
 
 from ..actions import export_as_html

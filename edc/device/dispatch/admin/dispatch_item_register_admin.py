@@ -1,5 +1,5 @@
 from django.contrib import admin
-from edc.base.modeladmin.admin import BaseModelAdmin, BaseStackedInline
+from edc_base.modeladmin.admin import BaseModelAdmin, BaseStackedInline
 from ..models import DispatchItemRegister
 from ..actions import set_is_dispatched
 
