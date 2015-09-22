@@ -3,8 +3,8 @@ from collections import OrderedDict
 from django.db.models import ForeignKey
 from django.core.exceptions import ImproperlyConfigured
 
-from edc_base.modeladmin.admin import BaseModelAdmin
 from edc.export.actions import export_as_csv_action
+from edc_base.modeladmin.admin import BaseModelAdmin
 from edc_consent.models import RequiresConsentMixin
 
 from ..classes import VisitModelHelper

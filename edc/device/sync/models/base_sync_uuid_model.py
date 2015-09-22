@@ -4,17 +4,9 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 
-from edc_base.model.models.base_uuid_model import BaseUuidModel
+from edc_base.model.models import BaseUuidModel
 
 from ..classes import SerializeToTransaction
-
-logger = logging.getLogger(__name__)
-
-
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
-nullhandler = logger.addHandler(NullHandler())
 
 
 class BaseSyncUuidModel(BaseUuidModel):

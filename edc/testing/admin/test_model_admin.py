@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from edc.base.modeladmin.admin import BaseModelAdmin
+from edc_base.modeladmin.admin import BaseModelAdmin
 
 from ..forms import TestModelForm
 from ..models import TestModel, TestM2m, TestForeignKey

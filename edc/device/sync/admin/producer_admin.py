@@ -1,5 +1,5 @@
 from django.contrib import admin
-from edc.base.modeladmin.admin import BaseModelAdmin
+from edc_base.modeladmin.admin import BaseModelAdmin
 from ..models import Producer
 from ..actions import reset_producer_status, toggle_producer_is_active, update_producer_from_settings_file
 
