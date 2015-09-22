@@ -1,17 +1,19 @@
-from datetime import date, datetime
+from datetime import date
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 
-from edc_base.bw.validators import BWCellNumber, BWTelephoneNumber
-from edc_base.model.validators import datetime_not_before_study_start, datetime_not_future
 from edc.choices.common import YES_NO, YES_NO_DOESNT_WORK
 from edc.core.crypto_fields.fields import EncryptedCharField, EncryptedTextField
 from edc.subject.registration.models import RegisteredSubject
+from edc_base.bw.validators import BWCellNumber, BWTelephoneNumber
+from edc_base.model.validators import datetime_not_before_study_start, datetime_not_future
+from edc_consent.models.requires_consent_mixin import RequiresConsentMixin
 
 from ..managers import BaseLocatorManager
 
 
-class BaseLocator(models.Model):
+class BaseLocator(RequiresConsentMixin):
 
     registered_subject = models.OneToOneField(RegisteredSubject, null=True)
 
@@ -20,7 +22,7 @@ class BaseLocator(models.Model):
         validators=[
             datetime_not_before_study_start,
             datetime_not_future, ],
-        default=datetime.now,
+        default=timezone.now,
     )
 
     date_signed = models.DateField(
@@ -161,6 +163,9 @@ class BaseLocator(models.Model):
 
     def natural_key(self):
         return (self.report_datetime, ) + self.registered_subject.natural_key()
+
+    def get_subject_identifier(self):
+        return self.registered_subject.subject_identifier
 
     class Meta:
         abstract = True
