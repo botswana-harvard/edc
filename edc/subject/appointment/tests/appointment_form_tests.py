@@ -2,6 +2,7 @@ from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from ..forms import AppointmentForm
 from .base_appointment_tests import BaseAppointmentTests
+from edc_constants.constants import NEW_APPT
 
 
 class AppointmentFormTests(BaseAppointmentTests):
@@ -17,7 +18,7 @@ class AppointmentFormTests(BaseAppointmentTests):
         appointment_form = AppointmentForm(data={'registered_subject': self.appointment.registered_subject,
                                                  'visit_definition': visit_definition,
                                                  'study_site': self.appointment.study_site,
-                                                 'appt_status': 'new',
+                                                 'appt_status': NEW_APPT,
                                                  'appt_datetime': self.appointment.appt_datetime,
                                                  'appt_type': self.appointment.appt_type,
                                                  'visit_instance': '1'})
@@ -26,10 +27,10 @@ class AppointmentFormTests(BaseAppointmentTests):
             'registered_subject': self.appointment.registered_subject,
             'visit_definition': visit_definition,
             'study_site': self.appointment.study_site,
-            'appt_status': 'new',
+            'appt_status': NEW_APPT,
             #'appt_datetime': self.appointment.appt_datetime,
             'appt_type': self.appointment.appt_type,
             'visit_instance': '1'})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Cannot create continuation appointment for visit None. Cannot find the original appointment (visit instance equal to 0).')
-        self.assertEqual(appointment_form.data.get('appt_status'), 'new')
+        self.assertEqual(appointment_form.data.get('appt_status'), NEW_APPT)

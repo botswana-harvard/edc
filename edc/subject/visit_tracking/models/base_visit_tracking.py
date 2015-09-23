@@ -5,7 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 from edc.base.model.fields import OtherCharField
 from edc.base.model.validators import datetime_not_before_study_start, datetime_not_future, datetime_is_after_consent
-from edc.subject.appointment.constants import IN_PROGRESS, DONE, INCOMPLETE, NEW
+from edc_constants.constants import IN_PROGRESS, COMPLETE_APPT, INCOMPLETE, UNKEYED
 from edc.subject.appointment.models import Appointment
 
 from ..choices import VISIT_REASON
@@ -225,7 +225,7 @@ class BaseVisitTracking (models.Model):
         RequisitionMetaData = models.get_model('entry_meta_data', 'RequisitionMetaData')
         dirty = False
         if self.reason in self.get_visit_reason_no_follow_up_choices():
-            self.get_appointment().appt_status = DONE
+            self.get_appointment().appt_status = COMPLETE_APPT
             dirty = True
         else:
             if self.get_appointment().appt_status != IN_PROGRESS:
@@ -233,10 +233,10 @@ class BaseVisitTracking (models.Model):
                 dirty = True
             # look for any others in progress
         for appointment in self.get_appointment().__class__.objects.filter(registered_subject=self.get_registered_subject(), appt_status=IN_PROGRESS).exclude(pk=self.get_appointment().pk):
-            if ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status__iexact=NEW).exists() or RequisitionMetaData.objects.filter(appointment=appointment, entry_status__iexact=NEW).exists():
+            if ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status__iexact=UNKEYED).exists() or RequisitionMetaData.objects.filter(appointment=appointment, entry_status__iexact=UNKEYED).exists():
                 appointment.appt_status = INCOMPLETE
             else:
-                appointment.appt_status = DONE
+                appointment.appt_status = COMPLETE_APPT
             appointment.save()
             dirty = True
         if dirty:

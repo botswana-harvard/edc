@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 
+from edc_constants.constants import NEW_APPT, COMPLETE_APPT
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_content_type_map.models import ContentTypeMap
 from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
@@ -41,7 +42,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
         self.appointment = Appointment(
                 appt_datetime=datetime.today(),
                 best_appt_datetime=datetime.today(),
-                appt_status='new',
+                appt_status=NEW_APPT,
                 study_site=None,
                 visit_definition=self.visit_definition,
                 registered_subject=self.registered_subject,
@@ -70,7 +71,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
         dte = datetime.today()
         appointment.appt_datetime = dte
         self.assertEqual(appointment.is_new_appointment(), True, 'Expected is_new_appointment() to return True for appt_status=\'{0}\'. Got \'{1}\''.format(appointment.appt_status, appointment.is_new_appointment()))
-        appointment.appt_status = 'done'
+        appointment.appt_status = COMPLETE_APPT
         self.assertEqual(appointment.is_new_appointment(), False, 'Expected is_new_appointment() to return False for appt_status=\'{0}\'. Got \'{1}\''.format(appointment.appt_status, appointment.is_new_appointment()))
         appointment.appt_status = 'incomplete'
         self.assertEqual(appointment.is_new_appointment(), False, 'Expected is_new_appointment() to return False for appt_status=\'{0}\'. Got \'{1}\''.format(appointment.appt_status, appointment.is_new_appointment()))
@@ -79,7 +80,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
         is_found_new = False
         for choice in APPT_STATUS:
             appointment.appt_status = choice[0]
-            if appointment.appt_status == 'new':
+            if appointment.appt_status == NEW_APPT:
                 # flag to show "new" exists in tuple
                 is_found_new = True
                 self.assertEqual(appointment.is_new_appointment(), True)
@@ -145,7 +146,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
         self.assertEquals(Appointment.objects.all().count(), 4)
         print 'assert all set to new'
         for appointment in Appointment.objects.all():
-            self.assertEqual(appointment.appt_status, 'new')
+            self.assertEqual(appointment.appt_status, NEW_APPT)
         print 'attempt to set appointment status, assert reverts to New or Cancelled when no visit tracking'
         for appt_status in APPT_STATUS:
             appointment.appt_status = appt_status[0]
@@ -153,7 +154,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
             if appt_status == 'cancelled':
                 self.assertIn(appointment.appt_status, ['cancelled'])
             else:
-                self.assertIn(appointment.appt_status, ['new', 'cancelled'])
+                self.assertIn(appointment.appt_status, [NEW_APPT, 'cancelled'])
             print '    {0} becomes {1}'.format(appt_status[0], appointment.appt_status) 
  
         print 'get appointment 1000'
@@ -177,7 +178,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
                 appointment.save()
                 print '    assert still in_progress'
                 self.assertEquals(appointment.appt_status, 'in_progress')
-            elif appt_status[0] == 'new':
+            elif appt_status[0] == NEW_APPT:
                 appointment.save()
                 print '    assert still in_progress'
                 self.assertEquals(appointment.appt_status, 'in_progress')
@@ -185,14 +186,14 @@ class AppointmentMethodTests(BaseAppointmentTests):
                 appointment.save()
                 print '    assert still in_progress'
                 self.assertEquals(appointment.appt_status, 'in_progress')
-            elif appt_status[0] == 'done':
+            elif appt_status[0] == COMPLETE_APPT:
                 appointment.save()
                 print '    assert allows change to Done'
-                self.assertEquals(appointment.appt_status, 'done')
+                self.assertEquals(appointment.appt_status, COMPLETE_APPT)
             elif appt_status[0] == 'incomplete':
                 appointment.save()
                 print '    assert changes to Done'
-                self.assertEquals(appointment.appt_status, 'done')
+                self.assertEquals(appointment.appt_status, COMPLETE_APPT)
             else:
                 raise TypeError()
  
@@ -217,7 +218,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
                 appointment.save()
                 print '    assert still in_progress'
                 self.assertEquals(appointment.appt_status, 'in_progress')
-            elif appt_status[0] == 'new':
+            elif appt_status[0] == NEW_APPT:
                 appointment.save()
                 print '    assert still in_progress'
                 self.assertEquals(appointment.appt_status, 'in_progress')
@@ -225,7 +226,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
                 appointment.save()
                 print '    assert still in_progress'
                 self.assertEquals(appointment.appt_status, 'in_progress')
-            elif appt_status[0] == 'done':
+            elif appt_status[0] == COMPLETE_APPT:
                 appointment.save()
                 print '    assert change to Incomplete'
                 self.assertEquals(appointment.appt_status, 'incomplete')
@@ -256,7 +257,7 @@ class AppointmentMethodTests(BaseAppointmentTests):
                 appointment.save()
                 print '    assert change to in_progress'
                 self.assertEquals(appointment.appt_status, 'in_progress')
-            elif appt_status[0] == 'new':
+            elif appt_status[0] == NEW_APPT:
                 appointment.save()
                 print '    assert change to in_progress'
                 self.assertEquals(appointment.appt_status, 'in_progress')
@@ -264,14 +265,14 @@ class AppointmentMethodTests(BaseAppointmentTests):
                 appointment.save()
                 print '    assert still in_progress'
                 self.assertEquals(appointment.appt_status, 'in_progress')
-            elif appt_status[0] == 'done':
+            elif appt_status[0] == COMPLETE_APPT:
                 appointment.save()
                 print '    assert still Done'
-                self.assertEquals(appointment.appt_status, 'done')
+                self.assertEquals(appointment.appt_status, COMPLETE_APPT)
             elif appt_status[0] == 'incomplete':
                 appointment.save()
                 print '    assert change to Done'
-                self.assertEquals(appointment.appt_status, 'done')
+                self.assertEquals(appointment.appt_status, COMPLETE_APPT)
             else:
                 raise TypeError()
  
