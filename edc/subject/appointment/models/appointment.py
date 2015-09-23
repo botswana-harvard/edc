@@ -4,15 +4,15 @@ from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 
-from edc_audit.audit_trail import AuditTrail
 from edc.core.bhp_variables.models import StudySite
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.visit_schedule.models import VisitDefinition
+from edc_audit.audit_trail import AuditTrail
+from edc_constants.constants import COMPLETE_APPT, NEW_APPT
 
 from ..managers import AppointmentManager
 from ..choices import APPT_TYPE, APPT_STATUS
-from ..constants import DONE
 
 from .base_appointment import BaseAppointment
 
@@ -29,11 +29,13 @@ class Appointment(BaseAppointment):
 
     appt_close_datetime = models.DateTimeField(null=True, editable=False)
 
-    study_site = models.ForeignKey(StudySite,
+    study_site = models.ForeignKey(
+        StudySite,
         null=True,
         blank=False)
 
-    visit_definition = models.ForeignKey(VisitDefinition,
+    visit_definition = models.ForeignKey(
+        VisitDefinition,
         related_name='+',
         verbose_name=("Visit"),
         help_text=("For tracking within the window period of a visit, use the decimal convention. "
@@ -64,9 +66,32 @@ class Appointment(BaseAppointment):
         max_length=20,
         help_text='Default for subject may be edited in admin under section bhp_subject. See Subject Configuration.')
 
+    objects = AppointmentManager()
+
     history = AuditTrail()
 
-    objects = AppointmentManager()
+    def __unicode__(self):
+        """Django."""
+        return "{0} {1} for {2}.{3}".format(
+            self.registered_subject.subject_identifier, self.registered_subject.subject_type,
+            self.visit_definition.code, self.visit_instance)
+
+    def save(self, *args, **kwargs):
+        """Django save method"""
+        from edc.subject.appointment_helper.classes import AppointmentHelper
+        using = kwargs.get('using')
+        if self.id:
+            TimePointStatus = models.get_model('data_manager', 'TimePointStatus')
+            TimePointStatus.check_time_point_status(self, using=using)
+        self.appt_datetime, self.best_appt_datetime = self.validate_appt_datetime()
+        self.check_window_period()
+        self.validate_visit_instance(using=using)
+        AppointmentHelper().check_appt_status(self, using)
+        super(Appointment, self).save(*args, **kwargs)
+
+    def raw_save(self, *args, **kwargs):
+        """Optional save to bypass stuff going on in the default save method."""
+        super(Appointment, self).save(*args, **kwargs)
 
     def natural_key(self):
         """Returns a natural key."""
@@ -124,27 +149,6 @@ class Appointment(BaseAppointment):
             if not window_period.check_datetime(self.visit_definition, self.appt_datetime, self.best_appt_datetime):
                 raise exception_cls(window_period.error_message)
 
-    def save(self, *args, **kwargs):
-        """Django save method"""
-        from edc.subject.appointment_helper.classes import AppointmentHelper
-        using = kwargs.get('using')
-        if self.id:
-            TimePointStatus = models.get_model('data_manager', 'TimePointStatus')
-            TimePointStatus.check_time_point_status(self, using=using)
-        self.appt_datetime, self.best_appt_datetime = self.validate_appt_datetime()
-        self.check_window_period()
-        self.validate_visit_instance(using=using)
-        AppointmentHelper().check_appt_status(self, using)
-        super(Appointment, self).save(*args, **kwargs)
-
-    def raw_save(self, *args, **kwargs):
-        """Optional save to bypass stuff going on in the default save method."""
-        super(Appointment, self).save(*args, **kwargs)
-
-    def __unicode__(self):
-        """Django."""
-        return "{0} {1} for {2}.{3}".format(self.registered_subject.subject_identifier, self.registered_subject.subject_type, self.visit_definition.code, self.visit_instance)
-
     def dashboard(self):
         """Returns a hyperink for the Admin page."""
         ret = None
@@ -159,7 +163,7 @@ class Appointment(BaseAppointment):
                     ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         if self.appt_status == APPT_STATUS[0][0]:
             if settings.APP_NAME != 'cancer':
-                return 'NEW'
+                return NEW_APPT
         else:
             if self.registered_subject:
                 if self.registered_subject.subject_identifier:
@@ -186,8 +190,8 @@ class Appointment(BaseAppointment):
 
     @property
     def complete(self):
-        """Returns True if the appointment status is DONE."""
-        return self.appt_status == DONE
+        """Returns True if the appointment status is COMPLETE_APPT."""
+        return self.appt_status == COMPLETE_APPT
 
     def dispatch_container_lookup(self):
         return (self.__class__, 'id')

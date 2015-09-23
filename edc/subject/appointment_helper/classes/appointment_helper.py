@@ -5,8 +5,7 @@ from edc.subject.appointment.exceptions import AppointmentStatusError
 from edc.apps.app_configuration.models import GlobalConfiguration
 from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
-
-from edc.subject.appointment.constants import IN_PROGRESS, DONE, INCOMPLETE, NEW, CANCELLED
+from edc_constants.constants import IN_PROGRESS, COMPLETE_APPT, INCOMPLETE, UNKEYED, NEW_APPT, CANCELLED
 from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper
 
 from ..exceptions import AppointmentCreateError
@@ -163,8 +162,8 @@ class AppointmentHelper(object):
         if not appointment.visit_definition.visit_tracking_content_type_map.model_class().objects.filter(
                 appointment=appointment):
             # no visit tracking, can only be New or Cqncelled
-            if appointment.appt_status not in [NEW, CANCELLED]:
-                appointment.appt_status = NEW
+            if appointment.appt_status not in [NEW_APPT, CANCELLED]:
+                appointment.appt_status = NEW_APPT
         else:
             # have visit tracking, can only be Done, Incomplete, In Progress
             visit_model_instance = \
@@ -173,22 +172,22 @@ class AppointmentHelper(object):
             scheduled_entry_helper = ScheduledEntryMetaDataHelper(appointment, visit_model_instance)
             if not scheduled_entry_helper.show_scheduled_entries():
                 # visit reason implies no data will be collected, so set appointment to Done
-                appointment.appt_status = DONE
+                appointment.appt_status = COMPLETE_APPT
             else:
                 ScheduledEntryMetaData = get_model('entry_meta_data', 'ScheduledEntryMetaData')
                 RequisitionMetaData = get_model('entry_meta_data', 'RequisitionMetaData')
                 # set to in progress, if not already set
-                if appointment.appt_status in [DONE, INCOMPLETE]:
+                if appointment.appt_status in [COMPLETE_APPT, INCOMPLETE]:
                     # test if Done or Incomplete
 
                     if ((ScheduledEntryMetaData.objects.filter(
-                            appointment=appointment, entry_status__iexact=NEW).exists() or
+                            appointment=appointment, entry_status__iexact=UNKEYED).exists() or
                          RequisitionMetaData.objects.filter(
-                            appointment=appointment, entry_status__iexact=NEW).exists())):
+                            appointment=appointment, entry_status__iexact=UNKEYED).exists())):
                         appointment.appt_status = INCOMPLETE
                     else:
-                        appointment.appt_status = DONE
-                elif appointment.appt_status in [NEW, CANCELLED, IN_PROGRESS]:
+                        appointment.appt_status = COMPLETE_APPT
+                elif appointment.appt_status in [NEW_APPT, CANCELLED, IN_PROGRESS]:
                     appointment.appt_status = IN_PROGRESS
                     # only one appointment can be "in_progress", so look for any others in progress and change
                     # to Done or Incomplete, depending on ScheduledEntryMetaData (if any NEW => incomplete)
@@ -198,9 +197,9 @@ class AppointmentHelper(object):
                             registered_subject=appointment.registered_subject, appt_status=IN_PROGRESS).exclude(
                                 pk=appointment.pk):
                         if (ScheduledEntryMetaData.objects.filter(
-                                appointment=appointment, entry_status__iexact=NEW).exists() or
+                                appointment=appointment, entry_status__iexact=UNKEYED).exists() or
                                 RequisitionMetaData.objects.filter(
-                                    appointment=appointment, entry_status__iexact=NEW).exists()):
+                                    appointment=appointment, entry_status__iexact=UNKEYED).exists()):
                             # there are NEW forms
                             if appt.appt_status != INCOMPLETE:
                                 appt.appt_status = INCOMPLETE
@@ -208,8 +207,8 @@ class AppointmentHelper(object):
                                 appt.raw_save(using)
                         else:
                             # all forms are KEYED or NOT REQUIRED
-                            if appt.appt_status != DONE:
-                                appt.appt_status = DONE
+                            if appt.appt_status != COMPLETE_APPT:
+                                appt.appt_status = COMPLETE_APPT
                                 # call raw_save to avoid coming back to this method.
                                 appt.raw_save(using)
                 else:

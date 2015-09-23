@@ -1,6 +1,7 @@
 from django.db import models
 
 from edc.device.sync.models import BaseSyncUuidModel
+from edc_constants.constants import NEW_APPT
 
 from ..choices import APPT_STATUS
 
@@ -35,7 +36,7 @@ class BaseAppointment (BaseBaseAppointment, BaseSyncUuidModel):
         verbose_name=("Status"),
         choices=APPT_STATUS,
         max_length=25,
-        default='new',
+        default=NEW_APPT,
         db_index=True)
     appt_reason = models.CharField(
         verbose_name=("Reason for appointment"),
@@ -59,10 +60,10 @@ class BaseAppointment (BaseBaseAppointment, BaseSyncUuidModel):
 
     def is_new_appointment(self):
         """Returns True if this is a New appointment and confirms choices tuple has \'new\'; as a option."""
-        if 'new' not in [s[0] for s in APPT_STATUS]:
+        if NEW_APPT not in [s[0] for s in APPT_STATUS]:
             raise TypeError('Expected (\'new\', \'New\') as one tuple in the choices tuple APPT_STATUS. Got {0}'.format(APPT_STATUS))
         retval = False
-        if self.appt_status.lower() == 'new':
+        if self.appt_status == NEW_APPT:
             retval = True
         return retval
 

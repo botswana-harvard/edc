@@ -9,6 +9,7 @@ from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from .factories import AppointmentFactory
+from edc_constants.constants import NEW_APPT
 
 
 class BaseAppointmentTests(TestCase):
@@ -34,7 +35,7 @@ class BaseAppointmentTests(TestCase):
         self.appointment = AppointmentFactory(
             appt_datetime=datetime.today(),
             best_appt_datetime=datetime.today(),
-            appt_status='new',
+            appt_status=NEW_APPT,
             study_site=study_site,
             visit_definition=self.visit_definition,
             registered_subject=self.registered_subject,

@@ -1,4 +1,4 @@
-from edc_constants.constants import NEW, NOT_REQUIRED, KEYED
+from edc_constants.constants import NOT_REQUIRED, KEYED, UNKEYED
 
 ENTRY_CATEGORY = (
     ('CLINIC', 'Clinic'),
@@ -7,7 +7,7 @@ ENTRY_CATEGORY = (
 )
 
 ENTRY_STATUS = (
-    (NEW, 'New'),
+    (UNKEYED, 'New'),
     (KEYED, 'Keyed'),
     ('MISSED', 'Missed'),
     (NOT_REQUIRED, 'Not required'),

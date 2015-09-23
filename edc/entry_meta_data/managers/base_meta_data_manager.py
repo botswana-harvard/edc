@@ -101,14 +101,14 @@ class BaseMetaDataManager(models.Manager):
         If change type is:
           * None this is being called from the post-save signal on the visit form
           * I, U, D, this is being called from the post-save signal of the model itself
-          * NEW or NOT_REQUIRED it's being called by a rule triggered by another model's post-save
+          * UNKEYED or NOT_REQUIRED it's being called by a rule triggered by another model's post-save
 
         Called by the signal on post_save and pre_delete"""
         new_status = None
         if not self.meta_data_instance:
             self.create_meta_data()  # entry status will be the default_entry_status in visit schedule, may return None (see create)
         if self.meta_data_instance:
-            if self.instance or change_type in ['I', 'U', 'D'] or self.meta_data_instance.entry_status == 'KEYED':  # U, D imply there is an instance, I implies you are currently saving the instance
+            if self.instance or change_type in ['I', 'U', 'D'] or self.meta_data_instance.entry_status == KEYED:  # U, D imply there is an instance, I implies you are currently saving the instance
                 new_status = KEYED  # (Insert, Update or no change (D or already KEYED)
                 try:
                     self.meta_data_instance.report_datetime = self.instance.report_datetime
@@ -122,7 +122,6 @@ class BaseMetaDataManager(models.Manager):
             if new_status and not new_status == self.meta_data_instance.entry_status:
                 if new_status not in [REQUIRED, NOT_REQUIRED, KEYED]:
                     raise ValueError('Expected entry status to be set to one off {0}. Got {1}'.format([REQUIRED, NOT_REQUIRED, KEYED], new_status))
-                #if not self.meta_data_instance.entry_status == status:
                 self.meta_data_instance.entry_status = new_status
                 self.meta_data_instance.save()
 

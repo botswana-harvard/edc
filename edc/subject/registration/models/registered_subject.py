@@ -26,6 +26,12 @@ except ImportError:
             abstract = True
 
 
+class RegisteredSubjectManager(models.Manager):
+
+    def get_by_natural_key(self, subject_identifier_as_pk):
+        return self.get(subject_identifier_as_pk=subject_identifier_as_pk)
+
+
 class RegisteredSubject(BaseRegisteredSubject, BaseSyncUuidModel):
 
     subject_identifier = models.CharField(
@@ -147,15 +153,18 @@ class RegisteredSubject(BaseRegisteredSubject, BaseSyncUuidModel):
     # not used: this field should be removed
     salt = models.CharField(max_length=25, null=True, editable=False, default='salt')
 
-    history = AuditTrail()
+    objects = RegisteredSubjectManager()
 
-    objects = models.Manager()
+    history = AuditTrail()
 
     def save(self, *args, **kwargs):
         self.check_max_subjects()
         if self.identity:
             self.additional_key = None
         super(RegisteredSubject, self).save(*args, **kwargs)
+
+    def natural_key(self):
+        return (self.subject_identifier_as_pk, )
 
     def __unicode__(self):
         if self.sid:

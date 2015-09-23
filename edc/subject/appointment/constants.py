@@ -1,6 +1,1 @@
-CANCELLED = 'cancelled'
-COMPLETE = 'done'  # same as DONE
-DONE = 'done'
-INCOMPLETE = 'incomplete'
-IN_PROGRESS = 'in_progress'
-NEW = 'new'
+# from edc_constants.constants import CANCELLED, COMPLETE, COMPLETE_APPT, INCOMPLETE, IN_PROGRESS, NEW_APPT
