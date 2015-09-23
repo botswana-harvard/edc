@@ -7,7 +7,7 @@ from django.db.models import TextField, Count
 from django.template.loader import render_to_string
 
 from edc.apps.app_configuration.models.global_configuration import GlobalConfiguration
-from edc_constants.constants import NEW, NOT_REQUIRED, UNKEYED, KEYED, NEW_APPT
+from edc_constants.constants import NEW, NOT_REQUIRED, UNKEYED, KEYED, NEW_APPT, COMPLETE_APPT
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.data_manager.models import ActionItem
 from edc.core.crypto_fields.fields import EncryptedTextField
@@ -66,6 +66,7 @@ class RegisteredSubjectDashboard(Dashboard):
             UNKEYED=UNKEYED,
             NOT_REQUIRED=NOT_REQUIRED,
             NEW_APPT=NEW_APPT,
+            COMPLETE_APPT=COMPLETE_APPT,
             appointment=self.appointment,
             appointment_row_template=self.appointment_row_template,
             appointment_visit_attr=self.visit_model._meta.object_name.lower(),

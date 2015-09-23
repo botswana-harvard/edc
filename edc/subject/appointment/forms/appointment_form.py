@@ -6,9 +6,9 @@ from django.core.exceptions import ValidationError
 
 from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
 
-from edc_constants.constants import IN_PROGRESS, COMPLETE_APPT, INCOMPLETE, CANCELLED
+from edc_constants.constants import IN_PROGRESS, COMPLETE_APPT, INCOMPLETE, CANCELLED, NEW_APPT, UNKEYED
 
-from ..constants import NEW
+
 from ..models import Appointment
 
 
@@ -58,7 +58,7 @@ class AppointmentForm(forms.ModelForm):
                 raise forms.ValidationError(
                     "Status is COMPLETE_APPT so the appointment date cannot be a future date. You wrote '%s'" % appt_datetime)
             # cannot be done if no visit report, but how do i get to the visit report??
-            # cannot be done if bucket entries exist that are NEW
+            # cannot be done if bucket entries exist that are UNKEYED
             if Appointment.objects.filter(registered_subject=registered_subject,
                                           visit_definition=visit_definition,
                                           visit_instance=visit_instance).exists():
@@ -66,10 +66,10 @@ class AppointmentForm(forms.ModelForm):
                     registered_subject=registered_subject,
                     visit_definition=visit_definition,
                     visit_instance=visit_instance)
-                if (ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status='NEW').exists() or
-                        RequisitionMetaData.objects.filter(appointment=appointment, entry_status='NEW').exists()):
+                if (ScheduledEntryMetaData.objects.filter(appointment=appointment, entry_status=UNKEYED).exists() or
+                        RequisitionMetaData.objects.filter(appointment=appointment, entry_status=UNKEYED).exists()):
                     self.cleaned_data['appt_status'] = INCOMPLETE
-        elif appt_status == NEW:
+        elif appt_status == NEW_APPT:
             pass
         elif appt_status == IN_PROGRESS:
             # check if any other appointments in progress for this registered_subject

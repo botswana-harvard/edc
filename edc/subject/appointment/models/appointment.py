@@ -9,7 +9,7 @@ from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.visit_schedule.models import VisitDefinition
 from edc_audit.audit_trail import AuditTrail
-from edc_constants.constants import COMPLETE_APPT
+from edc_constants.constants import COMPLETE_APPT, NEW_APPT
 
 from ..managers import AppointmentManager
 from ..choices import APPT_TYPE, APPT_STATUS
@@ -163,7 +163,7 @@ class Appointment(BaseAppointment):
                     ret = """<a href="{url}" />dashboard</a>""".format(url=url)
         if self.appt_status == APPT_STATUS[0][0]:
             if settings.APP_NAME != 'cancer':
-                return 'NEW'
+                return NEW_APPT
         else:
             if self.registered_subject:
                 if self.registered_subject.subject_identifier:

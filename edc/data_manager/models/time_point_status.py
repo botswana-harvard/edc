@@ -5,10 +5,9 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 from edc.choices.common import YES_NO_NA
-from edc_constants.constants import CLOSED, OPEN
+from edc_constants.constants import CLOSED, OPEN, NEW_APPT, IN_PROGRESS
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.device.sync.models import BaseSyncUuidModel
-from edc.subject.appointment.constants import IN_PROGRESS, NEW
 from edc.subject.appointment.models import Appointment
 from edc_audit.audit_trail import AuditTrail
 
@@ -109,7 +108,7 @@ class TimePointStatus(BaseTimePointStatus, BaseSyncUuidModel):
         """Closing off only appt that are either done/incomplete/cancelled ONLY."""
         exception_cls = exception_cls or ValidationError
         instance = instance or self
-        if instance.status == CLOSED and instance.appointment.appt_status in [NEW, IN_PROGRESS]:
+        if instance.status == CLOSED and instance.appointment.appt_status in [NEW_APPT, IN_PROGRESS]:
             raise exception_cls('Cannot close timepoint. Appointment status is {0}.'.format(instance.appointment.appt_status.upper()))
 
     @classmethod

@@ -101,7 +101,7 @@ class BaseMetaDataManager(models.Manager):
         If change type is:
           * None this is being called from the post-save signal on the visit form
           * I, U, D, this is being called from the post-save signal of the model itself
-          * NEW or NOT_REQUIRED it's being called by a rule triggered by another model's post-save
+          * UNKEYED or NOT_REQUIRED it's being called by a rule triggered by another model's post-save
 
         Called by the signal on post_save and pre_delete"""
         new_status = None

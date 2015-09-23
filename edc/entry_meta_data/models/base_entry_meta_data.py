@@ -1,6 +1,6 @@
 from django.db import models
 
-from edc_constants.constants import NOT_REQUIRED
+from edc_constants.constants import NOT_REQUIRED, UNKEYED
 from edc.device.sync.models import BaseSyncUuidModel
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.entry.choices import ENTRY_STATUS
@@ -17,7 +17,7 @@ class BaseEntryMetaData(BaseSyncUuidModel):
     entry_status = models.CharField(
         max_length=25,
         choices=ENTRY_STATUS,
-        default='NEW',
+        default=UNKEYED,
         db_index=True)
     due_datetime = models.DateTimeField(
         null=True,
