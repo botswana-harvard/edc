@@ -1,11 +1,10 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from edc_constants.constants import CLOSED, IN_PROGRESS, COMPLETE_APPT, INCOMPLETE
+from edc_constants.constants import CLOSED, IN_PROGRESS, COMPLETE_APPT, INCOMPLETE, NEW_APPT
 from edc.core.bhp_variables.models import StudySite
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.appointment.constants import NEW  # watch out -- not the same as edc_constants
 from edc.subject.appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.testing.classes import TestAppConfiguration, TestVisitSchedule, TestLabProfile
@@ -44,7 +43,7 @@ class TestTimePointStatus(TestCase):
         self.startup()
         TestConsentWithMixinFactory(study_site=self.study_site)
         appointment = Appointment.objects.all()[0]
-        self.assertEqual(appointment.appt_status, NEW)
+        self.assertEqual(appointment.appt_status, NEW_APPT)
         time_point_status = TimePointStatus.objects.get(appointment=appointment)
         time_point_status.status = CLOSED
         self.assertRaisesMessage(ValidationError,
@@ -60,7 +59,7 @@ class TestTimePointStatus(TestCase):
         appointment.appt_status = IN_PROGRESS
         appointment.save()
         appointment = Appointment.objects.get(pk=appointment.pk)
-        self.assertEqual(appointment.appt_status, NEW)  # new??
+        self.assertEqual(appointment.appt_status, NEW_APPT)  # new??
         time_point_status = TimePointStatus.objects.get(appointment=appointment)
         time_point_status.status = CLOSED
         self.assertRaisesMessage(ValidationError,
