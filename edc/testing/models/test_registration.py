@@ -8,10 +8,9 @@ from .test_base_off_study import TestBaseOffStudy
 
 class TestRegistration(TestOffStudyMixin, models.Model):
 
-    objects = TestRegistrationManager()
+    OFF_STUDY_MODEL =  TestBaseOffStudy
 
-    def get_off_study_cls(self):
-        return TestBaseOffStudy
+    objects = TestRegistrationManager()
 
     class Meta:
         app_label = 'testing'

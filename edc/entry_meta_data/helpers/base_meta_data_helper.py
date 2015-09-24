@@ -75,9 +75,9 @@ class BaseMetaDataHelper(object):
         # subject is at the off study visit (lost)
         if self.visit_instance.reason.lower() in self.visit_instance.get_off_study_reason():
             visit_date = date(self.visit_instance.report_datetime.year, self.visit_instance.report_datetime.month, self.visit_instance.report_datetime.day)
-            if self.visit_instance.get_off_study_cls().objects.filter(registered_subject=self.registered_subject, offstudy_date=visit_date):
+            if self.visit_instance.OFF_STUDY_MODEL.objects.filter(registered_subject=self.registered_subject, offstudy_date=visit_date):
                 # has an off study form completed on same day as visit
-                off_study_instance = self.visit_instance.get_off_study_cls().objects.get(registered_subject=self.registered_subject, offstudy_date=visit_date)
+                off_study_instance = self.visit_instance.OFF_STUDY_MODEL.objects.get(registered_subject=self.registered_subject, offstudy_date=visit_date)
                 show_scheduled_entries = off_study_instance.show_scheduled_entries_on_off_study_date()
         return show_scheduled_entries
 
