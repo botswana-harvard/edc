@@ -58,14 +58,8 @@ class RegisteredSubjectDashboard(Dashboard):
 
     def get_context_data(self, **kwargs):
         self.context = super(RegisteredSubjectDashboard, self).get_context_data(**kwargs)
+        self.context.update(self.base_rendered_context)
         self.context.update(
-            IN_PROGRESS=IN_PROGRESS,
-            NEW=NEW,
-            KEYED=KEYED,
-            UNKEYED=UNKEYED,
-            NOT_REQUIRED=NOT_REQUIRED,
-            NEW_APPT=NEW_APPT,
-            COMPLETE_APPT=COMPLETE_APPT,
             appointment=self.appointment,
             appointment_row_template=self.appointment_row_template,
             appointment_visit_attr=self.visit_model._meta.object_name.lower(),
@@ -517,24 +511,25 @@ class RegisteredSubjectDashboard(Dashboard):
                         value = getattr(self.locator_inst, field.name)
                         if value:
                             setattr(self.locator_inst, field.name, '<BR>'.join(wrap(value, 25)))
-            context.update({
-                'subject_dashboard_url': self.dashboard_url_name,
-                'dashboard_type': self.dashboard_type,
-                'dashboard_model': self.dashboard_model_name,
-                'dashboard_id': self.dashboard_id,
-                'show': self.show,
-                'registered_subject': self.registered_subject,
-                'visit_attr': self.visit_model_attrname,
-                'visit_model_instance': self.visit_model_instance,
-                'appointment': self.appointment,
-                'locator_add_url': locator_add_url,
-                'locator_change_url': locator_change_url})
+        context.update({
+            'subject_dashboard_url': self.dashboard_url_name,
+            'dashboard_type': self.dashboard_type,
+            'dashboard_model': self.dashboard_model_name,
+            'dashboard_id': self.dashboard_id,
+            'show': self.show,
+            'registered_subject': self.registered_subject,
+            'visit_attr': self.visit_model_attrname,
+            'visit_model_instance': self.visit_model_instance,
+            'appointment': self.appointment,
+            'locator_add_url': locator_add_url,
+            'locator_change_url': locator_change_url})
         # subclass may insert / update context values (e.g. visit stuff)
-            context = self.update_locator_context(context)
+        context = self.update_locator_context(context)
         return render_to_string(self.locator_template, context)
 
     def update_locator_context(self, context):
         """Update context to set visit information if needing something other than the default."""
+        context.update(self.base_rendered_context)
         if context.get('visit_model_instance'):
             if not isinstance(context.get('visit_model_instance'), self.locator_visit_model):
                 context['visit_model_instance'] = None
@@ -587,16 +582,16 @@ class RegisteredSubjectDashboard(Dashboard):
                                      'Please review and resolve if possible.'))
         else:
             self.context.update(action_item_message=None)
-        rendered_action_items = render_to_string(
-            template, 
-            self.base_rendered_context.update({
-                'action_items': action_item_instances,
-                'registered_subject': self.registered_subject,
-                'dashboard_type': self.dashboard_type,
-                'dashboard_model': self.dashboard_model_name,
-                'dashboard_id': self.dashboard_id,
-                'show': self.show,
-                'action_item_meta': action_item_cls._meta}))
+        self.context.update(self.base_rendered_context)
+        self.context.update({
+            'action_items': action_item_instances,
+            'registered_subject': self.registered_subject,
+            'dashboard_type': self.dashboard_type,
+            'dashboard_model': self.dashboard_model_name,
+            'dashboard_id': self.dashboard_id,
+            'show': self.show,
+            'action_item_meta': action_item_cls._meta})
+        rendered_action_items = render_to_string(template, self.context)
         return rendered_action_items
 
     @property
@@ -611,20 +606,20 @@ class RegisteredSubjectDashboard(Dashboard):
             scheduled_entry_context = ScheduledEntryContext(
                 meta_data_instance, self.appointment, self.visit_model)
             scheduled_entries.append(scheduled_entry_context.context)
-        rendered_scheduled_forms = render_to_string(
-            template,
-            self.base_rendered_context.update({
-                'scheduled_entries': scheduled_entries,
-                'visit_attr': self.visit_model_attrname,
-                'visit_model_instance': self.visit_model_instance,
-                'app_label': self.visit_model_instance._meta.app_label,
-                'registered_subject': self.registered_subject.pk,
-                'appointment': self.appointment.pk,
-                'dashboard_type': self.dashboard_type,
-                'dashboard_model': self.dashboard_model_name,
-                'dashboard_id': self.dashboard_id,
-                'subject_dashboard_url': self.dashboard_url_name,
-                'show': self.show}))
+        context = self.base_rendered_context
+        context.update({
+            'scheduled_entries': scheduled_entries,
+            'visit_attr': self.visit_model_attrname,
+            'visit_model_instance': self.visit_model_instance,
+            'app_label': self.visit_model_instance._meta.app_label,
+            'registered_subject': self.registered_subject.pk,
+            'appointment': self.appointment.pk,
+            'dashboard_type': self.dashboard_type,
+            'dashboard_model': self.dashboard_model_name,
+            'dashboard_id': self.dashboard_id,
+            'subject_dashboard_url': self.dashboard_url_name,
+            'show': self.show})
+        rendered_scheduled_forms = render_to_string(template, context)
         return rendered_scheduled_forms
 
     @property
@@ -651,22 +646,22 @@ class RegisteredSubjectDashboard(Dashboard):
                 additional_requisitions.append(requisition_context.context)
             else:
                 scheduled_requisitions.append(requisition_context.context)
-        rendered_requisitions = render_to_string(
-            template,
-            self.base_rendered_context.update({
-                'scheduled_requisitions': scheduled_requisitions,
-                'additional_requisitions': additional_requisitions,
-                'drop_down_list_requisitions': self.drop_down_list_requisitions(scheduled_requisitions),
-                'show_drop_down_requisitions': show_drop_down_requisitions,
-                'visit_attr': self.visit_model_attrname,
-                'visit_model_instance': self.visit_model_instance,
-                'registered_subject': self.registered_subject.pk,
-                'appointment': self.appointment.pk,
-                'dashboard_type': self.dashboard_type,
-                'dashboard_model': self.dashboard_model_name,
-                'dashboard_id': self.dashboard_id,
-                'subject_dashboard_url': self.dashboard_url_name,
-                'show': self.show}))
+        context = self.base_rendered_context
+        context.update({
+            'scheduled_requisitions': scheduled_requisitions,
+            'additional_requisitions': additional_requisitions,
+            'drop_down_list_requisitions': self.drop_down_list_requisitions(scheduled_requisitions),
+            'show_drop_down_requisitions': show_drop_down_requisitions,
+            'visit_attr': self.visit_model_attrname,
+            'visit_model_instance': self.visit_model_instance,
+            'registered_subject': self.registered_subject.pk,
+            'appointment': self.appointment.pk,
+            'dashboard_type': self.dashboard_type,
+            'dashboard_model': self.dashboard_model_name,
+            'dashboard_id': self.dashboard_id,
+            'subject_dashboard_url': self.dashboard_url_name,
+            'show': self.show})
+        rendered_requisitions = render_to_string(template, context)
         return rendered_requisitions
 
     def drop_down_list_requisitions(self, scheduled_requisitions):
@@ -685,13 +680,13 @@ class RegisteredSubjectDashboard(Dashboard):
         """Renders to string a to a url to the historymodel for the subject_hiv_status."""
         if self.subject_hiv_status:
             change_list_url = reverse('admin:lab_tracker_historymodel_changelist')
-            return render_to_string(
-                self.subject_hiv_template,
-                self.base_rendered_context.update({
-                    'subject_hiv_status': self.subject_hiv_status,
-                    'subject_identifier': self.subject_identifier,
-                    'subject_type': self.subject_type,
-                    'change_list_url': change_list_url}))
+            context = self.base_rendered_context
+            context.update({
+                'subject_hiv_status': self.subject_hiv_status,
+                'subject_identifier': self.subject_identifier,
+                'subject_type': self.subject_type,
+                'change_list_url': change_list_url})
+            return render_to_string(self.subject_hiv_template, context)
         return ''
 
     @property
