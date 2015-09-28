@@ -50,7 +50,7 @@ class AuditTrail(object):
     def __init__(self, show_in_admin=False, save_change_type=True, audit_deletes=True,
                  track_fields=None):
         self.opts = {}
-        self.opts['show_in_admin'] = False # show_in_admin
+        self.opts['show_in_admin'] = False  # show_in_admin
         self.opts['save_change_type'] = save_change_type
         self.opts['audit_deletes'] = audit_deletes
         if track_fields:
@@ -205,6 +205,7 @@ def create_audit_manager_class(manager):
 
 def create_audit_model(cls, **kwargs):
     """Create an audit model for the specific class"""
+
     name = cls.__name__ + 'Audit'
 
     class Meta:
@@ -235,7 +236,8 @@ def create_audit_model(cls, **kwargs):
     # Copy the fields from the existing model to the audit model
     for field in cls._meta.fields:
         if field.name in attrs:
-            raise ImproperlyConfigured("%s cannot use %s as it is needed by AuditTrail." % (cls.__name__, field.attname))
+            raise ImproperlyConfigured(
+                "%s cannot use %s as it is needed by AuditTrail." % (cls.__name__, field.attname))
         if isinstance(field, (models.AutoField, UUIDAutoField)):
             # Audit models have a separate AutoField called _audit_id
             # id is demoted to a normal field (or whatever the auto field is named)
