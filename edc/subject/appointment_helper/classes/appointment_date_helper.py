@@ -15,10 +15,12 @@ class AppointmentDateHelper(object):
         self.window_delta = None
         # not used
         self.allow_backwards = False
-        self.appointments_days_formard = GlobalConfiguration.objects.get_attr_value('appointments_days_forward')
+        self.appointments_days_forward = GlobalConfiguration.objects.get_attr_value('appointments_days_forward') or 0
         self.appointments_per_day_max = GlobalConfiguration.objects.get_attr_value('appointments_per_day_max')
         self.use_same_weekday = GlobalConfiguration.objects.get_attr_value('use_same_weekday')
         self.allowed_iso_weekdays = GlobalConfiguration.objects.get_attr_value('allowed_iso_weekdays')
+        if not self.allowed_iso_weekdays:
+            self.allowed_iso_weekdays = '1234567'
 
     def get_best_datetime(self, appt_datetime, site, weekday=None, exception_cls=None):
         """ Gets the appointment datetime on insert.
@@ -113,14 +115,14 @@ class AppointmentDateHelper(object):
                 raise TypeError('Appt_datetime cannot be None')
         return appt_datetime
 
-    def _move_on_appt_max_exceeded(self, original_appt_datetime, site, appointments_per_day_max=None, appointments_days_formard=None):
+    def _move_on_appt_max_exceeded(self, original_appt_datetime, site, appointments_per_day_max=None, appointments_days_forward=None):
         """Moves appointment date to another date if the appointments_per_day_max is exceeded."""
         from edc.subject.appointment.models import Appointment
         appt_datetime = copy.deepcopy(original_appt_datetime)
         if not appointments_per_day_max:
             appointments_per_day_max = self.appointments_per_day_max
-        if not appointments_days_formard:
-            appointments_days_formard = self.appointments_days_formard
+        if not appointments_days_forward:
+            appointments_days_forward = self.appointments_days_forward
         my_appt_date = appt_datetime.date()
         # get a list of appointments in the date range from 'appt_datetime' to 'appt_datetime'+days_forward
         # use model field appointment.best_appt_datetime not appointment.appt_datetime
@@ -128,7 +130,7 @@ class AppointmentDateHelper(object):
         appointments = Appointment.objects.filter(
             study_site=site,
             best_appt_datetime__gte=appt_datetime,
-            best_appt_datetime__lte=appt_datetime + timedelta(days=self.appointments_days_formard))
+            best_appt_datetime__lte=appt_datetime + timedelta(days=self.appointments_days_forward))
         if appointments:
             # looking for appointments per day
             # create dictionary of { day: count, ... }
