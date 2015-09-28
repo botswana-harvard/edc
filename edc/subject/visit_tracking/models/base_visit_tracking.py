@@ -3,10 +3,10 @@ import copy
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 
-from edc.base.model.fields import OtherCharField
-from edc.base.model.validators import datetime_not_before_study_start, datetime_not_future, datetime_is_after_consent
-from edc_constants.constants import IN_PROGRESS, COMPLETE_APPT, INCOMPLETE, UNKEYED
 from edc.subject.appointment.models import Appointment
+from edc_base.model.fields import OtherCharField
+from edc_base.model.validators import datetime_not_before_study_start, datetime_not_future
+from edc_constants.constants import IN_PROGRESS, COMPLETE_APPT, INCOMPLETE, UNKEYED
 
 from ..choices import VISIT_REASON
 from ..managers import BaseVisitTrackingManager
@@ -36,7 +36,6 @@ class BaseVisitTracking (models.Model):
         verbose_name="Visit Date and Time",
         validators=[
             datetime_not_before_study_start,
-            datetime_is_after_consent,
             datetime_not_future],
         help_text='Date and time of this report'
     )
