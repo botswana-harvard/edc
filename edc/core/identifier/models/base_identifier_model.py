@@ -4,9 +4,10 @@ from django.core.exceptions import ImproperlyConfigured
 
 
 from ..managers import IdentifierManager
+from base.model.models.base_model import BaseModel
 
 
-class BaseIdentifierModel(models.Model):
+class BaseIdentifierModel(BaseModel):
     """Store identifiers as allocated."""
 
     identifier = models.CharField(max_length=36, unique=True, editable=False)
