@@ -22,6 +22,12 @@ class AppointmentAdmin(BaseModelAdmin):
         if db_field.name == "registered_subject":
             if request.GET.get('registered_subject'):
                 kwargs["queryset"] = RegisteredSubject.objects.filter(pk=request.GET.get('registered_subject'))
+            else:
+                self.readonly_fields = list(self.readonly_fields)
+                try:
+                    self.readonly_fields.index('registered_subject')
+                except ValueError:
+                    self.readonly_fields.append('registered_subject')
         return super(AppointmentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     fields = (
