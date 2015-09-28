@@ -8,12 +8,11 @@ from edc.core.crypto_fields.fields import EncryptedCharField, EncryptedTextField
 from edc.subject.registration.models import RegisteredSubject
 from edc_base.bw.validators import BWCellNumber, BWTelephoneNumber
 from edc_base.model.validators import datetime_not_before_study_start, datetime_not_future
-from edc_consent.models.requires_consent_mixin import RequiresConsentMixin
 
 from ..managers import BaseLocatorManager
 
 
-class BaseLocator(RequiresConsentMixin):
+class BaseLocator(models.Model):
 
     registered_subject = models.OneToOneField(RegisteredSubject, null=True)
 
