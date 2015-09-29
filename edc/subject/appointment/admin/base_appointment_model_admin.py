@@ -9,30 +9,14 @@ class BaseAppointmentModelAdmin(BaseModelAdmin):
 
     In the child ModelAdmin class set the following attributes, for example::
 
-        visit_model_foreign_key = 'maternal_visit'
+        visit_attr = 'maternal_visit'
         dashboard_type = 'maternal'
 
     """
     date_hierarchy = 'report_datetime'
 
     def __init__(self, *args, **kwargs):
-
-#         # dashboard_type is required to reverse url back to dashboard
-#         if not hasattr(self, 'dashboard_type'):
-#             raise AttributeError('{0} attribute \'dashboard_type\' is required but has not been defined.'.format(self))
-#         elif not self.dashboard_type:
-#             raise ValueError('{0} attribute \'dashboard_type\' cannot be None. '.format(self))
-#         else:
-#             pass
-
         super(BaseAppointmentModelAdmin, self).__init__(*args, **kwargs)
-
-#         # appointment key should exist, if not, maybe sent the wrong model
-#         if not [f.name for f in self.model._meta.fields if f.name == 'appointment']:
-#             raise AttributeError('The model for BaseAppointmentModelAdmin child class {0} '
-#                                  'requires model attribute \'appointment\'. Not found '
-#                                  'in model {1}.'.format(self, self.model._meta.object_name))
-
         self.list_display = ['appointment', 'report_datetime', 'reason', 'created',
                              'modified', 'user_created', 'user_modified', ]
 

@@ -1,7 +1,9 @@
+from django.db import models
 
-class OffStudyMixin(object):
 
-    OFF_STUDY_MODEL =  None
+class OffStudyMixin(models.Model):
+
+    OFF_STUDY_MODEL = None
 
     def is_off_study(self):
         """Returns True if the off-study form exists for this subject, otherwise False.

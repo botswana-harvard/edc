@@ -2,16 +2,16 @@ from datetime import datetime
 
 from django.db import models
 
-from edc.choices import YES_NO
-from edc_base.model.models import BaseUuidModel
 from edc.entry_meta_data.managers import EntryMetaDataManager
 from edc.export.managers import ExportHistoryManager
 from edc.export.models import ExportTrackingFieldsMixin
+from edc_base.model.models import BaseUuidModel
+from edc_constants.choices import YES_NO
 
 from .test_visit import TestVisit
 
 
-class TestScheduledModel(BaseUuidModel, ExportTrackingFieldsMixin):
+class TestScheduledModel(ExportTrackingFieldsMixin, BaseUuidModel):
 
     test_visit = models.OneToOneField(TestVisit)
 
@@ -36,7 +36,7 @@ class TestScheduledModel(BaseUuidModel, ExportTrackingFieldsMixin):
         app_label = 'testing'
 
 
-class TestScheduledModel1(BaseUuidModel, ExportTrackingFieldsMixin):
+class TestScheduledModel1(ExportTrackingFieldsMixin, BaseUuidModel):
 
     test_visit = models.OneToOneField(TestVisit)
 
@@ -63,7 +63,7 @@ class TestScheduledModel1(BaseUuidModel, ExportTrackingFieldsMixin):
         app_label = 'testing'
 
 
-class TestScheduledModel2(BaseUuidModel, ExportTrackingFieldsMixin):
+class TestScheduledModel2(ExportTrackingFieldsMixin, BaseUuidModel):
 
     test_visit = models.OneToOneField(TestVisit)
 
@@ -90,7 +90,7 @@ class TestScheduledModel2(BaseUuidModel, ExportTrackingFieldsMixin):
         app_label = 'testing'
 
 
-class TestScheduledModel3(BaseUuidModel, ExportTrackingFieldsMixin):
+class TestScheduledModel3(ExportTrackingFieldsMixin, BaseUuidModel):
 
     test_visit = models.OneToOneField(TestVisit)
 

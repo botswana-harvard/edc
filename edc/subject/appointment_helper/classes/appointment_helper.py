@@ -48,7 +48,7 @@ class AppointmentHelper(object):
                 # getting the latest may be wrong, ??
                 # get_by_lastest is expected to be defined
                 membership_form = membership_form_model.objects.filter(
-                    registered_subject=registered_subject).last()
+                    registered_subject=registered_subject).latest()
             except membership_form_model.DoesNotExist:
                 # not found, which is supposed to be impossible -- this is called in post_save signal.
                 raise AppointmentCreateError(

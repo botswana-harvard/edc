@@ -13,7 +13,7 @@ class ExportTransactionManager(models.Manager):
         return self.get(export_uuid=export_uuid)
 
 
-class ExportTransaction(BaseSyncUuidModel, ExportTrackingFieldsMixin):
+class ExportTransaction(ExportTrackingFieldsMixin, BaseSyncUuidModel):
 
     tx = models.TextField()
 
