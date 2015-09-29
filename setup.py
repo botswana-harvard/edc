@@ -11,7 +11,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='edc',
-    version='1.13.11',
+    version='1.13.13',
     author=u'Botswana-Harvard AIDS Institute',
     author_email='ew2789@gmail.com',
     packages=find_packages(),
