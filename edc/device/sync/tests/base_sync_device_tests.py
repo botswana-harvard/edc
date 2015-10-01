@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from tastypie.models import ApiKey
 
-from edc.device.device.classes import Device
+from edc_device import device
 
 from ..models import OutgoingTransaction, IncomingTransaction, MiddleManTransaction
 
@@ -22,7 +22,7 @@ class BaseSyncDeviceTests(TestCase):
         command.execute("john")
         if not ApiKey.objects.filter(user=User.objects.get(username='john')):
             ApiKey.objects.create(user=User.objects.get(username='john'))
-        self.device = Device()
+        self.device = device
 
     def denies_anonymous_acess(self, producer, app_name):
         response = self.client.get('/bhp_sync/consume/' + producer + '/' + app_name + '/', follow=True)

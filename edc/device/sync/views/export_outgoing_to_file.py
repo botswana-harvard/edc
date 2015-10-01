@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 
-from edc.device import device
+from edc_device import device
 
 from ..utils import export_outgoing_transactions
 

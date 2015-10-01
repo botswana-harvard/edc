@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import get_model
 from django.conf import settings
 
-from edc.device.device.classes import Device
+from edc_device import device
 
 from ..classes import DeserializeFromTransaction
 
@@ -28,7 +28,7 @@ class MiddleManTransaction(BaseTransaction):
     def save(self, *args, **kwargs):
         if self.is_consumed_server and not self.consumed_datetime:
             self.consumed_datetime = datetime.today()
-        if not Device().is_middleman:
+        if not device.is_middleman:
             raise TypeError('\'{0}\' is not configured to be a MiddleMan, so you cannot save MiddleMan transanctions here.'.format(settings.DEVICE_ID))
         super(MiddleManTransaction, self).save(*args, **kwargs)
 

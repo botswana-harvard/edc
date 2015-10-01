@@ -10,7 +10,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 
-from edc.device.device.classes import Device
+from edc_device import device
 from edc.device.sync.classes import transaction_producer
 from edc.device.sync.models import Producer, RequestLog, IncomingTransaction, MiddleManTransaction
 
@@ -23,7 +23,7 @@ class ConsumeTransactions(object):
         self.app_name = app_name
         self._producer = None
         self.producer = producer
-        self.device = Device()
+        self.device = device
         self.middleman = True if self.device.is_middleman else False
         try:
             api_key = request.user.api_key.key
@@ -204,7 +204,10 @@ class ConsumeTransactions(object):
 
     @property
     def remote_is_site_server(self):
-        return self.device.is_producer_name_server(self.producer.name)
+        hostname = self.producer.name.split('-')[0]
+        if hostname.find('bcpp') != -1 and int(hostname[4:]) in self.device.server_ids:
+            return True
+        return False
 
     @property
     def url(self):

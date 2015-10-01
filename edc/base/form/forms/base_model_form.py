@@ -5,7 +5,7 @@ from django.db.models import OneToOneField, ForeignKey, get_model
 from django.db.models.query import QuerySet
 
 from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.device.device.classes import Device
+from edc_device import device
 
 from ..classes import LogicCheck
 
@@ -76,14 +76,14 @@ class BaseModelForm(forms.ModelForm):
                 if not isinstance(value, QuerySet):  # m2m fields
                     options.update({key: value})
             model_instance = self._meta.model(pk=self.instance.pk, **options)
-            if not Device.is_central_server:
+            if not device.is_central_server:
                 if model_instance.is_dispatched():
                     raise forms.ValidationError(
                         'Updates not allowed. This form is part of the '
                         'dataset for a \'{}\' that is currently dispatched to {}.'.format(
                             model_instance.dispatch_container_lookup()[0]._meta.verbose_name,
                             model_instance.user_container_instance.dispatched_container_item.producer.name
-                            )
+                        )
                     )
         except AttributeError:
             pass

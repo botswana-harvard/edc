@@ -1,10 +1,14 @@
 import re
 import uuid
+
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from django.conf import settings
-from edc.device.device.classes import Device
+
+from edc_device import device
+
 from ..exceptions import IdentifierError, IndentifierFormatError
+
 from .check_digit import CheckDigit
 
 
@@ -70,7 +74,7 @@ class BaseIdentifier(object):
 
     def _get_identifier_prep(self, **kwargs):
         """Calls user method self.get_identifier_prep() and adds/updates custom options to the defaults."""
-        device = Device()
+        device = device
         options = {'identifier_prefix': self.identifier_prefix,
                    'site_code': self.site_code,
                    }
