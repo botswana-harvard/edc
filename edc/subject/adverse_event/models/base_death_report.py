@@ -1,6 +1,6 @@
 from django.db import models
 
-from edc.choices.common import YES_NO
+from edc_constants.choices import YES_NO
 from edc.subject.code_lists.models import DxCode
 
 from .base_death import BaseDeath

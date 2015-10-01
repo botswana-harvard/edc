@@ -3,7 +3,7 @@ from datetime import datetime, date
 from django.db import models
 
 from edc_base.model.models import BaseUuidModel
-from edc.choices import YES_NO
+from edc_constants.choices import YES_NO
 
 from edc.export.managers import ExportHistoryManager
 

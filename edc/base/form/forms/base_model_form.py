@@ -133,15 +133,20 @@ class BaseModelForm(forms.ModelForm):
                 for ans in answers:
                     if any([word in ans for word in optional_words]) and required_word in ans.lower():
                         if not cleaned_data.get(optional_field_name, None):
-                            raise forms.ValidationError('You have selected \'{0}\' as an answer for {1}. Please specify in {2}.'.format(ans, m2m_name, optional_field_name))
+                            raise forms.ValidationError(
+                                'You have selected \'{0}\' as an answer for {1}. Please specify in {2}.'.format(
+                                    ans, m2m_name, optional_field_name))
 
     # TODO: is this method used??
     def validate_m2m(self, **kwargs):
-        """Validates at form level a triplet of questions lead by a Yes/No for a many to many with other specify.
+        """Validates at form level a triplet of questions lead by a Yes/No for a
+        many to many with other specify.
 
-            * The first question is a Yes/No question indicating if any items in the many to many will be selected
+            * The first question is a Yes/No question indicating if any items
+              in the many to many will be selected
             * The second question is a many to many (select all that apply)
-            * The third is an 'Other Specify' to be completed if an 'Other' item was selected in the many to many question
+            * The third is an 'Other Specify' to be completed if an 'Other' item
+              was selected in the many to many question
 
             Be sure to check cleaned_data for the 'key' of the m2m field first.
 
@@ -160,8 +165,9 @@ class BaseModelForm(forms.ModelForm):
         other = kwargs.get('other')
 
         # if leading question is 'Yes', a m2m item cannot be 'Not applicable'
-        if leading.lower() == 'yes' and [True for item in m2m if item.name.lower() == 'not applicable']:
-            raise forms.ValidationError("You stated there ARE " + label + "s, yet you selected '{0}'".format(item.name))
+        if leading == 'yes' and [True for item in m2m if item.name.lower() == 'not applicable']:
+            raise forms.ValidationError(
+                "You stated there ARE " + label + "s, yet you selected '{0}'".format(item.name))
 
         # if leading question is 'No', ensure the m2m item is 'not applicable'
         if leading.lower() == 'no' and not [True for item in m2m if item.name.lower() == 'not applicable']:

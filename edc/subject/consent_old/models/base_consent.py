@@ -13,7 +13,7 @@ from edc.core.crypto_fields.utils import mask_encrypted
 from edc.core.bhp_variables.models import StudySite
 from edc.core.bhp_common.utils import formatted_age
 from edc.base.model.validators import datetime_not_future, datetime_not_before_study_start, eligible_if_no
-from edc.choices.common import YES_NO
+from edc_constants.choices import YES_NO
 from edc.subject.subject.models import BaseSubject
 
 from ..exceptions import ConsentError
