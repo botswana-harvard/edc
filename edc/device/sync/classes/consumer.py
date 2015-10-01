@@ -6,8 +6,7 @@ from datetime import datetime, timedelta
 
 from django.core.serializers.base import DeserializationError
 from django.db.models import get_model
-
-from edc.device.device.classes import device
+from edc_device import device
 
 from ..exceptions import TransactionConsumerError
 
