@@ -263,5 +263,11 @@ class BaseVisitTracking (models.Model):
     def get_appointment(self):
         return self.appointment
 
+    def get_visit_code(self):
+        try:
+            return self.appointment.visit_definition.code
+        except AttributeError:
+            return None
+
     class Meta:
         abstract = True
