@@ -74,7 +74,6 @@ class BaseIdentifier(object):
 
     def _get_identifier_prep(self, **kwargs):
         """Calls user method self.get_identifier_prep() and adds/updates custom options to the defaults."""
-        device = device
         options = {'identifier_prefix': self.identifier_prefix,
                    'site_code': self.site_code,
                    }
