@@ -47,17 +47,17 @@ class FormExporter(object):
                 if model_admin.model == self.model:
                     self._model_admin = model_admin
                     break
+            if not self._model_admin:
+                print('Unable to find admin class for {}.'.format(self.model))
         return self._model_admin
 
     @property
     def model_admin_fields(self):
         """Finds and returns the fields tuple from the model_admin class for the given model."""
-        #return self.model_admin.fields
-        if self._visit_definition and self._visit_definition.code == 'T0' and 'baseline_fields' in dir(self.model_admin):
-            return self.model_admin.baseline_fields
-        elif self._visit_definition and self._visit_definition.code in ['T1', 'T2'] and 'annual_fields' in dir(self.model_admin):
-            return self.model_admin.annual_fields
-        else:
+        try:
+            visit_code = self.model_admin.get_visit_code(None, None)
+            return self.model_admin.get_custom_fields(None, visit_code=visit_code)
+        except AttributeError:
             return self.model_admin.fields
 
     @property
@@ -86,9 +86,11 @@ class FormExporter(object):
                             field = object()
                     field.number = n
                     self._fields.update({field_name: field})
-            except TypeError:
+            except TypeError as e:
+                print(e)
                 pass
-            except AttributeError:
+            except AttributeError as e:
+                print(e)
                 pass
         return self._fields
 
