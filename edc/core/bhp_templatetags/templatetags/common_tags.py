@@ -34,18 +34,22 @@ def current_time(format_string):
 
 @register.simple_tag
 def project_title():
-    if 'PROJECT_TITLE' not in dir(settings):
+    try:
+        project_title = settings.PROJECT_TITLE
+    except AttributeError:
         raise ImproperlyConfigured('Attribute settings.PROJECT_TITLE not found. Please '
                                    'add PROJECT_TITLE=\'<long name of my project>\' to the settings file.')
-    return settings.PROJECT_TITLE
+    return project_title
 
 
 @register.simple_tag
 def project_number():
-    if 'PROJECT_NUMBER' not in dir(settings):
+    try:
+        project_number = settings.PROJECT_NUMBER
+    except AttributeError:
         raise ImproperlyConfigured('Attribute settings.PROJECT_NUMBER not found. Please '
                                    'add PROJECT_NUMBER=\'<project number, e.g. BHP041>\' to the settings file.')
-    return settings.PROJECT_NUMBER
+    return project_number
 
 
 @register.simple_tag
