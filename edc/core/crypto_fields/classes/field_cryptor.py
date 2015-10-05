@@ -173,3 +173,11 @@ class FieldCryptor(object):
             except Crypt.DoesNotExist:
                 pass
         return secret
+
+    def mask(self, value, mask='<encrypted>'):
+        """ Help format values for display by masking them if encrypted
+        at the time of display."""
+        if self.is_encrypted(value):
+            return mask
+        else:
+            return value
