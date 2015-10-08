@@ -2,7 +2,7 @@ import factory
 
 from datetime import datetime
 
-from edc.choices.common import IDENTITY_TYPE
+from edc_constants.choices import IDENTITY_TYPE
 from edc.core.bhp_variables.tests.factories import StudySiteFactory
 
 from ...models import TestConsent, TestConsentWithMixin

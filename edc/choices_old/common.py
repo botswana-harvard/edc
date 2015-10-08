@@ -18,10 +18,6 @@ PIMA = (
     ('OTHER', _('Other, specify:')),
 )
 
-PIMA_SETTING_VL = (
-    ('mobile setting', 'Mobile Setting'),
-    ('household setting', 'Household Setting'),
-)
 ACU_EST_NEG = (
     ('Acute', 'Acute'),
     ('Established', 'Established'),
@@ -285,12 +281,6 @@ WILL_DECL = (
 YES_NO = (
     (YES, _(YES)),
     (NO, _(NO)),
-)
-
-BLOCK_CONTINUE = (
-    ('Block', 'Yes( Block from further participation)'),
-    ('Continue', 'No (Can continue and participate)'),
-    (NOT_APPLICABLE, 'Not applicable'),
 )
 
 YES_NO_DECLINED = (

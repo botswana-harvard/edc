@@ -6,11 +6,11 @@ from datetime import datetime
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
-from edc.choices.common import YES_NO
+from edc_constants.choices import YES_NO
 from edc_constants.constants import YES
 from edc.core.bhp_string.classes import StringHelper
 from edc.core.bhp_variables.models import StudySite
-from edc.device.device.classes import Device
+from edc_device import device
 from edc_base.model.fields import InitialsField
 
 from ..choices import PRIORITY, REASON_NOT_DRAWN, ITEM_TYPE
@@ -212,7 +212,6 @@ class BaseBaseRequisition (models.Model):
 
     def prepare_requisition_identifier(self, **kwargs):
         """Generate and returns a locally unique requisition identifier for a device (adds device id)"""
-        device = Device()
         device_id = kwargs.get('device_id', device.device_id)
         string = StringHelper()
         length = 5

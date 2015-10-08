@@ -2,6 +2,9 @@ import os
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+
+from edc_device import device
+
 from ..classes import site_mappers
 from ..exceptions import MapperError
 
@@ -19,7 +22,7 @@ def coordinates_to_gps(request, **kwargs):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_item_label))
     else:
         mapper = site_mappers.get_registry(mapper_name)()
-        if settings.DEVICE_ID == '99':
+        if str(device) == device.central_server_id:
             raise MapperError('You are in the server, You can\'t dispatch the whole server data to a GPS receiver.')
         else:
             #TODO: if path does not exist fail gracefully

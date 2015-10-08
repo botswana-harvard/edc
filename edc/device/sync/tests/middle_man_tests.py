@@ -11,7 +11,7 @@ from .factories import MiddleManTransactionFactory, ProducerFactory
 class MiddleManTests(BaseSyncDeviceTests):
 
     def test_middleman_settings(self):
-        # if not Device().is_middleman:
+        # if not device.is_middleman:
         self.device.set_device_id(99)
         self.assertRaises(TypeError, lambda: MiddleManTransactionFactory())
 
@@ -19,7 +19,7 @@ class MiddleManTests(BaseSyncDeviceTests):
         raise
 # doesn't belong in edc module
 #         from .apps.bcpp_inspector.models import SubjectRequisitionInspector
-#         # if Device().is_middleman:
+#         # if device.is_middleman:
 #         settings.DEVICE_ID = '98'
 #         wb_requisition = MiddleManTransactionFactory()#default middle man transaction is wb requisition.
 #

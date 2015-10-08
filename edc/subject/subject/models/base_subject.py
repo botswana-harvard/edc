@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
-from edc.choices.common import GENDER_UNDETERMINED
+from edc_constants.choices import GENDER_UNDETERMINED
 from edc_base.model.fields import IsDateEstimatedField
 from edc.core.crypto_fields.fields import (EncryptedFirstnameField, EncryptedLastnameField,
                                            EncryptedCharField)

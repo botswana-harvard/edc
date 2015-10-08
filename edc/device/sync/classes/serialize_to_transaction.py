@@ -3,7 +3,7 @@ from datetime import datetime
 from django.core import serializers
 from django.db.models import get_model
 
-from edc.core.crypto_fields.classes import FieldCryptor
+from edc_base.encrypted_fields import FieldCryptor
 
 from .transaction_producer import transaction_producer
 

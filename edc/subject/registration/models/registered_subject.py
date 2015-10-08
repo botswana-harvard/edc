@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 
 from edc_audit.audit_trail import AuditTrail
 from edc_base.model.fields import IdentityTypeField
-from edc.choices.common import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
+from edc_constants.choices import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
 from edc.core.bhp_variables.models import StudySite
 from edc_base.encrypted_fields import IdentityField
 from edc.core.crypto_fields.utils.mask_encrypted import mask_encrypted

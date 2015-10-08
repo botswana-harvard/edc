@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
-from edc.choices.common import YES_NO, YES_NO_DOESNT_WORK
+from edc_constants.choices import YES_NO, YES_NO_DOESNT_WORK
 from edc.core.crypto_fields.fields import EncryptedCharField, EncryptedTextField
 from edc.subject.registration.models import RegisteredSubject
 from edc_base.bw.validators import BWCellNumber, BWTelephoneNumber

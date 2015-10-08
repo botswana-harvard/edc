@@ -1,11 +1,12 @@
+from __future__ import print_function
+
 import logging
 
 from datetime import datetime, timedelta
 
 from django.core.serializers.base import DeserializationError
 from django.db.models import get_model
-
-from edc.device.device.classes import device
+from edc_device import device
 
 from ..exceptions import TransactionConsumerError
 
@@ -51,19 +52,19 @@ class Consumer(object):
                                                                                           is_ignored=False).count()
         for index, incoming_transaction in self.enumerated_incomming(using, model_name, producer_name):
             action = ''
-            print '{0} / {1} {2} {3}'.format(index + 1, total_incoming_transactions,
+            print('{0} / {1} {2} {3}'.format(index + 1, total_incoming_transactions,
                                              incoming_transaction.producer,
-                                             incoming_transaction.tx_name)
-            print '    tx_pk=\'{0}\''.format(incoming_transaction.tx_pk)
+                                             incoming_transaction.tx_name))
+            print('    tx_pk=\'{0}\''.format(incoming_transaction.tx_pk))
             action = 'failed'
             try:
                 if deserialize_from_transaction.deserialize(incoming_transaction,
                                                             using,
                                                             check_hostname=check_hostname):
                     action = 'saved'
-                print '    {0}'.format(action)
+                print('    {0}'.format(action))
             except DeserializationError as deserialization_error:
-                print '    {0} {1}'.format(action, str(deserialization_error))
+                print('    {0} {1}'.format(action, str(deserialization_error)))
                 pass  # raise DeserializationError(e)
         self.post_sync(using, lock_name, **kwargs)
 

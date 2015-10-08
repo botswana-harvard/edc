@@ -6,7 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model
 from django.db.models import ForeignKey, ManyToManyField, OneToOneField
 
-from edc.device.device.classes import Device
+from edc_device import device
 
 from ..exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem, DispatchContainerError
 
@@ -108,7 +108,7 @@ class BaseDispatchSyncUuidModel(models.Model):
             return None
 
     def is_current_device_server(self):
-        return Device().is_server
+        return device.is_server
 
     def is_dispatched_within_user_container(self, using=None):
         """Returns True if the model class is dispatched within a

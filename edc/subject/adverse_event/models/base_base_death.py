@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.db import models
 
-from edc.choices.common import YES_NO
+from edc_constants.choices import YES_NO
 from edc_base.model.fields import OtherCharField
 from edc_base.model.validators import date_not_before_study_start, date_not_future
 

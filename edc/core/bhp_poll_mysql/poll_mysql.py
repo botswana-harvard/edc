@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+import sys
+# import os
+import socket
+from django.conf import settings
 
 __author__ = 'Pranav Prakash <pranav@myblive.com>'
 
@@ -6,18 +10,8 @@ __author__ = 'Pranav Prakash <pranav@myblive.com>'
 #   which tells if the server is responding (active) or not
 #   (inactive)
 
-
-import sys
-import os
-import socket
-from django.conf import settings
-
-
-HOST = settings.DATABASES['lab_api']['HOST']
-PORT = settings.DATABASES['lab_api']['PORT']
-
-CURR_DIR = os.path.dirname(__file__)
-LOGFILE = os.path.join(CURR_DIR, 'poll.log')
+# CURR_DIR = os.path.dirname(__file__)
+# LOGFILE = os.path.join(CURR_DIR, 'poll.log')
 
 
 class PollMySQL(object):
@@ -55,6 +49,8 @@ class PollMySQL(object):
 
 def main(argv):
 
+    HOST = settings.DATABASES['lab_api']['HOST']
+    PORT = settings.DATABASES['lab_api']['PORT']
     host = HOST or argv[1]
     port = PORT or argv[2]
     if host and port:

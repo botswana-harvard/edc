@@ -1,5 +1,4 @@
-# from django.core import urlresolvers
-# from django.http import HttpResponse
+from __future__ import print_function
 
 intro_text = """Named URL patterns for the {% url %} tag
 ========================================
@@ -14,12 +13,10 @@ class ShowUrls(object):
 
     def show_url_patterns(self,):
         patterns = self._get_named_patterns()
-        # r = HttpResponse(intro_text, content_type = 'text/plain')
         longest = max([len(pair[0]) for pair in patterns])
         for key, value in patterns:
-            print '%s %s\n' % (key.ljust(longest + 1), value)
-            print '\n'
-        # return r
+            print('%s %s\n' % (key.ljust(longest + 1), value))
+            print('\n')
 
     def _get_named_patterns(self):
         "Returns list of (pattern-name, pattern) tuples"

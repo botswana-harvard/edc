@@ -1,5 +1,5 @@
 from django.test import TestCase
-from edc.device.device.classes import Device
+
 from edc.testing.models import TestRequisition
 
 
@@ -9,7 +9,6 @@ class RequisitionMethodsTest(TestCase):
         mm = '02'
         yy = '13'
         x = 0
-        device = Device()
         requisition = TestRequisition()
 #        lst = []
 #        while x < 10001:
