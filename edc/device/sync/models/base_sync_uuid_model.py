@@ -30,6 +30,11 @@ class BaseSyncUuidModel(BaseUuidModel):
                 '\'ALLOW_MODEL_SERIALIZATION = True\' to settings to enable '
                 'serialization of transactions (or = False to disable).')
 
+    def skip_saving_criteria(self):
+        """Users may override to avoid saving/persisting instances of a particular model that fit a certain
+           criteria as defined in the subclass's overriding method. Return True to skip saving, False to save"""
+        False
+
     def deserialize_prep(self, **kwargs):
         """Users may override to manipulate the incoming object before calling save()"""
         pass
