@@ -138,7 +138,6 @@ class TimePointStatus(BaseTimePointStatus, BaseSyncUuidModel):
 
     class Meta:
         app_label = "data_manager"
-        unique_together = ('appointment',)
         db_table = 'bhp_data_manager_timepointstatus'
         verbose_name = "Time Point Completion"
         verbose_name_plural = "Time Point Completion"
