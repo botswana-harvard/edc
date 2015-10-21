@@ -74,10 +74,13 @@ class BaseDispatchSyncUuidModel(models.Model):
 
         The model instance may be a container or an item within a container."""
         self.using = using or self.using
-        if self.is_dispatch_container_model():
-            return self.is_dispatched_as_container()
+        if not self.bypass_for_edit_dispatched_as_item():
+            if self.is_dispatch_container_model():
+                return self.is_dispatched_as_container()
+            else:
+                return self.is_dispatched_as_item()
         else:
-            return self.is_dispatched_as_item()
+            return False
 
     def is_dispatched_as_container(self, using=None):
         """Determines if a model instance is dispatched as a container.
