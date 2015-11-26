@@ -1,7 +1,7 @@
 [
   {
     "pk": 1, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS1001", 
@@ -17,7 +17,7 @@
   }, 
   {
     "pk": 2, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS1002", 
@@ -33,7 +33,7 @@
   }, 
   {
     "pk": 3, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2001", 
@@ -49,7 +49,7 @@
   }, 
   {
     "pk": 4, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2002", 
@@ -65,7 +65,7 @@
   }, 
   {
     "pk": 5, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2003", 
@@ -81,7 +81,7 @@
   }, 
   {
     "pk": 6, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2004", 
@@ -97,7 +97,7 @@
   }, 
   {
     "pk": 7, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2005", 
@@ -113,7 +113,7 @@
   }, 
   {
     "pk": 8, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2006", 
@@ -129,7 +129,7 @@
   }, 
   {
     "pk": 9, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2007", 
@@ -145,7 +145,7 @@
   }, 
   {
     "pk": 10, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2008", 
@@ -161,7 +161,7 @@
   }, 
   {
     "pk": 11, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3001", 
@@ -177,7 +177,7 @@
   }, 
   {
     "pk": 12, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3003", 
@@ -193,7 +193,7 @@
   }, 
   {
     "pk": 13, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3002", 
@@ -209,7 +209,7 @@
   }, 
   {
     "pk": 14, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3004", 
@@ -225,7 +225,7 @@
   }, 
   {
     "pk": 15, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3005", 
@@ -241,7 +241,7 @@
   }, 
   {
     "pk": 16, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3006", 
@@ -257,7 +257,7 @@
   }, 
   {
     "pk": 17, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3007", 
@@ -273,7 +273,7 @@
   }, 
   {
     "pk": 18, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3008", 
@@ -289,7 +289,7 @@
   }, 
   {
     "pk": 19, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3009", 
@@ -305,7 +305,7 @@
   }, 
   {
     "pk": 20, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4001", 
@@ -321,7 +321,7 @@
   }, 
   {
     "pk": 21, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4002", 
@@ -337,7 +337,7 @@
   }, 
   {
     "pk": 22, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4003", 
@@ -353,7 +353,7 @@
   }, 
   {
     "pk": 23, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4004", 
@@ -369,7 +369,7 @@
   }, 
   {
     "pk": 24, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4005", 
@@ -385,7 +385,7 @@
   }, 
   {
     "pk": 25, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4006", 
@@ -401,7 +401,7 @@
   }, 
   {
     "pk": 26, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4007", 
@@ -417,7 +417,7 @@
   }, 
   {
     "pk": 27, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4008", 
@@ -433,7 +433,7 @@
   }, 
   {
     "pk": 28, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4009", 
@@ -449,7 +449,7 @@
   }, 
   {
     "pk": 29, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4010", 
@@ -465,7 +465,7 @@
   }, 
   {
     "pk": 30, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4011", 
@@ -481,7 +481,7 @@
   }, 
   {
     "pk": 31, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4012", 
@@ -497,7 +497,7 @@
   }, 
   {
     "pk": 32, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4013", 
@@ -513,7 +513,7 @@
   }, 
   {
     "pk": 33, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4014", 
@@ -529,7 +529,7 @@
   }, 
   {
     "pk": 34, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4015", 
@@ -545,7 +545,7 @@
   }, 
   {
     "pk": 35, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4016", 
@@ -561,7 +561,7 @@
   }, 
   {
     "pk": 36, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4017", 
@@ -577,7 +577,7 @@
   }, 
   {
     "pk": 37, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4018", 
@@ -593,7 +593,7 @@
   }, 
   {
     "pk": 38, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4019", 
@@ -609,7 +609,7 @@
   }, 
   {
     "pk": 39, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4020", 
@@ -625,7 +625,7 @@
   }, 
   {
     "pk": 40, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4021", 
@@ -641,23 +641,23 @@
   }, 
   {
     "pk": 41, 
-    "model": "bhp_code_lists.wcsdxadult", 
+    "model": "code_lists.wcsdxadult", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "cs9999999", 
-      "short_name": "Not applicable", 
+      "short_name": "N/A", 
       "created": "2011-06-23 17:53:16", 
       "user_modified": "abelc", 
       "modified": "2011-07-07 19:51:56", 
       "hostname_modified": "cabel", 
-      "long_name": "Not applicable", 
+      "long_name": "N/A", 
       "user_created": "abelc", 
       "list_ref": ""
     }
   }, 
   {
     "pk": 1, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS1001", 
@@ -673,7 +673,7 @@
   }, 
   {
     "pk": 2, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS1002", 
@@ -689,7 +689,7 @@
   }, 
   {
     "pk": 3, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2001", 
@@ -705,7 +705,7 @@
   }, 
   {
     "pk": 4, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2002", 
@@ -721,7 +721,7 @@
   }, 
   {
     "pk": 5, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2003", 
@@ -737,7 +737,7 @@
   }, 
   {
     "pk": 6, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2004", 
@@ -753,7 +753,7 @@
   }, 
   {
     "pk": 7, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2005", 
@@ -769,7 +769,7 @@
   }, 
   {
     "pk": 8, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2006", 
@@ -785,7 +785,7 @@
   }, 
   {
     "pk": 9, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2007", 
@@ -801,7 +801,7 @@
   }, 
   {
     "pk": 10, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2008", 
@@ -817,7 +817,7 @@
   }, 
   {
     "pk": 11, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2009", 
@@ -833,7 +833,7 @@
   }, 
   {
     "pk": 12, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS2010", 
@@ -849,7 +849,7 @@
   }, 
   {
     "pk": 13, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3001", 
@@ -865,7 +865,7 @@
   }, 
   {
     "pk": 14, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3002", 
@@ -881,7 +881,7 @@
   }, 
   {
     "pk": 15, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3003", 
@@ -897,7 +897,7 @@
   }, 
   {
     "pk": 16, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3004", 
@@ -913,7 +913,7 @@
   }, 
   {
     "pk": 17, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3005", 
@@ -929,7 +929,7 @@
   }, 
   {
     "pk": 18, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3006", 
@@ -945,7 +945,7 @@
   }, 
   {
     "pk": 19, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3007", 
@@ -961,7 +961,7 @@
   }, 
   {
     "pk": 20, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3008", 
@@ -977,7 +977,7 @@
   }, 
   {
     "pk": 21, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3009", 
@@ -993,7 +993,7 @@
   }, 
   {
     "pk": 22, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3010", 
@@ -1009,7 +1009,7 @@
   }, 
   {
     "pk": 23, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3011", 
@@ -1025,7 +1025,7 @@
   }, 
   {
     "pk": 24, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS3012", 
@@ -1041,7 +1041,7 @@
   }, 
   {
     "pk": 25, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4001", 
@@ -1057,7 +1057,7 @@
   }, 
   {
     "pk": 26, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4002", 
@@ -1073,7 +1073,7 @@
   }, 
   {
     "pk": 27, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4003", 
@@ -1089,7 +1089,7 @@
   }, 
   {
     "pk": 28, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4004", 
@@ -1105,7 +1105,7 @@
   }, 
   {
     "pk": 29, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4005", 
@@ -1121,7 +1121,7 @@
   }, 
   {
     "pk": 30, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4006", 
@@ -1137,7 +1137,7 @@
   }, 
   {
     "pk": 31, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4007", 
@@ -1153,7 +1153,7 @@
   }, 
   {
     "pk": 32, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4008", 
@@ -1169,7 +1169,7 @@
   }, 
   {
     "pk": 33, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4009", 
@@ -1185,7 +1185,7 @@
   }, 
   {
     "pk": 34, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4010", 
@@ -1201,7 +1201,7 @@
   }, 
   {
     "pk": 35, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4011", 
@@ -1217,7 +1217,7 @@
   }, 
   {
     "pk": 36, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4012", 
@@ -1233,7 +1233,7 @@
   }, 
   {
     "pk": 37, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4013", 
@@ -1249,7 +1249,7 @@
   }, 
   {
     "pk": 38, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4014", 
@@ -1265,7 +1265,7 @@
   }, 
   {
     "pk": 39, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4015", 
@@ -1281,7 +1281,7 @@
   }, 
   {
     "pk": 40, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4016", 
@@ -1297,7 +1297,7 @@
   }, 
   {
     "pk": 41, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4017", 
@@ -1313,7 +1313,7 @@
   }, 
   {
     "pk": 42, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS4018", 
@@ -1329,16 +1329,16 @@
   }, 
   {
     "pk": 43, 
-    "model": "bhp_code_lists.wcsdxped", 
+    "model": "code_lists.wcsdxped", 
     "fields": {
       "hostname_created": "cabel", 
       "code": "CS99999", 
-      "short_name": "Not applicable", 
+      "short_name": "N/A", 
       "created": "2011-07-12 18:23:51", 
       "user_modified": "abelc", 
       "modified": "2011-07-12 18:24:04", 
       "hostname_modified": "cabel", 
-      "long_name": "Not applicable", 
+      "long_name": "N/A", 
       "user_created": "abelc", 
       "list_ref": "WHO CLINICAL STAGING OF HIV INFECTION 2006"
     }
