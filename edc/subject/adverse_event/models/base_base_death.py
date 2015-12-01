@@ -66,7 +66,7 @@ class BaseBaseDeath(models.Model):
         null=True,
         )
 
-    death_reason_hospitalized_other = OtherCharField(
+    death_reason_hospital_other = OtherCharField(
         verbose_name="if other specify...",
         blank=True,
         null=True,
