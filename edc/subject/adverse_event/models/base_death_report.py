@@ -1,5 +1,6 @@
 from django.db import models
 
+from edc_base.model.fields import OtherCharField
 from edc_constants.choices import YES_NO
 from edc.subject.code_lists.models import DxCode
 
