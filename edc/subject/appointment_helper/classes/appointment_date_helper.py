@@ -85,7 +85,7 @@ class AppointmentDateHelper(object):
         """ Checks if appt_datetime lands on a holiday, if so, move forward """
         Holiday = get_model('appointment', 'holiday')
         while appt_datetime.date() in [holiday.holiday_date for holiday in Holiday.objects.all()]:
-            appt_datetime = appt_datetime + timedelta(days=+1)
+            appt_datetime = appt_datetime + timedelta(days=+2)
             appt_datetime = self._check_if_allowed_isoweekday(appt_datetime)
         if not appt_datetime:
             raise TypeError('Appt_datetime cannot be None')
