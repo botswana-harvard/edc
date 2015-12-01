@@ -66,6 +66,12 @@ class BaseBaseDeath(models.Model):
         null=True,
         )
 
+    death_reason_hospitalized_other = OtherCharField(
+        verbose_name="if other specify...",
+        blank=True,
+        null=True,
+        )
+
     days_hospitalized = models.IntegerField(
         verbose_name="For how many days was the participant hospitalised during the illness immediately before death? ",
         help_text="in days",

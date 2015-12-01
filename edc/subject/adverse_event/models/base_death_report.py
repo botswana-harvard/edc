@@ -28,6 +28,12 @@ class BaseDeathReport(BaseDeath):
         verbose_name="Please code the cause of death as one of the following:",
         help_text="Use diagnosis code from Diagnosis Reference Listing",
         )
+    
+    dx_code_other = OtherCharField(
+        verbose_name="if other specify...",
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         abstract = True
