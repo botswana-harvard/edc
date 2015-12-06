@@ -3,7 +3,7 @@ try:
     from edc.device.sync.classes import BaseSyncModel as BaseUuidModel
 except ImportError:
     from edc_base.model.models import BaseUuidModel
-from edc_audit.audit_trail import AuditTrail
+from edc_base.audit_trail import AuditTrail
 
 
 class Criteria(BaseUuidModel):

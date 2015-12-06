@@ -1,14 +1,11 @@
-# from django.db.models.signals import Signal, post_save
+from django.db import models
 
 from edc.subject.registration.models import RegisteredSubject
 
 
-class BaseAppointmentMixin(object):
+class BaseAppointmentMixin(models.Model):
 
-    """ Mixin to add methods to a model that trigger the creation of appointments.
-
-    It is better to access these methods through the BaseAppointmentHelperModel, which uses this mixin,  unless you cannot
-    not following the same inheritance chain.
+    """ Model Mixin to add methods to create appointments.
 
     Such models may be listed by name in the ScheduledGroup model and thus
     trigger the creation of appointments.

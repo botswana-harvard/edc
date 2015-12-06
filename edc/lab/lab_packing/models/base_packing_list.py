@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import models
 
-from edc_audit.audit_trail import AuditTrail
+from edc_base.audit_trail import AuditTrail
 
 from .destination import Destination
 

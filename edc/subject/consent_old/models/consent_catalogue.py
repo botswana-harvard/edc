@@ -1,5 +1,5 @@
 from django.db import models
-from edc_audit.audit_trail import AuditTrail
+from edc_base.audit_trail import AuditTrail
 from edc_base.model.models import BaseUuidModel
 from edc.base.model.validators import datetime_not_before_study_start
 from edc.core.bhp_content_type_map.models import ContentTypeMap

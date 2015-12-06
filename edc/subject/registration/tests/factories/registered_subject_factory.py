@@ -1,10 +1,12 @@
 import factory
 
-from ...models import RegisteredSubject
+from edc.subject.registration.models import RegisteredSubject
 
 
-class RegisteredSubjectFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = RegisteredSubject
+class RegisteredSubjectFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = RegisteredSubject
 
     identity = factory.Sequence(lambda n: '11111111{0}'.format(n))
     identity_type = 'OMANG'
