@@ -9,7 +9,7 @@ from edc.core.bhp_variables.utils import default_study_site
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.visit_schedule.classes import WindowPeriod
 from edc.subject.visit_schedule.models import VisitDefinition
-from edc_audit.audit_trail import AuditTrail
+from edc_base.audit_trail import AuditTrail
 from edc_constants.constants import COMPLETE_APPT, NEW_APPT
 
 from ..managers import AppointmentManager

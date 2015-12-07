@@ -7,10 +7,11 @@ from edc.core.bhp_variables.tests.factories import StudySiteFactory
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
 
-from ...models import Appointment
+from edc.subject.appointment.models import Appointment
 
 
 class AppointmentFactory(BaseUuidModelFactory):
+
     class Meta:
         model = Appointment
 

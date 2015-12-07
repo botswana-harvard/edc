@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'edc_base',
-    'edc_audit',
+    'edc_base',
     'edc_constants',
     'edc.core.crypto_fields',
 )

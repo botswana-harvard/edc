@@ -1,5 +1,7 @@
 from django.db import models
 
+from edc_base.model.fields import OtherCharField
+
 from .base_base_death import BaseBaseDeath
 from .death_list import DeathMedicalResponsibility
 

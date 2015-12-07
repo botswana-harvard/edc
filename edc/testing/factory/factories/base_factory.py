@@ -1,5 +1,7 @@
 import factory
 
 
-class BaseFactory(factory.DjangoModelFactory):
-    ABSTRACT_FACTORY = True
+class BaseFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        abstract = True

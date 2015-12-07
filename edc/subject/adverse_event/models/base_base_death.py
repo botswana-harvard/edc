@@ -46,7 +46,7 @@ class BaseBaseDeath(models.Model):
         help_text="",
         )
 
-    death_cause_other = OtherCharField(
+    death_cause_category_other = OtherCharField(
         verbose_name="if other specify...",
         blank=True,
         null=True,
@@ -65,6 +65,13 @@ class BaseBaseDeath(models.Model):
         blank=True,
         null=True,
         )
+
+    death_reason_hospitalized_other = models.TextField(
+        verbose_name="if other illness or pathogen specify or non infectious reason, please specify below:",
+        max_length=250,
+        blank=True,
+        null=True,
+    )
 
     days_hospitalized = models.IntegerField(
         verbose_name="For how many days was the participant hospitalised during the illness immediately before death? ",

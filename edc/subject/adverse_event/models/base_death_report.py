@@ -1,5 +1,6 @@
 from django.db import models
 
+from edc_base.model.fields import OtherCharField
 from edc_constants.choices import YES_NO
 from edc.subject.code_lists.models import DxCode
 
@@ -28,6 +29,12 @@ class BaseDeathReport(BaseDeath):
         verbose_name="Please code the cause of death as one of the following:",
         help_text="Use diagnosis code from Diagnosis Reference Listing",
         )
+    
+    dx_code_other = OtherCharField(
+        verbose_name="if other specify...",
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         abstract = True
