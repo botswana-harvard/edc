@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext as _
 
-from edc_audit.audit_trail import AuditTrail
+from edc_base.audit_trail import AuditTrail
 from edc_base.model.fields import IdentityTypeField
 from edc_constants.choices import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
 from edc.core.bhp_variables.models import StudySite
