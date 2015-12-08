@@ -124,6 +124,7 @@ class MetaDataMixin(object):
         scheduled_entry_meta_data = ScheduledEntryMetaData.objects.create(
             entry=entry,
             appointment=base_appointment,
+            registered_subject=base_appointment.registered_subject,
             entry_status=REQUIRED)
         return scheduled_entry_meta_data
 
