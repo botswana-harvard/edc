@@ -1,7 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
-from edc_constants.constants import REQUIRED, NOT_REQUIRED, KEYED
+from edc_constants.constants import REQUIRED, NOT_REQUIRED, KEYED, MISSED_VISIT, DEATH_VISIT, LOST_VISIT
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.appointment.models import Appointment
 
@@ -10,7 +10,7 @@ class BaseMetaDataManager(models.Manager):
 
     """Creates, updates or deletes meta data that tracks the entry status of models for a given visit."""
     meta_data_model = None
-    skip_create_visit_reasons = ['missed', 'death', 'lost', 'vital status']  # list of visit reasons where meta data should not be created
+    skip_create_visit_reasons = [MISSED_VISIT, DEATH_VISIT, LOST_VISIT, 'vital status']  # list of visit reasons where meta data should not be created
     may_delete_entry_status = [REQUIRED, NOT_REQUIRED]
 
     def __init__(self, visit_model, visit_attr_name=None):

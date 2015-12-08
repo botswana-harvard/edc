@@ -1,4 +1,5 @@
-from edc_constants.constants import NOT_REQUIRED, KEYED, UNKEYED
+from edc_constants.constants import (
+    NOT_REQUIRED, KEYED, UNKEYED, MISSED_VISIT, SCHEDULED, UNSCHEDULED, LOST_VISIT, DEATH_VISIT)
 
 ENTRY_CATEGORY = (
     ('CLINIC', 'Clinic'),
@@ -43,9 +44,9 @@ VISIT_INFO_SOURCE = (
 )
 
 VISIT_REASON = (
-    ('scheduled', '1. Scheduled visit/contact'),
-    ('missed', '2. Missed Scheduled visit'),
-    ('unscheduled', '3. Unscheduled visit at which lab samples or data are being submitted'),
-    ('lost', '4. Lost to follow-up'),
-    ('death', '5. Death'),
+    (SCHEDULED, '1. Scheduled visit/contact'),
+    (MISSED_VISIT, '2. Missed Scheduled visit'),
+    (UNSCHEDULED, '3. Unscheduled visit at which lab samples or data are being submitted'),
+    (LOST_VISIT, '4. Lost to follow-up'),
+    (DEATH_VISIT, '5. Death'),
 )

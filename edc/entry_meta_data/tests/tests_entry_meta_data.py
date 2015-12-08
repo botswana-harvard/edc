@@ -14,7 +14,7 @@ from edc.testing.classes import TestLabProfile
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestRequisitionFactory
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.testing.tests.factories import TestVisitFactory
-from edc_constants.constants import KEYED, UNKEYED
+from edc_constants.constants import KEYED, UNKEYED, MISSED_VISIT
 
 
 class TestsEntryMetaData(TestCase):
@@ -158,7 +158,7 @@ class TestsEntryMetaData(TestCase):
 
     def test_creates_meta_data5(self):
         """Meta data is not created if visit reason is missed. See 'skip_create_visit_reasons class' attribute"""
-        self.test_visit = self.test_visit_factory(appointment=self.appointment, reason='missed')
+        self.test_visit = self.test_visit_factory(appointment=self.appointment, reason=MISSED_VISIT)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
 
     def test_updates_meta_data4(self):

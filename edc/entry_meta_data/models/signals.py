@@ -22,6 +22,12 @@ def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_f
             # update rule groups through the rule group controller, instance is a visit_instance
             site_rule_groups.update_rules_for_source_model(RegisteredSubject, instance)
             site_rule_groups.update_rules_for_source_fk_model(RegisteredSubject, instance)
+            # call custom meta data changes on this visit tracking instance.
+            try:
+                instance.custom_post_update_meta_data()
+            except AttributeError as e:
+                if 'custom_post_update_meta_data' not in str(e):
+                    raise AttributeError(str(e))
         else:
             # These are subject models covered by a consent.
             try:
