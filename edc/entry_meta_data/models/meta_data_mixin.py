@@ -33,14 +33,14 @@ class MetaDataMixin(object):
         * if a form is already KEYED it will not be changed.
         """
         self._change_all_to_not_required(appointment)
-        self.form_is_required(self, appointment, off_study_app_label, off_study_model_name, message, create=True)
+        self.form_is_required(appointment, off_study_app_label, off_study_model_name, message, create=True)
 
     def change_to_death_visit(self, appointment, app_label, off_study_model_name, death_model_name, message=None):
         """Changes the meta data so that only the death and off study forms are required.
 
         If either form does not exist they will be created."""
         self.change_to_off_study_visit(appointment, app_label, off_study_model_name, message)
-        self.form_is_required(self, appointment, app_label, death_model_name, message, create=True)
+        self.form_is_required(appointment, app_label, death_model_name, message, create=True)
 
     def change_to_unscheduled_visit(self, appointment, off_study_app_label, off_study_model_name, message=None):
         """Changes all meta data to not required."""
