@@ -47,7 +47,7 @@ class MetaDataMixin(object):
         self.change_to_off_study_visit(appointment, app_label, off_study_model_name, message)
         self.form_is_required(appointment, app_label, death_model_name, message, create=True)
 
-    def change_to_unscheduled_visit(self, appointment, off_study_app_label, off_study_model_name, message=None):
+    def change_to_unscheduled_visit(self, appointment, message=None):
         """Changes all meta data to not required."""
         self._change_all_to_not_required(appointment)
 
