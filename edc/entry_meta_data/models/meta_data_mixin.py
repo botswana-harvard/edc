@@ -4,11 +4,16 @@ from edc_constants.constants import REQUIRED, NOT_REQUIRED, KEYED
 
 from .scheduled_entry_meta_data import ScheduledEntryMetaData
 from .requisition_meta_data import RequisitionMetaData
+from django.core.exceptions import ImproperlyConfigured
 
 
 class MetaDataMixin(object):
 
     """Class to manipulate meta data for forms and requisitions."""
+
+    def custom_post_update_entry_meta_data(self):
+        raise ImproperlyConfigured(
+            'To use the MetaDataMixin override method \'custom_post_update_entry_meta_data\'')
 
     def form_is_required(self, appointment, app_label, model_name, message=None, create=None):
         """Saves the entry_status as REQUIRED."""
