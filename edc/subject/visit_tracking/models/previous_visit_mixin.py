@@ -36,9 +36,14 @@ class PreviousVisitMixin(models.Model):
     REQUIRES_PREVIOUS_VISIT = True
 
     def save(self, *args, **kwargs):
-        if not self.has_previous_visit():
-            raise PreviousVisitError('Previous visit report is not complete.')
+        self.check_previous_visit()
         super(PreviousVisitMixin, self).save(*args, **kwargs)
+
+    def check_previous_visit(self, exception_cls=None):
+        if not exception_cls:
+            exception_cls = PreviousVisitError
+        if not self.has_previous_visit():
+            raise exception_cls('Previous visit report is not complete.')
 
     def previous_visit_definition(self, code):
         """Returns the previous visit definition relative to this instance or None."""
