@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from django.db.utils import IntegrityError
 from django.core.exceptions import MultipleObjectsReturned
 
@@ -289,11 +291,11 @@ class BaseAppConfiguration(object):
         self._setup_study_sites()
 
     def _setup_study_sites(self):
-        for site in self.study_site_setup:
+        for key, value in self.study_site_setup.iteritems():
             try:
-                StudySite.objects.get(**site)
+                StudySite.objects.get(**{key: value})
             except StudySite.DoesNotExist:
-                StudySite.objects.create(**site)
+                StudySite.objects.create(**{key: value})
 
 # commented out, was being overridden by above for both BCPP and Microbiome.
 #     def update_or_create_study_variables(self, site_code=None):
