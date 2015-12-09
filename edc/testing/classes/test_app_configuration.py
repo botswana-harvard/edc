@@ -52,9 +52,9 @@ class TestAppConfiguration(BaseAppConfiguration):
          'end_datetime': study_end_datetime,
          'version': '1'}]
 
-    study_site_setup = {
+    study_site_setup = [{
         'site_name': 'test_site',
-        'site_code': '10'}
+        'site_code': '10'}]
 
     lab_clinic_api_setup = {
         'panel': [PanelTuple('Research Blood Draw', 'TEST', 'WB'),

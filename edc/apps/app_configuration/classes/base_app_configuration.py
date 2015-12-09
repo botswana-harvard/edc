@@ -291,11 +291,11 @@ class BaseAppConfiguration(object):
         self._setup_study_sites()
 
     def _setup_study_sites(self):
-        for key, value in self.study_site_setup.iteritems():
+        for site in self.study_site_setup:
             try:
-                StudySite.objects.get(**{key: value})
+                StudySite.objects.get(**site)
             except StudySite.DoesNotExist:
-                StudySite.objects.create(**{key: value})
+                StudySite.objects.create(**site)
 
 # commented out, was being overridden by above for both BCPP and Microbiome.
 #     def update_or_create_study_variables(self, site_code=None):
