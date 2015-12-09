@@ -15,6 +15,10 @@ class PreviousVisitMixin(models.Model):
     * If the visit is the first in the sequence, save() is allowed.
     * If REQUIRES_PREVIOUS_VISIT = False, mixin is disabled.
 
+    ...note: Review the value of \'time_point\' and \'base_interval\' from VisitDefintion
+        to confirm the visits are in order. This mixin assumes ordering VisitDefinition
+        by 'time_point' and 'base_interval' gives the correct visit code sequence.
+
     For example:
 
         class TestVisit(MetaDataMixin, PreviousVisitMixin, BaseVisitTracking):
