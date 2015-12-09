@@ -1,8 +1,11 @@
 from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.entry_meta_data.models import MetaDataMixin
+from edc.subject.visit_tracking.models import PreviousVisitMixin
 
 
-class TestVisit(MetaDataMixin, BaseVisitTracking):
+class TestVisit(MetaDataMixin, PreviousVisitMixin, BaseVisitTracking):
+
+    REQUIRES_PREVIOUS_VISIT = True
 
     def custom_post_update_entry_meta_data(self):
         pass
