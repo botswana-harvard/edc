@@ -18,6 +18,7 @@ class PreviousVisitMixin(models.Model):
     ...note: Review the value of \'time_point\' and \'base_interval\' from VisitDefintion
         to confirm the visits are in order. This mixin assumes ordering VisitDefinition
         by 'time_point' and 'base_interval' gives the correct visit code sequence.
+        Also assumes visits are grouped by the visit tracking form and the \'group\' attr.
 
     For example:
 
@@ -42,7 +43,9 @@ class PreviousVisitMixin(models.Model):
     def has_previous_visit_or_raise(self, exception_cls=None):
         """Returns True if the previous visit in the schedule exists or this is the first visit.
 
-        Is by-passed if REQUIRES_PREVIOUS_VISIT is False. """
+        Is by-passed if REQUIRES_PREVIOUS_VISIT is False.
+
+        You can call this from the forms clean() method."""
         exception_cls = exception_cls or PreviousVisitError
         if self.REQUIRES_PREVIOUS_VISIT:
             if self.previous_visit():
@@ -56,12 +59,15 @@ class PreviousVisitMixin(models.Model):
                 raise exception_cls('Previous visit report is not complete.')
 
     def previous_visit_definition(self, code):
-        """Returns the previous visit definition relative to this instance or None."""
+        """Returns the previous visit definition relative to this instance or None.
+
+        Only selects visit definition instances for this visit model."""
         visit_definition = VisitDefinition.objects.get(code=code)
         previous_visit_definition = VisitDefinition.objects.filter(
             time_point__lt=visit_definition.time_point,
             visit_tracking_content_type_map__app_label=self._meta.app_label,
-            visit_tracking_content_type_map__module_name=self._meta.model_name).order_by(
+            visit_tracking_content_type_map__module_name=self._meta.model_name,
+            grouping=visit_definition.grouping).order_by(
                 'time_point', 'base_interval').first()
         if previous_visit_definition:
             return previous_visit_definition
