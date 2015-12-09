@@ -170,25 +170,6 @@ class BaseAppConfiguration(object):
                     profile_item_model.objects.create(
                         profile=profile, aliquot_type=aliquot_type, volume=item.volume, count=item.count)
 
-    def update_or_create_study_variables(self, site_code=None):
-        """Updates configuration in the :mod:`bhp_variables` module."""
-        if StudySpecific.objects.all().count() == 0:
-            StudySpecific.objects.create(**self.study_variables_setup)
-        else:
-            study_specifics = StudySpecific.objects.all()
-            study_specifics.update(**self.study_variables_setup)
-            for study_specific in study_specifics:
-                # This extra step is required so that signals can fire. Queryset .update() does to fire any signals.
-                study_specific.save()
-        try:
-            StudySite.objects.get(site_name=self.study_site_setup.get('site_name'))
-        except StudySite.DoesNotExist:
-            try:
-                StudySite.objects.create(**self.study_site_setup)
-            except IntegrityError:
-                StudySite.objects.get(site_code=self.study_site_setup.get('site_code')).delete()
-                StudySite.objects.create(**self.study_site_setup)
-
     def update_or_create_labeling(self):
         """Updates configuration in the :mod:`labeling` module."""
 
@@ -300,10 +281,38 @@ class BaseAppConfiguration(object):
             except ConsentType.DoesNotExist:
                 ConsentType.objects.create(**item)
 
+    def update_or_create_study_variables(self):
+        if StudySpecific.objects.all().count() == 0:
+            StudySpecific.objects.create(**self.study_variables_setup)
+        else:
+            StudySpecific.objects.all().update(**self.study_variables_setup)
+        self._setup_study_sites()
+
     def _setup_study_sites(self):
         for site in self.study_site_setup:
             try:
                 StudySite.objects.get(**site)
             except StudySite.DoesNotExist:
                 StudySite.objects.create(**site)
+
+# commented out, was being overridden by above for both BCPP and Microbiome.
+#     def update_or_create_study_variables(self, site_code=None):
+#         """Updates configuration in the :mod:`bhp_variables` module."""
+#         if StudySpecific.objects.all().count() == 0:
+#             StudySpecific.objects.create(**self.study_variables_setup)
+#         else:
+#             study_specifics = StudySpecific.objects.all()
+#             study_specifics.update(**self.study_variables_setup)
+#             for study_specific in study_specifics:
+#                 # This extra step is required so that signals can fire.
+#                 # Queryset .update() does to fire any signals.
+#                 study_specific.save()
+#         try:
+#             StudySite.objects.get(site_name=self.study_site_setup.get('site_name'))
+#         except StudySite.DoesNotExist:
+#             try:
+#                 StudySite.objects.create(**self.study_site_setup)
+#             except IntegrityError:
+#                 StudySite.objects.get(site_code=self.study_site_setup.get('site_code')).delete()
+#                 StudySite.objects.create(**self.study_site_setup)
 
