@@ -17,6 +17,20 @@ class TestVisit(MetaDataMixin, PreviousVisitMixin, BaseVisitTracking):
         app_label = 'testing'
 
 
+class TestVisit2(MetaDataMixin, PreviousVisitMixin, BaseVisitTracking):
+
+    REQUIRES_PREVIOUS_VISIT = True
+
+    def custom_post_update_entry_meta_data(self):
+        pass
+
+    def get_requires_consent(self):
+        return False
+
+    class Meta:
+        app_label = 'testing'
+
+
 class TestSubjectVisit(BaseVisitTracking):
 
     def get_requires_consent(self):

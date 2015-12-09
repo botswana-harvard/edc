@@ -5,6 +5,7 @@ from django.utils import timezone
 from edc.subject.appointment.models.appointment import Appointment
 from edc.subject.visit_schedule.models.visit_definition import VisitDefinition
 from edc.subject.visit_tracking.models.previous_visit_mixin import PreviousVisitError
+from edc.testing.models.test_visit import TestVisit2
 
 
 class TestPreviousVisitMixin(BaseTest):
@@ -96,3 +97,44 @@ class TestPreviousVisitMixin(BaseTest):
                 pass
             else:
                 raise PreviousVisitError
+
+    def test_visit_not_raised_for_first_visit2(self):
+        TestVisit2.REQUIRES_PREVIOUS_VISIT = True
+        with self.assertRaises(PreviousVisitError):
+            try:
+                TestVisit2.objects.create(
+                    appointment=self.appointment,
+                    report_datetime=timezone.now(),
+                    reason=SCHEDULED)
+            except:
+                pass
+            else:
+                raise PreviousVisitError
+
+    def test_visit_raises_if_no_previous2(self):
+        TestVisit2.REQUIRES_PREVIOUS_VISIT = True
+        visit_definition = VisitDefinition.objects.get(code='2010A')
+        next_appointment = Appointment.objects.create(
+            registered_subject=self.registered_subject,
+            appt_datetime=timezone.now(),
+            visit_definition=visit_definition)
+        self.assertRaises(
+            PreviousVisitError,
+            TestVisit2.objects.create,
+            appointment=next_appointment,
+            report_datetime=timezone.now(),
+            reason=SCHEDULED)
+
+    def test_previous_visit_definition2(self):
+        TestVisit2.REQUIRES_PREVIOUS_VISIT = False
+        visit_definition = VisitDefinition.objects.get(code='2010A')
+        next_appointment = Appointment.objects.create(
+            registered_subject=self.registered_subject,
+            appt_datetime=timezone.now(),
+            visit_definition=visit_definition)
+        TestVisit2.REQUIRES_PREVIOUS_VISIT = False
+        test_visit = TestVisit2.objects.create(
+            appointment=next_appointment,
+            report_datetime=timezone.now(),
+            reason=SCHEDULED)
+        self.assertEqual(test_visit.previous_visit_definition('2010A').code, '2000A')
