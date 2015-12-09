@@ -58,17 +58,16 @@ class PreviousVisitMixin(models.Model):
             if not has_previous_visit:
                 raise exception_cls('Previous visit report is not complete.')
 
-    def previous_visit_definition(self, code):
+    def previous_visit_definition(self, visit_definition):
         """Returns the previous visit definition relative to this instance or None.
 
         Only selects visit definition instances for this visit model."""
-        visit_definition = VisitDefinition.objects.get(code=code)
         previous_visit_definition = VisitDefinition.objects.filter(
             time_point__lt=visit_definition.time_point,
             visit_tracking_content_type_map__app_label=self._meta.app_label,
             visit_tracking_content_type_map__module_name=self._meta.model_name,
             grouping=visit_definition.grouping).order_by(
-                'time_point', 'base_interval').first()
+                'time_point', 'base_interval').last()
         if previous_visit_definition:
             return previous_visit_definition
         return None
@@ -77,9 +76,10 @@ class PreviousVisitMixin(models.Model):
         """Returns the previous visit if it exists."""
         with transaction.atomic():
             try:
-                code = self.appointment.visit_definition.code
+                previous_visit_definition = self.previous_visit_definition(
+                    self.appointment.visit_definition)
                 previous_visit = self.__class__.objects.get(
-                    appointment__visit_definition=self.previous_visit_definition(code))
+                    appointment__visit_definition=previous_visit_definition)
             except self.__class__.DoesNotExist:
                 previous_visit = None
         return previous_visit

@@ -12,17 +12,17 @@ class TestPreviousVisitMixin(BaseTest):
 
     def test_previous_visit_definition(self):
         TestVisit.REQUIRES_PREVIOUS_VISIT = False
-        self.visit_definition = VisitDefinition.objects.get(code='2000')
+        visit_definition = VisitDefinition.objects.get(code='2000')
         next_appointment = Appointment.objects.create(
             registered_subject=self.registered_subject,
             appt_datetime=timezone.now(),
-            visit_definition=self.visit_definition)
+            visit_definition=visit_definition)
         TestVisit.REQUIRES_PREVIOUS_VISIT = False
         test_visit = TestVisit.objects.create(
             appointment=next_appointment,
             report_datetime=timezone.now(),
             reason=SCHEDULED)
-        self.assertEqual(test_visit.previous_visit_definition('2000').code, '1000')
+        self.assertEqual(test_visit.previous_visit_definition(visit_definition).code, '1000')
 
     def test_previous_visit_doesnotexist(self):
         TestVisit.REQUIRES_PREVIOUS_VISIT = False
@@ -137,4 +137,33 @@ class TestPreviousVisitMixin(BaseTest):
             appointment=next_appointment,
             report_datetime=timezone.now(),
             reason=SCHEDULED)
-        self.assertEqual(test_visit.previous_visit_definition('2010A').code, '2000A')
+        self.assertEqual(test_visit.previous_visit_definition(visit_definition).code, '2000A')
+
+    def test_previous_visit_definition2A(self):
+        TestVisit2.REQUIRES_PREVIOUS_VISIT = False
+        visit_definition = VisitDefinition.objects.get(code='2020A')
+        next_appointment = Appointment.objects.create(
+            registered_subject=self.registered_subject,
+            appt_datetime=timezone.now(),
+            visit_definition=visit_definition)
+        TestVisit2.REQUIRES_PREVIOUS_VISIT = False
+        test_visit = TestVisit2.objects.create(
+            appointment=next_appointment,
+            report_datetime=timezone.now(),
+            reason=SCHEDULED)
+        self.assertEqual(test_visit.previous_visit_definition(visit_definition).code, '2010A')
+
+    def test_previous_visit_definition2B(self):
+        TestVisit.REQUIRES_PREVIOUS_VISIT = False
+        visit_definition = VisitDefinition.objects.get(code='2030A')
+        next_appointment = Appointment.objects.create(
+            registered_subject=self.registered_subject,
+            appt_datetime=timezone.now(),
+            visit_definition=visit_definition)
+        TestVisit2.REQUIRES_PREVIOUS_VISIT = False
+        test_visit = TestVisit2.objects.create(
+            appointment=next_appointment,
+            report_datetime=timezone.now(),
+            reason=SCHEDULED)
+        self.assertEqual(test_visit.previous_visit_definition(visit_definition).code, '2020A')
+
