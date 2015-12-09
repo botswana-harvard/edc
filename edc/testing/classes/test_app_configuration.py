@@ -45,6 +45,14 @@ class TestAppConfiguration(BaseAppConfiguration):
         'end_datetime': study_end_datetime,
         'add_for_app': 'testing'}
 
+    consent_type_setup = [
+        {'app_label': 'testing',
+         'model_name': 'testconsentwithmixin',
+         'start_datetime': study_start_datetime,
+         'end_datetime': study_end_datetime,
+         'version': '1'}]
+
+
     study_site_setup = {'site_name': 'test_site',
                         'site_code': '10'}
 

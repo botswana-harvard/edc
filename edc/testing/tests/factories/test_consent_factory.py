@@ -6,16 +6,17 @@ from edc_constants.choices import IDENTITY_TYPE
 from edc.core.bhp_variables.tests.factories import StudySiteFactory
 
 from ...models import TestConsent, TestConsentWithMixin
+from edc_constants.constants import YES
 
 
 class BaseConsentBasicsFactory(factory.DjangoModelFactory):
     class Meta:
         abstract = True
 
-    consent_reviewed = 'Yes'
-    study_questions = 'Yes'
-    assessment_score = 'Yes'
-    consent_copy = 'Yes'
+    consent_reviewed = YES
+    study_questions = YES
+    assessment_score = YES
+    consent_copy = YES
 
 
 class BaseConsentFactory(BaseConsentBasicsFactory):
@@ -46,5 +47,8 @@ class TestConsentFactory(BaseConsentFactory):
 
 
 class TestConsentWithMixinFactory(BaseConsentFactory):
+
+    is_literate = YES
+
     class Meta:
         model = TestConsentWithMixin

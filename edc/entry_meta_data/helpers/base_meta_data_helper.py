@@ -7,7 +7,8 @@ from edc.subject.visit_tracking.settings import VISIT_REASON_NO_FOLLOW_UP_CHOICE
 
 
 class BaseMetaDataHelper(object):
-    """ Base class for all classes that manage the entry state of additional, scheduled and unscheduled data."""
+    """ Base class for all classes that manage the entry state
+    of additional, scheduled and unscheduled data."""
     def __init__(self, appointment, visit_instance=None, visit_model_attrname=None):
         self.appointment = appointment
         self.visit_model = self.appointment.visit_definition.visit_tracking_content_type_map.model_class()
@@ -70,26 +71,34 @@ class BaseMetaDataHelper(object):
             visit_reason_no_follow_up_choices = self.visit_instance.get_visit_reason_no_follow_up_choices()
         else:
             visit_reason_no_follow_up_choices = VISIT_REASON_NO_FOLLOW_UP_CHOICES
-        show_scheduled_entries = self.visit_instance.reason.lower() not in [x.lower() for x in visit_reason_no_follow_up_choices.itervalues()]
+        no_follow_up = [x.lower() for x in visit_reason_no_follow_up_choices.itervalues()]
+        show_scheduled_entries = self.visit_instance.reason.lower() not in no_follow_up
         # possible conditions that override above
         # subject is at the off study visit (lost)
         if self.visit_instance.reason.lower() in self.visit_instance.get_off_study_reason():
-            visit_date = date(self.visit_instance.report_datetime.year, self.visit_instance.report_datetime.month, self.visit_instance.report_datetime.day)
-            if self.visit_instance.OFF_STUDY_MODEL.objects.filter(registered_subject=self.registered_subject, offstudy_date=visit_date):
+            visit_date = date(self.visit_instance.report_datetime.year,
+                              self.visit_instance.report_datetime.month,
+                              self.visit_instance.report_datetime.day)
+            if self.visit_instance.OFF_STUDY_MODEL.objects.filter(
+                    registered_subject=self.registered_subject, offstudy_date=visit_date):
                 # has an off study form completed on same day as visit
-                off_study_instance = self.visit_instance.OFF_STUDY_MODEL.objects.get(registered_subject=self.registered_subject, offstudy_date=visit_date)
+                off_study_instance = self.visit_instance.OFF_STUDY_MODEL.objects.get(
+                    registered_subject=self.registered_subject, offstudy_date=visit_date)
                 show_scheduled_entries = off_study_instance.show_scheduled_entries_on_off_study_date()
         return show_scheduled_entries
 
     def add_or_update_for_visit(self):
-        """ Loops thru the list of entries configured for the visit_definition and calls the entry_meta_data_manager for each model.
+        """ Loops thru the list of entries configured for the visit_definition
+        and calls the entry_meta_data_manager for each model.
 
         The visit definition comes instance."""
-        for entry in self.entry_model.objects.filter(visit_definition=self.visit_instance.appointment.visit_definition):
+        for entry in self.entry_model.objects.filter(
+                visit_definition=self.visit_instance.appointment.visit_definition):
             model = entry.get_model()
             model.entry_meta_data_manager.visit_instance = self.visit_instance
             try:
-                model.entry_meta_data_manager.instance = model.objects.get(**model.entry_meta_data_manager.query_options)
+                model.entry_meta_data_manager.instance = model.objects.get(
+                    **model.entry_meta_data_manager.query_options)
             except model.DoesNotExist:
                 model.entry_meta_data_manager.instance = None
             model.entry_meta_data_manager.update_meta_data()
@@ -97,7 +106,8 @@ class BaseMetaDataHelper(object):
                 model.entry_meta_data_manager.run_rule_groups()
 
     def get_next_entry_for(self, entry_order):
-        """Gets next meta data instance based on the given entry order, used with the save_next button on a form."""
+        """Gets next meta data instance based on the given entry order,
+        used with the save_next button on a form."""
         next_meta_data_instance = None
         options = {
             'registered_subject_id': self.registered_subject.pk,
@@ -113,11 +123,11 @@ class BaseMetaDataHelper(object):
         meta_data_instances = []
         if self.appointment_zero:
             options = {
-               'registered_subject_id': self.registered_subject.pk,
-               'appointment_id': self.appointment_zero.pk,
-               '{0}__entry_category__iexact'.format(self.entry_attr): entry_category,
-               }
+                'registered_subject_id': self.registered_subject.pk,
+                'appointment_id': self.appointment_zero.pk,
+                '{0}__entry_category__iexact'.format(self.entry_attr): entry_category}
             if entry_status:
                 options.update({'entry_status': entry_status})
-            meta_data_instances = self.meta_data_model.objects.filter(**options).order_by('{0}__entry_order'.format(self.entry_attr))
+            meta_data_instances = self.meta_data_model.objects.filter(
+                **options).order_by('{0}__entry_order'.format(self.entry_attr))
         return meta_data_instances

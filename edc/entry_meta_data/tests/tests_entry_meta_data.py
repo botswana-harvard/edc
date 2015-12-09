@@ -1,49 +1,22 @@
-from django.test import TestCase
+from __future__ import print_function
 
-from edc.core.bhp_variables.models import StudySite
 from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
-from edc.subject.appointment.models import Appointment
 from edc.subject.entry.models import LabEntry
-from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.registration.models import RegisteredSubject
-from edc.subject.visit_schedule.models import VisitDefinition
 from edc.testing.models import TestPanel, TestAliquotType, TestScheduledModel1
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.classes import TestLabProfile
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestRequisitionFactory
-from edc.lab.lab_profile.classes import site_lab_profiles
-from edc.testing.tests.factories import TestVisitFactory
+from edc.testing.tests.factories import TestScheduledModel1Factory, TestRequisitionFactory
 from edc_constants.constants import KEYED, UNKEYED, MISSED_VISIT
+from edc.entry_meta_data.tests.base_test_entry_meta_data import BaseTestEntryMetaData
 
 
-class TestsEntryMetaData(TestCase):
+class TestsEntryMetaData(BaseTestEntryMetaData):
 
     app_label = 'testing'
     consent_catalogue_name = 'v1'
 
-    def setUp(self):
-        try:
-            site_lab_profiles.register(TestLabProfile())
-        except AlreadyRegisteredLabProfile:
-            pass
-        site_lab_tracker.autodiscover()
-
-        TestAppConfiguration()
-
-        TestVisitSchedule().rebuild()
-
-        self.test_visit_factory = TestVisitFactory
-        self.study_site = StudySite.objects.all()[0]
-        self.visit_definition = VisitDefinition.objects.get(code='1000')
-        self.test_consent = TestConsentWithMixinFactory(gender='M', study_site=self.study_site)
-        self.registered_subject = RegisteredSubject.objects.get(subject_identifier=self.test_consent.subject_identifier)
-        self.appointment_count = VisitDefinition.objects.all().count()
-        self.appointment = Appointment.objects.get(registered_subject=self.registered_subject, visit_definition__code='1000')
-
     def test_creates_meta_data1(self):
         """No meta data if visit tracking form is not entered."""
-        self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
+        self.assertEqual(ScheduledEntryMetaData.objects.filter(
+            registered_subject=self.registered_subject).count(), 0)
 
     def test_creates_requisition_meta_data(self):
         """Meta data is created when visit tracking form is added, each instance set to NEW."""
@@ -230,6 +203,6 @@ class TestsEntryMetaData(TestCase):
         self.assertTrue(TestScheduledModel1.objects.all().count() == 0)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject).count(), 0)
         self.test_visit = self.test_visit_factory(appointment=self.appointment)
-        for obj in ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject):
-            print obj.entry_status, obj.entry
+#         for obj in ScheduledEntryMetaData.objects.filter(registered_subject=self.registered_subject):
+#             print(obj.entry_status, obj.entry)
         self.assertEqual(ScheduledEntryMetaData.objects.filter(entry_status=KEYED, registered_subject=self.registered_subject).count(), 0)

@@ -4,16 +4,20 @@ from ...models import TestScheduledModel, TestScheduledModel1, TestScheduledMode
 
 
 class TestScheduledModelFactory(BaseUuidModelFactory):
-    FACTORY_FOR = TestScheduledModel
+    class Meta:
+        model = TestScheduledModel
 
 
 class TestScheduledModel1Factory(BaseUuidModelFactory):
-    FACTORY_FOR = TestScheduledModel1
+    class Meta:
+        model = TestScheduledModel1
 
 
 class TestScheduledModel2Factory(BaseUuidModelFactory):
-    FACTORY_FOR = TestScheduledModel2
+    class Meta:
+        model = TestScheduledModel2
 
 
 class TestScheduledModel3Factory(BaseUuidModelFactory):
-    FACTORY_FOR = TestScheduledModel3
+    class Meta:
+        model = TestScheduledModel3

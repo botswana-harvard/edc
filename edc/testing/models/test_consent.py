@@ -2,13 +2,17 @@ from django.db import models
 
 from edc_consent.models import BaseConsent
 from edc_consent.models.fields import ReviewFieldsMixin, IdentityFieldsMixin
-from edc.base.model.fields import IdentityTypeField
-from edc.core.crypto_fields.fields import EncryptedIdentityField
+from edc_base.model.models import BaseUuidModel
 from edc.subject.appointment_helper.models import BaseAppointmentMixin
 from edc.subject.registration.models import RegisteredSubject
+from edc_consent.models.fields.sample_collection_fields_mixin import SampleCollectionFieldsMixin
+from edc_consent.models.fields.personal_fields_mixin import PersonalFieldsMixin
+from edc.core.bhp_variables.models.study_site import StudySite
+from edc_consent.models.fields.vulnerability_fields_mixin import VulnerabilityFieldsMixin
 
 
-class BaseTestConsent(ReviewFieldsMixin, IdentityFieldsMixin, BaseConsent):
+class BaseTestConsent(BaseConsent, ReviewFieldsMixin, IdentityFieldsMixin, SampleCollectionFieldsMixin, PersonalFieldsMixin,
+                      VulnerabilityFieldsMixin, BaseUuidModel):
     """ Standard consent model.
 
     .. seealso:: :class:`BaseConsent` in :mod:`bhp_botswana.classes` """
@@ -16,6 +20,8 @@ class BaseTestConsent(ReviewFieldsMixin, IdentityFieldsMixin, BaseConsent):
     registered_subject = models.OneToOneField(RegisteredSubject, null=True)
 
     user_provided_subject_identifier = models.CharField(max_length=35, null=True)
+
+    study_site = models.ForeignKey(StudySite)
 
     objects = models.Manager()
 

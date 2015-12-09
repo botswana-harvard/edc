@@ -1,7 +1,11 @@
 from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc.entry_meta_data.models import MetaDataMixin
 
 
-class TestVisit(BaseVisitTracking):
+class TestVisit(MetaDataMixin, BaseVisitTracking):
+
+    def custom_post_update_entry_meta_data(self):
+        pass
 
     def get_requires_consent(self):
         return False

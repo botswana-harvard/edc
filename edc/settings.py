@@ -41,7 +41,22 @@ INSTALLED_APPS = (
     'edc_base',
     'edc_base',
     'edc_constants',
+    'edc_consent',
+    'edc_device',
     'edc.core.crypto_fields',
+    'edc.export',
+    'edc.device.sync',
+    'edc.subject.registration',
+    'edc.subject.appointment',
+    'edc.core.bhp_variables',
+    'edc.subject.visit_schedule',
+    'edc.lab.lab_clinic_api',
+    'edc.core.bhp_content_type_map',
+    'edc.entry_meta_data',
+    'edc.subject.entry',
+    'edc.apps.app_configuration',
+    'edc.data_manager',
+    'edc.testing',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -79,21 +94,23 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-
+SITE_CODE = '10'
+SUBJECT_TYPES = ['test_subject_type']
 DEVICE_ID = '10'
 SERVER_DEVICE_ID_LIST = [99]
 MIDDLEMAN_DEVICE_ID_LIST = []
 PROJECT_ROOT = BASE_DIR.ancestor(1)
 FIELD_MAX_LENGTH = 'default'
 IS_SECURE_DEVICE = True
-KEY_PATH = BASE_DIR.ancestor(1)
+KEY_PATH = os.path.join(BASE_DIR.ancestor(1), 'test_keys')
 KEY_PREFIX = 'user'
-ALLOW_MODEL_SERIALIZATION = True
+ALLOW_MODEL_SERIALIZATION = False
 MAX_SUBJECTS = 0
+DISPATCH_APP_LABELS = []
