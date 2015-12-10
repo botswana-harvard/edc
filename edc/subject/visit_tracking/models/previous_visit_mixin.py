@@ -48,15 +48,19 @@ class PreviousVisitMixin(models.Model):
         You can call this from the forms clean() method."""
         exception_cls = exception_cls or PreviousVisitError
         if self.REQUIRES_PREVIOUS_VISIT:
-            if self.previous_visit():
-                has_previous_visit = True
-            elif (self.appointment.visit_definition.time_point == 0 and
-                    self.appointment.visit_definition.base_interval == 0):
-                has_previous_visit = True
-            else:
-                has_previous_visit = False
-            if not has_previous_visit:
-                raise exception_cls('Previous visit report is not complete.')
+            previous_visit_definition = self.previous_visit_definition(
+                self.appointment.visit_definition)
+            if previous_visit_definition:
+                if self.previous_visit(previous_visit_definition):
+                    has_previous_visit = True
+                elif (self.appointment.visit_definition.time_point == 0 and
+                        self.appointment.visit_definition.base_interval == 0):
+                    has_previous_visit = True
+                else:
+                    has_previous_visit = False
+                if not has_previous_visit:
+                    raise exception_cls(
+                        'Previous visit report for \'{}\' is not complete.'.format(previous_visit_definition.code))
 
     def previous_visit_definition(self, visit_definition):
         """Returns the previous visit definition relative to this instance or None.
@@ -72,11 +76,11 @@ class PreviousVisitMixin(models.Model):
             return previous_visit_definition
         return None
 
-    def previous_visit(self):
+    def previous_visit(self, previous_visit_definition=None):
         """Returns the previous visit if it exists."""
         with transaction.atomic():
             try:
-                previous_visit_definition = self.previous_visit_definition(
+                previous_visit_definition = previous_visit_definition or self.previous_visit_definition(
                     self.appointment.visit_definition)
                 previous_visit = self.__class__.objects.get(
                     appointment__visit_definition=previous_visit_definition)

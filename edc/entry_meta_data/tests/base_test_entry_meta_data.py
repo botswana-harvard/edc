@@ -14,7 +14,7 @@ from edc.testing.tests.factories import TestConsentWithMixinFactory
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.testing.tests.factories import TestVisitFactory
 from edc_constants.constants import MALE
-from edc.subject.registration.tests.factories.registered_subject_factory import RegisteredSubjectFactory
+from edc.subject.registration.tests.factories import RegisteredSubjectFactory
 
 
 class BaseTestEntryMetaData(TestCase):
