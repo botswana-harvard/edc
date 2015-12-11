@@ -29,7 +29,8 @@ def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_f
                 instance.custom_post_update_entry_meta_data()
             except AttributeError as e:
                 if 'custom_post_update_entry_meta_data' not in str(e):
-                    raise AttributeError(str(e))
+                    raise AttributeError('Exception in {}.\'custom_post_update_entry_meta_data\'. Got {}'.format(
+                        instance._meta.model_name, str(e)))
         else:
             # These are subject models covered by a consent.
             try:
