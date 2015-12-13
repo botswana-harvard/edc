@@ -4,7 +4,7 @@ from django import forms
 from django.db.models import OneToOneField, ForeignKey, get_model
 from django.db.models.query import QuerySet
 
-from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc_visit_tracking.models import BaseVisitTracking
 from edc_device import device
 
 from ..classes import LogicCheck

@@ -1,6 +1,7 @@
 from django import template
 from django.core.urlresolvers import reverse
-from edc.subject.visit_tracking.classes import VisitModelHelper
+
+from edc_visit_tracking.classes import VisitModelHelper
 
 register = template.Library()
 

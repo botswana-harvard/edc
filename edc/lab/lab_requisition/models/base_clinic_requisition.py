@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.serializers.base import SerializationError
-from edc.subject.visit_tracking.models import BaseVisitTracking
+
+from edc_visit_tracking.models import BaseVisitTracking
+
 from ..models import BaseRequisition
 
 
@@ -34,8 +36,7 @@ class BaseClinicRequisition (BaseRequisition):
         # dont allow values in these fields to change if dispatched
         may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in [
             'is_receive', 'is_receive_datetime', 'specimen_identifier', 'is_packed', 'is_labelled',
-            'is_labelled_datetime', 'is_lis', 'packing_list', 'comment', 'modified', 'user_modified']
-            ]
+            'is_labelled_datetime', 'is_lis', 'packing_list', 'comment', 'modified', 'user_modified']]
         for k, v in may_not_change_these_fields:
             if k[0] != '_':
                 if getattr(self, k) != v:

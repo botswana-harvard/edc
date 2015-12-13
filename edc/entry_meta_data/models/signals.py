@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.rule_groups.classes import site_rule_groups
-from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc_visit_tracking.models import BaseVisitTracking
 
 from .requisition_meta_data import RequisitionMetaData
 from .scheduled_entry_meta_data import ScheduledEntryMetaData

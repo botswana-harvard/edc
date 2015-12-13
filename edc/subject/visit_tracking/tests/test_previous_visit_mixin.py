@@ -2,9 +2,9 @@ from .base_test import BaseTest
 from edc.testing.models import TestVisit
 from edc_constants.constants import SCHEDULED
 from django.utils import timezone
-from edc.subject.appointment.models.appointment import Appointment
-from edc.subject.visit_schedule.models.visit_definition import VisitDefinition
-from edc.subject.visit_tracking.models.previous_visit_mixin import PreviousVisitError
+from edc.subject.appointment.models import Appointment
+from edc.subject.visit_schedule.models import VisitDefinition
+from edc_visit_tracking.models import PreviousVisitError
 from edc.testing.models.test_visit import TestVisit2
 
 

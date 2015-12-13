@@ -6,7 +6,7 @@ from django.db.models import get_model, IntegerField
 
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.visit_tracking.models import BaseVisitTracking
+from edc_visit_tracking.models import BaseVisitTracking
 
 from .logic import Logic
 

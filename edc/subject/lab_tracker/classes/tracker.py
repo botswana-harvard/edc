@@ -284,7 +284,7 @@ class LabTracker(object):
         return None
 
     def _set_history_query_options(self):
-        from edc.subject.visit_tracking.models import BaseVisitTracking
+        from edc_visit_tracking.models import BaseVisitTracking
         self._history_query_options = {}
         for tracker in self.get_trackers():
             query_string = None

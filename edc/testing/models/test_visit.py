@@ -1,6 +1,5 @@
-from edc.subject.visit_tracking.models import BaseVisitTracking
 from edc.entry_meta_data.models import MetaDataMixin
-from edc.subject.visit_tracking.models import PreviousVisitMixin
+from edc_visit_tracking.models import BaseVisitTracking, PreviousVisitMixin
 
 
 class TestVisit(MetaDataMixin, PreviousVisitMixin, BaseVisitTracking):

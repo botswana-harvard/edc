@@ -1,9 +1,8 @@
 from datetime import date
 
-from edc_constants.constants import REQUIRED
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.subject.visit_tracking.models import BaseVisitTracking
-from edc.subject.visit_tracking.settings import VISIT_REASON_NO_FOLLOW_UP_CHOICES
+from edc_constants.constants import REQUIRED
+from edc_visit_tracking.constants import VISIT_REASON_NO_FOLLOW_UP_CHOICES
 
 
 class BaseMetaDataHelper(object):
@@ -23,18 +22,6 @@ class BaseMetaDataHelper(object):
         return '({0.instance!r})'.format(self)
 
     @property
-    def visit_model(self):
-        return self._visit_model
-
-    @visit_model.setter
-    def visit_model(self, model_or_instance):
-        try:
-            if issubclass(model_or_instance, BaseVisitTracking):
-                self._visit_model = model_or_instance
-        except TypeError:
-            self._visit_model = model_or_instance.__class__
-
-    @property
     def visit_model_attrname(self):
         return self._visit_model_attrname
 
@@ -48,10 +35,12 @@ class BaseMetaDataHelper(object):
 
     @visit_instance.setter
     def visit_instance(self, model_or_instance):
-        if isinstance(model_or_instance, BaseVisitTracking):
-            self._visit_instance = model_or_instance
-        else:
+        try:
             self._visit_instance = self.visit_model.objects.get(appointment=self.appointment)
+        except AttributeError as e:
+            if 'Manager isn\'t accessible via' not in str(e):
+                raise AttributeError(str(e))
+            self._visit_instance = model_or_instance
 
     @property
     def appointment_zero(self):
@@ -67,9 +56,11 @@ class BaseMetaDataHelper(object):
 
     def show_scheduled_entries(self):
         # TODO: need to clean this up!
-        if 'get_visit_reason_no_follow_up_choices' in dir(self.visit_instance):
+        try:
             visit_reason_no_follow_up_choices = self.visit_instance.get_visit_reason_no_follow_up_choices()
-        else:
+        except AttributeError as e:
+            if 'get_visit_reason_no_follow_up_choices' not in str(e):
+                raise AttributeError(str(e))
             visit_reason_no_follow_up_choices = VISIT_REASON_NO_FOLLOW_UP_CHOICES
         no_follow_up = [x.lower() for x in visit_reason_no_follow_up_choices.itervalues()]
         show_scheduled_entries = self.visit_instance.reason.lower() not in no_follow_up
