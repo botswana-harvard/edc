@@ -2,13 +2,12 @@ from django.db import models
 
 from ..managers import TestRegistrationManager
 
-from .test_off_study_mixin import TestOffStudyMixin
-from .test_base_off_study import TestBaseOffStudy
+from edc_offstudy.models import OffStudyMixin
 
 
-class TestRegistration(TestOffStudyMixin, models.Model):
+class TestRegistration(OffStudyMixin, models.Model):
 
-    OFF_STUDY_MODEL =  TestBaseOffStudy
+    OFF_STUDY_MODEL = None
 
     objects = TestRegistrationManager()
 

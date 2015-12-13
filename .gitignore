@@ -4,6 +4,7 @@
 .project
 .pydevproject
 .settings
+edc/db.sqlite3
 keys
 south.log
 *.bz2

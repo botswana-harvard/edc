@@ -2,7 +2,6 @@ from .encrypted_test_model import EncryptedTestModel
 from .export_test import ExportTest
 from .test_aliquot import TestAliquot
 from .test_aliquot_type import TestAliquotType
-from .test_base_off_study import TestBaseOffStudy
 from .test_consent import TestConsent, TestConsentWithMixin
 from .test_consent_no_rs import TestConsentNoRs
 from .test_m2m import TestM2m
@@ -11,8 +10,6 @@ from .test_dispatch import (
     TestDspItemBypass, TestDspContainer)
 from .test_foreign_key import TestForeignKey
 from .test_model import TestModel, TestModel1, TestModel2, TestModel3
-from .test_off_study import TestOffStudy
-from .test_off_study_mixin import TestOffStudyMixin
 from .test_panel import TestPanel
 from .test_profile import TestProfile, TestProfileItem
 from .test_receive import TestReceive

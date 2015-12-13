@@ -2,10 +2,10 @@ from django.db import models
 from edc.subject.registration.models import RegisteredSubject
 from .test_foreign_key import TestForeignKey
 from .test_m2m import TestM2m
-from .test_off_study_mixin import TestOffStudyMixin
+from edc_offstudy.models import OffStudyMixin
 
 
-class TestSubjectUuidModel(TestOffStudyMixin, models.Model):
+class TestSubjectUuidModel(OffStudyMixin, models.Model):
 
     name = models.CharField(max_length=10)
 

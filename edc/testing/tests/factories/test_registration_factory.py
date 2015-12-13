@@ -1,6 +1,8 @@
-from edc.subject.registration.tests.factories import BaseRegistrationFactory
-from ...models import TestRegistration
+import factory
+
+from edc.testing.models import TestRegistration
 
 
-class TestRegistrationFactory(BaseRegistrationFactory):
-    FACTORY_FOR = TestRegistration
+class TestRegistrationFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TestRegistration

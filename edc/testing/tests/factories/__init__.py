@@ -1,4 +1,3 @@
-from .test_base_off_study_factory import TestBaseOffStudyFactory
 from .test_consent_factory import TestConsentFactory, TestConsentWithMixinFactory
 from .test_consent_no_rs_factory import TestConsentNoRsFactory
 from .test_dispatch_factory import *
