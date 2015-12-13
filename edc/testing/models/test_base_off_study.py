@@ -1,5 +1,5 @@
 from edc_base.audit_trail import AuditTrail
-from edc.subject.off_study.models import BaseOffStudy
+from edc_offstudy.models import BaseOffStudy
 
 
 class TestBaseOffStudy(BaseOffStudy):
