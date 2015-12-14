@@ -25,14 +25,14 @@ class MetaDataMixin(object):
             REQUIRED, appointment, app_label, model_name, message, create)
 
     def form_is_not_required(self, appointment, app_label, model_name, message=None):
-        """Saves the entry_status as REQUIRED."""
+        """Saves the entry_status as NOT REQUIRED."""
         self._change_form_entry_status(
             NOT_REQUIRED, appointment, app_label, model_name, message)
 
     def requisition_is_required(self, appointment, app_label, model_name, panel_name,
-                                message=None):
+                                message=None, create=None):
         self._change_requisition_entry_status(
-            REQUIRED, appointment, app_label, model_name, panel_name, message)
+            REQUIRED, appointment, app_label, model_name, panel_name, message, create)
 
     def requisition_is_not_required(self, appointment, app_label, model_name, panel_name,
                                     message=None):
