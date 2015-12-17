@@ -34,8 +34,9 @@ class TransactionProducer(object):
             database_name = settings.DATABASES.get('default').get('NAME')
         if not database_name:
             raise TypeError('Unable to determine the \'default\' database name of this django project.')
-        self.producer_name = '{}-{}'.format(hostname.lower(),
-                                            database_name.lower())
+        self.producer_name = '{}-{}'.format(
+            hostname.lower(),
+            database_name.lower())[:50]
 
     def __repr__(self):
         return 'TransactionProducer({0.producer_name!r})'.format(self)
