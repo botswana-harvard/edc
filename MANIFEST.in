@@ -1,2 +1,15 @@
-recursive-include edc/subject/lab_tracker/templates *
+recursive-include edc/audit/templates *
+recursive-include edc/bhp_statistics/templates *
 recursive-include edc/data_manager/templates *
+recursive-include edc/device/dispatch/templates *
+recursive-include edc/device/sync/templates *
+recursive-include edc/lab/lab_clinic_api/templates *
+recursive-include edc/lab/lab_requisition/templates *
+recursive-include edc/map/templates *
+recursive-include edc/model_data_inspector/templates *
+recursive-include edc/model_selector/templates *
+recursive-include edc/subject/appointment/templates *
+recursive-include edc/subject/lab_tracker/templates *
+recursive-include edc/subject/locator/templates *
+recursive-include edc/subject/subject_summary/templates *
+recursive-include edc/templates *
