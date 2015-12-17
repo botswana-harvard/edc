@@ -3,6 +3,7 @@ from django.db.models import get_model
 from ..models import SubjectIdentifier
 from ..exceptions import IdentifierError
 from .base_subject_identifier import BaseSubjectIdentifier
+from django.utils import timezone
 
 
 class InfantIdentifier(BaseSubjectIdentifier):
@@ -75,16 +76,16 @@ class InfantIdentifier(BaseSubjectIdentifier):
         """ Updates registered subject after a new subject identifier is created."""
         RegisteredSubject = get_model('registration', 'registeredsubject')
         RegisteredSubject.objects.using(self.using).create(
-                subject_identifier=new_identifier,
-                registration_datetime=datetime.now(),
-                subject_type=self.subject_type,
-                user_created=self.user,
-                created=datetime.now(),
-                first_name='',
-                initials='',
-                registration_status='registered',
-                relative_identifier=self.maternal_identifier,
-                study_site=self.study_site)
+            subject_identifier=new_identifier,
+            registration_datetime=timezone.now(),
+            subject_type=self.subject_type,
+            user_created=self.user,
+            created=timezone.now(),
+            first_name='',
+            initials='',
+            registration_status='registered',
+            relative_identifier=self.maternal_identifier,
+            study_site=self.study_site)
         return new_identifier
 
     def _get_suffix(self):
