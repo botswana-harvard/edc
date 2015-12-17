@@ -24,7 +24,7 @@ class TestVisitSchedule(TestCase):
             site_lab_profiles.register(TestLabProfile())
         except AlreadyRegisteredLabProfile:
             pass
-        TestAppConfiguration()
+        TestAppConfiguration().prepare()
 
         self.test_visit_schedule = TestVisitSchedule()
         self.test_visit_schedule.build()

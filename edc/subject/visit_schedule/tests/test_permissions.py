@@ -25,7 +25,7 @@ class TestPermissions(SimpleTestCase):
         except AlreadyRegisteredLabProfile:
             pass
 
-        TestAppConfiguration()
+        TestAppConfiguration().prepare()
         site_lab_tracker.autodiscover()
         TestVisitSchedule().build()
 

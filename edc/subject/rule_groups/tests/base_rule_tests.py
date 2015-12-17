@@ -46,7 +46,7 @@ class RuleTests(TestCase):
             site_lab_profiles.register(TestLabProfile())
         except AlreadyRegisteredLabProfile:
             pass
-        TestAppConfiguration()
+        TestAppConfiguration().prepare()
         site_lab_tracker.autodiscover()
         TestVisitSchedule().build()
 

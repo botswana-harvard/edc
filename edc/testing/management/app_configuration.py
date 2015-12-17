@@ -8,7 +8,7 @@ from ..classes import TestAppConfiguration
 def app_configuration_callback(sender, **kwargs):
     # Your specific logic here
     print 'Loading app configuration'
-    TestAppConfiguration()
+    TestAppConfiguration().prepare()
     print 'Done. app configuration loaded'
 
 post_syncdb.connect(app_configuration_callback, sender=edc.testing.models)
