@@ -281,6 +281,10 @@ class RegisteredSubject(BaseRegisteredSubject, BaseSyncUuidModel):
                 return False
         return True
 
+    def age(self):
+        return self.screening_age_in_years
+    age.allow_tags = True
+
     def dashboard(self):
         ret = None
         if self.subject_identifier:
