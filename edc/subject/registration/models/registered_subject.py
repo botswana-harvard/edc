@@ -105,7 +105,18 @@ class RegisteredSubject(BaseRegisteredSubject, BaseSyncUuidModel):
         null=True,
     )
 
+    screening_identifier = models.CharField(
+        max_length=36,
+        null=True,
+        blank=True,
+    )
+
     screening_datetime = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    screening_age_in_years = models.IntegerField(
         null=True,
         blank=True
     )
