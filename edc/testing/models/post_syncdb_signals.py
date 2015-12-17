@@ -1,4 +1,4 @@
-from django.db.models.signals import post_syncdb
+# from django.db.models.signals import post_syncdb
 
 from ..classes import TestAppConfiguration
 
@@ -8,7 +8,7 @@ from ..classes import TestAppConfiguration
 def app_configuration_callback(sender, **kwargs):
     # Your specific logic here
     print 'Loading app configuration'
-    TestAppConfiguration().prepare()
+    TestAppConfiguration()
     print 'app configuration loaded'
 
 # post_syncdb.connect(app_configuration_callback, sender=models)
