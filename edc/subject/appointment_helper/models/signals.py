@@ -8,5 +8,6 @@ def prepare_appointments_on_post_save(sender, instance, raw, created, using, **k
     if not raw:
         try:
             instance.prepare_appointments(using)
-        except AttributeError:
-            pass
+        except AttributeError as e:
+            if 'prepare_appointments' not in str(e):
+                raise

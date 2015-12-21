@@ -43,13 +43,13 @@ class MembershipForm(BaseUuidModel):
         if not self.model_name:
             self.model_name = self.content_type_map.model
         # get the model class
-        from edc.subject.appointment_helper.models import BaseAppointmentMixin
+        from edc.subject.appointment_helper.models import AppointmentMixin
         cls = self.content_type_map.model_class()
         # inspect for registered subject attribute
         if 'registered_subject' not in dir(cls):
             raise ValidationError('Membership forms must have a key to model RegisteredSubject. Got {0}'.format(cls))
-        if not issubclass(cls, BaseAppointmentMixin):
-            raise ImproperlyConfigured('MembershipForm attribute content_type_map must refer to a model class that is a subclass of BaseAppointmentMixin. Got {0}'.format(cls))
+        if not issubclass(cls, AppointmentMixin):
+            raise ImproperlyConfigured('MembershipForm attribute content_type_map must refer to a model class that is a subclass of AppointmentMixin. Got {0}'.format(cls))
         super(MembershipForm, self).save(*args, **kwargs)
 
     def natural_key(self):

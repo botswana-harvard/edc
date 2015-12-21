@@ -1,4 +1,4 @@
-from django.core.exceptions import ImproperlyConfigured, MultipleObjectsReturned
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model, Max
 
 from edc.subject.appointment.exceptions import AppointmentStatusError
@@ -15,94 +15,95 @@ from .appointment_date_helper import AppointmentDateHelper
 
 class AppointmentHelper(object):
 
-    def create_all(self, registered_subject, model_name, using=None,
-                   base_appt_datetime=None, dashboard_type=None, source=None,
-                   visit_definitions=None, verbose=False):
+    def create_all(self, membership_form, base_appt_datetime=None, using=None,
+                   visit_definitions=None, dashboard_type=None):
         """Creates appointments for a registered subject based on a list
-        of visit definitions if given model_name is a member of a schedule group.
-
-            Args:
-                registered_subject: current subject
-                model_name: model of the membership_form
-                dashboard_type:
+        of visit definitions for the given membership form instance.
 
             1. Only create for visit_instance = 0
             2. If appointment exists, just update the appt_datetime
 
-            visit_definition contains schedule group contains membership form
+            visit_definition contains the schedule group which contains the membership form
         """
-        # base_appt_datetime must come from the membership_form model and not from the appt_datetime
-        # of the first appointment as the user may change this.
         appointments = []
-        default_appt_type = self._get_default_appt_type(registered_subject)
-        if source != 'BaseAppointmentMixin':  # just a temporary check to ensure this is called by the signal
-            raise ImproperlyConfigured(
-                'AppointmentHelper.create_all() may only be called from BaseAppointmentMixin.')
-        if ScheduleGroup.objects.filter(membership_form__content_type_map__model=model_name):
-            schedule_group = ScheduleGroup.objects.get(membership_form__content_type_map__model=model_name)
-            membership_form_model = schedule_group.membership_form.content_type_map.model_class()
-            try:
-                membership_form = membership_form_model.objects.get(registered_subject=registered_subject)
-            except MultipleObjectsReturned:
-                # this happens if there are multiple versions of a the consent
-                # getting the latest may be wrong, ??
-                # get_by_lastest is expected to be defined
-                membership_form = membership_form_model.objects.filter(
-                    registered_subject=registered_subject).last()
-            except membership_form_model.DoesNotExist:
-                # not found, which is supposed to be impossible -- this is called in post_save signal.
-                raise AppointmentCreateError(
-                    "Cannot get the membership_form_model instance. Expected to "
-                    "find an instance of model {0} belonging to schedule group {1}.".format(
-                        membership_form_model, schedule_group))
-            if not base_appt_datetime:
-                base_appt_datetime = membership_form.get_registration_datetime()
-            visit_definitions = visit_definitions or VisitDefinition.objects.filter(
-                schedule_group=schedule_group).order_by('time_point')
-            appointment_date_helper = AppointmentDateHelper()
-            Appointment = get_model('appointment', 'appointment')
-            if not visit_definitions:
-                raise AppointmentCreateError('No visit_definitions found for membership form class {0} '
-                                             'in schedule group {1}. Expected at least one visit '
-                                             'definition to be associated with schedule group {1}.'.format(
-                                                 membership_form_model, schedule_group))
-            for visit_definition in visit_definitions:
-                # calculate the appointment date for new appointments
-                if visit_definition.time_point == 0:
-                    appt_datetime = appointment_date_helper.get_best_datetime(
-                        base_appt_datetime, registered_subject.study_site)
-                else:
-                    appt_datetime = appointment_date_helper.get_relative_datetime(
-                        base_appt_datetime, visit_definition)
-                try:
-                    appointment = Appointment.objects.using(using).get(
-                        registered_subject=registered_subject,
-                        visit_definition=visit_definition,
-                        visit_instance='0')
-                    td = appointment.best_appt_datetime - appt_datetime
-                    if td.days == 0 and abs(td.seconds) > 59:
-                        # the calculated appointment date does not match
-                        # the best_appt_datetime (not within 59 seconds)
-                        # which means you changed the date on the membership form and now
-                        # need to correct the best_appt_datetime
-                        appointment.appt_datetime = appt_datetime
-                        appointment.best_appt_datetime = appt_datetime
-                        appointment.save(using)
-                        if verbose:
-                            print '    updated {}'.format(appointment)
-                except Appointment.DoesNotExist:
-                    appointment = Appointment.objects.using(using).create(
-                        registered_subject=registered_subject,
-                        visit_definition=visit_definition,
-                        visit_instance='0',
-                        appt_datetime=appt_datetime,
-                        timepoint_datetime=appt_datetime,
-                        dashboard_type=dashboard_type,
-                        appt_type=default_appt_type)
-                    if verbose:
-                        print '    created {}'.format(appointment)
-                appointments.append(appointment)
+        default_appt_type = self._get_default_appt_type(membership_form.registered_subject)
+        for visit_definition in self.visit_definitions_for_schedule_group(membership_form._meta.model_name):
+            appointment = self.update_or_create_appointment(
+                membership_form.registered_subject,
+                base_appt_datetime or membership_form.get_registration_datetime(),
+                visit_definition,
+                default_appt_type,
+                dashboard_type,
+                using)
+            appointments.append(appointment)
         return appointments
+
+    def update_or_create_appointment(self, registered_subject, registration_datetime, visit_definition,
+                                     default_appt_type, dashboard_type, using):
+        """Updates or creates an appointment for this registered subject for the visit_definition."""
+        Appointment = get_model('appointment', 'appointment')
+        appt_datetime = self.new_appointment_appt_datetime(
+            registered_subject, registration_datetime, visit_definition)
+        try:
+            appointment = Appointment.objects.using(using).get(
+                registered_subject=registered_subject,
+                visit_definition=visit_definition,
+                visit_instance='0')
+            td = appointment.best_appt_datetime - appt_datetime
+            if td.days == 0 and abs(td.seconds) > 59:
+                # the calculated appointment date does not match
+                # the best_appt_datetime (not within 59 seconds)
+                # which means you changed the date on the membership form and now
+                # need to correct the best_appt_datetime
+                appointment.appt_datetime = appt_datetime
+                appointment.best_appt_datetime = appt_datetime
+                appointment.save(using)
+        except Appointment.DoesNotExist:
+            appointment = Appointment.objects.using(using).create(
+                registered_subject=registered_subject,
+                visit_definition=visit_definition,
+                visit_instance='0',
+                appt_datetime=appt_datetime,
+                timepoint_datetime=appt_datetime,
+                dashboard_type=dashboard_type,
+                appt_type=default_appt_type)
+        return appointment
+
+    def new_appointment_appt_datetime(self, registered_subject, registration_datetime, visit_definition):
+        """Calculates and returns the appointment date for new appointments."""
+        appointment_date_helper = AppointmentDateHelper()
+        if visit_definition.time_point == 0:
+            appt_datetime = appointment_date_helper.get_best_datetime(
+                registration_datetime, registered_subject.study_site)
+        else:
+            appt_datetime = appointment_date_helper.get_relative_datetime(
+                registration_datetime, visit_definition)
+        return appt_datetime
+
+    def visit_definitions_for_schedule_group(self, model_name):
+        """Returns a visit_definition queryset for this membership form's schedule_group."""
+        schedule_group = self.schedule_group(model_name)
+        visit_definitions = VisitDefinition.objects.filter(
+            schedule_group=schedule_group).order_by('time_point')
+        if not visit_definitions:
+            raise AppointmentCreateError(
+                'No visit_definitions found for membership form class {0} '
+                'in schedule group {1}. Expected at least one visit '
+                'definition to be associated with schedule group {1}.'.format(
+                    model_name, schedule_group))
+        return visit_definitions
+
+    def schedule_group(self, membership_form_model_name):
+        """Returns the schedule_group for this membership_form."""
+        try:
+            schedule_group = ScheduleGroup.objects.get(
+                membership_form__content_type_map__model=membership_form_model_name)
+        except ScheduleGroup.DoesNotExist:
+            raise ScheduleGroup.DoesNotExist(
+                'Cannot prepare appointments for membership form. '
+                'Membership form \'{}\' not found in ScheduleGroup. '
+                'See the visit schedule configuration.'.format(membership_form_model_name))
+        return schedule_group
 
     def delete_for_instance(self, model_instance, using=None):
         """ Delete appointments for this registered_subject for this

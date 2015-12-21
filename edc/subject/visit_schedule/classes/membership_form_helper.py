@@ -44,13 +44,15 @@ class MembershipFormHelper(object):
         return self._keyed
 
     def _add_keyed(self, group, obj):
-        from edc.subject.appointment_helper.models import BaseAppointmentMixin
+        from edc.subject.appointment_helper.models import AppointmentMixin
         if not group:
             group = 'no_group'
         if not isinstance(group, basestring):
             raise TypeError('Expected parameter group to be a string')
-        if not isinstance(obj, BaseAppointmentMixin):
-            raise TypeError('Expected an instance of a model class using mixin BaseAppointmentMixin. Models {0} of group \'{1}\' is being used as membership form so must be a subclass of this mixin.'.format(obj.__class__, group))
+        if not isinstance(obj, AppointmentMixin):
+            raise TypeError('Expected an instance of AppointmentMixin. Models {0} of group \'{1}\' is being '
+                            'used as membership form so must be a subclass of this mixin.'.format(
+                                obj.__class__, group))
         if group in self._get_keyed():
             self._get_keyed()[group].append(obj)
         else:
@@ -60,20 +62,20 @@ class MembershipFormHelper(object):
         self._unkeyed = {}
 
     def _add_unkeyed(self, group, cls):
-        from edc.subject.appointment_helper.models import BaseAppointmentMixin
+        from edc.subject.appointment_helper.models import AppointmentMixin
         if not group:
             group = 'no_group'
         if not isinstance(group, basestring):
             raise TypeError('Expected parameter group to be a string')
-        if not issubclass(cls, BaseAppointmentMixin):
-            raise TypeError('Expected a model class using mixin BaseAppointmentMixin')
+        if not issubclass(cls, AppointmentMixin):
+            raise TypeError('Expected a model class using mixin AppointmentMixin')
         if group in self._get_unkeyed():
             self._get_unkeyed()[group].append(cls)
         else:
             self._get_unkeyed().update({group: [cls]})
 
     def _get_unkeyed(self):
-        if self._unkeyed == None:
+        if self._unkeyed is None:
             self._set_unkeyed()
         return self._unkeyed
 

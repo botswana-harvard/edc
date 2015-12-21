@@ -1,9 +1,7 @@
 from django.db import models
 
-from edc.subject.registration.models import RegisteredSubject
 
-
-class BaseAppointmentMixin(models.Model):
+class AppointmentMixin(models.Model):
 
     """ Model Mixin to add methods to create appointments.
 
@@ -28,20 +26,7 @@ class BaseAppointmentMixin(models.Model):
         .. seealso:: :class:`appointment_helper.AppointmentHelper`. """
         self.pre_prepare_appointments(using)
         from edc.subject.appointment_helper.classes import AppointmentHelper
-        if 'registered_subject' in dir(self):
-            registered_subject = self.registered_subject
-        else:
-            registered_subject = RegisteredSubject.objects.get(subject_identifier=self.subject_identifier)
-        try:
-            visit_definitions = self.get_visit_definitions_from_instance()
-        except AttributeError:
-            visit_definitions = None
-        AppointmentHelper().create_all(
-            registered_subject,
-            self.__class__.__name__.lower(),
-            using=using,
-            source='BaseAppointmentMixin',
-            visit_definitions=visit_definitions)
+        AppointmentHelper().create_all(self, using=using)
         self.post_prepare_appointments(using)
 
     class Meta:

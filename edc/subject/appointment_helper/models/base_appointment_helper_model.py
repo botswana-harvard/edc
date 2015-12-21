@@ -1,9 +1,9 @@
 from django.db import models
 
-from .base_appointment_mixin import BaseAppointmentMixin
+from .appointment_mixin import AppointmentMixin
 
 
-class BaseAppointmentHelperModel (BaseAppointmentMixin, models.Model):
+class BaseAppointmentHelperModel (AppointmentMixin, models.Model):
 
     """ Base for models that may be trigger the creation of appointments such as registration models models that need a key to RegisteredSubject.
 

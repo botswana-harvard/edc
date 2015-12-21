@@ -3,7 +3,7 @@ from django.db import models
 from edc_consent.models import BaseConsent
 from edc_consent.models.fields import ReviewFieldsMixin, IdentityFieldsMixin
 from edc_base.model.models import BaseUuidModel
-from edc.subject.appointment_helper.models import BaseAppointmentMixin
+from edc.subject.appointment_helper.models import AppointmentMixin
 from edc.subject.registration.models import RegisteredSubject
 from edc_consent.models.fields.sample_collection_fields_mixin import SampleCollectionFieldsMixin
 from edc_consent.models.fields.personal_fields_mixin import PersonalFieldsMixin
@@ -48,7 +48,7 @@ class TestConsent(BaseTestConsent):
         app_label = 'testing'
 
 
-class TestConsentWithMixin(BaseAppointmentMixin, BaseTestConsent):
+class TestConsentWithMixin(AppointmentMixin, BaseTestConsent):
 
     def get_registration_datetime(self):
         return self.consent_datetime
