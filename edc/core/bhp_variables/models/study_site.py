@@ -7,7 +7,7 @@ class StudySite(BaseUuidModel):
 
     site_code = models.CharField(max_length=4, unique=True)
 
-    site_name = models.CharField(max_length=35, unique=True)
+    site_name = models.CharField(max_length=75, unique=True)
 
     objects = StudySiteManager()
 
