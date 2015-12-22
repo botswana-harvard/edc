@@ -2,7 +2,7 @@ import factory
 
 from edc.base.model.tests.factories import BaseUuidModelFactory
 from edc.lab.lab_clinic_api.tests.factories import PanelFactory
-from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory
+from edc_visit_schedule.tests.factories import VisitDefinitionFactory
 
 from ...models import LabEntry
 

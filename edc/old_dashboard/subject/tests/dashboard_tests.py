@@ -9,7 +9,7 @@ from edc.dashboard.subject.classes import RegisteredSubjectDashboard
 from edc.subject.lab_tracker.classes import LabTracker, site_lab_tracker
 from edc.subject.lab_tracker.models import TestResultModel
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
-from edc.subject.visit_schedule.tests.factories import VisitDefinitionFactory, ScheduleGroupFactory, MembershipFormFactory
+from edc_visit_schedule.tests.factories import VisitDefinitionFactory, ScheduleGroupFactory, MembershipFormFactory
 from edc.testing.models import TestVisit, TestConsentWithMixin, TestRequisition, TestSubjectLocator
 from edc.testing.tests.factories import TestConsentWithMixinFactory
 from edc_appointment.models import Configuration

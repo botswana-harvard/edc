@@ -23,7 +23,7 @@ from edc.device.sync.classes import BaseProducer
 from edc.device.sync.exceptions import PendingTransactionError
 from edc.device.sync.helpers import TransactionHelper
 from edc.entry_meta_data.models import BaseEntryMetaData
-from edc.subject.visit_schedule.models import VisitDefinition, ScheduleGroup
+from edc_visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc_base.encrypted_fields import FieldCryptor
 
 from ..exceptions import ControllerBaseModelError

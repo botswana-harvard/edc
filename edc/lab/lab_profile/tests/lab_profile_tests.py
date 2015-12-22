@@ -9,7 +9,7 @@ from edc_appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory
-from edc.subject.visit_schedule.models import VisitDefinition
+from edc_visit_schedule.models import VisitDefinition
 from edc.testing.classes import TestAppConfiguration
 from edc.testing.classes import TestLabProfile
 from edc.testing.classes import TestVisitSchedule

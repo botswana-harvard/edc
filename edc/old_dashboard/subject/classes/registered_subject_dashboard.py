@@ -22,8 +22,8 @@ from edc.subject.locator.models import BaseLocator
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.subject_config.models import SubjectConfiguration
 from edc.subject.subject_summary.models import Link
-from edc.subject.visit_schedule.classes import MembershipFormHelper
-from edc.subject.visit_schedule.models import MembershipForm
+from edc_visit_schedule.classes import MembershipFormHelper
+from edc_visit_schedule.models import MembershipForm
 from edc_constants.constants import NEW, NOT_REQUIRED, UNKEYED, KEYED, NEW_APPT, COMPLETE_APPT, IN_PROGRESS
 from edc_visit_tracking.models import BaseVisitTracking
 

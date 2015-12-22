@@ -1,8 +1,8 @@
 from django.db import models
 
 from edc.subject.entry.choices import ENTRY_CATEGORY, ENTRY_WINDOW, ENTRY_STATUS
-from edc.subject.visit_schedule.models import BaseWindowPeriodItem
-from edc.subject.visit_schedule.models import VisitDefinition
+from edc_visit_schedule.models import BaseWindowPeriodItem
+from edc_visit_schedule.models import VisitDefinition
 from edc_constants.constants import NOT_REQUIRED, REQUIRED
 
 from ..exceptions import EntryManagerError

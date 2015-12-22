@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db.models import get_model, ForeignKey, OneToOneField
 from django.db import IntegrityError
 from django.core.exceptions import ImproperlyConfigured
-from edc.subject.visit_schedule.models import MembershipForm
+from edc_visit_schedule.models import MembershipForm
 from ..exceptions import (DispatchModelError, DispatchError,
                           AlreadyDispatched, DispatchControllerError)
 from ..models import DispatchItemRegister, DispatchContainerRegister
