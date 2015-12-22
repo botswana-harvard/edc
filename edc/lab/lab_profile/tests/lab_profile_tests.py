@@ -5,7 +5,7 @@ from edc.entry_meta_data.models import RequisitionMetaData
 # from edc.lab.lab_clinic_api.models import Aliquot
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.appointment.models import Appointment
+from edc_appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.registration.tests.factories import RegisteredSubjectFactory

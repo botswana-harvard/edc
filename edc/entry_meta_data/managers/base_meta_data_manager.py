@@ -3,7 +3,7 @@ from django.db import models
 
 from edc_constants.constants import REQUIRED, NOT_REQUIRED, KEYED, MISSED_VISIT, DEATH_VISIT, LOST_VISIT
 from edc.core.bhp_common.utils import convert_from_camel
-from edc.subject.appointment.models import Appointment
+from edc_appointment.models import Appointment
 
 
 class BaseMetaDataManager(models.Manager):

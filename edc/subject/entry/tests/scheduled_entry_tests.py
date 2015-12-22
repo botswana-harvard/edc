@@ -7,7 +7,7 @@
 # from edc.core.bhp_content_type_map.models import ContentTypeMap
 # from edc.core.bhp_variables.tests.factories import StudySpecificFactory, StudySiteFactory
 # from edc.dashboard.subject.classes import RegisteredSubjectDashboard
-# from edc.subject.appointment.models import Appointment
+# from edc_appointment.models import Appointment
 # from edc.subject.consent.tests.factories import ConsentCatalogueFactory
 # from edc.subject.entry.tests.factories import EntryFactory
 # from edc.subject.lab_entry.tests.factories import LabEntryFactory

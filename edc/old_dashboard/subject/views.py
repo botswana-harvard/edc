@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from edc.subject.appointment.models import Appointment
+from edc_appointment.models import Appointment
 from edc.subject.entry.models.lab_entry import LabEntry
 from edc.subject.entry.models.entry import Entry
 from edc.entry_meta_data.models import RequisitionMetaData

@@ -86,7 +86,7 @@ class VisitScheduleConfiguration(object):
 
     def rebuild(self):
         """Rebuild, WARNING which DELETES meta data."""
-        Appointment = get_model('appointment', 'appointment')
+        Appointment = get_model('edc_appointment', 'appointment')
         Entry = get_model('entry', 'entry')
         MembershipForm = get_model('visit_schedule', 'membershipform')
         VisitDefinition = get_model('visit_schedule', 'visitdefinition')

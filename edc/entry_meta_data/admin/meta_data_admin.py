@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from edc_base.modeladmin.admin import BaseModelAdmin
-from edc.subject.appointment.models import Appointment
+from edc_appointment.models import Appointment
 from edc.subject.entry.models import Entry, LabEntry
 from edc.subject.registration.models import RegisteredSubject
 

@@ -35,6 +35,14 @@ class BaseMetaDataHelper(object):
 
     @visit_instance.setter
     def visit_instance(self, model_or_instance):
+        if model_or_instance:
+            if model_or_instance._meta.model_name != self.visit_model._meta.model_name:
+                raise ValueError(
+                    '{} expected the visit instance to be an instance of \'{}\' '
+                    'as specified in the visit definition. '
+                    'Got \'{}\''.format(self.__class__.__name__,
+                                        self.visit_model.__name__,
+                                        model_or_instance.__class__.__name__))
         try:
             self._visit_instance = self.visit_model.objects.get(appointment=self.appointment)
         except AttributeError as e:

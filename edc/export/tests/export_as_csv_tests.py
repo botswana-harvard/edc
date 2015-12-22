@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
-from edc.subject.appointment.models import Appointment
+from edc_appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.registration.models import RegisteredSubject
 from edc.testing.classes import TestLabProfile

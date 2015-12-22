@@ -213,7 +213,7 @@ class DispatchController(BaseDispatchController):
 
         ..seealso:: module :mod:`bhp_appointment`
         """
-        Appointments = get_model('appointment', 'Appointment')
+        Appointments = get_model('edc_appointment', 'Appointment')
         # appointments = Appointments.objects.filter(registered_subject=registered_subject)
         appointments = Appointments.objects.filter(visit_instance=appointmnet_instance,
                                                    registered_subject=registered_subject,
@@ -229,7 +229,7 @@ class DispatchController(BaseDispatchController):
         """
         if (visit_model and visit_app):
             SubjectVisit = get_model(visit_app, visit_model)
-            Appointments = get_model('appointment', 'Appointment')
+            Appointments = get_model('edc_appointment', 'Appointment')
             appointments = Appointments.objects.filter(
                 visit_instance=appointmnet_instance,
                 registered_subject=registered_subject,

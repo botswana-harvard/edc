@@ -1,18 +1,17 @@
 from __future__ import print_function
 
-from django.db.utils import IntegrityError
 from django.core.exceptions import MultipleObjectsReturned
 
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
 from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.export.helpers import ExportHelper
-from edc.notification.helpers import NotificationHelper
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
-from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_packing.models import Destination
-from edc.subject.appointment.models import Holiday
+from edc.lab.lab_profile.classes import site_lab_profiles
+from edc.notification.helpers import NotificationHelper
 from edc.subject.entry.models import RequisitionPanel
 from edc.utils import datatype_to_string
+from edc_appointment.models import Holiday
 
 from lis.labeling.models import LabelPrinter, ZplTemplate, Client
 
@@ -317,4 +316,3 @@ class BaseAppConfiguration(object):
 #             except IntegrityError:
 #                 StudySite.objects.get(site_code=self.study_site_setup.get('site_code')).delete()
 #                 StudySite.objects.create(**self.study_site_setup)
-

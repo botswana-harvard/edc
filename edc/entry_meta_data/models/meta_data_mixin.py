@@ -1,7 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 
 from edc.core.bhp_content_type_map.models.content_type_map import ContentTypeMap
-from edc.subject.appointment.models import Appointment
 from edc.subject.entry.models import Entry, LabEntry
 from edc.subject.entry.models.requisition_panel import RequisitionPanel
 from edc_constants.constants import REQUIRED, NOT_REQUIRED, KEYED
@@ -172,7 +171,7 @@ class MetaDataMixin(object):
         The appointments are incremented using a decimal, e.g. 1000.0,
         1000.1, 1000.2 , etc. 1000.0 is the "base" appointment."""
         if appointment.visit_instance != '0':
-            appointment = Appointment.objects.get(
+            appointment = appointment.__class__.objects.get(
                 registered_subject=appointment.registered_subject,
                 visit_instance='0', visit_definition=appointment.visit_definition)
         return appointment

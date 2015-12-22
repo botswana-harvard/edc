@@ -1,6 +1,6 @@
 from django.db.models import get_models, get_model
 
-from edc.subject.appointment.models import Appointment
+from edc_appointment.models import Appointment
 from edc.subject.registration.models import RegisteredSubject
 
 

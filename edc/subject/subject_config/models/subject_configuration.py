@@ -1,7 +1,8 @@
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
+
 from edc.device.sync.models import BaseSyncUuidModel
-from edc.subject.appointment.choices import APPT_STATUS, APPT_TYPE
+from edc_appointment.choices import APPT_STATUS, APPT_TYPE
 from edc_constants.constants import NEW_APPT, UNKEYED
 
 
@@ -28,9 +29,8 @@ class SubjectConfiguration(BaseSyncUuidModel):
         super(SubjectConfiguration, self).save(*args, **kwargs)
 
     def update_new_appointments(self):
-        Appointment = models.get_model('appointment', 'Appointment')
-
         """Updates \'NEW\' appointments for this subject_identifier to reflect this appt_status."""
+        Appointment = models.get_model('edc_appointment', 'Appointment')
         if NEW_APPT not in [x[0] for x in APPT_STATUS]:
             raise ImproperlyConfigured(
                 'SubjectConfiguration save() expects APPT_STATUS choices tuple '

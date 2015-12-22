@@ -16,7 +16,7 @@ from edc.entry_meta_data.helpers import ScheduledEntryMetaDataHelper, Requisitio
 from edc.lab.lab_clinic_api.classes import EdcLabResults
 from edc.lab.lab_packing.models import BasePackingList
 from edc.lab.lab_requisition.models import BaseBaseRequisition
-from edc.subject.appointment.models import Appointment
+from edc_appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.locator.models import BaseLocator
 from edc.subject.registration.models import RegisteredSubject

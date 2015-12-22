@@ -44,7 +44,7 @@ class MembershipFormHelper(object):
         return self._keyed
 
     def _add_keyed(self, group, obj):
-        from edc.subject.appointment_helper.models import AppointmentMixin
+        from edc_appointment.models import AppointmentMixin
         if not group:
             group = 'no_group'
         if not isinstance(group, basestring):
@@ -62,7 +62,7 @@ class MembershipFormHelper(object):
         self._unkeyed = {}
 
     def _add_unkeyed(self, group, cls):
-        from edc.subject.appointment_helper.models import AppointmentMixin
+        from edc_appointment.models import AppointmentMixin
         if not group:
             group = 'no_group'
         if not isinstance(group, basestring):

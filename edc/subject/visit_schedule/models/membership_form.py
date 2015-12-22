@@ -15,21 +15,18 @@ class MembershipForm(BaseUuidModel):
 
     content_type_map = models.OneToOneField(
         ContentTypeMap,
-        related_name='+'
-        )
+        related_name='+')
 
     category = models.CharField(
         max_length=35,
         default='subject',
         null=True,
         help_text='In lowercase, this should be a valid subject type (as in registered_subject).',
-        unique=True,
-        )
+        unique=True)
 
     visible = models.BooleanField(
         default=True,
-        help_text='If not visible on the dashboard, you have to write code to populate it yourself.'
-        )
+        help_text='If not visible on the dashboard, you have to write code to populate it yourself.')
 
     app_label = models.CharField(max_length=25, null=True)
 
@@ -38,12 +35,12 @@ class MembershipForm(BaseUuidModel):
     objects = MembershipFormManager()
 
     def save(self, *args, **kwargs):
+        from edc_appointment.models import AppointmentMixin
         if not self.app_label:
             self.app_label = self.content_type_map.app_label
         if not self.model_name:
             self.model_name = self.content_type_map.model
         # get the model class
-        from edc.subject.appointment_helper.models import AppointmentMixin
         cls = self.content_type_map.model_class()
         # inspect for registered subject attribute
         if 'registered_subject' not in dir(cls):

@@ -8,7 +8,7 @@ from edc_constants.choices import YES_NO_NA
 from edc_constants.constants import CLOSED, OPEN, NEW_APPT, IN_PROGRESS
 from edc.core.crypto_fields.fields import EncryptedTextField
 from edc.device.sync.models import BaseSyncUuidModel
-from edc.subject.appointment.models import Appointment
+from edc_appointment.models import Appointment
 from edc_base.audit_trail import AuditTrail
 
 from ..managers import TimePointStatusManager

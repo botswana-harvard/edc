@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from edc.subject.appointment.models import Appointment
+from edc_appointment.models import Appointment
 
 from ..forms import TimePointStatusForm
 from ..models import TimePointStatus
