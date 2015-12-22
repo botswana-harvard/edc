@@ -29,6 +29,9 @@ class VisitScheduleConfiguration(object):
     schedule_groups = OrderedDict()
     visit_definitions = OrderedDict()
 
+    def __init__(self):
+        self.sync_content_type_map_tries = 0
+
     def __repr__(self):
         return '{0}.{1}'.format(self.app_label, self.name)
 
@@ -105,7 +108,9 @@ class VisitScheduleConfiguration(object):
         self.build()
 
     def build(self):
-        """Builds and / or updates the visit schedule models."""
+        """Builds and / or updates the visit schedule models.
+
+        If it hangs here then you are probably missing an app in INSTALLED_APPS."""
         entry_item = None
         Entry = get_model('entry', 'entry')
         RequisitionPanel = get_model('entry', 'requisitionpanel')
@@ -186,8 +191,7 @@ class VisitScheduleConfiguration(object):
                             upper_window_unit=visit_definition.get('window_upper_bound_unit'),
                             grouping=visit_definition.get('grouping'),
                             visit_tracking_content_type_map=visit_tracking_content_type_map,
-                            instruction=visit_definition.get('instructions') or '-',
-                            )
+                            instruction=visit_definition.get('instructions') or '-')
                     finally:
                         visit_definition_instance.schedule_group.add(schedule_group)
                     for entry_item in visit_definition.get('entries'):
@@ -212,17 +216,21 @@ class VisitScheduleConfiguration(object):
                                 default_entry_status=entry_item.default_entry_status,
                                 additional=entry_item.additional)
                     for entry in Entry.objects.filter(visit_definition=visit_definition_instance):
-                        if (entry.app_label.lower(), entry.model_name.lower()) not in [(item.app_label.lower(), item.model_name.lower()) for item in visit_definition.get('entries')]:
-                            #entry.delete()
+                        model_tpls = []
+                        for item in visit_definition.get('entries'):
+                            model_tpls.append((item.app_label.lower(), item.model_name.lower()))
+                        if (entry.app_label.lower(), entry.model_name.lower()) not in model_tpls:
                             pass
                     for requisition_item in visit_definition.get('requisitions'):
                         # requisition panel must exist, see app_configuration
                         try:
-                            requisition_panel = RequisitionPanel.objects.get(name=requisition_item.requisition_panel_name)
+                            requisition_panel = RequisitionPanel.objects.get(
+                                name=requisition_item.requisition_panel_name)
                         except RequisitionPanel.DoesNotExist:
-                            raise AppConfigurationError('RequisitionPanel matching query does not exist, '
-                                                        'for name=\'{}\'. Re-run app_configuration.'
-                                                        'prepare() or check the config.'.format(requisition_item.requisition_panel_name))
+                            raise AppConfigurationError(
+                                'RequisitionPanel matching query does not exist, '
+                                'for name=\'{}\'. Re-run app_configuration.'
+                                'prepare() or check the config.'.format(requisition_item.requisition_panel_name))
                         try:
                             lab_entry = LabEntry.objects.get(
                                 requisition_panel=requisition_panel,
@@ -232,7 +240,8 @@ class VisitScheduleConfiguration(object):
                             lab_entry.entry_order = requisition_item.entry_order
                             lab_entry.default_entry_status = requisition_item.default_entry_status
                             lab_entry.additional = requisition_item.additional
-                            lab_entry.save(update_fields=['app_label', 'model_name', 'entry_order', 'default_entry_status', 'additional'])
+                            lab_entry.save(update_fields=[
+                                'app_label', 'model_name', 'entry_order', 'default_entry_status', 'additional'])
                         except LabEntry.DoesNotExist:
                             try:
                                 LabEntry.objects.create(
@@ -242,20 +251,24 @@ class VisitScheduleConfiguration(object):
                                     visit_definition=visit_definition_instance,
                                     entry_order=requisition_item.entry_order,
                                     default_entry_status=requisition_item.default_entry_status,
-                                    additional=requisition_item.additional
-                                    )
+                                    additional=requisition_item.additional)
                             except IntegrityError:
-                                raise IntegrityError('{} {} {}.{}'.format(visit_definition_instance, requisition_panel, requisition_item.app_label, requisition_item.model_name,))
+                                raise IntegrityError(
+                                    '{} {} {}.{}'.format(
+                                        visit_definition_instance, requisition_panel,
+                                        requisition_item.app_label, requisition_item.model_name,))
                     for lab_entry in LabEntry.objects.filter(visit_definition=visit_definition_instance):
-                        if (lab_entry.app_label, lab_entry.model_name) not in [(item.app_label, item.model_name) for item in visit_definition.get('requisitions')]:
+                        model_tpls = [
+                            (item.app_label, item.model_name) for item in visit_definition.get('requisitions')]
+                        if (lab_entry.app_label, lab_entry.model_name) not in model_tpls:
                             lab_entry.delete()
-            except ContentTypeMap.DoesNotExist:
-                self.sync_content_type_map()
-#                 if not get_model(entry_item.app_label, entry_item.model_name.lower()):
-#                     raise ImproperlyConfigured('Model referenced in visit schedule does not exist. Got {}.{}'.format(entry_item.app_label, entry_item.model_name.lower()))
-#                 try:
-#                     ContentTypeMap.objects.get(app_label=entry_item.app_label, module_name=entry_item.model_name.lower())
-#                 except ContentTypeMap.DoesNotExist:
-#                     raise ImproperlyConfigured('Model referenced in visit schedule \'{}\' is not in content type. Is the APP installed? Got {}.{}'.format(self.name, entry_item.app_label, entry_item.model_name.lower()))
-                continue
+            except ContentTypeMap.DoesNotExist as e:
+                if self.sync_content_type_map_tries == 0:
+                    self.sync_content_type_map()
+                    self.sync_content_type_map_tries += 1
+                    continue
+                else:
+                    raise ContentTypeMap.DoesNotExist(
+                        '{} Check INSTALLED_APPS for an APP '
+                        'that is referenced but not installed. e.g. edc_offstudy.'.format(str(e)))
             break
