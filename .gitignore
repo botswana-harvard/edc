@@ -4,6 +4,7 @@
 .project
 .pydevproject
 .settings
+.coverage
 edc/db.sqlite3
 keys
 south.log
