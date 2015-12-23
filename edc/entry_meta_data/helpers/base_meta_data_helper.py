@@ -83,7 +83,7 @@ class BaseMetaDataHelper(object):
             if models.get_model(*self.visit_instance.OFF_STUDY_MODEL).objects.filter(
                     registered_subject=self.registered_subject, offstudy_date=visit_date):
                 # has an off study form completed on same day as visit
-                off_study_instance = self.visit_instance.OFF_STUDY_MODEL.objects.get(
+                off_study_instance = models.get_model(*self.visit_instance.OFF_STUDY_MODEL).objects.get(
                     registered_subject=self.registered_subject, offstudy_date=visit_date)
                 show_scheduled_entries = off_study_instance.show_scheduled_entries_on_off_study_date()
         return show_scheduled_entries
