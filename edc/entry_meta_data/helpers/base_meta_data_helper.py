@@ -1,5 +1,7 @@
 from datetime import date
 
+from django.db import models
+
 from edc.core.bhp_common.utils import convert_from_camel
 from edc_constants.constants import REQUIRED
 from edc_visit_tracking.constants import VISIT_REASON_NO_FOLLOW_UP_CHOICES
@@ -78,7 +80,7 @@ class BaseMetaDataHelper(object):
             visit_date = date(self.visit_instance.report_datetime.year,
                               self.visit_instance.report_datetime.month,
                               self.visit_instance.report_datetime.day)
-            if self.visit_instance.OFF_STUDY_MODEL.objects.filter(
+            if models.get_model(*self.visit_instance.OFF_STUDY_MODEL).objects.filter(
                     registered_subject=self.registered_subject, offstudy_date=visit_date):
                 # has an off study form completed on same day as visit
                 off_study_instance = self.visit_instance.OFF_STUDY_MODEL.objects.get(
