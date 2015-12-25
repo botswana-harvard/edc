@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from edc.subject.registration.models import RegisteredSubject
 from edc.subject.rule_groups.classes import site_rule_groups
-from edc_visit_tracking.models import BaseVisitTracking
+from edc_visit_tracking.models import VisitTrackingModelMixin
 
 from .requisition_meta_data import RequisitionMetaData
 from .scheduled_entry_meta_data import ScheduledEntryMetaData
@@ -12,7 +12,7 @@ from .scheduled_entry_meta_data import ScheduledEntryMetaData
 @receiver(post_save, weak=False, dispatch_uid="entry_meta_data_on_post_save")
 def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_fields, **kwargs):
     if not raw:
-        if isinstance(instance, BaseVisitTracking):
+        if isinstance(instance, VisitTrackingModelMixin):
             # These are visit models
             from ..helpers import ScheduledEntryMetaDataHelper, RequisitionMetaDataHelper
             scheduled_entry_helper = ScheduledEntryMetaDataHelper(instance.appointment, instance)
@@ -56,7 +56,7 @@ def entry_meta_data_on_post_save(sender, instance, raw, created, using, update_f
 @receiver(pre_delete, weak=False, dispatch_uid="entry_meta_data_on_pre_delete")
 def entry_meta_data_on_pre_delete(sender, instance, using, **kwargs):
     """Delete metadata if the visit tracking instance is deleted."""
-    if isinstance(instance, BaseVisitTracking):
+    if isinstance(instance, VisitTrackingModelMixin):
         ScheduledEntryMetaData.objects.filter(appointment=instance.appointment).delete()
         RequisitionMetaData.objects.filter(appointment=instance.appointment).delete()
     else:

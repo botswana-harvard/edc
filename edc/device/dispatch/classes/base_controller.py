@@ -335,7 +335,6 @@ class BaseController(BaseProducer):
                 if issubclass(f.__class__, BaseEncryptedField):
                     crypt = FieldCryptor('rsa', 'local')
                     hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
-                    #if hash_value:
                     if Crypt.objects.filter(hash=hash_value).exists():
                         crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
                     else:
@@ -350,28 +349,13 @@ class BaseController(BaseProducer):
                                 crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
                             else:
                                 if hash_value:
-                                    raise TypeError('Could not get a secret for field={}, of model={}, using hash={}'.format(str(f), str(model_cls), hash))
+                                    raise TypeError(
+                                        'Could not get a secret for field={}, of model={}, '
+                                        'using hash={}'.format(str(f), str(model_cls), hash))
                                 else:
                                     pass
                     if len(crypt_objs_instance) > 0:
                         crypt_objs_instances.append(crypt_objs_instance[0])
-#                     if crypt_objs_instance:hash
-#                         # Successfully pulled a crypt record using hash generated from RSA instance.
-#                         crypt_objs_instances.append(crypt_objs_instance[0])
-#                     elif not crypt_objs_instance:
-#                         crypt = FieldCryptor('rsa', 'restricted')
-#                         hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
-#                         #if hash_value:
-#                         crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
-#                         crypt_objs_instances.append(crypt_objs_instance[0])
-#                     else:
-#                         # RSA hash dis not work, now we try AES generated hash
-#                         crypt = FieldCryptor('aes', 'local')
-#                         hash_value = crypt.get_hash(getattr(mld_cls_instance, f.name))
-#                         if hash_value:
-#                             crypt_objs_instance = Crypt.objects.filter(hash=hash_value)
-#                             if crypt_objs_instance:
-#                                     crypt_objs_instances.append(crypt_objs_instance[0])
         crypt_objs_instances_unique = {}
         for crypt in crypt_objs_instances:
             crypt_objs_instances_unique[crypt.hash] = crypt
@@ -423,13 +407,13 @@ class BaseController(BaseProducer):
                 # deserialize all
                 deserialized_objects = []
                 try:
-                    deserialized_objects = serializers.deserialize("json", json_obj, use_natural_keys=True, using=self.get_using_destination())
+                    deserialized_objects = serializers.deserialize(
+                        "json", json_obj, use_natural_keys=True, using=self.get_using_destination())
                 except DeserializationError as e:
                     if 'Appointment matching query does not exist' in str(e):
                         pass
                     else:
                         raise
-                #deserialized_objects = list(deserialized_objects)
                 saved = []
                 tries = 0
                 while True:
@@ -446,7 +430,6 @@ class BaseController(BaseProducer):
                                 self.add_to_session_container(instance, 'serialized')
                                 self.update_session_container_class_counter(instance)
                         except IntegrityError as integrity_error:
-                            #raise IntegrityError('{}. Got {}.'.format(deserialized_object, str(integrity_error)))
                             if integrity_error.args[1].find('Duplicate entry'):
                                 saved.append(deserialized_object)
                             #  TODO: change the handling of the exception to something like this:

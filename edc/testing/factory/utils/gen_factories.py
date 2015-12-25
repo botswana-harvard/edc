@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.core.crypto_fields.fields import EncryptedTextField, EncryptedIntegerField, EncryptedDecimalField, EncryptedCharField, EncryptedAesCharField, EncryptedFirstnameField, EncryptedLastnameField, EncryptedOtherCharField, EncryptedIdentityField
-from edc_visit_tracking.models import BaseVisitTracking
+from edc_visit_tracking.models import VisitTrackingModelMixin
 
 
 admin.autodiscover()
@@ -115,7 +115,7 @@ def _create_file(fname, model_admin, uuid=False, scheduled=False):
     model_name = model_admin._meta.object_name
     if not uuid and not scheduled:
         for field in models.get_model(app_label, model_name)._meta.fields:
-            if isinstance(field, BaseVisitTracking):
+            if isinstance(field, VisitTrackingModelMixin):
                 scheduled = True
                 break
         if not scheduled:

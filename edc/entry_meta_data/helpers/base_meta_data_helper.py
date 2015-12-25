@@ -1,9 +1,5 @@
-from datetime import date
-
-from django.db import models
-
 from edc.core.bhp_common.utils import convert_from_camel
-from edc_constants.constants import REQUIRED
+from edc_constants.constants import REQUIRED, YES
 from edc_visit_tracking.constants import VISIT_REASON_NO_FOLLOW_UP_CHOICES
 
 
@@ -14,7 +10,6 @@ class BaseMetaDataHelper(object):
         self.appointment = appointment
         self.visit_model = self.appointment.visit_definition.visit_tracking_content_type_map.model_class()
         self.visit_model_attrname = visit_model_attrname or convert_from_camel(self.visit_model._meta.object_name)
-        self.registered_subject = appointment.registered_subject
         self.visit_instance = visit_instance
 
     def __repr__(self):
@@ -65,27 +60,25 @@ class BaseMetaDataHelper(object):
         return self._appointment_zero
 
     def show_scheduled_entries(self):
-        # TODO: need to clean this up!
+        """Returns True if scheduled forms on the dashboard should be show / links active.
+
+        If the participant os off study, the value of \'has_scheduled_data\' on the
+        visit tracking for is used (YES=True, No=False)."""
         try:
-            visit_reason_no_follow_up_choices = self.visit_instance.get_visit_reason_no_follow_up_choices()
+            no_follow_up_reasons = self.visit_instance.get_visit_reason_no_follow_up_choices()
         except AttributeError as e:
             if 'get_visit_reason_no_follow_up_choices' not in str(e):
                 raise AttributeError(str(e))
-            visit_reason_no_follow_up_choices = VISIT_REASON_NO_FOLLOW_UP_CHOICES
-        no_follow_up = [x.lower() for x in visit_reason_no_follow_up_choices.itervalues()]
-        show_scheduled_entries = self.visit_instance.reason.lower() not in no_follow_up
-        # possible conditions that override above
-        # subject is at the off study visit (lost)
-        if self.visit_instance.reason.lower() in self.visit_instance.get_off_study_reason():
-            visit_date = date(self.visit_instance.report_datetime.year,
-                              self.visit_instance.report_datetime.month,
-                              self.visit_instance.report_datetime.day)
-            if models.get_model(*self.visit_instance.OFF_STUDY_MODEL).objects.filter(
-                    registered_subject=self.registered_subject, offstudy_date=visit_date):
-                # has an off study form completed on same day as visit
-                off_study_instance = models.get_model(*self.visit_instance.OFF_STUDY_MODEL).objects.get(
-                    registered_subject=self.registered_subject, offstudy_date=visit_date)
-                show_scheduled_entries = off_study_instance.show_scheduled_entries_on_off_study_date()
+            no_follow_up_reasons = VISIT_REASON_NO_FOLLOW_UP_CHOICES
+        show_scheduled_entries = self.visit_instance.reason not in no_follow_up_reasons
+        if self.visit_instance.reason in self.visit_instance.get_off_study_reason():
+            off_study_model = self.visit_instance.off_study_model
+            try:
+                options = {'{}'.format(off_study_model.visit_model_attr): self.visit_instance}
+                off_study_instance = off_study_model.objects.get(**options)
+                show_scheduled_entries = off_study_instance.has_scheduled_data == YES
+            except off_study_model.DoesNotExist:
+                pass
         return show_scheduled_entries
 
     def add_or_update_for_visit(self):
@@ -111,7 +104,7 @@ class BaseMetaDataHelper(object):
         used with the save_next button on a form."""
         next_meta_data_instance = None
         options = {
-            'registered_subject_id': self.registered_subject.pk,
+            'registered_subject_id': self.appointment.registered_subject.pk,
             'appointment_id': self.appointment_zero.pk,
             'entry_status': REQUIRED,
             '{0}__entry_order__gt'.format(self.entry_attr): entry_order}
@@ -124,7 +117,7 @@ class BaseMetaDataHelper(object):
         meta_data_instances = []
         if self.appointment_zero:
             options = {
-                'registered_subject_id': self.registered_subject.pk,
+                'registered_subject_id': self.appointment.registered_subject.pk,
                 'appointment_id': self.appointment_zero.pk,
                 '{0}__entry_category__iexact'.format(self.entry_attr): entry_category}
             if entry_status:

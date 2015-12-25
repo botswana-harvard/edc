@@ -246,7 +246,7 @@ class DispatchController(BaseDispatchController):
 
         .. note::
            By scheduled_instances, we are referring to models that have a foreign key to a subclass
-           of :mod:`visit_tracking`'s :class:`BaseVisitTracking` base model.
+           of :mod:`visit_tracking`'s :class:`VisitTrackingModelMixin` base model.
            For example, to maternal_visit, infant_visit, subject_visit, patient_visit, etc
         """
 

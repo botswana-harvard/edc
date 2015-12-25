@@ -343,14 +343,14 @@ class BaseDispatch(BaseController):
     def set_visit_model_cls(self, app_label, model_cls):
         """Sets the visit_model_cls attribute with a dictionary of tuples (field name, class) by app.
         """
-        from edc_visit_tracking.models import BaseVisitTracking
+        from edc_visit_tracking.models import VisitTrackingModelMixin
         self._visit_models = {}
         if not model_cls:
             raise TypeError('Parameter model_cls cannot be None.')
         for field in model_cls._meta.fields:
             if isinstance(field, (ForeignKey, OneToOneField)):
                 field_cls = field.rel.to
-                if issubclass(field_cls, BaseVisitTracking):
+                if issubclass(field_cls, VisitTrackingModelMixin):
                     # does this dict ever have more than one entry??
                     self._visit_models.update({app_label: (field.name, field_cls)})
 

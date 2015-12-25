@@ -7,7 +7,7 @@ from edc_offstudy.models import OffStudyMixin
 
 class TestRegistration(OffStudyMixin, models.Model):
 
-    OFF_STUDY_MODEL = None
+    off_study_model = None
 
     objects = TestRegistrationManager()
 

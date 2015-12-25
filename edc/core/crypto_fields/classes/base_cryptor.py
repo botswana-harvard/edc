@@ -1,7 +1,7 @@
-from edc.core.bhp_string.classes import StringHelper
+import random
 
 
-class BaseCryptor(StringHelper):
+class BaseCryptor(object):
 
     # prefix for each segment of an encrypted value, also used to calculate
     # field length for model.
@@ -24,8 +24,7 @@ class BaseCryptor(StringHelper):
             if prefix is None:
                 prefix = self.HASH_PREFIX
             if value == prefix:
-                raise TypeError('Expected a string value, got just the '
-                                 'encryption prefix.')
+                raise TypeError('Expected a string value, got just the encryption prefix.')
             if value.startswith(prefix):
                 is_encrypted = True
             else:
@@ -40,9 +39,8 @@ class BaseCryptor(StringHelper):
         else:
             return value
 
-    def make_random_salt(self, length=12, allowed_chars=('abcdefghijklmnopqrs'
-                                                         'tuvwxyzABCDEFGHIJKL'
-                                                         'MNOPQRSTUVWXYZ01234'
-                                                         '56789!@#%^&*()?<>.,'
-                                                         '[]{}')):
-        return self.get_random_string(length, allowed_chars)
+    def make_random_salt(self, length=None, allowed_chars=None):
+        length = length or 12
+        allowed_chars = allowed_chars or (
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#%^&*()?<>.,[]{}')
+        return ''.join([random.choice(allowed_chars) for _ in range(length)])

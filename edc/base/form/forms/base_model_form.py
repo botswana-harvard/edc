@@ -4,7 +4,7 @@ from django import forms
 from django.db.models import OneToOneField, ForeignKey, get_model
 from django.db.models.query import QuerySet
 
-from edc_visit_tracking.models import BaseVisitTracking
+from edc_visit_tracking.models import VisitTrackingModelMixin
 from edc_device import device
 
 from ..classes import LogicCheck
@@ -59,7 +59,7 @@ class BaseModelForm(forms.ModelForm):
             # look for a visit model field
             for field in self._meta.model._meta.fields:
                 if isinstance(field, (OneToOneField, ForeignKey)):
-                    if isinstance(field.rel.to, BaseVisitTracking):
+                    if isinstance(field.rel.to, VisitTrackingModelMixin):
                         attrname = field.attrname
                         visit = cleaned_data.get(attrname, None)
                         if visit:
