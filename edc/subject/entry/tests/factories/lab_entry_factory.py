@@ -1,14 +1,14 @@
 import factory
 
-from edc.base.model.tests.factories import BaseUuidModelFactory
 from edc.lab.lab_clinic_api.tests.factories import PanelFactory
 from edc_visit_schedule.tests.factories import VisitDefinitionFactory
 
 from ...models import LabEntry
 
 
-class LabEntryFactory(BaseUuidModelFactory):
-    FACTORY_FOR = LabEntry
+class LabEntryFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = LabEntry
 
     visit_definition = factory.SubFactory(VisitDefinitionFactory)
 

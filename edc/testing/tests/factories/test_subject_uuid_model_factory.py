@@ -1,6 +1,8 @@
-from edc.base.model.tests.factories import BaseUuidModelFactory
+import factory
+
 from ...models import TestSubjectUuidModel
 
 
-class TestSubjectUuidModelFactory(BaseUuidModelFactory):
-    FACTORY_FOR = TestSubjectUuidModel
+class TestSubjectUuidModelFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TestSubjectUuidModel

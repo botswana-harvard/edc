@@ -1,6 +1,7 @@
 from django.db import models
-from edc.base.model.fields import IdentityTypeField
+
 from edc.core.crypto_fields.fields import EncryptedIdentityField
+from edc_base.model.fields import IdentityTypeField
 from edc_consent.models import BaseConsent
 
 

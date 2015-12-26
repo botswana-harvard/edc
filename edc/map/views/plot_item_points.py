@@ -6,12 +6,12 @@ from ..exceptions import MapperError
 
 
 def plot_item_points(request, **kwargs):
-    """Plot items from edc.base selection criteria.
+    """Plot items from base selection criteria.
 
       * Filter points to plot by sending coordinates of a selected ward only to the items.html template.
       * Regions contain sections    """
     # TODO: difference in ward ward section selected section and section ??? very confusing
-            # docstring Comment is out of date?
+    # docstring Comment is out of date?
     template = 'map.html'
     mapper_item_label = kwargs.get('mapper_item_label', '')
     mapper_name = kwargs.get('mapper_name', '')
@@ -89,6 +89,6 @@ def plot_item_points(request, **kwargs):
                 'cart_size': cart_size,
                 'section_color_code_list': section_color_code_list,
                 'selected_sub_section': selected_sub_section
-                },
-                context_instance=RequestContext(request)
-            )
+            },
+            context_instance=RequestContext(request)
+        )

@@ -1,9 +1,12 @@
-from datetime import datetime
-from edc.base.model.tests.factories import BaseUuidModelFactory
+import factory
+
+from django.utils import timezone
+
 from ...models import TestSubjectResultModel
 
 
-class TestSubjectResultModelFactory(BaseUuidModelFactory):
-    FACTORY_FOR = TestSubjectResultModel
+class TestSubjectResultModelFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TestSubjectResultModel
 
-    result_datetime = datetime.today()
+    result_datetime = timezone.now()

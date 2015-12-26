@@ -16,7 +16,7 @@ or it might be better to make the import conditional like this::
     try:
         from edc.device.sync.classes import BaseSyncModel as BaseModel
     except ImportError:
-        from edc.base.model.classes import BaseModel
+        from edc_base.model.classes import BaseModel
         
     class Panel(BaseModel):
     
@@ -31,7 +31,7 @@ and finally:
     try:
         from edc.device.sync.classes import BaseSyncModel as BaseModel
     except ImportError:
-        from edc.base.model.classes import BaseModel
+        from edc_base.model.classes import BaseModel
     from lab_aliquot_list import AliquotType
     from panel_group import PanelGroup
     

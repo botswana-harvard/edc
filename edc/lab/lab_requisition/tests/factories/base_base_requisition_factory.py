@@ -2,11 +2,10 @@ import factory
 
 from datetime import datetime
 
-from edc.base.model.tests.factories import BaseUuidModelFactory
 from edc.core.bhp_variables.tests.factories import StudySiteFactory
 
 
-class BaseBaseRequisitionFactory(BaseUuidModelFactory):
+class BaseBaseRequisitionFactory(factory.DjangoModelFactory):
     class Meta:
         abstract = True
 

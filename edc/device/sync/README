@@ -9,7 +9,7 @@ add this to your models.py
 try:
     from edc.device.sync.classes import BaseSyncModel as BaseUuidModel
 except ImportError:
-    from edc.base.model.classes import BaseUuidModel
+    from edc_base.model.classes import BaseUuidModel
     
 -or just-
 

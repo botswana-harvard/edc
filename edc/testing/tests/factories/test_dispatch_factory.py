@@ -1,17 +1,19 @@
 import factory
-from edc.base.model.tests.factories import BaseUuidModelFactory
+
 from ...models import TestDspContainer, TestDspItemBypass, TestDspItem
 
 
-class TestDspContainerFactory(BaseUuidModelFactory):
-    FACTORY_FOR = TestDspContainer
+class TestDspContainerFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TestDspContainer
 
     test_container_identifier = factory.Sequence(lambda n: 'CONTAINER_ID{0}'.format(n))
     comment = 'test_container'
 
 
-class TestDspItemBypassFactory(BaseUuidModelFactory):
-    FACTORY_FOR = TestDspItemBypass
+class TestDspItemBypassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TestDspItemBypass
 
     test_item_identifier = factory.Sequence(lambda n: 'ITEM_BYPASS_ID{0}'.format(n))
     test_container = factory.SubFactory(TestDspContainerFactory)
@@ -21,8 +23,9 @@ class TestDspItemBypassFactory(BaseUuidModelFactory):
     f4 = factory.Sequence(lambda n: 'F4_{0}'.format(n))
 
 
-class TestDspItemFactory(BaseUuidModelFactory):
-    FACTORY_FOR = TestDspItem
+class TestDspItemFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TestDspItem
 
     test_item_identifier = factory.Sequence(lambda n: 'ITEM_ID{0}'.format(n))
     test_container = factory.SubFactory(TestDspContainerFactory)

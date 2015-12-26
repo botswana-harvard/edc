@@ -1,9 +1,8 @@
 import factory
 
-from edc.base.model.tests.factories import BaseUuidModelFactory
-
 from ...models import TestAliquotType
 
 
-class TestAliquotTypeFactory(BaseUuidModelFactory):
-    FACTORY_FOR = TestAliquotType
+class TestAliquotTypeFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TestAliquotType

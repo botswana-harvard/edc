@@ -1,19 +1,20 @@
-from edc.base.form.forms import BaseModelForm
+from django import forms
+
 from ..models import TestModel, TestSubjectUuidModel, TestScheduledModel
 
 
-class TestSubjectUuidModelForm (BaseModelForm):
+class TestSubjectUuidModelForm (forms.ModelForm):
 
     class Meta:
         model = TestSubjectUuidModel
 
 
-class TestModelForm (BaseModelForm):
+class TestModelForm (forms.ModelForm):
 
     class Meta:
         model = TestModel
 
 
-class TestScheduledModelForm(BaseModelForm):
+class TestScheduledModelForm(forms.ModelForm):
     class Meta:
         model = TestScheduledModel

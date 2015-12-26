@@ -1,8 +1,9 @@
-from edc.base.form.forms import BaseModelForm
+from django import forms
+
 from .models import Link
 
 
-class LinkForm (BaseModelForm):
+class LinkForm (forms.ModelForm):
 
     class Meta:
         model = Link

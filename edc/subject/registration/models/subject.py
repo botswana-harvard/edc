@@ -6,10 +6,10 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
-from edc_constants.choices import GENDER_UNDETERMINED
-from edc.base.model.fields import IsDateEstimatedField
-from edc_base.encrypted_fields import (FirstnameField, LastnameField, EncryptedCharField)
 from edc.core.identifier.exceptions import IdentifierError
+from edc_base.encrypted_fields import (FirstnameField, LastnameField, EncryptedCharField)
+from edc_base.model.fields import IsDateEstimatedField
+from edc_constants.choices import GENDER_UNDETERMINED
 
 
 class Subject(models.Model):

@@ -1,12 +1,11 @@
 import factory
 
-from edc.base.model.tests.factories import BaseUuidModelFactory
-
 from ...models import TestModel
 
 
-class TestModelFactory(BaseUuidModelFactory):
-    FACTORY_FOR = TestModel
+class TestModelFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TestModel
 
     f1 = factory.Sequence(lambda n: 'F1{0}'.format(n))
     f2 = factory.Sequence(lambda n: 'F2{0}'.format(n))

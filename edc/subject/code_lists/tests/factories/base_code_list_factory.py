@@ -1,9 +1,9 @@
 import factory
-from edc.base.model.tests.factories import BaseModelFactory
 
 
-class BaseCodeListFactory(BaseModelFactory):
-    ABSTRACT_FACTORY = True
+class BaseCodeListFactory(factory.DjangoModelFactory):
+    class Meta:
+        abstract = True
 
     code = factory.Sequence(lambda n: 'CODE{0}'.format(n))
     short_name = factory.Sequence(lambda n: 'SNAME{0}'.format(n))

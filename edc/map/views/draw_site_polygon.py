@@ -5,12 +5,12 @@ from ..exceptions import MapperError
 
 
 def draw_site_polygon(request, **kwargs):
-    """Plots items from edc.base selection criteria.
+    """Plots items from base selection criteria.
 
       * Filter points to plot by sending coordinates of a selected ward only to the items.html template.
       * Regions contain sections    """
     # TODO: difference in ward ward section selected section and section ??? very confusing
-            # docstring Comment is out of date?
+    # docstring Comment is out of date?
     template = 'map.html'
     mapper_item_label = kwargs.get('mapper_item_label', '')
     mapper_name = kwargs.get('mapper_name', '')
@@ -77,6 +77,6 @@ def draw_site_polygon(request, **kwargs):
                 'cso_icon_dict': cso_icon_dict,
                 'section_color_code_list': section_color_code_list,
                 'selected_section': selected_section
-                },
-                context_instance=RequestContext(request)
-            )
+            },
+            context_instance=RequestContext(request)
+        )

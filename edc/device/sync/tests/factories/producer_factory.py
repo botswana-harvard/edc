@@ -1,9 +1,11 @@
-from edc.base.model.tests.factories import BaseUuidModelFactory
+import factory
+
 from edc.device.sync.models import Producer
 
 
-class ProducerFactory(BaseUuidModelFactory):
-    FACTORY_FOR = Producer
+class ProducerFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Producer
 
     name = 'dispatch_destination'
     settings_key = 'dispatch_destination'

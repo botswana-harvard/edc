@@ -1,6 +1,8 @@
-from edc.base.model.tests.factories import BaseListModelFactory
+import factory
+
 from ...models import TestM2m
 
 
-class TestM2mFactory(BaseListModelFactory):
-    FACTORY_FOR = TestM2m
+class TestM2mFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TestM2m

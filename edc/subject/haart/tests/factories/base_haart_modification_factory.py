@@ -1,11 +1,11 @@
 import factory
 from datetime import date
-from edc.base.model.tests.factories import BaseUuidModelFactory
 from edc.subject.haart.choices import ARV_DRUG_LIST, DOSE_STATUS, ARV_MODIFICATION_REASON
 
 
-class BaseHaartModificationFactory(BaseUuidModelFactory):
-    ABSTRACT_FACTORY = True
+class BaseHaartModificationFactory(factory.DjangoModelFactory):
+    class Meta:
+        abstract = True
 
     arv_code = ARV_DRUG_LIST[0][0]
     dose_status = DOSE_STATUS[0][0]
