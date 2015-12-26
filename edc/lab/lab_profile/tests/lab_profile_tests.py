@@ -2,7 +2,6 @@ from django.test import TestCase
 
 from edc.core.bhp_variables.models import StudySite
 from edc.entry_meta_data.models import RequisitionMetaData
-# from edc.lab.lab_clinic_api.models import Aliquot
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc_appointment.models import Appointment
@@ -15,13 +14,12 @@ from edc.testing.classes import TestLabProfile
 from edc.testing.classes import TestVisitSchedule
 from edc.testing.models import TestPanel, TestAliquotType, TestReceive, TestAliquot
 from edc.testing.tests.factories import TestConsentWithMixinFactory, TestRequisitionFactory
+from edc_visit_tracking.tests.factories import TestVisitFactory
 
 
 class LabProfileTests(TestCase):
 
     def setUp(self):
-        from edc.testing.tests.factories import TestVisitFactory
-        self.test_visit_factory = TestVisitFactory
         site_lab_tracker.autodiscover()
         try:
             site_lab_profiles.register(TestLabProfile)
@@ -42,7 +40,7 @@ class LabProfileTests(TestCase):
 
     def test_receives1(self):
         """assert received if drawn."""
-        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.test_visit = TestVisitFactory(appointment=self.appointment)
         requisition_panel = RequisitionMetaData.objects.filter(
             registered_subject=self.registered_subject)[0].lab_entry.requisition_panel
         panel = TestPanel.objects.get(name=requisition_panel.name)
@@ -58,7 +56,7 @@ class LabProfileTests(TestCase):
         self.assertEqual(TestAliquot.objects.get(receive=receive).receive, receive)
 
     def test_receives2(self):
-        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.test_visit = TestVisitFactory(appointment=self.appointment)
         requisition_panel = RequisitionMetaData.objects.filter(
             registered_subject=self.registered_subject)[0].lab_entry.requisition_panel
         panel = TestPanel.objects.get(name=requisition_panel.name)
@@ -71,7 +69,7 @@ class LabProfileTests(TestCase):
     def test_receives3(self):
         """Asserts that receiving the requisition more than once does not
         create additional receive and primary aliquot instances."""
-        self.test_visit = self.test_visit_factory(appointment=self.appointment)
+        self.test_visit = TestVisitFactory(appointment=self.appointment)
         requisition_panel = RequisitionMetaData.objects.filter(
             registered_subject=self.registered_subject)[0].lab_entry.requisition_panel
         panel = TestPanel.objects.get(name=requisition_panel.name)

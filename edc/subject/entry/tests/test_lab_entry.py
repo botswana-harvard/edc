@@ -21,4 +21,3 @@ class LabEntryTests(TestCase):
         lab_entry.default_entry_status = KEYED
         self.assertTrue(lab_entry.is_required())
         self.assertFalse(lab_entry.is_not_required())
-

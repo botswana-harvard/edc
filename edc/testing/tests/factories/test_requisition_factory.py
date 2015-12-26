@@ -4,7 +4,7 @@ from edc.lab.lab_requisition.tests.factories import BaseRequisitionFactory
 
 from ...models import TestRequisition
 
-from .test_visit_factory import TestVisitFactory
+from edc_visit_tracking.tests.factories import TestVisitFactory
 
 
 class TestRequisitionFactory(BaseRequisitionFactory):

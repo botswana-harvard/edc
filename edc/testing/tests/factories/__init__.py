@@ -8,5 +8,4 @@ from .test_requisition_factory import TestRequisitionFactory
 from .test_scheduled_model_factory import TestScheduledModelFactory, TestScheduledModel1Factory, TestScheduledModel2Factory, TestScheduledModel3Factory
 from .test_subject_result_model_factory import TestSubjectResultModelFactory
 from .test_subject_uuid_model_factory import TestSubjectUuidModelFactory
-from .test_visit_factory import TestVisitFactory
 from .test_panel_factory import TestPanelFactory

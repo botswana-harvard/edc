@@ -10,8 +10,9 @@ from edc.subject.registration.models import RegisteredSubject
 from edc.testing.classes import TestLabProfile
 from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
 from edc.testing.models import TestModel, TestScheduledModel, TestConsentWithMixin
-from edc.testing.tests.factories import TestModelFactory, TestScheduledModelFactory, TestConsentWithMixinFactory, TestVisitFactory
+from edc.testing.tests.factories import TestModelFactory, TestScheduledModelFactory, TestConsentWithMixinFactory
 from edc.core.bhp_variables.models import StudySite
+from edc_visit_tracking.tests.factories import TestVisitFactory
 
 from ..classes import ExportAsCsv
 from ..models import ExportHistory, ExportTransaction
@@ -22,7 +23,6 @@ class ExportAsCsvTests(TestCase):
     app_label = 'testing'
 
     def setUp(self):
-        self.test_visit_factory = TestVisitFactory
         try:
             site_lab_profiles.register(TestLabProfile())
         except AlreadyRegisteredLabProfile:
