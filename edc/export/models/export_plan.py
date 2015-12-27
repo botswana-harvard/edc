@@ -1,9 +1,10 @@
 from django.db import models
 
-from edc.device.sync.models import BaseSyncUuidModel
+from edc_base.model.models import BaseUuidModel
+from edc_sync.models import SyncModelMixin
 
 
-class ExportPlan(BaseSyncUuidModel):
+class ExportPlan(SyncModelMixin, BaseUuidModel):
 
     app_label = models.CharField(max_length=50)
 

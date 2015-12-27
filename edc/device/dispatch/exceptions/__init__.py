@@ -68,3 +68,7 @@ class ControllerBaseModelError(Exception):
 
 class DispatchControllerError(Exception):
     pass
+
+
+class ProducerError(Exception):
+    pass

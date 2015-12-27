@@ -1,4 +1,3 @@
-import logging
 import socket
 
 from datetime import datetime
@@ -19,9 +18,8 @@ from edc_base.model.models import BaseListModel
 from edc.core.bhp_variables.models import StudySite
 from edc.core.crypto_fields.fields import BaseEncryptedField
 from edc.core.crypto_fields.models import Crypt
-from edc.device.sync.classes import BaseProducer
-from edc.device.sync.exceptions import PendingTransactionError
-from edc.device.sync.helpers import TransactionHelper
+from edc_sync.exceptions import PendingTransactionError
+from edc_sync.helpers import TransactionHelper
 from edc.entry_meta_data.models import BaseEntryMetaData
 from edc_visit_schedule.models import VisitDefinition, ScheduleGroup
 from edc_base.encrypted_fields import FieldCryptor
@@ -29,33 +27,13 @@ from edc_base.encrypted_fields import FieldCryptor
 from ..exceptions import ControllerBaseModelError
 
 from .controller_register import registered_controllers
-
-
-logger = logging.getLogger(__name__)
-
-
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
-nullhandler = logger.addHandler(NullHandler())
+from .base_producer import BaseProducer
 
 
 class BaseController(BaseProducer):
 
     APP_NAME = 0
     MODEL_NAME = 1
-
-    def __repr__(self):
-        return self._repr()
-
-    __str__ = __repr__
-
-    def __del__(self):
-        """Deregisters for this producer.settings_key."""
-        registered_controllers.deregister(self)
-
-    def _repr(self):
-        return '{0}for {1}'.format('BaseController', self.get_producer().settings_key)
 
     def __init__(self, using_source, using_destination, **kwargs):
         """Initializes and verifies arguments ``using_source`` and ``using_destination``.
@@ -86,7 +64,6 @@ class BaseController(BaseProducer):
         self._controller_state = None
         self._model_pk_container = {}
         self._session_container = {}
-        # self.signal_manager = SignalManager()
         self.initialize_session_container()
         super(BaseController, self).__init__(using_source, using_destination, **kwargs)
         self.fk_instances = []
@@ -96,8 +73,19 @@ class BaseController(BaseProducer):
                                        'Add to settings. e.g. DISPATCH_APP_LABELS '
                                        '= [\'mochudi_household\', \'mochudi_subject\', '
                                        '\'mochudi_lab\']')
-        self.set_producer()
-        return None
+
+    def __repr__(self):
+        return self._repr()
+
+    __str__ = __repr__
+
+    def __del__(self):
+        """Deregisters for this producer.settings_key."""
+        registered_controllers.deregister(self)
+
+    def _repr(self):
+        return '{0}for {1}'.format('BaseController', self.producer.settings_key)
+
 
     def set_controller_state(self, value):
         self._controller_state = value
@@ -131,7 +119,7 @@ class BaseController(BaseProducer):
         """Check if source has pending Incoming Transactions for this producer and model(s).
         """
         retval = False
-        if TransactionHelper().has_incoming_for_producer(self.get_producer_name(), self.get_using_source()):
+        if TransactionHelper().has_incoming_for_producer(self.producer.name, self.get_using_source()):
             retval = True
         if not retval:
             if models:
@@ -424,7 +412,7 @@ class BaseController(BaseProducer):
                         try:
                             if deserialized_object not in saved:
                                 # save deserialized_object to destination
-                                deserialized_object.save(using=self.get_using_destination())
+                                deserialized_object.save(using=self.using_destination)
                                 self.serialize_m2m(deserialized_object)
                                 saved.append(deserialized_object)
                                 self.add_to_session_container(instance, 'serialized')
@@ -479,18 +467,18 @@ class BaseController(BaseProducer):
             dst_list_item_pks = []
             for src_list_item in m2m_qs:
                 if not src_list_item.__class__.objects.using(
-                        self.get_using_destination()).filter(pk=src_list_item.pk).exists():
+                        self.using_destination).filter(pk=src_list_item.pk).exists():
                     # no need to use callback, list models are not registered with dispatch
                     self._to_json(src_list_item, additional_base_model_class=BaseListModel)
                     # record source pk for use later
                 # dst_list_item_natural_keys.append(src_list_item.natural_key())
                 dst_list_item_pks.append(src_list_item.pk)
             # get instance of this model on destination
-            dest_inst = cls.objects.using(self.get_using_destination()).get(pk=pk)
+            dest_inst = cls.objects.using(self.using_destination).get(pk=pk)
             # find the pk for each list model instance and add to the m2m "field"
             # for values_tpl in dst_list_item_natural_keys:
             for pk in dst_list_item_pks:
                 # get the list_model instance on destination
-                item_inst = src_list_item.__class__.objects.using(self.get_using_destination()).get(pk=pk)
+                item_inst = src_list_item.__class__.objects.using(self.using_destination).get(pk=pk)
                 # add to m2m rel_manager on destination, this is like instance.m2m.add(item)
                 getattr(dest_inst, m2m).add(item_inst)  # calls the signal

@@ -20,7 +20,6 @@ from edc_base.model.models.base_uuid_model import BaseUuidModel
 from edc_constants.choices import YES_NO, POS_NEG_UNKNOWN, ALIVE_DEAD_UNKNOWN
 from edc_sync.models import SyncModelMixin
 
-from .subject import Subject
 # try:
 #     from edc.device.dispatch.models import BaseDispatchSyncUuidModel
 #
@@ -43,7 +42,7 @@ class RegisteredSubjectManager(models.Manager):
         return self.get(subject_identifier_as_pk=subject_identifier_as_pk)
 
 
-class RegisteredSubject(Subject, SyncModelMixin, BaseUuidModel):
+class RegisteredSubject(SyncModelMixin, BaseUuidModel):
 
     max_subjects = None
 

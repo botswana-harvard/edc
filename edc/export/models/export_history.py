@@ -2,10 +2,11 @@ from datetime import datetime
 
 from django.db import models
 
-from edc.device.sync.models import BaseSyncUuidModel
+from edc_base.model.models import BaseUuidModel
+from edc_sync.models import SyncModelMixin
 
 
-class ExportHistory(BaseSyncUuidModel):
+class ExportHistory(SyncModelMixin, BaseUuidModel):
 
     app_label = models.CharField(max_length=50)
 

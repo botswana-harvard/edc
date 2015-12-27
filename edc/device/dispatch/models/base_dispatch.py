@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import models
 from edc_base.model.models import BaseUuidModel
-from edc.device.sync.models import Producer
+from edc_sync.models import Producer
 
 
 class BaseDispatch(BaseUuidModel):

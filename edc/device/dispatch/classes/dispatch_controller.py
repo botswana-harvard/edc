@@ -57,7 +57,7 @@ class DispatchController(BaseDispatchController):
         # check for pending transactions
         if self.has_outgoing_transactions_producer():
             msg = ('Producer \'{0}\' has pending outgoing transactions. '
-                   'Run bhp_sync first.').format(self.get_producer_name())
+                   'Run bhp_sync first.').format(self.producer.name)
         else:
             # TODO: already dispatched checks to pre_dispatch
             user_container = self.get_user_container_instance()
@@ -69,7 +69,7 @@ class DispatchController(BaseDispatchController):
                 msg = '{} \'{}\' is already dispatched to producer \'{}\'.'.format(
                     user_container._meta.object_name,
                     self.get_user_container_identifier(),
-                    self.get_producer_name())
+                    self.producer.name)
                 registered_controllers.deregister(self)
             else:
                 self._pre_dispatch(user_container, **kwargs)

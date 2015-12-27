@@ -1,9 +1,10 @@
 from django.db import models
 
-from edc.device.sync.models import BaseSyncUuidModel
+from edc_base.model.models import BaseUuidModel
+from edc_sync.models import SyncModelMixin
 
 
-class DefaultValueLog(BaseSyncUuidModel):
+class DefaultValueLog(SyncModelMixin, BaseUuidModel):
 
     subject_identifier = models.CharField(max_length=50)
     subject_type = models.CharField(max_length=25, null=True)

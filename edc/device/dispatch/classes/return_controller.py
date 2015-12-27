@@ -12,8 +12,8 @@ class ReturnController(BaseReturn):
     def get_user_container_cls(self):
         dispatch_container_cls = None
         # get the DispatchContainer instance for user's container model app_label and model
-        if DispatchContainerRegister.objects.filter(producer=self.get_producer(), is_dispatched=True, return_datetime__isnull=True).exists():
-            dispatch_container_register = DispatchContainerRegister.objects.filter(producer=self.get_producer(), is_dispatched=True, return_datetime__isnull=True)
+        if DispatchContainerRegister.objects.filter(producer=self.producer, is_dispatched=True, return_datetime__isnull=True).exists():
+            dispatch_container_register = DispatchContainerRegister.objects.filter(producer=self.producer, is_dispatched=True, return_datetime__isnull=True)
             dispatch_container_cls = get_model(dispatch_container_register.app_label, dispatch_container_register.model_name)
         return dispatch_container_cls
 
@@ -23,10 +23,10 @@ class ReturnController(BaseReturn):
         user_containers = []
         if kwargs.get('selected_container_identifiers', None):
             dispatch_container_registers = DispatchContainerRegister.objects.filter(container_identifier__in=kwargs.get('selected_container_identifiers', None),
-                                                                                    producer=self.get_producer(),
+                                                                                    producer=self.producer,
                                                                                     is_dispatched=True)
         else:
-            dispatch_container_registers = DispatchContainerRegister.objects.filter(producer=self.get_producer(), is_dispatched=True)
+            dispatch_container_registers = DispatchContainerRegister.objects.filter(producer=self.producer, is_dispatched=True)
         for dispatch_container_register in dispatch_container_registers:
             user_container_cls = get_model(dispatch_container_register.container_app_label, dispatch_container_register.container_model_name)
             if user_container_cls:
@@ -47,10 +47,10 @@ class ReturnController(BaseReturn):
         from DispatchItemRegister."""
         if self.has_outgoing_transactions():
             raise PendingTransactionError('Producer \'{0}\' has pending outgoing transactions on {1}. '
-                                          'Run bhp_sync first.'.format(self.get_producer_name(), self.get_using_destination()))
+                                          'Run bhp_sync first.'.format(self.producer.name, self.get_using_destination()))
         if self.has_incoming_transactions():
             raise PendingTransactionError('Producer \'{1}\' has pending incoming transactions on '
-                                          'this server {0}. Consume them first.'.format(self.get_using_source(), self.get_producer_name()))
+                                          'this server {0}. Consume them first.'.format(self.get_using_source(), self.producer.name))
         # get the dispatch_container_register using the user_container
         dispatch_container_register = self.get_dispatch_container_register(user_container)
         if not dispatch_container_register:
@@ -106,11 +106,11 @@ class ReturnController(BaseReturn):
         # confirm no pending transaction on the producer
         if self.has_outgoing_transactions():
             raise PendingTransactionError('Producer \'{0}\' has pending outgoing transactions. '
-                                          'Run bhp_sync first.'.format(self.get_producer_name()))
+                                          'Run bhp_sync first.'.format(self.producer.name))
         # confirm no pending transaction for this producer on the source
         if self.has_incoming_transactions():
             raise PendingTransactionError('Producer \'{0}\' has pending incoming transactions on '
-                                          'this server. Consume them first.'.format(self.get_producer_name()))
+                                          'this server. Consume them first.'.format(self.producer.name))
         dispatch_container_registers = self._return_items_for_queryset(queryset)
         for dispatch_container_register in dispatch_container_registers:
             if not DispatchItemRegister.objects.filter(dispatch_container_register=dispatch_container_register, is_dispatched=True, return_datetime__isnull=True):
@@ -126,11 +126,11 @@ class ReturnController(BaseReturn):
         # confirm no pending transaction on the producer
         if self.has_outgoing_transactions():
             raise PendingTransactionError('Producer \'{0}\' with settings_key \'{1}\' has pending outgoing transactions. '
-                                          'Run bhp_sync first.'.format(self.get_producer_name(), self.get_using_destination()))
+                                          'Run bhp_sync first.'.format(self.producer.name, self.get_using_destination()))
         # confirm no pending transaction for this producer on the source
         if self.has_incoming_transactions():
             raise PendingTransactionError('Producer \'{0}\' has pending incoming transactions on '
-                                          'this server. Consume them first.'.format(self.get_producer_name()))
+                                          'this server. Consume them first.'.format(self.producer.name))
         # de-register all items for this user container (including the user container)
         dispatch_container_register = self.deregister_all_for_user_container(user_container)
         DispatchContainerRegister.objects.filter(pk=dispatch_container_register.pk).update(is_dispatched=False, return_datetime=datetime.today())
@@ -147,7 +147,7 @@ class ReturnController(BaseReturn):
                 raise TypeError('Expected the container model to be a user model. Got DispatchContainerRegister')
             self._lock_container_in_producer(user_container)
             self._return_by_user_container(user_container)
-        return 'Containers {0}, have been returned from producer \'{1}\''.format(str(dispatched_container_list), self.get_producer_name())
+        return 'Containers {0}, have been returned from producer \'{1}\''.format(str(dispatched_container_list), self.producer.name)
 
     def return_dispatched_items(self, queryset=None):
         """Loops thru dispatch container instances for this producer and returns them."""
@@ -159,4 +159,4 @@ class ReturnController(BaseReturn):
                     raise TypeError('Expected the container model to be a user model. Got DispatchContainerRegister')
                 self._lock_container_in_producer(user_container)
                 self._return_by_user_container(user_container)
-        return 'All containers have been returned from producer \'{0}\''.format(self.get_producer_name())
+        return 'All containers have been returned from producer \'{0}\''.format(self.producer.name)

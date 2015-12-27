@@ -2,7 +2,8 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 from edc_constants.constants import CLOSED
-from edc.device.sync.models import BaseSyncUuidModel
+from edc_base.model.models import BaseUuidModel
+from edc_sync.models import SyncModelMixin
 
 from .export_tracking_fields_mixin import ExportTrackingFieldsMixin
 
@@ -13,7 +14,7 @@ class ExportTransactionManager(models.Manager):
         return self.get(export_uuid=export_uuid)
 
 
-class ExportTransaction(ExportTrackingFieldsMixin, BaseSyncUuidModel):
+class ExportTransaction(ExportTrackingFieldsMixin, SyncModelMixin, BaseUuidModel):
 
     tx = models.TextField()
 

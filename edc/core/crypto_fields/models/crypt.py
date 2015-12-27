@@ -1,21 +1,23 @@
 from django.db import models
-from edc.device.sync.models import BaseSyncUuidModel
 
-try:
-    from edc.device.dispatch.models import BaseDispatchSyncUuidModel
+from edc_base.model.models import BaseUuidModel
+from edc_sync.models import SyncModelMixin
 
-    class BaseCrypt(BaseDispatchSyncUuidModel):
-        class Meta:
-            abstract = True
+# try:
+#     from edc.device.dispatch.models import BaseDispatchSyncUuidModel
+#
+#     class BaseCrypt(BaseDispatchSyncUuidModel):
+#         class Meta:
+#             abstract = True
+#
+# except ImportError:
+#
+#     class BaseCrypt(models.Model):
+#         class Meta:
+#             abstract = True
 
-except ImportError:
 
-    class BaseCrypt(models.Model):
-        class Meta:
-            abstract = True
-
-
-class Crypt(BaseCrypt, BaseSyncUuidModel):
+class Crypt(SyncModelMixin, BaseUuidModel):
 
     """ A secrets lookup model searchable by hash """
 
@@ -23,12 +25,10 @@ class Crypt(BaseCrypt, BaseSyncUuidModel):
         verbose_name="Hash",
         max_length=128,
         db_index=True,
-        unique=True,
-        )
+        unique=True)
 
     secret = models.TextField(
-        verbose_name="Secret",
-        )
+        verbose_name="Secret")
 
     algorithm = models.CharField(
         max_length=25,

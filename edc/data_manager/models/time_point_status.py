@@ -7,27 +7,28 @@ from django.db import models
 from edc_constants.choices import YES_NO_NA
 from edc_constants.constants import CLOSED, OPEN, NEW_APPT, IN_PROGRESS
 from edc.core.crypto_fields.fields import EncryptedTextField
-from edc.device.sync.models import BaseSyncUuidModel
 from edc_appointment.models import Appointment
 from edc_base.audit_trail import AuditTrail
+from edc_base.model.models import BaseUuidModel
+from edc_sync.models import SyncModelMixin
 
 from ..managers import TimePointStatusManager
 
-try:
-    from edc.device.dispatch.models import BaseDispatchSyncUuidModel
+# try:
+#     from edc.device.dispatch.models import BaseDispatchSyncUuidModel
+#
+#     class BaseTimePointStatus(BaseDispatchSyncUuidModel):
+#         class Meta:
+#             abstract = True
+#
+# except ImportError:
+#
+#     class TimePointStatusBaseCrypt(models.Model):
+#         class Meta:
+#             abstract = True
 
-    class BaseTimePointStatus(BaseDispatchSyncUuidModel):
-        class Meta:
-            abstract = True
 
-except ImportError:
-
-    class TimePointStatusBaseCrypt(models.Model):
-        class Meta:
-            abstract = True
-
-
-class TimePointStatus(BaseTimePointStatus, BaseSyncUuidModel):
+class TimePointStatus(SyncModelMixin, BaseUuidModel):
     """ All completed appointments are noted in this form.
 
     Only authorized users can access this form. This form allows

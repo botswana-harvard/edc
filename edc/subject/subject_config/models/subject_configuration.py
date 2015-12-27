@@ -1,12 +1,13 @@
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 
-from edc.device.sync.models import BaseSyncUuidModel
 from edc_appointment.choices import APPT_STATUS, APPT_TYPE
 from edc_constants.constants import NEW_APPT, UNKEYED
+from edc_base.model.models import BaseUuidModel
+from edc_sync.models import SyncModelMixin
 
 
-class SubjectConfiguration(BaseSyncUuidModel):
+class SubjectConfiguration(SyncModelMixin, BaseUuidModel):
     """Store subject specific defaults."""
 
     subject_identifier = models.CharField(

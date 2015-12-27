@@ -1,11 +1,12 @@
 from django.db import models
 
-from edc.device.sync.models import BaseSyncUuidModel
+from edc_base.model.models import BaseUuidModel
+from edc_sync.models import SyncModelMixin
 
 from .base_identifier_model import BaseIdentifierModel
 
 
-class SubjectIdentifier(BaseIdentifierModel, BaseSyncUuidModel):
+class SubjectIdentifier(BaseIdentifierModel, SyncModelMixin, BaseUuidModel):
 
     objects = models.Manager()
 

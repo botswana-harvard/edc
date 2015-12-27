@@ -65,7 +65,7 @@ class BaseDispatch(BaseController):
         self.debug = kwargs.get('debug', False)
 
     def _repr(self):
-        return 'DispatchController[{0}]'.format(self.get_producer().settings_key)
+        return 'DispatchController[{0}]'.format(self.producer.settings_key)
 
     def preload_session_container(self):
         """Loads the session container for items that are currently
@@ -231,7 +231,7 @@ class BaseDispatch(BaseController):
             defaults = {'is_dispatched': True,
                         'return_datetime': None,
                         'container_identifier_attrname': self.get_user_container_identifier_attrname(),
-                        'producer': self.get_producer(),
+                        'producer': self.producer,
                         'container_identifier': getattr(
                             user_container, self.get_user_container_identifier_attrname())}
             self._dispatch_container_register, created = DispatchContainerRegister.objects.using(
@@ -269,7 +269,7 @@ class BaseDispatch(BaseController):
         instances for this dispatch_container_register or producer."""
         if producer:
             return DispatchItemRegister.objects.using(self.get_using_source()).filter(
-                producer=self.get_producer(),
+                producer=self.producer,
                 is_dispatched=True,
                 return_datetime__isnull=True)
         else:
@@ -304,9 +304,9 @@ class BaseDispatch(BaseController):
                     item_pk=instance.pk)
                 dispatch_item_register.is_dispatched = True
                 dispatch_item_register.return_datetime = None
-                dispatch_item_register.producer = self.get_producer()
+                dispatch_item_register.producer = self.producer
                 dispatch_item_register.dispatch_host = socket.gethostname()
-                dispatch_item_register.dispatch_using = self.get_producer().settings_key
+                dispatch_item_register.dispatch_using = self.producer.settings_key
                 dispatch_item_register.item_app_label = instance._meta.app_label
                 dispatch_item_register.item_model_name = instance._meta.object_name  # not lower!
                 dispatch_item_register.item_identifier_attrname = self.get_user_item_identifier_attrname()
@@ -318,9 +318,9 @@ class BaseDispatch(BaseController):
                     item_pk=instance.pk,
                     is_dispatched=True,
                     return_datetime=None,
-                    producer=self.get_producer(),
+                    producer=self.producer,
                     dispatch_host=socket.gethostname(),
-                    dispatch_using=self.get_producer().settings_key,
+                    dispatch_using=self.producer.settings_key,
                     item_app_label=instance._meta.app_label,
                     item_model_name=instance._meta.object_name,  # not lower!
                     item_identifier_attrname=self.get_user_item_identifier_attrname(),
