@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from ..forms import RegisteredSubjectForm
-from ..models import RegisteredSubject
+from .forms import RegisteredSubjectForm
+from .models import RegisteredSubject
 
 
 class RegisteredSubjectAdmin(admin.ModelAdmin):
