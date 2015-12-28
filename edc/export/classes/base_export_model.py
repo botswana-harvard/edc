@@ -1,6 +1,6 @@
-import os
 import csv
 import json
+import os
 import string
 
 from collections import OrderedDict
@@ -8,7 +8,7 @@ from datetime import datetime
 
 from django.db.models.constants import LOOKUP_SEP
 
-from edc.core.crypto_fields.fields import BaseEncryptedField
+from edc_base.encrypted_fields import BaseEncryptedField
 
 from ..models import ExportHistory
 

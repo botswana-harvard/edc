@@ -1,7 +1,7 @@
 from django.db import models
 
 from edc_constants.choices import YES_NO
-from edc.core.crypto_fields.fields import EncryptedTextField
+from edc_base.encrypted_fields import EncryptedTextField
 
 
 class BaseContactLogItem(models.Model):

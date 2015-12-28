@@ -1,5 +1,5 @@
-from edc.core.crypto_fields.classes import Cryptor
-from edc.core.crypto_fields.models import Crypt
+from edc_base.encrypted_fields import Cryptor
+from edc_base.encrypted_fields import Crypt
 
 
 class ReportDecryptor(Cryptor):

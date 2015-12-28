@@ -1,9 +1,10 @@
-from datetime import datetime
+from django.utils import timezone
 from django.db.models import get_model
+
 from ..models import SubjectIdentifier
 from ..exceptions import IdentifierError
+
 from .base_subject_identifier import BaseSubjectIdentifier
-from django.utils import timezone
 
 
 class InfantIdentifier(BaseSubjectIdentifier):
@@ -74,7 +75,7 @@ class InfantIdentifier(BaseSubjectIdentifier):
 
     def get_identifier_post(self, new_identifier, **kwargs):
         """ Updates registered subject after a new subject identifier is created."""
-        RegisteredSubject = get_model('registration', 'registeredsubject')
+        RegisteredSubject = get_model('edc_registration', 'registeredsubject')
         RegisteredSubject.objects.using(self.using).create(
             subject_identifier=new_identifier,
             registration_datetime=timezone.now(),

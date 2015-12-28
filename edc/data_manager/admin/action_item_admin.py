@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 
 from edc_constants.constants import CLOSED, OPEN
-from edc.subject.registration.models import RegisteredSubject
+from edc_registration.models import RegisteredSubject
 
 from ..forms import ActionItemForm
 from ..models import ActionItem

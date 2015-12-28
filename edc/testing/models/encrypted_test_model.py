@@ -1,17 +1,17 @@
 from edc_base.audit_trail import AuditTrail
 from edc_base.model.models import BaseModel
-from edc.core.crypto_fields.fields import EncryptedCharField, EncryptedTextField, EncryptedFirstnameField, EncryptedLastnameField
+from edc_base.encrypted_fields import EncryptedCharField, EncryptedTextField, FirstnameField, LastnameField
 
 
 class EncryptedTestModel(BaseModel):
 
-    firstname = EncryptedFirstnameField()
+    firstname = FirstnameField()
 
-    lastname = EncryptedLastnameField()
+    lastname = LastnameField()
 
     char1 = EncryptedCharField()
 
-    lastname2 = EncryptedLastnameField()
+    lastname2 = LastnameField()
 
     char2 = EncryptedCharField()
 
@@ -21,7 +21,7 @@ class EncryptedTestModel(BaseModel):
 
     text2 = EncryptedTextField()
 
-    firstname2 = EncryptedFirstnameField()
+    firstname2 = FirstnameField()
 
     text3 = EncryptedTextField()
 

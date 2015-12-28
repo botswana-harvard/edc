@@ -40,7 +40,7 @@ class IdentifierTracker(SyncModelMixin, BaseUuidModel):
     objects = models.Manager()
 
     def is_serialized(self):
-        return super(IdentifierTracker, self).is_serialized(True)
+        return True
 
     def __unicode__(self):
         return self.identifier

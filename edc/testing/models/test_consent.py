@@ -1,7 +1,7 @@
 from django.db import models
 
 from edc.core.bhp_variables.models.study_site import StudySite
-from edc.subject.registration.models import RegisteredSubject
+from edc_registration.models import RegisteredSubject
 from edc_appointment.models import AppointmentMixin
 from edc_base.model.models import BaseUuidModel
 from edc_consent.models import BaseConsent

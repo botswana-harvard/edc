@@ -6,8 +6,8 @@ from django.core.validators import RegexValidator
 
 from edc_constants.choices import GENDER_UNDETERMINED
 from edc_base.model.fields import IsDateEstimatedField
-from edc.core.crypto_fields.fields import (EncryptedFirstnameField, EncryptedLastnameField,
-                                           EncryptedCharField)
+from edc_base.encrypted_fields import (FirstnameField, LastnameField,
+                                       EncryptedCharField)
 from edc.core.identifier.exceptions import IdentifierError
 
 
@@ -46,12 +46,12 @@ class BaseSubject (models.Model):
         )
 
     # may not be available when instance created (e.g. infants prior to birth report)
-    first_name = EncryptedFirstnameField(
+    first_name = FirstnameField(
         null=True,
         )
 
     # may not be available when instance created (e.g. infants or household subject before consent)
-    last_name = EncryptedLastnameField(
+    last_name = LastnameField(
         verbose_name="Last name",
         null=True,
         )
@@ -97,23 +97,6 @@ class BaseSubject (models.Model):
         if self._meta.object_name == 'RegisteredSubject':
             return True
         return False
-
-#     def _get_or_created_registered_subject(self, using):
-#         registered_subject = None
-#         if 'registered_subject' in dir(self):
-#             if self.registered_subject:
-#                 registered_subject = self.registered_subject
-#         if not registered_subject:
-#             RegisteredSubject = get_model('registration', 'registeredsubject')
-#             try:
-#                 registered_subject = RegisteredSubject.objects.using(using).get(
-#                     subject_identifier=self.subject_identifier)
-#                 self._update_registered_subject(using, registered_subject)
-#             except RegisteredSubject.DoesNotExist:
-#                 options = self._get_registered_subject_options()
-#                 registered_subject = RegisteredSubject.objects.using(using).create(
-#                     subject_identifier=self.subject_identifier, **options)
-#         return registered_subject
 
     def post_save_get_or_create_registered_subject(self, **kwargs):
         """Creates or \'gets and updates\' the registered

@@ -1,5 +1,5 @@
 from django.db import models
-from edc.subject.registration.models import RegisteredSubject
+from edc_registration.models import RegisteredSubject
 from .test_foreign_key import TestForeignKey
 from .test_m2m import TestM2m
 from edc_offstudy.models import OffStudyMixin

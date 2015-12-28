@@ -1,9 +1,11 @@
 from django.db import models
 
-from edc.device.sync.models import BaseSyncUuidModel
+# from edc.device.sync.models import BaseSyncUuidModel
+from edc_sync.models.sync_model_mixin import SyncModelMixin
+from edc_base.model.models.base_uuid_model import BaseUuidModel
 
 
-class NotificationPlan(BaseSyncUuidModel):
+class NotificationPlan(SyncModelMixin, BaseUuidModel):
 
     name = models.CharField(max_length=50, unique=True)
 

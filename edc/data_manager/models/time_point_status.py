@@ -4,12 +4,12 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from edc_constants.choices import YES_NO_NA
-from edc_constants.constants import CLOSED, OPEN, NEW_APPT, IN_PROGRESS
-from edc.core.crypto_fields.fields import EncryptedTextField
 from edc_appointment.models import Appointment
 from edc_base.audit_trail import AuditTrail
+from edc_base.encrypted_fields import EncryptedTextField
 from edc_base.model.models import BaseUuidModel
+from edc_constants.choices import YES_NO_NA
+from edc_constants.constants import CLOSED, OPEN, NEW_APPT, IN_PROGRESS
 from edc_sync.models import SyncModelMixin
 
 from ..managers import TimePointStatusManager

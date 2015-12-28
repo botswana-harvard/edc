@@ -1,9 +1,9 @@
 from django.db import models
 
-from edc_constants.constants import NOT_REQUIRED, UNKEYED
-from edc.subject.registration.models import RegisteredSubject
 from edc.subject.entry.choices import ENTRY_STATUS
 from edc_base.model.models import BaseUuidModel
+from edc_constants.constants import NOT_REQUIRED, UNKEYED
+from edc_registration.models import RegisteredSubject
 from edc_sync.models import SyncModelMixin
 
 

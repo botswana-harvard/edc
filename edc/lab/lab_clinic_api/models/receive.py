@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 
-from edc.subject.registration.models import RegisteredSubject
+from edc_registration.models import RegisteredSubject
 from edc_base.model.models import BaseUuidModel
 
 from lis.specimen.lab_receive.models import BaseReceive

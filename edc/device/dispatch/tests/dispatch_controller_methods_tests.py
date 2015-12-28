@@ -7,7 +7,7 @@ from django.db.models import get_model
 from edc.core.bhp_using.exceptions import UsingError, UsingSourceError
 from edc.device.sync.exceptions import PendingTransactionError, ProducerError
 from edc.device.sync.models import Producer, OutgoingTransaction, IncomingTransaction
-from edc.subject.registration.models import RegisteredSubject
+from edc_registration.models import RegisteredSubject
 
 from ..classes import BaseController, ReturnController, BaseDispatchController
 from ..exceptions import (DispatchError, AlreadyDispatched, DispatchControllerNotReady,

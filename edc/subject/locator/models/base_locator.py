@@ -3,11 +3,11 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
-from edc_constants.choices import YES_NO, YES_NO_DOESNT_WORK
-from edc.core.crypto_fields.fields import EncryptedCharField, EncryptedTextField
-from edc.subject.registration.models import RegisteredSubject
 from edc_base.bw.validators import BWCellNumber, BWTelephoneNumber
+from edc_base.encrypted_fields import EncryptedCharField, EncryptedTextField
 from edc_base.model.validators import datetime_not_before_study_start, datetime_not_future
+from edc_constants.choices import YES_NO, YES_NO_DOESNT_WORK
+from edc_registration.models import RegisteredSubject
 
 from ..managers import BaseLocatorManager
 

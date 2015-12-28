@@ -23,7 +23,7 @@ class Partner(object):
         # create/save to DerivedSubjectIdentifier
         DerivedSubjectIdentifier.objects.create(subject_identifier=subject_identifier,
                                                 base_identifier=index_identifier)
-        RegisteredSubject = get_model('registration', 'registeredsubject')
+        RegisteredSubject = get_model('edc_registration', 'registeredsubject')
         if not RegisteredSubject.objects.filter(relative_identifier=index_identifier):
 #            RegisteredSubject.objects.update_with(consent, )
             RegisteredSubject.objects.create(

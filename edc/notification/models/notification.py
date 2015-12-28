@@ -1,9 +1,11 @@
 from django.db import models
 
-from edc.device.sync.models import BaseSyncUuidModel
+# from edc.device.sync.models import BaseSyncUuidModel
+from edc_sync.models import SyncModelMixin
+from edc_base.model.models import BaseUuidModel
 
 
-class Notification(BaseSyncUuidModel):
+class Notification(SyncModelMixin, BaseUuidModel):
 
     notification_plan_name = models.CharField(max_length=200)
 
@@ -23,9 +25,7 @@ class Notification(BaseSyncUuidModel):
         choices=(
             ('new', 'New'),
             ('sent', 'Sent'),
-            ('cancelled', 'Cancelled'),
-            ),
-        )
+            ('cancelled', 'Cancelled')))
 
     sent = models.BooleanField(default=False)
 

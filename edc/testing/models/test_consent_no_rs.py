@@ -1,6 +1,6 @@
 from django.db import models
 
-from edc.core.crypto_fields.fields import EncryptedIdentityField
+from edc_base.encrypted_fields import IdentityField
 from edc_base.model.fields import IdentityTypeField
 from edc_consent.models import BaseConsent
 
@@ -9,7 +9,7 @@ class TestConsentNoRs(BaseConsent):
 
     user_provided_subject_identifier = models.CharField(max_length=35, null=True)
 
-    identity = EncryptedIdentityField(
+    identity = IdentityField(
         unique=True,
         null=True,
         blank=True,
@@ -17,7 +17,7 @@ class TestConsentNoRs(BaseConsent):
 
     identity_type = IdentityTypeField()
 
-    confirm_identity = EncryptedIdentityField(
+    confirm_identity = IdentityField(
         unique=True,
         null=True,
         blank=True,

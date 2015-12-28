@@ -7,7 +7,7 @@ from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc_appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.subject.registration.models import RegisteredSubject
+from edc_registration.models import RegisteredSubject
 from edc.subject.rule_groups.classes import site_rule_groups
 from edc_visit_schedule.models import VisitDefinition
 from edc.testing.classes import TestLabProfile

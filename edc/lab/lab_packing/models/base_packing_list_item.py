@@ -1,6 +1,6 @@
 from django.db import models
 
-from edc.subject.registration.models import RegisteredSubject
+from edc_registration.models import RegisteredSubject
 
 from .base_packing_list import BasePackingList
 
