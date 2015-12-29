@@ -1,10 +1,12 @@
 import factory
-from lis.specimen.lab_receive.tests.factories import BaseReceiveFactory
-from edc.subject.registration.tests.factories import RegisteredSubjectFactory
+
+from edc_registration.tests.factories import RegisteredSubjectFactory
+
 from ...models import Receive
 
 
-class ReceiveFactory(BaseReceiveFactory):
-    FACTORY_FOR = Receive
+class ReceiveFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Receive
 
     registered_subject = factory.SubFactory(RegisteredSubjectFactory)
