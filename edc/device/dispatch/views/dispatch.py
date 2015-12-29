@@ -2,12 +2,11 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.db.models import get_model, get_models
 
 from edc.device.dispatch.exceptions import (AlreadyDispatchedContainer, AlreadyDispatchedItem,
                                             AlreadyDispatched)
-from edc.device.sync.exceptions import PendingTransactionError
-from edc.device.sync.models import Producer
+from edc_sync.exceptions import PendingTransactionError
+from edc_sync.models import Producer
 
 from ..classes import DispatchController
 from ..exceptions import DispatchAttributeError
@@ -65,7 +64,8 @@ def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs)
             if producer:
                 try:
                     plot_list_status = request.POST.get('plot_list')
-                    # if plot_list_status is not_allocated, dispatch uses the original logic otherwise dispatches to notebook_plot_list.
+                    # if plot_list_status is not_allocated, dispatch
+                    # uses the original logic otherwise dispatches to notebook_plot_list.
                     if plot_list_status == 'not_allocated':
                         if not producer.settings_key:
                             raise DispatchAttributeError('Producer attribute settings_key may not be None.')
@@ -91,9 +91,10 @@ def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs)
                             kwargs.update({'skip_container': True})
                             dispatch_controller = dispatch_controller_cls(
                                 'default', producer.settings_key, notebook_plot_list, **kwargs)
-                            msg = dispatch_controller.dispatch(survey=survey, plot_list_status=plot_list_status, notebook_plot_list=notebook_plot_list)
-                            notebook_plot_list_status = request.POST.get('plot_list')  # set notebook_plot_list status from a dispatch form (dispatch.html)
-                            #msg = 'Successfully dispatched {0} {1}'.format(user_container._meta.object_name, self.get_user_container_identifier())
+                            msg = dispatch_controller.dispatch(
+                                survey=survey, plot_list_status=plot_list_status,
+                                notebook_plot_list=notebook_plot_list)
+                            notebook_plot_list_status = request.POST.get('plot_list')
                             messages.add_message(request, messages.SUCCESS, msg)
                         if dispatch_controller:
                             dispatch_url = dispatch_controller.get_dispatch_url()
@@ -135,5 +136,4 @@ def dispatch(request, dispatch_controller_cls, dispatch_form_cls=None, **kwargs)
         'user_container_admin_url': user_container_admin_url,
         # 'title': 'Dispatch to Producer',
         'app_name': app_name,
-        'notebook_plot_list': notebook_plot_list_status
-        })
+        'notebook_plot_list': notebook_plot_list_status})

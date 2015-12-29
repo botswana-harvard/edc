@@ -1,13 +1,17 @@
 import logging
 import socket
+
 from django.conf import settings
 from django.db.models import get_model, ForeignKey, OneToOneField
 from django.db import IntegrityError
 from django.core.exceptions import ImproperlyConfigured
+
 from edc_visit_schedule.models import MembershipForm
+
 from ..exceptions import (DispatchModelError, DispatchError,
                           AlreadyDispatched, DispatchControllerError)
 from ..models import DispatchItemRegister, DispatchContainerRegister
+
 from .base_controller import BaseController
 
 logger = logging.getLogger(__name__)

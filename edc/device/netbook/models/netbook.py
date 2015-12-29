@@ -9,30 +9,25 @@ class Netbook(BaseModel):
     name = models.CharField(
         verbose_name=_("Netbook Name"),
         unique=True,
-        max_length=10,
-        )
+        max_length=10)
 
     is_active = models.BooleanField(
-        default=False
-        )
+        default=False)
 
     db_name = models.CharField(
         verbose_name=_("Database Name"),
         blank=True,
         null=True,
-        max_length=10,
-        )
+        max_length=10)
 
     is_alive = models.BooleanField(
-        default=False
-        )
+        default=False)
 
     last_seen = models.DateField(
         null=True)
 
     date_purchased = models.DateField(
-        verbose_name=_("Date Purchased"),
-        )
+        verbose_name=_("Date Purchased"))
 
     make = models.CharField(
         verbose_name=_("Make"),
@@ -49,8 +44,7 @@ class Netbook(BaseModel):
 
     ip_address = models.IPAddressField(
         null=True,
-        blank=True,
-        )
+        blank=True)
 
     objects = models.Manager()
 

@@ -11,19 +11,20 @@ class NetbookUser(BaseModel):
 
     netbook = models.ForeignKey(Netbook)
 
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(
+        User,
         null=True,
-        blank=True,
-        )
+        blank=True,)
 
-    start_date = models.DateField("Date assigned",
-        help_text=_("Format is YYYY-MM-DD"),
-        )
-    end_date = models.DateField("Date revoked",
+    start_date = models.DateField(
+        "Date assigned",
+        help_text=_("Format is YYYY-MM-DD"),)
+
+    end_date = models.DateField(
+        "Date revoked",
         null=True,
         blank=True,
-        help_text=_("Leave blank if in use. Format is YYYY-MM-DD"),
-        )
+        help_text=_("Leave blank if in use. Format is YYYY-MM-DD"))
 
     def __unicode__(self):
         return "%s %s" % (self.user, self.netbook)

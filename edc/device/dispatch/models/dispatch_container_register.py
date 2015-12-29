@@ -25,9 +25,11 @@ class DispatchContainerRegister(BaseDispatch):
 
     def save(self, *args, **kwargs):
         if not self.is_dispatched and not self.return_datetime:
-            raise ValidationError('Field attribute \'return_datetime\' may not be None if \'is_dispatched\' is False.')
+            raise ValidationError(
+                'Field attribute \'return_datetime\' may not be None if \'is_dispatched\' is False.')
         if self.is_dispatched and self.return_datetime:
-            raise ValidationError('Field attribute \'return_datetime\' must be None if \'is_dispatched\' is True.')
+            raise ValidationError(
+                'Field attribute \'return_datetime\' must be None if \'is_dispatched\' is True.')
         super(DispatchContainerRegister, self).save(*args, **kwargs)
 
     def __unicode__(self):

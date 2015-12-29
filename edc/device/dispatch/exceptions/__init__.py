@@ -72,3 +72,15 @@ class DispatchControllerError(Exception):
 
 class ProducerError(Exception):
     pass
+
+
+class UsingError(Exception):
+    pass
+
+
+class UsingSourceError(Exception):
+    pass
+
+
+class UsingDestinationError(Exception):
+    pass

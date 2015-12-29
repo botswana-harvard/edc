@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from edc_base.modeladmin.admin import BaseModelAdmin
 
-from ..models import Netbook, NetbookUser
+from .models import Netbook, NetbookUser
 
 
 class NetbookAdmin (BaseModelAdmin):
@@ -15,8 +15,7 @@ class NetbookAdmin (BaseModelAdmin):
         'ip_address',
         'is_alive',
         'last_seen',
-        'serial_number'
-        )
+        'serial_number')
     list_per_page = 25
     list_filter = ('is_active', 'is_alive')
 

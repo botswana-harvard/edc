@@ -1,9 +1,12 @@
 from datetime import datetime
 from django.db.models import get_model
 from django.db.models.query import QuerySet
-from edc.device.sync.exceptions import PendingTransactionError
+
+from ed_sync.exceptions import PendingTransactionError
+
 from ..exceptions import DispatchContainerError, AlreadyReturned
 from ..models import DispatchContainerRegister, DispatchItemRegister
+
 from .base_return import BaseReturn
 
 
