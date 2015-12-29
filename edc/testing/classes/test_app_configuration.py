@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from edc.apps.app_configuration.classes import BaseAppConfiguration
+from edc_configuration.base_app_configuration import BaseAppConfiguration
 from edc.lab.lab_profile.classes import ProfileItemTuple, ProfileTuple
 
 from lis.labeling.classes import LabelPrinterTuple

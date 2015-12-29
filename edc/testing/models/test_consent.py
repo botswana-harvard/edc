@@ -3,7 +3,7 @@ from django.db import models
 from edc_registration.models import RegisteredSubject
 from edc_appointment.models import AppointmentMixin
 from edc_base.model.models import BaseUuidModel
-from edc_consent.models import BaseConsent, StudySite
+from edc_consent.models import BaseConsent
 from edc_consent.models.fields import ReviewFieldsMixin, IdentityFieldsMixin
 from edc_consent.models.fields.personal_fields_mixin import PersonalFieldsMixin
 from edc_consent.models.fields.sample_collection_fields_mixin import SampleCollectionFieldsMixin
@@ -13,24 +13,17 @@ from edc_consent.models.fields.vulnerability_fields_mixin import VulnerabilityFi
 class BaseTestConsent(BaseConsent, ReviewFieldsMixin, IdentityFieldsMixin,
                       SampleCollectionFieldsMixin, PersonalFieldsMixin,
                       VulnerabilityFieldsMixin, BaseUuidModel):
-    """ Standard consent model.
-
-    .. seealso:: :class:`BaseConsent` in :mod:`bhp_botswana.classes` """
 
     registered_subject = models.OneToOneField(RegisteredSubject, null=True)
 
     user_provided_subject_identifier = models.CharField(max_length=35, null=True)
 
-    study_site = models.ForeignKey(StudySite)
+    study_site = models.CharField(max_length=10)
 
     objects = models.Manager()
 
     def is_dispatchable_model(self):
         return False
-
-    def get_user_provided_subject_identifier_attrname(self):
-        """Returns the attribute name of the user provided subject_identifier."""
-        return 'user_provided_subject_identifier'
 
     def get_subject_type(self):
         return 'test_subject_type'
