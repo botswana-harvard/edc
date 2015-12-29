@@ -2,21 +2,23 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
+
 from edc.lab.lab_clinic_api.models import ResultItem
-from edc.lab.lab_clinic_api.tests.factories import ResultItemFactory, AliquotConditionFactory, AliquotFactory, OrderFactory, ReceiveFactory, ResultFactory, TestCodeFactory
-from edc.core.bhp_variables.tests.factories import StudySpecificFactory
+from edc.lab.lab_clinic_api.tests.factories import (
+    ResultItemFactory, AliquotConditionFactory, AliquotFactory,
+    OrderFactory, ReceiveFactory, ResultFactory, TestCodeFactory)
 from edc.testing.models import TestSubjectResultModel
 from edc.testing.tests.factories import TestSubjectResultModelFactory
-from edc.subject.registration.tests.factories import RegisteredSubjectFactory
-from ..models import HistoryModel
+from edc_registration.tests.factories import RegisteredSubjectFactory
+
 from ..classes import LabTracker, site_lab_tracker
 from ..classes.controller import AlreadyRegistered
+from ..models import HistoryModel
 
 
 class TrackerMethodsTests(TestCase):
 
     def test_p1(self):
-        StudySpecificFactory()
         print 'assert not yet autodiscovered'
         site_lab_tracker._registry = []
         self.assertEqual(site_lab_tracker._registry, [])
@@ -70,7 +72,6 @@ class TrackerMethodsTests(TestCase):
         self.assertEqual(tracker1.get_subject_type(), subject_type)
         self.assertEqual(tracker1.get_group_name(), group_name)
         self.assertEqual(tracker1.get_value_datetime(), value_datetime)
-        #self.assertEqual(tracker.get_value_datetime(), tracker._get_max_value_datetime())
         self.assertNotEqual(tracker1._get_history_inst().pk, '')
 
         print 'calling site_lab_tracker.update should not add a new rec to history'
@@ -175,6 +176,5 @@ class TrackerMethodsTests(TestCase):
         tracker3 = TestLabTracker(subject_identifier)
         value_datetime = None
         self.assertRaises(TypeError, tracker3._get_history_inst)
-        #tracker3._update_history_for_inst(result_item1, tracker3)
 
         TestSubjectResultModelFactory()

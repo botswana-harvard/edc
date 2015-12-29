@@ -83,7 +83,7 @@ class LabProfile(object):
             if requisition.is_receive and requisition.is_drawn == YES:
                 specimen_identifier = '{0}{1}{2}'.format(
                     settings.PROJECT_IDENTIFIER_PREFIX,
-                    requisition.get_site_code(),
+                    requisition.study_site,
                     requisition.requisition_identifier)
         if not specimen_identifier:
             raise SpecimenError('Cannot set specimen identifier for the specimen in Requisition {}. '

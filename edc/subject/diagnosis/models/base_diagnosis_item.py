@@ -1,9 +1,11 @@
 from django.db import models
+
 from ..choices import STATUS, METHOD
-from .diagnosis_code import DiagnosisCode
-from .diagnosis_site import DiagnosisSite
-from .diagnosis_organism import DiagnosisOrganism
+
 from .base_base_diagnosis_item import BaseBaseDiagnosisItem
+from .diagnosis_code import DiagnosisCode
+from .diagnosis_organism import DiagnosisOrganism
+from .diagnosis_site import DiagnosisSite
 
 
 class BaseDiagnosisItem(BaseBaseDiagnosisItem):
@@ -14,13 +16,11 @@ class BaseDiagnosisItem(BaseBaseDiagnosisItem):
         verbose_name='Specify',
         max_length=50,
         null=True,
-        blank=True,
-        )
+        blank=True)
 
     method = models.CharField(
         max_length=10,
-        choices=METHOD,
-        )
+        choices=METHOD)
 
     organism = models.ForeignKey(DiagnosisOrganism)
 
@@ -28,8 +28,7 @@ class BaseDiagnosisItem(BaseBaseDiagnosisItem):
 
     status = models.CharField(
         max_length=10,
-        choices=STATUS,
-        )
+        choices=STATUS)
 
     resolution_date = models.DateField()
 

@@ -8,9 +8,9 @@ from django.db.models import Q
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from edc.core.bhp_variables.models import StudySite
-
 from ..forms import DateRangeForm
+
+""" is this used??"""
 
 
 @login_required
@@ -92,9 +92,6 @@ def base_model_group_describer(request, **kwargs):
             if not years:
                 years = [start_date.year, ]
             months = range(start_date.month, end_date.month + 1)
-            sites = [study_site.site_name for study_site in StudySite.objects.all()]
-            sites = list(set(sites))
-            sites.sort()
 
             # get data for each model
             for key, model_report in model_reports.items():
@@ -143,7 +140,7 @@ def base_model_group_describer(request, **kwargs):
         'form': form,
         'years': years,
         'months': months,
-        'sites': sites,
+        'sites': [],
         'cumulative_frequency': 0,
         'model_list': ordered_model_list,
         'model_list_title': model_list_title,
@@ -153,5 +150,4 @@ def base_model_group_describer(request, **kwargs):
         'app_name': settings.APP_NAME,
         'report_title': report_title,
         'report': '',
-        'report_name': kwargs.get('report_name'),
-        }, context_instance=RequestContext(request))
+        'report_name': kwargs.get('report_name')}, context_instance=RequestContext(request))

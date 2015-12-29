@@ -1,7 +1,6 @@
 from django.test import TestCase
 
 from edc_constants.constants import NOT_REQUIRED, NEW, YES, NO
-from edc.core.bhp_variables.models import StudySite
 from edc.entry_meta_data.models import ScheduledEntryMetaData
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
@@ -123,7 +122,10 @@ class RuleTests(TestCase):
 
         self.visit_definition = VisitDefinition.objects.get(code='1000')
 
-        self.test_consent = TestConsentWithMixinFactory(gender='M', study_site=StudySite.objects.all()[0], may_store_samples=NO)
+        self.test_consent = TestConsentWithMixinFactory(
+            gender='M',
+            study_site='40',
+            may_store_samples=NO)
 
         self.registered_subject = RegisteredSubject.objects.get(subject_identifier=self.test_consent.subject_identifier)
         self.appointment = Appointment.objects.get(registered_subject=self.registered_subject)

@@ -14,7 +14,6 @@ from django.db.models.query import QuerySet
 
 from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
 
-from edc.core.bhp_variables.models import StudySite
 from edc.entry_meta_data.models import BaseEntryMetaData
 from edc_base.encrypted_fields import BaseEncryptedField
 from edc_crypto_fields.models import Crypt
@@ -85,7 +84,6 @@ class BaseController(BaseProducer):
 
     def _repr(self):
         return '{0}for {1}'.format('BaseController', self.producer.settings_key)
-
 
     def set_controller_state(self, value):
         self._controller_state = value
@@ -202,7 +200,7 @@ class BaseController(BaseProducer):
             base_model_class = base_model_class + additional_base_model_class
         base_model_class = base_model_class + [BaseListModel, BaseLabListModel,
                                                BaseLabListUuidModel, VisitDefinition,
-                                               ScheduleGroup, StudySite, BaseHistoryModel,
+                                               ScheduleGroup, BaseHistoryModel,
                                                BaseEntryMetaData, BaseEncryptedField]
         return tuple(base_model_class)
 
@@ -221,7 +219,7 @@ class BaseController(BaseProducer):
         if not isinstance(base_model_class, list):
             raise TypeError('Expected base_model classes as a list. Got{0}'.format(base_model_class))
         base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel,
-                                               VisitDefinition, StudySite, BaseHistoryModel,
+                                               VisitDefinition, BaseHistoryModel,
                                                BaseEntryMetaData]
         return tuple(set(base_model_class))
 
@@ -420,16 +418,6 @@ class BaseController(BaseProducer):
                         except IntegrityError as integrity_error:
                             if integrity_error.args[1].find('Duplicate entry'):
                                 saved.append(deserialized_object)
-                            #  TODO: change the handling of the exception to something like this:
-                            #         as is raises IndexError: tuple index out of range
-#                             if 'Duplicate entry' in str(integrity_error):  # and 'hash' not in str(integrity_error):
-#                                 saved.append(deserialized_object)
-#                             elif 'columns hash, algorithm, mode are not unique' in str(integrity_error):
-#                                 # don't worry about duplicate Crypts?
-#                                 saved.append(deserialized_object)
-#                             else:
-#                                 # only include this if you are OK passing ALL integrity errors
-#                                 saved.append(deserialized_object)
                             continue
                     if len(saved) == deserialized_count:
                         break

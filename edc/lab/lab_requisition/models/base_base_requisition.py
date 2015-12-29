@@ -9,7 +9,6 @@ from django.db import models
 
 from edc_constants.choices import YES_NO
 from edc_constants.constants import YES
-from edc.core.bhp_variables.models import StudySite
 from edc_device import device
 from edc_base.model.fields import InitialsField
 
@@ -45,7 +44,7 @@ class BaseBaseRequisition (models.Model):
         blank=True,
         help_text='Use three digit code e.g 041, 056, 062, etc')
 
-    site = models.ForeignKey(StudySite, null=True)
+    study_site = models.CharField(max_length=10, null=True)
 
     clinician_initials = InitialsField(
         default='--',
@@ -186,16 +185,6 @@ class BaseBaseRequisition (models.Model):
         if (len(self.requisition_identifier) == 36 and p.match(self.requisition_identifier)):
             return True
         return False
-
-    def get_site_code(self):
-        site_code = ''
-        try:
-            site_code = self.site.site_code
-        except AttributeError:
-            raise ImproperlyConfigured(
-                'Site may not be None. Either include the field for user input or '
-                'override method get_site_code() on the concrete model.')
-        return site_code
 
     def prepare_requisition_identifier(self, **kwargs):
         """Generate and returns a locally unique requisition identifier for a device (adds device id)"""

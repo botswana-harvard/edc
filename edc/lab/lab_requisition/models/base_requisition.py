@@ -10,11 +10,11 @@ from .base_base_requisition import BaseBaseRequisition
 class BaseRequisition (BaseBaseRequisition):
 
     # populate this one based on the selected panel at the dashboard
-    test_code = models.ManyToManyField(TestCode,
+    test_code = models.ManyToManyField(
+        TestCode,
         verbose_name='Additional tests',
         null=True,
-        blank=True,
-        )
+        blank=True)
 
     subject_identifier = models.CharField(
         max_length=25,
@@ -35,8 +35,8 @@ class BaseRequisition (BaseBaseRequisition):
         # dont allow values in these fields to change if dispatched
         may_not_change_these_fields = [(k, v) for k, v in obj.__dict__.iteritems() if k not in [
             'is_receive', 'is_receive_datetime', 'is_labelled', 'is_labelled_datetime', 'protocol',
-            'specimen_identifier', 'is_packed', 'packing_list_id', 'is_lis',
-            ] + BASE_MODEL_UPDATE_FIELDS + BASE_UUID_MODEL_UPDATE_FIELDS]
+            'specimen_identifier', 'is_packed', 'packing_list_id', 'is_lis'] +
+            BASE_MODEL_UPDATE_FIELDS + BASE_UUID_MODEL_UPDATE_FIELDS]
         for k, v in may_not_change_these_fields:
             if k[0] != '_':
                 if getattr(self, k) != v:

@@ -11,7 +11,6 @@ from edc.testing.classes import TestLabProfile
 from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
 from edc.testing.models import TestModel, TestScheduledModel, TestConsentWithMixin
 from edc.testing.tests.factories import TestModelFactory, TestScheduledModelFactory, TestConsentWithMixinFactory
-from edc.core.bhp_variables.models import StudySite
 from edc_visit_tracking.tests.factories import TestVisitFactory
 
 from ..classes import ExportAsCsv
@@ -30,7 +29,7 @@ class ExportAsCsvTests(TestCase):
         TestAppConfiguration().prepare()
         site_lab_tracker.autodiscover()
         TestVisitSchedule().rebuild()
-        study_site = StudySite.objects.all()[0]
+        study_site = '40'
         subject_consent = TestConsentWithMixinFactory(study_site=study_site)
         self.registered_subject = RegisteredSubject.objects.get(subject_identifier=subject_consent.subject_identifier)
         self.consent = TestConsentWithMixin.objects.get(registered_subject=self.registered_subject)

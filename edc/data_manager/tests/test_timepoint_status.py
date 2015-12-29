@@ -2,14 +2,14 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from edc_constants.constants import CLOSED, IN_PROGRESS, COMPLETE_APPT, INCOMPLETE, NEW_APPT
-from edc.core.bhp_variables.models import StudySite
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc_appointment.models import Appointment
+from edc_visit_tracking.tests.factories import TestVisitFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.testing.classes import TestAppConfiguration, TestVisitSchedule, TestLabProfile
 from edc.testing.models import TestPanel
-from edc.testing.tests.factories import (TestVisitFactory, TestScheduledModel1Factory,
+from edc.testing.tests.factories import (TestScheduledModel1Factory,
                                          TestScheduledModel2Factory, TestScheduledModel3Factory,
                                          TestRequisitionFactory, TestConsentWithMixinFactory)
 
@@ -29,7 +29,7 @@ class TestTimePointStatus(TestCase):
         TestAppConfiguration().prepare()
         site_lab_tracker.autodiscover()
         TestVisitSchedule().build()
-        self.study_site = StudySite.objects.all()[0]
+        self.study_site = '40'
 
     def test_created(self):
         """Assert that time completion model is created for each appointment created."""

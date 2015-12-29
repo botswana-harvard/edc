@@ -1,1 +1,0 @@
-from .study_specific_factory import StudySpecificFactory

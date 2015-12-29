@@ -3,10 +3,9 @@ import factory
 from django.utils import timezone
 
 from edc_constants.choices import IDENTITY_TYPE
-from edc.core.bhp_variables.tests.factories import StudySiteFactory
+from edc_constants.constants import YES, NO
 
 from ...models import TestConsent, TestConsentWithMixin
-from edc_constants.constants import YES, NO
 
 
 class BaseConsentBasicsFactory(factory.DjangoModelFactory):
@@ -23,7 +22,7 @@ class BaseConsentFactory(BaseConsentBasicsFactory):
     class Meta:
         abstract = True
 
-    study_site = factory.SubFactory(StudySiteFactory)
+    study_site = '40'
     consent_datetime = timezone.now()
     may_store_samples = YES
     is_incarcerated = NO

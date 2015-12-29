@@ -3,7 +3,6 @@ from __future__ import print_function
 from django.test import TestCase
 from django.utils import timezone
 
-from edc.core.bhp_variables.models import StudySite
 from edc_appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
@@ -13,7 +12,7 @@ from edc.testing.classes import TestLabProfile
 from edc.testing.tests.factories import TestConsentWithMixinFactory
 from edc.lab.lab_profile.classes import site_lab_profiles
 from edc_constants.constants import MALE
-from edc.subject.registration.tests.factories import RegisteredSubjectFactory
+from edc_registration.tests.factories import RegisteredSubjectFactory
 
 
 class BaseTestEntryMetaData(TestCase):
@@ -32,7 +31,7 @@ class BaseTestEntryMetaData(TestCase):
 
         TestVisitSchedule().build()
 
-        self.study_site = StudySite.objects.all()[0]
+        self.study_site = '40'
         self.identity = '111111111'
         self.visit_definition = VisitDefinition.objects.get(code='1000')
         self.test_consent = TestConsentWithMixinFactory(

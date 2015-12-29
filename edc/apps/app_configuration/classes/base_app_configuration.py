@@ -3,7 +3,6 @@ from __future__ import print_function
 from django.core.exceptions import MultipleObjectsReturned
 
 from edc.core.bhp_content_type_map.classes import ContentTypeMapHelper
-from edc.core.bhp_variables.models import StudySpecific, StudySite
 from edc.export.helpers import ExportHelper
 from edc.lab.lab_clinic_api.models import AliquotType, Panel
 from edc.lab.lab_packing.models import Destination
@@ -12,13 +11,13 @@ from edc.notification.helpers import NotificationHelper
 from edc.subject.entry.models import RequisitionPanel
 from edc.utils import datatype_to_string
 from edc_appointment.models import Holiday
+from edc_consent.models.consent_type import ConsentType
 
 from lis.labeling.models import LabelPrinter, ZplTemplate, Client
 
 from .defaults import default_global_configuration
 
 from ..models import GlobalConfiguration
-from edc_consent.models.consent_type import ConsentType
 
 
 class BaseAppConfiguration(object):
@@ -281,38 +280,3 @@ class BaseAppConfiguration(object):
                 consent_type.save()
             except ConsentType.DoesNotExist:
                 ConsentType.objects.create(**item)
-
-    def update_or_create_study_variables(self):
-        if StudySpecific.objects.all().count() == 0:
-            StudySpecific.objects.create(**self.study_variables_setup)
-        else:
-            StudySpecific.objects.all().update(**self.study_variables_setup)
-        self._setup_study_sites()
-
-    def _setup_study_sites(self):
-        for site in self.study_site_setup:
-            try:
-                StudySite.objects.get(**site)
-            except StudySite.DoesNotExist:
-                StudySite.objects.create(**site)
-
-# commented out, was being overridden by above for both BCPP and Microbiome.
-#     def update_or_create_study_variables(self, site_code=None):
-#         """Updates configuration in the :mod:`bhp_variables` module."""
-#         if StudySpecific.objects.all().count() == 0:
-#             StudySpecific.objects.create(**self.study_variables_setup)
-#         else:
-#             study_specifics = StudySpecific.objects.all()
-#             study_specifics.update(**self.study_variables_setup)
-#             for study_specific in study_specifics:
-#                 # This extra step is required so that signals can fire.
-#                 # Queryset .update() does to fire any signals.
-#                 study_specific.save()
-#         try:
-#             StudySite.objects.get(site_name=self.study_site_setup.get('site_name'))
-#         except StudySite.DoesNotExist:
-#             try:
-#                 StudySite.objects.create(**self.study_site_setup)
-#             except IntegrityError:
-#                 StudySite.objects.get(site_code=self.study_site_setup.get('site_code')).delete()
-#                 StudySite.objects.create(**self.study_site_setup)
