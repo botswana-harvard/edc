@@ -12,9 +12,7 @@ def dispatch_to_gps_index(request, **kwargs):
     template = 'dispatch_to_gps_index.html'
     mapper_name = kwargs.get('mapper_name', '')
     mapper = None
-    if not mapper_name:
-        mapper_names = [mname for mname in site_mappers.get_registry()]
-    else:
+    if mapper_name:
         mapper = site_mappers.get_registry(mapper_name)
     if mapper:
         if not issubclass(mapper, Mapper):
@@ -22,8 +20,5 @@ def dispatch_to_gps_index(request, **kwargs):
         mapper = site_mappers.get_registry(mapper_name)()
 
     return render_to_response(
-            template, {
-                'mapper_name': mapper_name,
-            },
-            context_instance=RequestContext(request)
-        )
+        template, {'mapper_name': mapper_name},
+        context_instance=RequestContext(request))

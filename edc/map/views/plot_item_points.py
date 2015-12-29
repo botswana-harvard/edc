@@ -39,24 +39,30 @@ def plot_item_points(request, **kwargs):
             else:
                 items = mapper.item_model.objects.filter(
                     Q(**{mapper.section_field_attr: selected_sub_section, mapper.item_selected_field: 1}) |
-                    Q(**{'{0}__in'.format(mapper.identifier_field_attr): identifiers, mapper.item_selected_field: selected_randomization}))
+                    Q(**{'{0}__in'.format(mapper.identifier_field_attr):
+                         identifiers, mapper.item_selected_field: selected_randomization}))
         else:
             if selected_sub_section == 'All':
                 items = mapper.item_model.objects.filter(
-                Q(**{mapper.region_field_attr: selected_region, mapper.item_selected_field: selected_randomization}) |
-                Q(**{'{0}__in'.format(mapper.identifier_field_attr): identifiers, mapper.item_selected_field: selected_randomization}))
+                    Q(**{mapper.region_field_attr: selected_region, mapper.item_selected_field:
+                         selected_randomization}) |
+                    Q(**{'{0}__in'.format(mapper.identifier_field_attr): identifiers, mapper.item_selected_field:
+                         selected_randomization}))
             else:
                 items = mapper.item_model.objects.filter(
-                Q(**{mapper.region_field_attr: selected_region, mapper.section_field_attr: selected_sub_section, mapper.item_selected_field: selected_randomization}) | 
-                Q(**{'{0}__in'.format(mapper.identifier_field_attr): identifiers, mapper.section_field_attr: selected_sub_section, mapper.item_selected_field: selected_randomization}))
+                    Q(**{mapper.region_field_attr: selected_region, mapper.section_field_attr:
+                         selected_sub_section, mapper.item_selected_field: selected_randomization}) |
+                    Q(**{'{0}__in'.format(mapper.identifier_field_attr): identifiers, mapper.section_field_attr:
+                         selected_sub_section, mapper.item_selected_field: selected_randomization}))
         icon = str(request.session['icon'])
-        payload = mapper.prepare_map_points(items,
+        payload = mapper.prepare_map_points(
+            items,
             icon,
             identifiers,
             'egg-circle.png',
             'red-circle', selected_region, selected_sub_section)
         if selected_sub_section == "All":
-            section_color_codes = {'Teal':'A', 'Yellow': 'B', 'Orange': 'C', 'Pink': 'D'}
+            section_color_codes = {'Teal': 'A', 'Yellow': 'B', 'Orange': 'C', 'Pink': 'D'}
         else:
             section_color_codes = mapper.make_dictionary(mapper.sections, mapper.other_icons)
         for key_color, sec_value in section_color_codes.iteritems():

@@ -1,11 +1,7 @@
 import itertools
 from django.contrib.contenttypes.models import ContentType
-
-from django.shortcuts import redirect
-# from django.template import RequestContext
-from django.core.urlresolvers import reverse
-
 from django.http import HttpResponseRedirect
+
 from ..classes import site_mappers
 from ..exceptions import MapperError
 
@@ -13,7 +9,7 @@ from ..exceptions import MapperError
 def save_cart(request, **kwargs):
     """Dispatch items in shopping cart to netbook.
     """
-    #Make sure we have identifiers in our session
+    # Make sure we have identifiers in our session
     mapper_name = kwargs.get('mapper_name', '')
     if not site_mappers.get_registry(mapper_name):
         raise MapperError('Mapper class \'{0}\' is not registered.'.format(mapper_name))

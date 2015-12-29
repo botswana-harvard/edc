@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+
 from ..exceptions import MapperError
 from ..classes import site_mappers
 

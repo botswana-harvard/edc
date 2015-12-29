@@ -1,14 +1,13 @@
 import os
 from xml import sax
 from zipfile import ZipFile
-# import xml.sax
-# import xml.sax.handler
+
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from ..classes import site_mappers
+
+from ..classes import site_mappers, PlacemarkHandler
 from ..exceptions import MapperError
-from ..classes import PlacemarkHandler
 
 
 def create_set_handler_parse_file(fname):

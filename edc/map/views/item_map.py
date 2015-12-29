@@ -1,9 +1,9 @@
 from operator import itemgetter
-from collections import OrderedDict
+
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.db.models import Q
+
 from ..classes import site_mappers
 from ..exceptions import MapperError
 
@@ -11,7 +11,8 @@ from ..exceptions import MapperError
 def item_map(request, **kwargs):
     """Displays map for a subject on the dashboard
 
-    Show the location visually on the map of a subject from the dash by clicking the view map button on the dashboard
+    Show the location visually on the map of a subject
+    from the dash by clicking the view map button on the dashboard
     """
     mapper_name = kwargs.get('mapper_name', '')
     if not site_mappers.get_registry(mapper_name):
@@ -59,16 +60,16 @@ def item_map(request, **kwargs):
                 markers_l[letters[count]]=p_point
                 count +=1
         return render_to_response(
-                'item_map_location.html', {
-                    'lat': latitude,
-                    'mapper_name': mapper_name,
-                    'lon': longitude,
-                    'landmarks': landmark_list,
-                    'identifier': identifier,
-                    'item_map': item_map,
-                    'markers_l': markers_l,
-                    'map': map,
-                    'folder': folder,
-                },
-                context_instance=RequestContext(request)
-            )
+            'item_map_location.html', {
+                'lat': latitude,
+                'mapper_name': mapper_name,
+                'lon': longitude,
+                'landmarks': landmark_list,
+                'identifier': identifier,
+                'item_map': item_map,
+                'markers_l': markers_l,
+                'map': map,
+                'folder': folder,
+            },
+            context_instance=RequestContext(request)
+        )

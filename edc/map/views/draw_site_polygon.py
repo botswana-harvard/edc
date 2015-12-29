@@ -37,7 +37,7 @@ def draw_site_polygon(request, **kwargs):
             for lon, lat, identifier_label, icon, other_identifier_label in payload:
                 icon_name_length = len(icon)
                 icon_label = icon[icon_name_length - 1]
-                #print icon_label
+                # print icon_label
                 cso_icon_dict.append([icon_label, other_identifier_label])
         if selected_section == "All":
             section_color_codes = mapper.make_dictionary(mapper.other_icons, mapper.sections)
@@ -46,7 +46,7 @@ def draw_site_polygon(request, **kwargs):
         for key_color, sec_value in section_color_codes.iteritems():
             section_color_code_list.append([key_color[:-1], sec_value])
         has_items = True
-        payload_empty =True
+        payload_empty = True
         gps_coordinates = []
         landmark_list = []
         landmarks = mapper.landmarks

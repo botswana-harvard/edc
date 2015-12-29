@@ -283,7 +283,8 @@ class Mapper(object):
                                     'Got {3}m'.format(lat, lon, self.map_area, dist * 1000))
         return True
 
-    def verify_gps_to_target(self, lat, lon, center_lat, center_lon, radius, exception_cls, radius_bypass_instance=None):
+    def verify_gps_to_target(
+            self, lat, lon, center_lat, center_lon, radius, exception_cls, radius_bypass_instance=None):
         """Verifies the gps lat, lon occur within a radius of the
         target lat/lon and raises an exception if not.
 
