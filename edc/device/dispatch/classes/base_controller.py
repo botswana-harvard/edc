@@ -17,7 +17,7 @@ from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
 from edc.core.bhp_variables.models import StudySite
 from edc.entry_meta_data.models import BaseEntryMetaData
 from edc_base.encrypted_fields import BaseEncryptedField
-from edc_base.encrypted_fields import Crypt
+from edc_crypto_fields.models import Crypt
 from edc_base.encrypted_fields import FieldCryptor
 from edc_base.model.models import BaseListModel
 from edc_sync.exceptions import PendingTransactionError
