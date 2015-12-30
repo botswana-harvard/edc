@@ -9,7 +9,7 @@ from edc_base.audit_trail import AuditTrail
 from edc_base.encrypted_fields import EncryptedTextField
 from edc_base.model.models import BaseUuidModel
 from edc_constants.choices import YES_NO_NA
-from edc_constants.constants import CLOSED, OPEN, NEW_APPT, IN_PROGRESS
+from edc_constants.constants import CLOSED, OPEN, NEW_APPT, IN_PROGRESS, NOT_APPLICABLE
 from edc_sync.models import SyncModelMixin
 
 from ..managers import TimePointStatusManager
@@ -47,8 +47,7 @@ class TimePointStatus(SyncModelMixin, BaseUuidModel):
             (OPEN, 'Open'),
             ('feedback', 'Feedback'),
             (CLOSED, 'Closed')),
-        default=OPEN,
-        help_text='')
+        default=OPEN)
 
     comment = EncryptedTextField(
         max_length=500,
@@ -59,7 +58,7 @@ class TimePointStatus(SyncModelMixin, BaseUuidModel):
         verbose_name='Did the participant withdraw consent?',
         max_length=15,
         choices=YES_NO_NA,
-        default='N/A',
+        default=NOT_APPLICABLE,
         null=True,
         help_text='Use ONLY when subject has changed mind and wishes to withdraw consent')
 
@@ -68,10 +67,9 @@ class TimePointStatus(SyncModelMixin, BaseUuidModel):
         max_length=35,
         choices=(
             ('changed_mind', 'Subject changed mind'),
-            ('N/A', 'Not applicable')),
+            (NOT_APPLICABLE, 'Not applicable')),
         null=True,
-        default='N/A',
-        help_text='')
+        default=NOT_APPLICABLE)
 
     withdraw_datetime = models.DateTimeField(
         verbose_name='Date and time participant withdrew consent',
@@ -110,7 +108,9 @@ class TimePointStatus(SyncModelMixin, BaseUuidModel):
         exception_cls = exception_cls or ValidationError
         instance = instance or self
         if instance.status == CLOSED and instance.appointment.appt_status in [NEW_APPT, IN_PROGRESS]:
-            raise exception_cls('Cannot close timepoint. Appointment status is {0}.'.format(instance.appointment.appt_status.upper()))
+            raise exception_cls(
+                'Cannot close timepoint. Appointment status is {0}.'.format(
+                    instance.appointment.appt_status.upper()))
 
     @classmethod
     def check_time_point_status(cls, appointment, exception_cls=None, using=None):
