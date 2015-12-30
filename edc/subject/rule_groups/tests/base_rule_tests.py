@@ -2,8 +2,8 @@ from django.test import TestCase
 
 from edc_constants.constants import NOT_REQUIRED, NEW, YES, NO
 from edc.entry_meta_data.models import ScheduledEntryMetaData
-from edc.lab.lab_profile.classes import site_lab_profiles
-from edc.lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
+from edc_lab.lab_profile.classes import site_lab_profiles
+from edc_lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegisteredLabProfile
 from edc_appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc_registration.models import RegisteredSubject

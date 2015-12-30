@@ -18,8 +18,6 @@ class BaseTestConsent(BaseConsent, ReviewFieldsMixin, IdentityFieldsMixin,
 
     user_provided_subject_identifier = models.CharField(max_length=35, null=True)
 
-    study_site = models.CharField(max_length=10)
-
     objects = models.Manager()
 
     def is_dispatchable_model(self):

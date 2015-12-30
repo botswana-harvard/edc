@@ -2,7 +2,7 @@ import sys
 from django.db.models.query import QuerySet
 from django.db.models import get_models, get_app, get_model
 
-from edc.lab.lab_requisition.models import BaseRequisition
+from edc_lab.lab_requisition.models import BaseRequisition
 from edc_consent.models import BaseConsent
 from edc_sync.models.sync_model_mixin import SyncModelMixin
 

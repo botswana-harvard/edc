@@ -4,7 +4,7 @@ from django.db import models
 
 from lis.specimen.lab_result_item.models import BaseResultItem
 
-from edc.lab.lab_clinic_reference.classes import ClinicReferenceFlag, ClinicGradeFlag
+from edc_lab.lab_clinic_reference.classes import ClinicReferenceFlag, ClinicGradeFlag
 from edc_base.model.models import BaseUuidModel
 
 

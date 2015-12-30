@@ -1,4 +1,4 @@
-from edc.lab.lab_profile.classes import LabProfile
+from edc_lab.lab_profile.classes import LabProfile
 
 from edc.testing.models import TestAliquot, TestAliquotType, TestRequisition, TestPanel, TestProfile, TestProfileItem
 from edc.testing.models import TestReceive

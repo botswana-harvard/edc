@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from edc_configuration.base_app_configuration import BaseAppConfiguration
-from edc.lab.lab_profile.classes import ProfileItemTuple, ProfileTuple
+from edc_lab.lab_profile.classes import ProfileItemTuple, ProfileTuple
 
 from lis.labeling.classes import LabelPrinterTuple
 from lis.specimen.lab_aliquot_list.classes import AliquotTypeTuple
@@ -46,8 +46,8 @@ class TestAppConfiguration(BaseAppConfiguration):
         'add_for_app': 'testing'}
 
     consent_type_setup = [
-        {'app_label': 'testing',
-         'model_name': 'testconsentwithmixin',
+        {'app_label': 'edc_consent',
+         'model_name': 'testconsentmodel',
          'start_datetime': study_start_datetime,
          'end_datetime': study_end_datetime,
          'version': '1'}]

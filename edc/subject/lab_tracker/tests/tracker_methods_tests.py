@@ -3,8 +3,8 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 
-from edc.lab.lab_clinic_api.models import ResultItem
-from edc.lab.lab_clinic_api.tests.factories import (
+from edc_lab.lab_clinic_api.models import ResultItem
+from edc_lab.lab_clinic_api.tests.factories import (
     ResultItemFactory, AliquotConditionFactory, AliquotFactory,
     OrderFactory, ReceiveFactory, ResultFactory, TestCodeFactory)
 from edc.testing.models import TestSubjectResultModel

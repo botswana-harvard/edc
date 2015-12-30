@@ -1,6 +1,6 @@
 import factory
 
-from edc.lab.lab_clinic_api.tests.factories import PanelFactory
+from edc_lab.lab_clinic_api.tests.factories import PanelFactory
 from edc_visit_schedule.tests.factories import VisitDefinitionFactory
 
 from ...models import LabEntry
