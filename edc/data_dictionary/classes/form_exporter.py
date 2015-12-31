@@ -7,7 +7,7 @@ from django_revision import site_revision
 
 from edc_visit_schedule.models import VisitDefinition
 from edc.subject.entry.models import Entry, LabEntry
-from edc.subject.rule_groups.classes import site_rule_groups
+from edc_rule_groups.classes import site_rule_groups
 from edc_visit_schedule.classes import site_visit_schedules
 
 from ..exceptions import FormExporterError

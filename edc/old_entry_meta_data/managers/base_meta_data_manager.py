@@ -133,5 +133,5 @@ class BaseMetaDataManager(models.Manager):
 
     def run_rule_groups(self):
         """Runs rule groups that use the data in this instance; that is, the model is a rule source model."""
-        from edc.subject.rule_groups.classes import site_rule_groups
+        from edc_rule_groups.classes import site_rule_groups
         return site_rule_groups.update_rules_for_source_model(self.model, self.visit_instance)
