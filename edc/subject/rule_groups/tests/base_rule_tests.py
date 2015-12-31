@@ -13,14 +13,14 @@ from edc_testing.classes import TestLabProfile
 from edc_testing.classes import TestVisitSchedule, TestAppConfiguration
 from edc_testing.models import TestVisit, TestScheduledModel1, TestScheduledModel2, TestConsentWithMixin
 from edc_testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
-from edc_visit_tracking.models import VisitTrackingModelMixin
+from edc_visit_tracking.models import VisitModelMixin
 from edc_visit_tracking.tests.factories import TestVisitFactory
 
 from ..classes import RuleGroup, BaseRule, ScheduledDataRule, Logic
 
 
 def func_condition_true(visit_instance):
-    if not isinstance(visit_instance, VisitTrackingModelMixin):
+    if not isinstance(visit_instance, VisitModelMixin):
         raise TypeError('func didnt get a visit instance')
     if visit_instance:
         name = 'Erik'
@@ -28,7 +28,7 @@ def func_condition_true(visit_instance):
 
 
 def func_condition_false(visit_instance):
-    if not isinstance(visit_instance, VisitTrackingModelMixin):
+    if not isinstance(visit_instance, VisitModelMixin):
         raise TypeError('func didnt get a visit instance')
     if visit_instance:
         name = 'Erik'

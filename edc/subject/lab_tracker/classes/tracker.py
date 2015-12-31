@@ -284,7 +284,7 @@ class LabTracker(object):
         return None
 
     def _set_history_query_options(self):
-        from edc_visit_tracking.models import VisitTrackingModelMixin
+        from edc_visit_tracking.models import VisitModelMixin
         self._history_query_options = {}
         for tracker in self.get_trackers():
             query_string = None
@@ -301,12 +301,12 @@ class LabTracker(object):
                 else:
                     for field in tracker.model_cls._meta.fields:
                         if isinstance(field, (ForeignKey, OneToOneField)):
-                            if issubclass(field.rel.to, VisitTrackingModelMixin):
+                            if issubclass(field.rel.to, VisitModelMixin):
                                 query_string = '{visit_field}__appointment__registered_subject__subject_identifier'.format(visit_field=field.name)
                                 break
                 if not query_string:
                     raise TypeError(('Missing subject_identifier attribute or a relation to one. The model class {0} is'
-                                    ' not a subclass of VisitTrackingModelMixin and nor does it have a relation to RegisteredSubject.').format(tracker.model_cls._meta.object_name))
+                                    ' not a subclass of VisitModelMixin and nor does it have a relation to RegisteredSubject.').format(tracker.model_cls._meta.object_name))
                 options = {query_string: self.get_subject_identifier()}
             if not options:
                 raise TypeError('Unable to determine the query options for tracker \'{0}\'.'.format(tracker))

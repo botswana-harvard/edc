@@ -6,7 +6,7 @@ from django.db.models import get_model, IntegerField
 
 from edc.core.bhp_common.utils import convert_from_camel
 from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc_visit_tracking.models import VisitTrackingModelMixin
+from edc_visit_tracking.models import VisitModelMixin
 
 
 from .logic import Logic
@@ -373,8 +373,8 @@ class BaseRule(object):
 
     @visit_instance.setter
     def visit_instance(self, visit_instance):
-        if not isinstance(visit_instance, VisitTrackingModelMixin):
-            raise TypeError('Parameter \'visit_instance\' must be an instance of VisitTrackingModelMixin.')
+        if not isinstance(visit_instance, VisitModelMixin):
+            raise TypeError('Parameter \'visit_instance\' must be an instance of VisitModelMixin.')
         self._visit_instance = visit_instance
 
     @property
