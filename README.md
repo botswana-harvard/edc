@@ -6,7 +6,7 @@ Edc is a clinical research data management system
 
 Project `microbiome` is the most current Edc project.
 
-In the develop branch, most of the functionality is progressively being moved out to separate packages. So far:
+In the develop branch, most of the functionality is being moved out to separate packages. So far:
 * `edc.apps.app_configuration`: `edc_configuration`
 * `edc.audit`: `edc_audit` (Note: import through `edc_base.audit` instead of directly directly)
 * `edc.core.bhp_birt_reports`: `edc_birt_reports`
