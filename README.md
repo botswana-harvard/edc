@@ -25,8 +25,8 @@ In the develop branch, most of the functionality is being moved out to separate 
 * `edc.subject.off_study`: `edc_offstudy`
 * `edc.subject.registration`: `edc_registration`
 * `edc.subject.subject_config`: `edc_appointment`
-* `edc.subject.visit_schedule`: `edc_viit_schedule`
-* `edc.subject.visit_tracking`: `edc_viit_tracking`
+* `edc.subject.visit_schedule`: `edc_visit_schedule`
+* `edc.subject.visit_tracking`: `edc_visit_tracking`
 * `edc.testing`: `edc_testing`
 
 
