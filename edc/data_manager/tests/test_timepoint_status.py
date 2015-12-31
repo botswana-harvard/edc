@@ -7,14 +7,14 @@ from edc_lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegistere
 from edc_appointment.models import Appointment
 from edc_visit_tracking.tests.factories import TestVisitFactory
 from edc.subject.lab_tracker.classes import site_lab_tracker
-from edc.testing.classes import TestAppConfiguration, TestVisitSchedule, TestLabProfile
-from edc.testing.models import TestPanel
-from edc.testing.tests.factories import (TestScheduledModel1Factory,
+from edc_testing.classes import TestAppConfiguration, TestVisitSchedule, TestLabProfile
+from edc_testing.models import TestPanel
+from edc_testing.tests.factories import (TestScheduledModel1Factory,
                                          TestScheduledModel2Factory, TestScheduledModel3Factory,
                                          TestRequisitionFactory, TestConsentWithMixinFactory)
 
 from ..models import TimePointStatus
-from edc.testing.models.test_aliquot_type import TestAliquotType
+from edc_testing.models.test_aliquot_type import TestAliquotType
 
 
 class TestTimePointStatus(TestCase):

@@ -7,8 +7,8 @@ from edc_lab.lab_clinic_api.models import ResultItem
 from edc_lab.lab_clinic_api.tests.factories import (
     ResultItemFactory, AliquotConditionFactory, AliquotFactory,
     OrderFactory, ReceiveFactory, ResultFactory, TestCodeFactory)
-from edc.testing.models import TestSubjectResultModel
-from edc.testing.tests.factories import TestSubjectResultModelFactory
+from edc_testing.models import TestSubjectResultModel
+from edc_testing.tests.factories import TestSubjectResultModelFactory
 from edc_registration.tests.factories import RegisteredSubjectFactory
 
 from ..classes import LabTracker, site_lab_tracker

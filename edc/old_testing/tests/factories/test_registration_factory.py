@@ -1,6 +1,6 @@
 import factory
 
-from edc.testing.models import TestRegistration
+from edc_testing.models import TestRegistration
 
 
 class TestRegistrationFactory(factory.DjangoModelFactory):

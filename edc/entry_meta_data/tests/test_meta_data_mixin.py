@@ -8,7 +8,7 @@ from .base_test_entry_meta_data import BaseTestEntryMetaData
 from django.utils import timezone
 from edc_constants.constants import SCHEDULED, NOT_REQUIRED, OFF_STUDY, REQUIRED
 from edc.subject.entry.models.entry import Entry
-from edc.testing.models.test_visit import TestVisit
+from edc_testing.models.test_visit import TestVisit
 from edc.entry_meta_data.managers import EntryMetaDataManager
 
 

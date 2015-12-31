@@ -6,10 +6,10 @@ from edc_lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegistere
 from edc.subject.entry.models import RequisitionPanel
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc.subject.rule_groups.classes import site_rule_groups
-from edc.testing.classes import TestLabProfile
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.models import TestVisit, TestScheduledModel1, TestConsentWithMixin, TestPanel, TestAliquotType
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestRequisitionFactory
+from edc_testing.classes import TestLabProfile
+from edc_testing.classes import TestVisitSchedule, TestAppConfiguration
+from edc_testing.models import TestVisit, TestScheduledModel1, TestConsentWithMixin, TestPanel, TestAliquotType
+from edc_testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory, TestRequisitionFactory
 from edc_appointment.models import Appointment
 from edc_constants.constants import NOT_REQUIRED, REQUIRED, NO, YES
 from edc_registration.models import RegisteredSubject

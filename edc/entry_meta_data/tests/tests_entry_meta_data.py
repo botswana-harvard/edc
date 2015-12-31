@@ -3,8 +3,8 @@ from __future__ import print_function
 from edc.entry_meta_data.models import ScheduledEntryMetaData, RequisitionMetaData
 from edc.entry_meta_data.tests.base_test_entry_meta_data import BaseTestEntryMetaData
 from edc.subject.entry.models import LabEntry
-from edc.testing.models import TestPanel, TestAliquotType, TestScheduledModel1
-from edc.testing.tests.factories import TestScheduledModel1Factory, TestRequisitionFactory
+from edc_testing.models import TestPanel, TestAliquotType, TestScheduledModel1
+from edc_testing.tests.factories import TestScheduledModel1Factory, TestRequisitionFactory
 from edc_constants.constants import KEYED, UNKEYED, MISSED_VISIT
 from edc_visit_tracking.tests.factories import TestVisitFactory
 

@@ -2,9 +2,9 @@ from django.test import TestCase
 
 from edc.device.sync.models import Producer, OutgoingTransaction, IncomingTransaction
 from edc.device.sync.tests.factories import ProducerFactory
-from edc.testing.models import TestDspItem, TestDspContainer, TestDspItemBypass
-from edc.testing.tests.factories import TestDspItemFactory, TestDspContainerFactory, TestDspItemBypassFactory
-from edc.testing.tests.factories import TestM2mFactory
+from edc_testing.models import TestDspItem, TestDspContainer, TestDspItemBypass
+from edc_testing.tests.factories import TestDspItemFactory, TestDspContainerFactory, TestDspItemBypassFactory
+from edc_testing.tests.factories import TestM2mFactory
 
 from ..classes import BaseDispatchController, DispatchController, ReturnController
 from ..exceptions import AlreadyDispatchedContainer, AlreadyDispatchedItem

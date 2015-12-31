@@ -9,10 +9,10 @@ from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc_registration.models import RegisteredSubject
 from edc.subject.rule_groups.classes import site_rule_groups
 from edc_visit_schedule.models import VisitDefinition
-from edc.testing.classes import TestLabProfile
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.models import TestVisit, TestScheduledModel1, TestScheduledModel2, TestConsentWithMixin
-from edc.testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
+from edc_testing.classes import TestLabProfile
+from edc_testing.classes import TestVisitSchedule, TestAppConfiguration
+from edc_testing.models import TestVisit, TestScheduledModel1, TestScheduledModel2, TestConsentWithMixin
+from edc_testing.tests.factories import TestConsentWithMixinFactory, TestScheduledModel1Factory
 from edc_visit_tracking.models import VisitTrackingModelMixin
 from edc_visit_tracking.tests.factories import TestVisitFactory
 

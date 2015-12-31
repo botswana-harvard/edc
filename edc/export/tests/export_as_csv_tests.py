@@ -7,10 +7,10 @@ from edc_lab.lab_profile.exceptions import AlreadyRegistered as AlreadyRegistere
 from edc_appointment.models import Appointment
 from edc.subject.lab_tracker.classes import site_lab_tracker
 from edc_registration.models import RegisteredSubject
-from edc.testing.classes import TestLabProfile
-from edc.testing.classes import TestVisitSchedule, TestAppConfiguration
-from edc.testing.models import TestModel, TestScheduledModel, TestConsentWithMixin
-from edc.testing.tests.factories import TestModelFactory, TestScheduledModelFactory, TestConsentWithMixinFactory
+from edc_testing.classes import TestLabProfile
+from edc_testing.classes import TestVisitSchedule, TestAppConfiguration
+from edc_testing.models import TestModel, TestScheduledModel, TestConsentWithMixin
+from edc_testing.tests.factories import TestModelFactory, TestScheduledModelFactory, TestConsentWithMixinFactory
 from edc_visit_tracking.tests.factories import TestVisitFactory
 
 from ..classes import ExportAsCsv
