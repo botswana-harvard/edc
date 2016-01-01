@@ -1,6 +1,6 @@
 import factory
 
-from edc.core.bhp_content_type_map.models import ContentTypeMap
+from edc_content_type_map.models import ContentTypeMap
 
 from .content_type_factory import ContentTypeFactory
 
