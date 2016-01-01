@@ -11,16 +11,6 @@ from ..models import ExportTransaction
 class ExportHistoryManager(models.Manager):
 
     export_transaction_model = ExportTransaction
-# see https://github.com/treyhunner/django-simple-history/ for some ideas to improve this
-#     def __init__(self, model, instance=None):
-#         super(ExportHistoryManager, self).__init__()
-#         self.model = model
-#         self.instance = instance
-#
-#     def get_query_set(self):
-#         if self.instance is None:
-#             return super(ExportHistoryManager, self).get_query_set()
-#         return super(ExportHistoryManager, self).get_query_set().filter(**{'instance_pk': self.instance.pk})
 
     def serialize_to_export_transaction(self, instance, change_type, using, encrypt=True, force_export=False):
         """Serialize this instance to the export transaction model if ready.
@@ -55,4 +45,4 @@ class ExportHistoryManager(models.Manager):
                 status='new',
                 tx=json_tx,
                 timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
-                )
+            )

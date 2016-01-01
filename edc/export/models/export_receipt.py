@@ -13,26 +13,21 @@ class ExportReceipt(SyncModelMixin, BaseUuidModel):
         help_text="system field for export tracking.")
 
     app_label = models.CharField(
-        max_length=64,
-        )
+        max_length=64)
 
     object_name = models.CharField(
-        max_length=64,
-        )
+        max_length=64)
 
     tx_pk = models.CharField(
-        max_length=36,
-        )
+        max_length=36)
 
     timestamp = models.CharField(
         max_length=50,
-        null=True,
-        )
+        null=True)
 
     received_datetime = models.DateTimeField(
         null=True,
-        help_text='date ACK received'
-        )
+        help_text='date ACK received')
 
     def __unicode__(self):
         return '{} {}'.format(self.object_name, self.export_uuid)
