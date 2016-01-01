@@ -14,7 +14,7 @@ from django.db.models.query import QuerySet
 
 from lis.base.model.models import BaseLabListModel, BaseLabListUuidModel
 
-from edc.entry_meta_data.models import BaseEntryMetaData
+from edc_meta_data.models import BaseMetaData
 from edc_base.encrypted_fields import BaseEncryptedField
 from edc_crypto_fields.models import Crypt
 from edc_base.encrypted_fields import FieldCryptor
@@ -201,7 +201,7 @@ class BaseController(BaseProducer):
         base_model_class = base_model_class + [BaseListModel, BaseLabListModel,
                                                BaseLabListUuidModel, VisitDefinition,
                                                ScheduleGroup, BaseHistoryModel,
-                                               BaseEntryMetaData, BaseEncryptedField]
+                                               BaseMetaData, BaseEncryptedField]
         return tuple(base_model_class)
 
     def get_allowed_base_models(self):
@@ -220,7 +220,7 @@ class BaseController(BaseProducer):
             raise TypeError('Expected base_model classes as a list. Got{0}'.format(base_model_class))
         base_model_class = base_model_class + [BaseListModel, BaseLabListModel, BaseLabListUuidModel,
                                                VisitDefinition, BaseHistoryModel,
-                                               BaseEntryMetaData]
+                                               BaseMetaData]
         return tuple(set(base_model_class))
 
     def get_base_models_for_default_serialization(self):
