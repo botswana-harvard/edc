@@ -42,7 +42,6 @@ INSTALLED_APPS = (
     'edc.core.bhp_content_type_map',
     'edc.data_manager',
     'edc.export',
-    'edc.testing',
     'edc_appointment',
     'edc_base',
     'edc_base',
@@ -53,10 +52,10 @@ INSTALLED_APPS = (
     'edc_device',
     'edc_lab.lab_clinic_api',
     'edc_meta_data',
-    'edc_meta_meta',
     'edc_registration',
     'edc_rule_groups',
     'edc_sync',
+    'edc_testing',
     'edc_visit_schedule',
 )
 
