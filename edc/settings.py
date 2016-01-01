@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'edc.core.bhp_content_type_map',
+    'edc.core.identifier',
     'edc.data_manager',
     'edc.export',
     'edc_appointment',

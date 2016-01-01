@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.contrib.admin.widgets import AdminRadioSelect, AdminRadioFieldRenderer
 
-from ..models import ActionItem
+from .models import ActionItem
 
 
 class ActionItemForm(forms.ModelForm):
