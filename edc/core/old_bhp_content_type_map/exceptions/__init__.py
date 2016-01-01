@@ -1,2 +1,0 @@
-class ContentTypeMapError(Exception):
-    pass
