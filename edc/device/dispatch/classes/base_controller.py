@@ -21,7 +21,7 @@ from edc_base.encrypted_fields import FieldCryptor
 from edc_base.model.models import BaseListModel
 from edc_sync.exceptions import PendingTransactionError
 from edc_sync.helpers import TransactionHelper
-from edc_visit_schedule.models import VisitDefinition, ScheduleGroup
+from edc_visit_schedule.models import VisitDefinition, Schedule
 
 from ..exceptions import ControllerBaseModelError
 
@@ -200,7 +200,7 @@ class BaseController(BaseProducer):
             base_model_class = base_model_class + additional_base_model_class
         base_model_class = base_model_class + [BaseListModel, BaseLabListModel,
                                                BaseLabListUuidModel, VisitDefinition,
-                                               ScheduleGroup, BaseHistoryModel,
+                                               Schedule, BaseHistoryModel,
                                                BaseMetaData, BaseEncryptedField]
         return tuple(base_model_class)
 

@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from edc_device import device
+from edc_device import Device
 
 from ..exceptions import UsingError, UsingSourceError, UsingDestinationError
 
@@ -28,8 +28,8 @@ class BaseUsing(object):
             raise UsingError(
                 'Arguments \'<source>\' and \'<destination\'> cannot be the '
                 'same. Got \'{0}\' and \'{1}\''.format(using_source, using_destination))
-        self.device = device
-        self.server_device_id = server_device_id or device.central_server_id
+        self.device = Device()
+        self.server_device_id = server_device_id or self.device.central_server_id
         self.using_source = using_source
         self.using_destination = using_destination
 
