@@ -1,1 +1,0 @@
-from data_dictionary_model_admin import DataDictionaryModelAdmin
