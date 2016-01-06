@@ -12,7 +12,8 @@ class ExportAsCsv(BaseExportModel):
         """Returns a file object for the writer."""
         if not self._file_obj:
             self._file_obj = HttpResponse(mimetype='text/csv')
-        self._file_obj['Content-Disposition'] = 'attachment; filename={filename}'.format(filename=self.export_filename)
+        self._file_obj['Content-Disposition'] = 'attachment; filename={filename}'.format(
+            filename=self.export_filename)
         return self._file_obj
 
     def write_to_file(self):
@@ -22,5 +23,4 @@ class ExportAsCsv(BaseExportModel):
             writer.writerow(self.header_row)
         for self.row_instance in self.queryset:
             writer.writerow(self.fetch_row())
-            #self.update_export_history(self.row_instance)
         return self.file_obj

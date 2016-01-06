@@ -8,7 +8,9 @@ from edc.export.classes import ExportAsCsv, ExportJsonAsCsv
 
 
 def export_as_csv_action(description="Export selected objects to CSV",
-                         fields=None, exclude=None, extra_fields=None, header=True, track_history=True, show_all_fields=True, delimiter=None, encrypt=True, strip=True):
+                         fields=None, exclude=None, extra_fields=None,
+                         header=True, track_history=True, show_all_fields=True,
+                         delimiter=None, encrypt=True, strip=True):
     """
     Return an export csv action
     'fields' and 'exclude' work like in django ModelForm
@@ -29,18 +31,19 @@ def export_as_csv_action(description="Export selected objects to CSV",
 
     """
     def export(modeladmin, request, queryset):
-        export_as_csv = ExportAsCsv(queryset,
-                               modeladmin=modeladmin,
-                               fields=fields,
-                               exclude=exclude,
-                               extra_fields=extra_fields,
-                               header=header,
-                               track_history=track_history,
-                               show_all_fields=show_all_fields,
-                               delimiter=delimiter,
-                               export_datetime = datetime.now(),
-                               encrypt=encrypt,
-                               strip=strip)
+        export_as_csv = ExportAsCsv(
+            queryset,
+            modeladmin=modeladmin,
+            fields=fields,
+            exclude=exclude,
+            extra_fields=extra_fields,
+            header=header,
+            track_history=track_history,
+            show_all_fields=show_all_fields,
+            delimiter=delimiter,
+            export_datetime=datetime.now(),
+            encrypt=encrypt,
+            strip=strip)
         return export_as_csv.write_to_file()
 
     export.short_description = description
@@ -62,8 +65,10 @@ def export_tx_to_csv_action(description="Export transaction in each selected obj
                 model = get_model(app_label, model_name)
             else:
                 if not app_label == qs.app_label or not model_name == qs.object_name:
-                    raise ValueError('Queryset contains transactions from more than one model. Expected ({app_label}, '
-                                     '{model_name}) . Got ({0}, {1}).'.format(qs.app_label, qs.object_name, app_label=app_label, model_name=model_name))
+                    raise ValueError(
+                        'Queryset contains transactions from more than one model. Expected ({app_label}, '
+                        '{model_name}) . Got ({0}, {1}).'.format(
+                            qs.app_label, qs.object_name, app_label=app_label, model_name=model_name))
             for obj in serializers.deserialize("json", FieldCryptor('aes', 'local').decrypt(qs.tx)):
                 if obj.status.lower() not in ['exported', 'cancelled']:
                     obj.object.export_transaction = qs

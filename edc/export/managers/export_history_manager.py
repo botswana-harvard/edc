@@ -44,5 +44,4 @@ class ExportHistoryManager(models.Manager):
                 export_uuid=instance.export_uuid,
                 status='new',
                 tx=json_tx,
-                timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'),
-            )
+                timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f'))

@@ -28,7 +28,8 @@ class ExportObjectHelper(ExportHelper):
 
         export_plan = ExportPlan(**dct)
         members = []
-        for household_member in HouseholdMember.objects.filter(household_structure__household__plot__community='sefophe')[0:150]:
+        for household_member in HouseholdMember.objects.filter(
+                household_structure__household__plot__community='sefophe')[0:150]:
             member = Member(household_member)
             member.customize_for_csv()
             members.append(member)

@@ -12,8 +12,12 @@ from edc_base.encrypted_fields import BaseEncryptedField
 
 from ..models import ExportHistory
 
-HEAD_FIELDS = ['export_uuid', 'export_datetime', 'export_change_type', 'subject_identifier', 'report_datetime']
-TAIL_FIELDS = ['hostname_created', 'hostname_modified', 'created', 'modified', 'user_created', 'user_modified', 'revision']
+HEAD_FIELDS = [
+    'export_uuid', 'export_datetime', 'export_change_type',
+    'subject_identifier', 'report_datetime']
+TAIL_FIELDS = [
+    'hostname_created', 'hostname_modified', 'created',
+    'modified', 'user_created', 'user_modified', 'revision']
 
 
 class BaseExportModel(object):
@@ -43,15 +47,19 @@ class BaseExportModel(object):
 
         self.extra_fields = extra_fields or OrderedDict({})
         self.field_names = [field.name for field in self.model._meta.fields] if self.show_all_fields else []
-        self.field_names.extend(fields or [])  # a list of names from admin usually, may create duplicates that will be removed
+        # a list of names from admin usually, may create duplicates that will be removed
+        self.field_names.extend(fields or [])
         for field_name in self.field_names:
-            self.extra_fields.pop(field_name, None)  # remove items if already listed in field_names
+            # remove items if already listed in field_names
+            self.extra_fields.pop(field_name, None)
         self.field_names.extend(self.extra_fields.keys() or [])
         self.field_names = list(OrderedDict.fromkeys(self.field_names))  # remove duplicates, maintain order
         self.insert_defaults_and_reorder_field_names()
         self.exclude_field_names(exclude)  # a list of names
         self.header_row = self.field_names
-        self.export_filename = '{0}_{1}.csv'.format(unicode(self.model._meta).replace('.', '_'), export_datetime.strftime('%Y%m%d%H%M%S') or datetime.now().strftime('%Y%m%d%H%M%S'))
+        self.export_filename = '{0}_{1}.csv'.format(
+            unicode(self.model._meta).replace('.', '_'),
+            export_datetime.strftime('%Y%m%d%H%M%S') or datetime.now().strftime('%Y%m%d%H%M%S'))
         self.export_history = None
 
     def write_to_file(self):
@@ -93,7 +101,8 @@ class BaseExportModel(object):
             value = self.get_row_value_from_attr(self.row_instance, field_name)
             row.append(self.strip_value(value))
         if self.show_all_fields:
-            m2m_headers, m2m_row_values = self.get_row_values_from_m2m(self.row_instance)  # add m2m fields if show_all_fields -- they are not listed in field_names generated from the model
+            # add m2m fields if show_all_fields -- they are not listed in field_names generated from the model
+            m2m_headers, m2m_row_values = self.get_row_values_from_m2m(self.row_instance)
         row.extend(m2m_row_values)
         if self.header_row == self.field_names:
             self.header_row = self.header_row + m2m_headers
@@ -107,13 +116,13 @@ class BaseExportModel(object):
         except AttributeError:
             if field_name in self.extra_fields:
                 value = self.get_row_value_from_query_string(obj, field_name)
-        value = value if not value == None else ''
+        value = value if value is not None else ''
         return unicode(value).encode("utf-8", "replace")
 
     def get_row_value_from_callable(self, obj, field_name):
         func = self.extra_fields.get(field_name)
         value = func(obj)
-        value = value if not value == None else ''
+        value = value if value is not None else ''
         return unicode(value).encode("utf-8", "replace")
 
     def get_row_value_from_query_string(self, obj, field_name):
@@ -122,8 +131,9 @@ class BaseExportModel(object):
         if self.extra_fields.get(field_name) or field_name:
             query_string = self.extra_fields.get(field_name) or field_name
             query_list = query_string.split(LOOKUP_SEP)
-            value, _ = self.recurse_on_getattr(obj, query_list)  # recurse to last relation to get value
-        value = value if not value == None else ''
+            # recurse to last relation to get value
+            value, _ = self.recurse_on_getattr(obj, query_list)
+        value = value if value is not None else ''
         return unicode(value).encode("utf-8", "replace")
 
     def recurse_on_getattr(self, obj, query_list):
@@ -155,7 +165,8 @@ class BaseExportModel(object):
             if not value and check_for_m2m:
                 for m2m in obj._meta.many_to_many:
                     if field_name == m2m.name:
-                        value = self._m2m_value_delimiter.join([item.name.encode("utf-8", "replace") for item in getattr(obj, m2m.name).all()])
+                        value = self._m2m_value_delimiter.join(
+                            [item.name.encode("utf-8", "replace") for item in getattr(obj, m2m.name).all()])
                         break
         return value
 
@@ -165,7 +176,9 @@ class BaseExportModel(object):
         values_row = []
         for m2m in self.model._meta.many_to_many:
             header_row.append(m2m.name)
-            values_row.append(self._m2m_value_delimiter.join([item.name.encode("utf-8", "replace") for item in getattr(obj, m2m.name).all()]))
+            values_row.append(
+                self._m2m_value_delimiter.join(
+                    [item.name.encode("utf-8", "replace") for item in getattr(obj, m2m.name).all()]))
         return header_row, values_row
 
     def strip_value(self, string_value):
@@ -224,5 +237,4 @@ class BaseExportModel(object):
             exported_datetime=datetime.now(),
             export_filename=self.export_filename,
             export_file_contents=export_file_contents,
-            notification_plan_name=self.notification_plan_name,
-            )
+            notification_plan_name=self.notification_plan_name)

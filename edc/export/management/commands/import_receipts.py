@@ -30,14 +30,19 @@ class Command(BaseCommand):
             rejects = False
             error_filename = '_'.join(['error', app_label1, app_label2, object_name, timestamp]) + '.' + extension
         except ValueError as e:
-            CommandError('Invalid file name. Expected format xxx_app_label_objectname_timestamp.xxx. Got {0}'.format(ack_filename))
+            CommandError(
+                'Invalid file name. Expected format xxx_app_label_objectname_timestamp.xxx. '
+                'Got {0}'.format(ack_filename))
         try:
             export_plan = ExportPlan.objects.get(app_label=app_label, object_name=object_name)
         except ExportPlan.DoesNotExist as e:
-            CommandError('ExportPlan not found for {0}, {1}. Check filename format or create an ExportPlan. Got {2}'.format(app_label, object_name, e))
+            CommandError(
+                'ExportPlan not found for {0}, {1}. Check filename format or create an ExportPlan. '
+                'Got {2}'.format(app_label, object_name, e))
         target_path = export_plan.target_path
         print 'reading file...'
-        with open(ack_filename, 'r') as f, open(os.path.join(os.path.expanduser(target_path) or '', error_filename), 'w') as error_file:
+        with open(ack_filename, 'r') as f, (
+                open(os.path.join(os.path.expanduser(target_path) or '', error_filename), 'w')) as error_file:
             rows = csv.reader(f, delimiter='|')
             writer = csv.writer(error_file, delimiter='|')
             for row in rows:

@@ -31,17 +31,19 @@ class ExportAsCsvTests(TestCase):
         TestVisitSchedule().rebuild()
         study_site = '40'
         subject_consent = TestConsentWithMixinFactory(study_site=study_site)
-        self.registered_subject = RegisteredSubject.objects.get(subject_identifier=subject_consent.subject_identifier)
+        self.registered_subject = RegisteredSubject.objects.get(
+            subject_identifier=subject_consent.subject_identifier)
         self.consent = TestConsentWithMixin.objects.get(registered_subject=self.registered_subject)
         appointment = Appointment.objects.get(registered_subject=self.registered_subject)
         self.test_visit = TestVisitFactory(appointment=appointment)
 
     def test_reorder1(self):
         fields = ['f1', 'f2', 'f3', 'f4', 'f5']
-        extra_fields = OrderedDict({'subject_identifier': 'subject_visit__appointment__registered_subject__subject_identifier',
-                                    'report_datetime': 'report_datetime',
-                                    'export_uuid': 'export_uuid',
-                                    'export_datetime': 'export_datetime'})
+        extra_fields = OrderedDict(
+            {'subject_identifier': 'subject_visit__appointment__registered_subject__subject_identifier',
+             'report_datetime': 'report_datetime',
+             'export_uuid': 'export_uuid',
+             'export_datetime': 'export_datetime'})
         export_as_csv = ExportAsCsv([], model=TestModel, fields=fields, extra_fields=extra_fields)
         self.assertTrue(set(['f1', 'f2', 'f3', 'f4', 'f5']) < set(export_as_csv.field_names))
 
@@ -115,8 +117,12 @@ class ExportAsCsvTests(TestCase):
         queryset = TestModel.objects.all()
         names = ['f1', 'hostname_created', 'f2', 'report_datetime', 'subject_identifier']
         export_as_csv = ExportAsCsv(queryset, model=TestModel, fields=names, show_all_fields=False)
-        self.assertEqual(export_as_csv.field_names, ['subject_identifier', 'report_datetime', 'f1', 'f2', 'hostname_created'])
-        self.assertEqual(export_as_csv.header_row, ['subject_identifier', 'report_datetime', 'f1', 'f2', 'hostname_created'])
+        self.assertEqual(
+            export_as_csv.field_names,
+            ['subject_identifier', 'report_datetime', 'f1', 'f2', 'hostname_created'])
+        self.assertEqual(
+            export_as_csv.header_row,
+            ['subject_identifier', 'report_datetime', 'f1', 'f2', 'hostname_created'])
 
     def test_header_row_is_ordered3(self):
         for _ in range(0, 10):
@@ -124,8 +130,12 @@ class ExportAsCsvTests(TestCase):
         queryset = TestModel.objects.all()
         names = ['f1', 'hostname_created', 'report_datetime', 'report_datetime', 'f2', 'subject_identifier', 'f3']
         export_as_csv = ExportAsCsv(queryset, model=TestModel, fields=names, show_all_fields=False)
-        self.assertEqual(export_as_csv.field_names, ['subject_identifier', 'report_datetime', 'f1', 'f2', 'f3', 'hostname_created'])
-        self.assertEqual(export_as_csv.header_row, ['subject_identifier', 'report_datetime', 'f1', 'f2', 'f3', 'hostname_created'])
+        self.assertEqual(
+            export_as_csv.field_names,
+            ['subject_identifier', 'report_datetime', 'f1', 'f2', 'f3', 'hostname_created'])
+        self.assertEqual(
+            export_as_csv.header_row,
+            ['subject_identifier', 'report_datetime', 'f1', 'f2', 'f3', 'hostname_created'])
 
     def test_getting_a_row1(self):
         for _ in range(0, 10):
@@ -149,7 +159,9 @@ class ExportAsCsvTests(TestCase):
         """does it insert fields not directly on the model? for example subject_identifier"""
         TestScheduledModelFactory(test_visit=self.test_visit)
         queryset = TestScheduledModel.objects.all()
-        names = ['f1', 'hostname_created', 'report_datetime', 'report_datetime', 'f2', 'test_visit__appointment__registered_subject__subject_identifier', 'f3']
+        names = ['f1', 'hostname_created', 'report_datetime',
+                 'report_datetime', 'f2',
+                 'test_visit__appointment__registered_subject__subject_identifier', 'f3']
         export_as_csv = ExportAsCsv(queryset, model=TestScheduledModel, fields=names, show_all_fields=False)
         export_as_csv.row_instance = TestScheduledModel.objects.all()[0]
         self.assertNotIn('subject_identifier', export_as_csv.row)
@@ -160,7 +172,8 @@ class ExportAsCsvTests(TestCase):
         queryset = TestScheduledModel.objects.all()
         fields = ['f1', 'hostname_created', 'report_datetime', 'report_datetime', 'f2', 'f3']
         extra_fields = {'bad_dog': 'test_visit__appointment__registered_subject__bad_dog'}
-        export_as_csv = ExportAsCsv(queryset, model=TestScheduledModel, fields=fields, extra_fields=extra_fields, show_all_fields=False)
+        export_as_csv = ExportAsCsv(
+            queryset, model=TestScheduledModel, fields=fields, extra_fields=extra_fields, show_all_fields=False)
         export_as_csv.row_instance = TestScheduledModel.objects.all()[0]
         self.assertNotIn('bad_dog', export_as_csv.row)
         self.assertIn('bad_dog', export_as_csv.header_row)
@@ -172,8 +185,10 @@ class ExportAsCsvTests(TestCase):
         subject_identifier = test_scheduled_model.test_visit.appointment.registered_subject.subject_identifier
         queryset = TestScheduledModel.objects.all()
         fields = ['f1', 'hostname_created', 'report_datetime', 'report_datetime', 'f2', 'f3']
-        extra_fields = OrderedDict({'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'})
-        export_as_csv = ExportAsCsv(queryset, model=TestScheduledModel, fields=fields, extra_fields=extra_fields, show_all_fields=False)
+        extra_fields = OrderedDict(
+            {'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'})
+        export_as_csv = ExportAsCsv(
+            queryset, model=TestScheduledModel, fields=fields, extra_fields=extra_fields, show_all_fields=False)
         export_as_csv.row_instance = TestScheduledModel.objects.all()[0]
         self.assertIn('subject_identifier', export_as_csv.header_row)
         self.assertIn(subject_identifier, export_as_csv.row)
@@ -183,8 +198,11 @@ class ExportAsCsvTests(TestCase):
         test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
         queryset = TestScheduledModel.objects.all()
         fields = ['f1', 'hostname_created', 'report_datetime', 'report_datetime', 'f2', 'f3']
-        extra_fields = OrderedDict({'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'})
-        export_as_csv = ExportAsCsv(queryset, model=TestScheduledModel, fields=fields, extra_fields=extra_fields, show_all_fields=False, track_history=True)
+        extra_fields = OrderedDict(
+            {'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'})
+        export_as_csv = ExportAsCsv(
+            queryset, model=TestScheduledModel, fields=fields,
+            extra_fields=extra_fields, show_all_fields=False, track_history=True)
         export_as_csv.write_to_file()
         self.assertEqual(ExportHistory.objects.filter(instance_pk=test_scheduled_model.pk).count(), 1)
 
@@ -193,8 +211,11 @@ class ExportAsCsvTests(TestCase):
         TestScheduledModelFactory(test_visit=self.test_visit)
         queryset = TestScheduledModel.objects.all()
         fields = ['f1', 'hostname_created', 'report_datetime', 'report_datetime', 'f2', 'f3']
-        extra_fields = OrderedDict({'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'})
-        export_as_csv = ExportAsCsv(queryset, model=TestScheduledModel, fields=fields, extra_fields=extra_fields, show_all_fields=False, track_history=False)
+        extra_fields = OrderedDict(
+            {'subject_identifier': 'test_visit__appointment__registered_subject__subject_identifier'})
+        export_as_csv = ExportAsCsv(
+            queryset, model=TestScheduledModel, fields=fields,
+            extra_fields=extra_fields, show_all_fields=False, track_history=False)
         export_as_csv.write_to_file()
         self.assertEqual(ExportHistory.objects.all().count(), 0)
 
@@ -206,7 +227,8 @@ class ExportAsCsvTests(TestCase):
     def test_model_manager_serializes2(self):
         """test manager serializes to export_transactions, look for pk"""
         test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
-        self.assertEqual(ExportTransaction.objects.get(tx_pk=test_scheduled_model.pk).tx_pk, test_scheduled_model.pk)
+        self.assertEqual(
+            ExportTransaction.objects.get(tx_pk=test_scheduled_model.pk).tx_pk, test_scheduled_model.pk)
 
     def test_model_manager_serializes_on_insert(self):
         """test manager serializes and change_type is 'I'"""
@@ -218,11 +240,13 @@ class ExportAsCsvTests(TestCase):
         test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
         test_scheduled_model.f1 = 'XXX'
         test_scheduled_model.save()
-        self.assertEqual(ExportTransaction.objects.get(tx_pk=test_scheduled_model.pk, change_type='U').change_type, 'U')
+        self.assertEqual(
+            ExportTransaction.objects.get(tx_pk=test_scheduled_model.pk, change_type='U').change_type, 'U')
 
     def test_model_manager_serializes_on_delete(self):
         """test manager serializes and change_type is 'D'"""
         test_scheduled_model = TestScheduledModelFactory(test_visit=self.test_visit)
         pk = test_scheduled_model.pk
         test_scheduled_model.delete()
-        self.assertTrue(ExportTransaction.objects.get(tx_pk=pk, change_type='D').change_type, 'D')
+        self.assertTrue(
+            ExportTransaction.objects.get(tx_pk=pk, change_type='D').change_type, 'D')

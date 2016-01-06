@@ -40,8 +40,8 @@ class ExportModelHelper(ExportHelper):
             # get the queued export transactions
             self.export_transactions = ExportTransaction.objects.filter(
                 app_label=self.model._meta.app_label,
-                object_name=self.model._meta.object_name,
-                ).exclude(status__in=[CLOSED, 'cancelled'], )  # if already exported but not closed, will send again
+                object_name=self.model._meta.object_name).exclude(
+                    status__in=[CLOSED, 'cancelled'], )  # if already exported but not closed, will send again
             # decrypt export transactions and add to a list
             for export_transaction in self.export_transactions:
                 for obj in serializers.deserialize(
