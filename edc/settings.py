@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'south',
     'edc.core.identifier',
     'edc.data_manager',
-    'edc.export',
+    'edc_export',
     'edc_appointment',
     'edc_base',
     'edc_base',

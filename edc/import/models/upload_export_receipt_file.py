@@ -7,7 +7,7 @@ from django.db import models
 from django.conf import settings
 
 from edc_base.model.models import BaseUuidModel
-from edc.export.models import ExportHistory
+from edc_export.models import ExportHistory
 
 
 class UploadExportReceiptFile(BaseUuidModel):
