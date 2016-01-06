@@ -19,6 +19,7 @@ In the develop branch, most of the functionality is being moved out to separate 
 * `edc.data_dictionary`: `edc_data_dictionary`
 * `edc.data_manager`: still active but timpoint_status classes moved to `edc_appointment`
 * `edc.device.sync`: `edc_sync`
+* `edc.export`: `edc_export`
 * `edc.lab`: `edc_lab`
 * `edc.map`: `edc_map`
 * `edc.subject.rule_groups`: `edc_rule_groups`
