@@ -6,6 +6,9 @@
 .settings
 .coverage
 edc/db.sqlite3
+edc/*/migrations/*
+edc/*/*/*/migrations/*
+edc/*/*/migrations/*
 keys
 south.log
 *.bz2
