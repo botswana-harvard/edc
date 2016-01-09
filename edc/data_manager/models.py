@@ -23,7 +23,6 @@ class Comment(BaseModel):
 
     class Meta:
         app_label = "data_manager"
-        db_table = 'bhp_data_manager_comment'
 
 
 class ActionItem(BaseModel):
@@ -68,4 +67,3 @@ class ActionItem(BaseModel):
 
     class Meta:
         app_label = "data_manager"
-        db_table = 'bhp_data_manager_actionitem'
