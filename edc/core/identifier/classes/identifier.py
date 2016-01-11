@@ -1,8 +1,12 @@
 import re
+
 from datetime import datetime
+
 from django.db import IntegrityError
-from ..exceptions import IdentifierError
-from ..exceptions import CheckDigitError, IdentifierEncodingError, IdentifierDecodingError, IndentifierFormatError
+
+from ..exceptions import (
+    IdentifierError, CheckDigitError, IdentifierEncodingError, IdentifierDecodingError, IndentifierFormatError)
+from ..models import IdentifierTracker
 
 
 class Identifier(object):
@@ -100,7 +104,6 @@ class Identifier(object):
          .. note:: counter is incremented for each root segment. so if the root segment changes
                    the counter is reset.
            """
-        from ..models import IdentifierTracker
         # search for last identifier with this root segment
         last_identifier = IdentifierTracker.objects.filter(root_number=self.get_root_segment()).order_by('-counter')
         # increment
@@ -124,8 +127,10 @@ class Identifier(object):
             self._identifier_tracker.save()
         except IntegrityError as e:
             raise e
-        except:
-            raise IdentifierError('Failed to save() to IdentifierTracker table, your identifier was not created. Is it unique?')
+        except Exception as e:
+            raise IdentifierError(
+                ('Failed to save() to IdentifierTracker table, your identifier was not created. '
+                 'Is it unique?. Got {}').format(str(e)))
 
     def update_tracker(self):
         """update our IdentifierTracker record with created identifier"""

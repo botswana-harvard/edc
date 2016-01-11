@@ -1,7 +1,9 @@
 from django.db import models
 
+from edc_base.model.models import BaseModel
 
-class BaseSequence(models.Model):
+
+class BaseSequence(BaseModel):
 
     device_id = models.IntegerField(default=99)
     objects = models.Manager()
