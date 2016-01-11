@@ -1,22 +1,23 @@
 from django.db import models
+
 from edc_base.model.models import BaseModel
 
 
 class BaseCodeList (BaseModel):
 
-    code = models.CharField("Code",
+    code = models.CharField(
+        verbose_name="Code",
         max_length=15,
-        unique=True,
-        )
+        unique=True)
 
-    short_name = models.CharField("Name",
-        max_length=35,
-        )
+    short_name = models.CharField(
+        verbose_name="Name",
+        max_length=35)
 
-    long_name = models.CharField("Long Name",
+    long_name = models.CharField(
+        verbose_name="Long Name",
         max_length=255,
-        blank=True,
-        )
+        blank=True)
 
     def __unicode__(self):
         return "%s" % (self.short_name)

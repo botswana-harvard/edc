@@ -3,7 +3,9 @@ from .base_code_list import BaseCodeList
 
 
 class DxCode (BaseCodeList):
-    list_ref = models.CharField("List Reference",
+
+    list_ref = models.CharField(
+        verbose_name="List Reference",
         max_length=35)
 
     def __unicode__(self):
