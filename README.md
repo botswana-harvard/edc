@@ -6,7 +6,7 @@ Edc is a clinical research data management system
 
 Project `microbiome` is the most current Edc project.
 
-In the develop branch, most of the functionality is being moved out to separate packages. So far:
+In the develop branch, ALL of the functionality has been moved to separate packages. So far:
 * `edc.apps.app_configuration`: `edc_configuration`
 * `edc.audit`: `edc_audit` (Note: import through `edc_base.audit` instead of directly directly)
 * `edc.core.bhp_birt_reports`: `edc_birt_reports` but not used
@@ -30,6 +30,9 @@ In the develop branch, most of the functionality is being moved out to separate 
 * `edc.subject.adverse_event`: `edc_death_report`
 * `edc.subject.appointment_helper`:  merged into `edc_appointment`
 * `edc.subject.appointment`:  `edc_appointment`
+* `edc.subject.actg`: dropped
+* `edc.subject.haart`: `edc_code_lists`
+* `edc.subject.code_lists`: `edc_code_lists`
 * `edc.subject.lab_tracking`: `edc_lab_tracking` (but this is not currently used)
 * `edc.subject.locator`: `edc_locator`
 * `edc.subject.off_study`: `edc_offstudy`
