@@ -2,10 +2,10 @@ from datetime import datetime
 
 from django.db import models
 
-from edc_base.model.models import BaseUuidModel
+# from edc_base.model.models import BaseUuidModel
 
 
-class PendingIdentifier(BaseUuidModel):
+class PendingIdentifier(models.Model):
     """Not used."""
     pending_identifier = models.CharField(max_length=50)
     app_name = models.CharField(max_length=50)

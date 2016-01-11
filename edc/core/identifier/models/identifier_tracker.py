@@ -1,10 +1,10 @@
 from django.db import models
 
-from edc_base.model.models import BaseUuidModel
-from edc_sync.models import SyncModelMixin
+# from edc_base.model.models import BaseUuidModel
+# from edc_sync.models import SyncModelMixin
 
 
-class IdentifierTracker(SyncModelMixin, BaseUuidModel):
+class IdentifierTracker(models.Model):
 
     """
     A lockable model to create and track unique identifiers for new records such as requsitions, receive, etc.

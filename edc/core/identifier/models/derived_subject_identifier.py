@@ -1,9 +1,7 @@
 from django.db import models
 
-from edc_base.model.models import BaseModel
 
-
-class DerivedSubjectIdentifier(BaseModel):
+class DerivedSubjectIdentifier(models.Model):
     """Store subject identifiers derived from another participant, e.g. infant identifier from maternal identifier"""
 
     subject_identifier = models.CharField(
