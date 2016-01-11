@@ -8,7 +8,7 @@ from edc_constants.choices import GENDER_UNDETERMINED
 from edc_base.model.fields import IsDateEstimatedField
 from edc_base.encrypted_fields import (FirstnameField, LastnameField,
                                        EncryptedCharField)
-from edc.core.identifier.exceptions import IdentifierError
+from edc_identifier.exceptions import IdentifierError
 
 
 class BaseSubject (models.Model):

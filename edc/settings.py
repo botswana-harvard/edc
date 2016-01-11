@@ -36,7 +36,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'south',
-    'edc.core.identifier',
     'edc.data_manager',
     'edc_export',
     'edc_appointment',
