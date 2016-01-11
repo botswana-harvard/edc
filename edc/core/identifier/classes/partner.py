@@ -1,7 +1,6 @@
 from datetime import datetime
 from django.db.models import get_model
 from django.forms import ValidationError
-from ..models import SubjectIdentifier, DerivedSubjectIdentifier
 
 
 class Partner(object):
@@ -16,6 +15,7 @@ class Partner(object):
         * Subject Identifier is derived from the index identifier so the
 
         SubjectIdentifier model is referenced but not updated."""
+        from ..models import SubjectIdentifier, DerivedSubjectIdentifier
 
         if not SubjectIdentifier.objects.filter(identifier=index_identifier):
             raise ValidationError('Unknown index_identifier {0}.'.format(index_identifier))

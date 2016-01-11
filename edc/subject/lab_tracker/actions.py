@@ -1,4 +1,4 @@
-from edc.subject.lab_tracker.classes import site_lab_tracker
+from .classes import site_lab_tracker
 
 
 def update_lab_tracker(modeladmin, request, queryset):

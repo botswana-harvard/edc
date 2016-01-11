@@ -1,7 +1,6 @@
 from django.utils import timezone
 from django.db.models import get_model
 
-from ..models import SubjectIdentifier
 from ..exceptions import IdentifierError
 
 from .base_subject_identifier import BaseSubjectIdentifier
@@ -58,6 +57,8 @@ class InfantIdentifier(BaseSubjectIdentifier):
 #         live_infants = kwargs.get('live_infants')
 #         live_infants_to_register = kwargs.get('live_infants_to_register')
         # maternal identifier should exist in SubjectIdentifier
+        from ..models import SubjectIdentifier
+
         if not SubjectIdentifier.objects.filter(identifier=self.maternal_identifier):
             raise IdentifierError('Unknown maternal_identifier {0}.'.format(self.maternal_identifier))
         # some checks on logic of live and live to register

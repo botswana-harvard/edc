@@ -1,5 +1,4 @@
 from django.forms import ValidationError
-from ..models import SubjectIdentifier
 from .base_subject_identifier import BaseSubjectIdentifier
 
 
@@ -9,6 +8,8 @@ class PartnerIdentifier(BaseSubjectIdentifier):
 
     def get_identifier_prep(self, **kwargs):
         """Prepares to create an identifier consisting of the the index identifier and a -10 suffix."""
+        from ..models import SubjectIdentifier
+
         options = {}
         subject_identifier = kwargs.get('subject_identifier')
         if not SubjectIdentifier.objects.filter(identifier=subject_identifier):
