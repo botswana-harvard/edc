@@ -16,6 +16,9 @@ In the develop branch, most of the functionality is being moved out to separate 
 * `edc.core.bhp_variables`: dropped
 * `edc.core.crypto_fields`: `edc_crypto_fields` (Note: import through `edc_base.encrypted_fields` instead of directly)
 * `edc.core.identifier`: `edc_identifier`
+* `edc.core.bhp_statistics`: `edc-describe`
+* `edc.core.model_selector`: `edc-describe`
+* `edc.core.model_data_describer`: `edc-describe`
 * `edc.dashboard`: `edc_dashboard`
 * `edc.data_dictionary`: `edc_data_dictionary`
 * `edc.data_manager`: `edc_data_manager` but timpoint_status classes moved to `edc_appointment`
