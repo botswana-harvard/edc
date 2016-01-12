@@ -11,8 +11,12 @@ In the develop branch, most of the functionality is being moved out to separate 
 * `edc.audit`: `edc_audit` (Note: import through `edc_base.audit` instead of directly directly)
 * `edc.core.bhp_birt_reports`: `edc_birt_reports` but not used
 * `edc.core.bhp_content_type_map: `edc_content_type_map`
+* `edc.core.bhp_poll_mysql`: dropped
 * `edc.core.bhp_using`: dropped
+* `edc.core.bhp_static`: dropped
 * `edc.core.bhp_string`: dropped
+* `edc.core.bhp_templates`: merged with `edc_templates`
+* `edc.core.bhp_user_profile`: dropped
 * `edc.core.bhp_variables`: dropped
 * `edc.core.crypto_fields`: `edc_crypto_fields` (Note: import through `edc_base.encrypted_fields` instead of directly)
 * `edc.core.identifier`: `edc_identifier`
@@ -24,6 +28,7 @@ In the develop branch, most of the functionality is being moved out to separate 
 * `edc.data_manager`: `edc_data_manager` but timpoint_status classes moved to `edc_appointment`
 * `edc.device.sync`: `edc_sync`
 * `edc.export`: `edc_export`
+* `edc.import`: `edc_import` and some merged into `edc_export`
 * `edc.lab`: `edc_lab`
 * `edc.map`: `edc_map`
 * `edc.notification`: `edc_notification`
