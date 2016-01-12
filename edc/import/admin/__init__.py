@@ -1,3 +1,0 @@
-from .upload_transaction_file_admin import UploadTransactionFileAdmin
-from .upload_export_receipt_file_admin import UploadExportReceiptFileAdmin
-from .upload_skip_days_admin import UploadSkipDaysAdmin

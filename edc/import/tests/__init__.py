@@ -1,1 +1,0 @@
-from .upload_tests import UploadTests
