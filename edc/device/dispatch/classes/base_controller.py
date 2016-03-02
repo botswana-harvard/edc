@@ -391,14 +391,15 @@ class BaseController(BaseProducer):
 
         """
         # Get all Crypts for this list of instances
-        crypts_dispatched = self.update_model_crypts(model_instance)
+#         crypts_dispatched = self.update_model_crypts(model_instance)
         # convert to list if not iterable
         if not isinstance(model_instance, (list, QuerySet)):
             model_instance = [model_instance]
         if isinstance(model_instance, QuerySet):
             model_instance = [m for m in model_instance]
         # append crypts to all instances to be dispatched
-        model_instances = crypts_dispatched + model_instance
+#         model_instances = crypts_dispatched + model_instance
+        model_instances = model_instance
         if self.has_incoming_transactions(model_instances):
             raise PendingTransactionError('One or more listed models have pending incoming '
                                           'transactions on \'{0}\'. Consume them first. Got '
@@ -447,6 +448,7 @@ class BaseController(BaseProducer):
                                 self.update_session_container_class_counter(instance)
                         except IntegrityError as integrity_error:
                             #raise IntegrityError('{}. Got {}.'.format(deserialized_object, str(integrity_error)))
+                            print integrity_error.args, "*****************************"
                             if integrity_error.args[1].find('Duplicate entry'):
                                 saved.append(deserialized_object)
                             #  TODO: change the handling of the exception to something like this:
